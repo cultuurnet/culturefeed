@@ -10,110 +10,108 @@
  */
 function culturefeed_uitpas_event_details_advantages_get() {
 
-  $build = array();
-
-  $default_item_list = array(
-    '#items' => array(),
-    '#theme' => 'item_list',
-    '#type' => 'ul',
-  );
-
   $item = menu_get_object('culturefeed_agenda_event', 3);
   $event = culturefeed_uitpas_get_uitpas_event($item);
 
   if ($event) {
 
-    // Opportunities tariff.
-    $distribution_keys = array();
-    foreach ($event->cardSystems as $card_system) {
-      foreach ($card_system->distributionKeys as $distribution_key) {
-        foreach ($distribution_key->conditions as $condition) {
-          if ($condition->definition == $condition::DEFINITION_KANSARM) {
-            $distribution_keys[] = array(
-              'name' => $distribution_key->name,
-              'tariff' => $distribution_key->tariff,
-            );
-          }
-        }
-      }
-    }
-
-    if (count($distribution_keys)) {
-
-      $item_list = $default_item_list;
-      foreach ($distribution_keys as $distribution_key) {
-        $item_list['#items'][] = array(
-          'data' => t('Price at underprivileged tariff: € @tariff', array('@tariff' => $distribution_key['tariff'])) . '<br />' . $distribution_key['name'],
-          'class' => array('uitpas_underprivileged_tariff'),
-        );
-      }
-
-      $build[] = array(
-        'title' => array('#markup' => '<h4>' . t('Underprivileged tariffs') . '</h4>'),
-        'list' => $item_list,
-      );
-
-    }
-
-    // Other promotions.
-    $item_list = $default_item_list;
-
-    if ($event->numberOfPoints > 0.00) {
-      $item_list['#items'][] = array(
-        'data' => t('Collect points'),
-        'class' => array('uitpas_collect_points'),
-      );
-    }
+    // Promotions.
+    $promotions = array();
 
     try {
 
+      /* @var \DrupalCulturefeed_Cache $cf */
       $cf = DrupalCultureFeed::getLoggedInUserInstance();
+
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
-      $query->balieConsumerKey = $event->locationId;
+      $query->balieConsumerKey = $event->organiserId;
       $query->cashingPeriodBegin = time();
       $query->unexpired = TRUE;
-      $result = $cf->uitpas()->getPromotionPoints($query);
+      $query->start = 0;
+      $query->max = 5;
 
-      if ($result->total) {
-
-        foreach ($result->objects as $object) {
-          $item_list['#items'][] = array(
-            'data' => l($object->title , 'promotion/' . culturefeed_search_slug($object->title) . '/' . $object->id),
-            'class' => array('uitpas_has_promotion'),
-          );
-        }
-
-      }
-
-      if ($event->locationId) {
-        $item_list['#items'][] = array(
-          'data' => l(t('Show advantages at') . ' ' .  $event->locationName , 'agenda/a/' . culturefeed_search_slug($event->locationName) . '/' . $event->locationId),
-          'class' => array('uitpas_has_promotion'),
-        );
-      }
-      else {
-        $item_list['#items'][] = array(
-          'data' => l(t('Show advantages at') . ' ' .  $event->organiserName , 'agenda/a/' . culturefeed_search_slug($event->organiserName) . '/' . $event->organiserId),
-          'class' => array('uitpas_has_promotion'),
-        );
-      }
+      do {
+        $result = $cf->uitpas()->getPromotionPoints($query);
+        $promotions = array_merge($promotions, $result->objects);
+        $query->start += $query->max;
+      } while ($query->start < $result->total);
 
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_uitpas_event_details_promotions', $e);
     }
 
-    if (count($item_list['#items'])) {
+    if (count($promotions)) {
 
-      $build[] = array(
-        'title' => array('#markup' => '<h4>' . t('Promotions') . '</h4>'),
-        'list' => $item_list,
+      $title = t('Promotions at @organisation', array('@organisation' => $event->organiserName));
+      $show_all_link_title = t('All promotions');
+      $show_all_link_path = 'promotions';
+
+      $table = array(
+        'rows' => array(),
+      );
+      // A helper array in case the default implementation needs to be
+      // overridden.
+      $promotions_array = array();
+
+      foreach ($promotions as $promotion) {
+
+        /* @var \CultureFeed_Uitpas_Passholder_PointsPromotion $promotion */
+        $promotion_title = $promotion->title;
+        $promotion_points = $promotion->points;
+        $points_remark = '';
+        $points_classes = array('points-value', 'points-value__brand');
+
+        /* @var \CultureFeed_User $cf_user */
+        $cf_user = DrupalCultureFeed::getLoggedInUser();
+        if ($cf_user && $cf_user->points < $promotion->points) {
+          $points_remark = t('You have insufficient points');
+          $points_classes[] = 'insufficient-points';
+        }
+
+        $points_html = theme('html_tag', array(
+          'element' => array(
+            '#attributes' => array('class' => $points_classes),
+            '#tag' => 'span',
+            '#value' => format_plural($promotion->points, '1 point', '@count points'),
+          ),
+        ));
+
+        if ($points_remark) {
+          $points_html .= theme('html_tag', array(
+            'element' => array(
+              '#attributes' => array('class' => array('points-remark')),
+              '#tag' => 'span',
+              '#value' => $points_remark,
+            ),
+          ));
+        }
+
+        $table['rows'][] = array(
+          $promotion_title,
+          $points_html,
+        );
+
+        $promotions_array[] = array(
+          'points' => $promotion_points,
+          'points_classes' => $points_classes,
+          'points_remark' => $points_remark,
+          'title' => $promotion_title,
+        );
+
+      }
+
+      return array(
+        '#theme' => 'culturefeed_uitpas_event_details_advantages',
+        '#show_all_link_title' => $show_all_link_title,
+        '#show_all_link_path' => $show_all_link_path,
+        '#show_all_link_default_render' => l($show_all_link_title, $show_all_link_path),
+        '#promotions' => $promotions,
+        '#promotions_array' => $promotions_array,
+        '#promotions_default_render' => theme('table', $table),
+        '#title' => $title,
       );
 
-    }
-
-    if (count($build)) {
-      return $build;
     }
 
   }
