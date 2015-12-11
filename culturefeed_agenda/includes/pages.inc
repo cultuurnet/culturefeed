@@ -197,7 +197,7 @@ function culturefeed_agenda_page_ajax_related_activities($cdb_id) {
 
         $search_results = $result->getItems();
 
-        if(module_exists('culturefeed_social')) {
+        if (culturefeed_agenda_social_links_preprocessing_enabled() && culturefeed_is_culturefeed_user()) {
           culturefeed_social_warmup_activities_cache($search_results);
         }
 
