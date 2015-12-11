@@ -149,20 +149,6 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $cdb_item = $item->getEntity();
   $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
-  // Facilities: only for events with a location
-
-  if ($cdb_item instanceof CultureFeed_Cdb_Item_Event) {
-    $location = $cdb_item->getLocation();
-    $actor_id = $location->getCdbid();
-    if ($actor_id) {
-      if(culturefeed_agenda_actor_load($actor_id)) {
-        $actor = culturefeed_agenda_actor_load($actor_id)->getEntity();
-        $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $actor);
-        $variables['locations_facilities'] = $facilities['text'];
-      }
-    }
-  }
-
   // Themes of this item (as plain text and as links).
   $themes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME, $cdb_item);
   $variables['themes'] = $themes['text'];
@@ -483,6 +469,16 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   $item = $variables['item'];
   $cdb_item = $item->getEntity();
   $detail= $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+  
+  // Facilities: only for events with a location
+  if ($cdb_item instanceof CultureFeed_Cdb_Item_Event) {
+    $actor_id = $cdb_item->getLocation()->getCdbid();
+    $actor = $cdb_item->getLocation()->getActor() ?: culturefeed_agenda_actor_load($actor_id)->getEntity();
+    if ($actor) {
+      $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $actor);
+      $variables['locations_facilities'] = $facilities['text'];
+    }
+  }
 
   if ($detail) {
 
