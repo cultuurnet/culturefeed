@@ -38,7 +38,7 @@ function culturefeed_uitpas_profile_advantages_get($filter = NULL) {
           $query->owningCardSystemId = $filter;
         }
         else {
-          $query->applicableCardSystemId = explode('+', $filter);
+          $query->applicableCardSystemId = array_slice(explode('+', $filter), 1);
         }
       }
 

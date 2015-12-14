@@ -36,7 +36,7 @@ function culturefeed_uitpas_profile_promotions_get($filter = NULL) {
           $query->owningCardSystemId = $filter;
         }
         else {
-          $query->applicableCardSystemId = explode('+', $filter);
+          $query->applicableCardSystemId = array_slice(explode('+', $filter), 1);
         }
       }
       $query->orderByOwningCardSystemId = variable_get('culturefeed_uitpas_cardsystem_id');
