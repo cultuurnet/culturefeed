@@ -46,17 +46,5 @@ function culturefeed_ui_admin_settings() {
     '#default_value' => variable_get('culturefeed_ui_cookie_path', ''),
   );
 
-  $form['culturefeed_ui_account_edit_email_description'] = array(
-    '#default_value' => variable_get('culturefeed_ui_account_edit_email_description', t('This email address has been connected to your UiTPAS card. Any communication regarding your UiTPAS will be sent to this email address as well.')),
-    '#title' => t('Account edit page: email description'),
-    '#type' => 'textarea',
-  );
-
-  $form['culturefeed_ui_privacy_settings_anonymous_tooltip'] = array(
-    '#default_value' => variable_get('culturefeed_ui_privacy_settings_anonymous_tooltip', t('All your user activities will be set to private too.')),
-    '#title' => t('Privacy settings: anonymous tooltip'),
-    '#type' => 'textarea',
-  );
-
   return system_settings_form($form);
 }

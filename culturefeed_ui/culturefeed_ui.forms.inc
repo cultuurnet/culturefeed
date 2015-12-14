@@ -38,7 +38,7 @@ function culturefeed_ui_account_edit_form(array $form, array $form_state, Cultur
   );
 
   // Tooltip.
-  $info = variable_get('culturefeed_ui_account_edit_email_description', '');
+  $info = t('This email address has been connected to your UiTPAS card. Any communication regarding your UiTPAS will be sent to this email address as well.');
   /* @var CultureFeed $cf */
   $cf = DrupalCultureFeed::getLoggedInUserInstance();
   try {
@@ -320,7 +320,7 @@ function culturefeed_ui_privacy_settings_form(array $form, array &$form_state, C
   );
 
   // Tooltip.
-  $info = variable_get('culturefeed_ui_privacy_settings_anonymous_tooltip', '');
+  $info = t('All your user activities will be set to private too.');
   if ($info) {
 
     $form['#attached'] = array(
