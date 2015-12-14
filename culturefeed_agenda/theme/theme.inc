@@ -473,10 +473,12 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   // Facilities: only for events with a location
   if ($cdb_item instanceof CultureFeed_Cdb_Item_Event) {
     $actor_id = $cdb_item->getLocation()->getCdbid();
-    $actor = $cdb_item->getLocation()->getActor() ?: culturefeed_agenda_actor_load($actor_id)->getEntity();
-    if ($actor) {
-      $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $actor);
-      $variables['locations_facilities'] = $facilities['text'];
+    if ($actor_id) {
+      $actor = $cdb_item->getLocation()->getActor() ?: culturefeed_agenda_actor_load($actor_id)->getEntity();
+      if ($actor) {
+        $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $actor);
+        $variables['locations_facilities'] = $facilities['text'];
+      }
     }
   }
 
