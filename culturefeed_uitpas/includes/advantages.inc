@@ -79,10 +79,7 @@ function culturefeed_uitpas_advantages_settings_get(&$form) {
  */
 function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
 
-  $cf = DrupalCultureFeed::getConsumerInstance();
-  $kind_of_card_systems = 'permanent';
-  $card_systems = $cf->uitpas()->getCardSystems($kind_of_card_systems);
-
+  $card_systems = culturefeed_uitpas_get_card_systems();
   $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : (isset($_GET['filter']) ? $_GET['filter'] : NULL);
   $advantages = culturefeed_uitpas_advantages_get($filter);
 
