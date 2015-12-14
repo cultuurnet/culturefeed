@@ -30,7 +30,8 @@ class views_handler_argument_culturefeed_search_q extends views_handler_argument
    * @see views_handler_argument::query()
    */
   function query($group_by = FALSE) {
-    $this->query->add_where(0, $this->parameter_type, $this->argument);
+    $search_string = _culturefeed_search_ui_sanitize_query_term($this->argument);
+    $this->query->add_where(0, $this->parameter_type, $search_string);
   }
 
 }
