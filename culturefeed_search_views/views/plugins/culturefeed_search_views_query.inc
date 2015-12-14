@@ -145,6 +145,11 @@ class culturefeed_search_views_query extends views_plugin_query {
   }
 
   function add_where($group, $operator, $value) {
+    // Check for a group.
+    if (!isset($this->where[$group])) {
+      $this->set_where_group('AND', $group);
+    }
+    
     $this->where[$group]['conditions'][$operator][] = $value;
   }
 
