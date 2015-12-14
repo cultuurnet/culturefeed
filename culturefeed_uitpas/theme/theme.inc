@@ -462,7 +462,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
     '#items' => array(),
   );
   foreach ($promotion->counters as $counter) {
-    $counters['#items'][] = $counter->name;
+    $counters['#items'][] = l($counter->name, 'agenda/a/' . culturefeed_search_slug($counter->name) . '/' . $counter->id);
   }
   $vars['counters'] = count($counters['#items']) ? drupal_render($counters) : '';
 
