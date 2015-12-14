@@ -111,8 +111,11 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
       $details = $item->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
       $object['title'] = $details->getTitle();
       $object['created'] = $item->getEntity()->getCreationDate();
-      if (method_exists($item->getEntity(), 'getLocation')) {
+      if (method_exists($item->getEntity()->getLocation()->getAddress()->getPhysicalAddress(), 'getCity')) {
         $object['city'] = $item->getEntity()->getLocation()->getAddress()->getPhysicalAddress()->getCity();
+      }
+      else {
+        $object['city'] = '';
       }
       if (method_exists($item->getEntity(), 'getCalendar')) {
         $calendar = $item->getEntity()->getCalendar();
@@ -126,9 +129,15 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
           catch (Exception $e) {
           }
         }
-      }  
+      }
+      else {
+        $object['when_md_txt'] = '';
+      }
       if (method_exists($details, 'getCalendarSummary')) {
         $object['calendarsummary'] = $details->getCalendarSummary();
+      }
+      else {
+        $object['calendarsummary'] = '';
       }
       $object['shortdescription'] = $details->getShortDescription();
       $object['path'] = culturefeed_search_detail_url($item->getType(), $item->getId(), $details->getTitle());

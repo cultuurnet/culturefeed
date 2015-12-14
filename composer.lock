@@ -203,12 +203,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/culturefeed-php.git",
-                "reference": "21319f0d788877e85b6b8370a1bf54ad0868b8dc"
+                "reference": "38ef581ec22a901827bbcac973a8f0256ea028ba"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/cultuurnet/culturefeed-php/zipball/21319f0d788877e85b6b8370a1bf54ad0868b8dc",
-                "reference": "21319f0d788877e85b6b8370a1bf54ad0868b8dc",
+                "reference": "38ef581ec22a901827bbcac973a8f0256ea028ba",
                 "shasum": ""
             },
             "require": {
