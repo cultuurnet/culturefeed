@@ -304,11 +304,11 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
         $start_date = format_date($_SERVER['REQUEST_TIME'], 'custom', 'Y-m-d');
       }
 
-      $help = t('Choose a date between ') . " " . $start_date . " ". t('and') . " " . $params['date_to'];
+      $help = t('Choose a date between ') . " " . $start_date . " ". t('and') . " " . $params['date_to'] . ".";
     }
 
     $form['date'] = array(
-      '#title' => t('When do you want to go?') . " " . $help,
+      '#title' => t('When do you want to go?') . "<br/>" . $help,
       '#type' => 'date_popup',
       '#date_format' => 'd-m-Y',
       '#date_year_range' => '-0:+1',
@@ -354,6 +354,15 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
     );
   }
 
+  // Removed actions ($form['actions']['submit']) because that didn't work, we have to investigate
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => $params['button_text'],
+    '#name' => 'add',
+    '#submit' => array($submit_function),
+    '#validate' => array('culturefeed_calendar_form_validate'),
+  );
+
   if (!$edit) {
     $form['no_date'] = array(
       '#type' => 'submit',
@@ -377,14 +386,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
     '#type' => 'actions',
   );
 
-  // Removed actions ($form['actions']['submit']) because that didn't work, we have to investigate
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => $params['button_text'],
-    '#name' => 'add',
-    '#submit' => array($submit_function),
-    '#validate' => array('culturefeed_calendar_form_validate'),
-  );
+
 
   $form['actions']['cancel'] = array(
     '#type' => 'submit',
