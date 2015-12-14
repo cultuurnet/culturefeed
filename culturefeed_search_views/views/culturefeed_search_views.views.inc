@@ -24,6 +24,9 @@ function culturefeed_search_views_data() {
     'filter' => array(
       'handler' => 'views_handler_filter_culturefeed_search_q',
     ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_culturefeed_search_q',
+    ),
   );
 
   // Filter on group.
