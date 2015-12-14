@@ -111,7 +111,7 @@ function culturefeed_uitpas_get_user_card_systems_as_options() {
     $card_system = $card_system->id;
   });
   $card_systems = array_diff($card_systems, array_keys($options));
-  $options[implode('+', $card_systems)] = t('other');
+  $options[implode('+', $card_systems)] = t('Other regions');
 
   return $options;
 

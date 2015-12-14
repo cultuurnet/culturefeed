@@ -20,19 +20,12 @@ function culturefeed_uitpas_profile_promotions_get($filter = NULL) {
   if ($uitpas_user->user && $uitpas_user->passholder) {
 
     /* @var \CultureFeed_Uitpas_Passholder $passholder */
-    $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
     $passholder = $uitpas_user->passholder;
-    $uitpas_number = '';
-
-    if ($card_system_id && isset($passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber)) {
-      $uitpas_number = $passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber;
-    }
 
     // Promotions.
     try {
 
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
-      $query->uitpasNumber = $uitpas_number;
       $query->cashingPeriodBegin = time();
       $query->unexpired = TRUE;
       $query->filterOnUserPoints = TRUE;
