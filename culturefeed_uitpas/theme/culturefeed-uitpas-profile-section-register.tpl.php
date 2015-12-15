@@ -20,7 +20,7 @@
   </ul>
 
   <p>
-    <a href="/authenticated?destination=register_uitpas" class="btn btn-primary">
+    <a href="/register_uitpas" class="btn btn-primary">
     <?php echo t("Register your UiTPAS") ?>
     </a>
   </p>
