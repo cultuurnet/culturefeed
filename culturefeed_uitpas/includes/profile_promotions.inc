@@ -60,9 +60,7 @@ function culturefeed_uitpas_profile_promotions_get($filter = NULL) {
     }
 
     // Title.
-    $singular = 'My promotions (1 point saved)';
-    $plural = 'My promotions (@count points saved)';
-    drupal_set_title(format_plural($uitpas_user->passholder->points, $singular, $plural), PASS_THROUGH);
+    drupal_set_title(t('My promotions'), PASS_THROUGH);
 
   }
 

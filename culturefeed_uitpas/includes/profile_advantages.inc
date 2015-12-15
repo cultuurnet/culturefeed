@@ -55,9 +55,7 @@ function culturefeed_uitpas_profile_advantages_get($filter = NULL) {
     }
 
     // Title.
-    $singular = 'My advantages (1 point saved)';
-    $plural = 'My advantages (@count points saved)';
-    drupal_set_title(format_plural($uitpas_user->passholder->points, $singular, $plural), PASS_THROUGH);
+    drupal_set_title(t('My advantages'), PASS_THROUGH);
 
   }
 
