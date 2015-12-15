@@ -650,8 +650,8 @@ msgstr ""
 "en kunnen deze inwisselen voor"
 
 #: theme/culturefeed-uitpas-profile-section-register.tpl.php:31
-msgid "benefits."
-msgstr "voordelen."
+msgid "nice benefits"
+msgstr "leuke voordelen"
 
 #: theme/culturefeed-uitpas-profile-section-register.tpl.php:36
 msgid "Get an UiTPAS"
