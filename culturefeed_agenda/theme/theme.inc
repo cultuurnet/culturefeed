@@ -149,20 +149,6 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $cdb_item = $item->getEntity();
   $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
-  // Facilities: only for events with a location
-
-  if ($cdb_item instanceof CultureFeed_Cdb_Item_Event) {
-    $location = $cdb_item->getLocation();
-    $actor_id = $location->getCdbid();
-    if ($actor_id) {
-      if(culturefeed_agenda_actor_load($actor_id)) {
-        $actor = culturefeed_agenda_actor_load($actor_id)->getEntity();
-        $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $actor);
-        $variables['locations_facilities'] = $facilities['text'];
-      }
-    }
-  }
-
   // Enhance event-details with UiTPAS-information if culturefeed_uitpas is enabled
   if (module_exists('culturefeed_uitpas')) {
     $uitpas_event = culturefeed_uitpas_get_uitpas_event($item);
@@ -358,7 +344,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   // Social actions.
   $variables['recommend_link'] = '';
   $variables['attend_link'] = '';
-  if (module_exists('culturefeed_social')) {
+  if (culturefeed_agenda_social_links_preprocessing_enabled()) {
     $variables['recommend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_RECOMMEND, $item);
     $variables['attend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_IK_GA, $item);
   }
@@ -502,6 +488,18 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   $item = $variables['item'];
   $cdb_item = $item->getEntity();
   $detail= $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+  
+  // Facilities: only for events with a location
+  if ($cdb_item instanceof CultureFeed_Cdb_Item_Event) {
+    $actor_id = $cdb_item->getLocation()->getCdbid();
+    if ($actor_id) {
+      $actor = $cdb_item->getLocation()->getActor() ?: culturefeed_agenda_actor_load($actor_id)->getEntity();
+      if ($actor) {
+        $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $actor);
+        $variables['locations_facilities'] = $facilities['text'];
+      }
+    }
+  }
 
   if ($detail) {
 
@@ -647,7 +645,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
 
   }
 
-  if (module_exists('culturefeed_social')) {
+  if (culturefeed_agenda_social_links_preprocessing_enabled()) {
     $variables['recommend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_RECOMMEND, $item, FALSE, FALSE, '', '', FALSE);
   }
 
