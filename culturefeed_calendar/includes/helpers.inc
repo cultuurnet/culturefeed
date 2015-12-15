@@ -496,3 +496,17 @@ function culturefeed_calendar_filter_duplicate_activities($activities) {
 
   return $filtered_activities;
 }
+
+/**
+ * Helper function to read cookie betaCalendar (in progress)
+ */
+function culturefeed_calendar_enabled() {
+  return true;
+  /*
+  if($_COOKIE['betaCalendar']=="true") {
+    return true;
+  }
+  else {
+    return false;
+  }*/
+}
