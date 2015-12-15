@@ -218,7 +218,10 @@ function culturefeed_calendar_render_calendar_buttons($item) {
 
             if(!empty($calendar_item->getEndTime()))
             {
-              $endtime = $calendar_item->getEndTime();
+              if($calendar_item->getEndTime() !== "00:00:00")
+              {
+                $endtime = $calendar_item->getEndTime();
+              }
             }
 
             if(DateTime::createFromFormat('Y-m-d H:i:s', $calendar_item->getDate() . " " . $endtime)->getTimestamp()  >= $objDateTime->getTimestamp()) {
