@@ -440,8 +440,8 @@ msgid "Remove connection"
 msgstr "Verwijder koppeling"
 
 #: culturefeed_ui.helpers.inc:213
-msgid "Connect application"
-msgstr "Kanaal koppelen"
+msgid "Connect"
+msgstr "Koppelen"
 
 #: culturefeed_ui.helpers.inc:228
 msgid "Like"

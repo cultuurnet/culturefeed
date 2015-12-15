@@ -214,7 +214,7 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
   }
 
   $redirect = url('culturefeed/account/edit', array('absolute' => TRUE));
-  $connect_link = l(t('Connect application'), DrupalCultureFeed::getUrlAddSocialNetwork($online_account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect')));
+  $connect_link = l(t('Connect'), DrupalCultureFeed::getUrlAddSocialNetwork($online_account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect')));
 
   $vars = array(
     'account_type'     => $online_account_type,
