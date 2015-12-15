@@ -21,46 +21,41 @@ function culturefeed_uitpas_register_where_get() {
 
   $actors = array();
 
-  // POS.
-  if ($card_system_id) {
+  try {
 
-    try {
+    $cf = DrupalCultureFeed::getConsumerInstance();
+    $query = new CultureFeed_Uitpas_Counter_Query_SearchCounterOptions();
+    $query->start = $pos_page * $pos_max;
+    $query->max = $pos_max;
+    $query->cardSystemId = $card_system_id;
+    $query->visible = TRUE;
+    if ($location != 'all') {
+      $query->city = $location;
+    }
+    $result = $cf->uitpas()->searchCounters($query);
 
-      $cf = DrupalCultureFeed::getConsumerInstance();
-      $query = new CultureFeed_Uitpas_Counter_Query_SearchPointsOfSaleOptions();
-      $query->start = $pos_page * $pos_max;
-      $query->max = $pos_max;
-      $query->cardSystemId = $card_system_id;
-      $query->visible = TRUE;
-      if ($location != 'all') {
-        $query->city = $location;
-      }
-      $result = $cf->uitpas()->searchPointOfSales($query);
+    if ($result->total) {
 
-      if ($result->total) {
+      $pos = $result->objects;
+      $pos_total = $result->total;
+      pager_default_initialize($result->total, $pos_max, 0);
 
-        $pos = $result->objects;
-        $pos_total = $result->total;
-        pager_default_initialize($result->total, $pos_max, 0);
+      foreach ($result->objects as $object) {
 
-        foreach ($result->objects as $object) {
-
-          $actor = culturefeed_agenda_actor_load($object->id);
-          if ($actor) {
-            $actors[$object->id] = $actor;
-          }
-
+        $actor = culturefeed_agenda_actor_load($object->id);
+        if ($actor) {
+          $actors[$object->id] = $actor;
         }
 
       }
 
     }
-    catch (Exception $e) {
 
-      watchdog_exception('uitpas_ui_content_type_register_where', $e);
-      pager_default_initialize(0, $pos_max, 0);
+  }
+  catch (Exception $e) {
 
-    }
+    watchdog_exception('uitpas_ui_content_type_register_where', $e);
+    pager_default_initialize(0, $pos_max, 0);
 
   }
 
