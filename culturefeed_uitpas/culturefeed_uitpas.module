@@ -90,7 +90,7 @@ function culturefeed_uitpas_culturefeed_ui_profile_box_dropdown_items(CultureFee
       );
 
       $items['uitpas-register'] = array(
-        'data' => l(t('UiTPAS register'), 'authenticated?destination=register_uitpas'),
+        'data' => l(t('Register your UiTPAS'), 'register_uitpas'),
         'class' => 'uitpas-register',
         'weight' => 10,
       );
