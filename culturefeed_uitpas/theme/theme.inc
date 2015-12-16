@@ -214,8 +214,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
       }
 
       // Points.
-      $singular = '@formatted_count point';
-      $plural = '@formatted_count points';
+      $singular = t('@formatted_count point');
+      $plural = t('@formatted_count points');
       $formatted_count = number_format($activity->points, 2, ',', '.');
       if ($activity->points > 0) {
         $formatted_count = '+' . $formatted_count;

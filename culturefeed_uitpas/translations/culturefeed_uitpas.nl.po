@@ -42,8 +42,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-12-15 23:22+0100\n"
-"PO-Revision-Date: 2015-12-15 23:23+0100\n"
+"POT-Creation-Date: 2015-12-16 14:36+0100\n"
+"PO-Revision-Date: 2015-12-16 14:38+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -745,6 +745,14 @@ msgstr "Punten"
 #: theme/theme.inc:213
 msgid "at @location"
 msgstr "bij @location"
+
+#: theme/theme.inc:217
+msgid "@formatted_count point"
+msgstr "@formatted_count punt"
+
+#: theme/theme.inc:218
+msgid "@formatted_count points"
+msgstr "@formatted_count punten"
 
 #: theme/theme.inc:235;635
 msgid "No results found."

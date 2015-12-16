@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-07-30 13:57+0200\n"
-"PO-Revision-Date: 2015-07-30 13:57+0100\n"
+"POT-Creation-Date: 2015-12-16 14:42+0100\n"
+"PO-Revision-Date: 2015-12-16 14:47+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -49,61 +49,174 @@ msgstr ""
 msgid "Your CultureFeed Shared Secret."
 msgstr ""
 
-#: culturefeed.admin.inc:39
+#: culturefeed.admin.inc:40
+msgid "My consumer has UiTiD light permissions."
+msgstr ""
+
+#: culturefeed.admin.inc:46
 msgid "Entry API path"
 msgstr ""
 
-#: culturefeed.admin.inc:40
+#: culturefeed.admin.inc:47
 msgid ""
 "The path where the CultureFeed Entry API resides. End with a slash. Example: "
 "entry/test.rest.uitdatabank.be/api/v2/"
 msgstr ""
 
-#: culturefeed.admin.inc:47
+#: culturefeed.admin.inc:54
 msgid "The culturefeed cdb schema version used by the entry API."
 msgstr ""
 
-#: culturefeed.admin.inc:48
+#: culturefeed.admin.inc:55
 msgid "Cdb schema version"
 msgstr ""
 
-#: culturefeed.admin.inc:55
+#: culturefeed.admin.inc:62
 msgid "HTTP client timeout"
 msgstr ""
 
-#: culturefeed.admin.inc:56
+#: culturefeed.admin.inc:63
 msgid "Timeout on requests by the HTTP client."
 msgstr ""
 
-#: culturefeed.admin.inc:58
+#: culturefeed.admin.inc:65
 msgid "seconds"
+msgstr "seconden"
+
+#: culturefeed.admin.inc:71
+msgid ""
+"Use \".\" (without quotes) for the root directory of the Drupal installation."
 msgstr ""
 
-#: culturefeed.helpers.inc:353
+#: culturefeed.helpers.inc:42
+msgid "Anonymous"
+msgstr "Anoniem"
+
+#: culturefeed.helpers.inc:273
+msgid "view"
+msgstr "weergeven"
+
+#: culturefeed.helpers.inc:274
+msgid "detail"
+msgstr "detailpagina bekeken"
+
+#: culturefeed.helpers.inc:275
+msgid "like"
+msgstr "vind ik leuk"
+
+#: culturefeed.helpers.inc:276
+msgid "mail"
+msgstr "e-mail"
+
+#: culturefeed.helpers.inc:277
+msgid "print"
+msgstr "print"
+
+#: culturefeed.helpers.inc:278
+msgid "Facebook"
+msgstr "gedeeld op Facebook"
+
+#: culturefeed.helpers.inc:279
+msgid "Twitter"
+msgstr "gedeeld op Twitter"
+
+#: culturefeed.helpers.inc:280
+msgid "attend"
+msgstr "ik ga"
+
+#: culturefeed.helpers.inc:281
+msgid "ticket"
+msgstr "ticket"
+
+#: culturefeed.helpers.inc:282
+msgid "route"
+msgstr "route"
+
+#: culturefeed.helpers.inc:283
+msgid "more info"
+msgstr "meer info"
+
+#: culturefeed.helpers.inc:284
+msgid "uitpas checkin"
+msgstr "bezoek met UiTPAS aan"
+
+#: culturefeed.helpers.inc:285
+msgid "regular checkin"
+msgstr "bezoek aan"
+
+#: culturefeed.helpers.inc:286
+msgid "comment"
+msgstr "reactie"
+
+#: culturefeed.helpers.inc:287
+msgid "recommend"
+msgstr "aangeraden"
+
+#: culturefeed.helpers.inc:288
+msgid "follow"
+msgstr "volgen"
+
+#: culturefeed.helpers.inc:289
+msgid "page member"
+msgstr "lid geworden"
+
+#: culturefeed.helpers.inc:290
+msgid "page admin"
+msgstr "beheerder geworden"
+
+#: culturefeed.helpers.inc:291
+msgid "new event"
+msgstr "event aangemaakt"
+
+#: culturefeed.helpers.inc:292
+msgid "review"
+msgstr "beoordeling"
+
+#: culturefeed.helpers.inc:293
+msgid "media photo"
+msgstr "foto toegevoegd"
+
+#: culturefeed.helpers.inc:294
+msgid "media video"
+msgstr "video toegevoegd"
+
+#: culturefeed.helpers.inc:295
+msgid "page created"
+msgstr "pagina gemaakt"
+
+#: culturefeed.helpers.inc:296
+msgid "news"
+msgstr "nieuwsbericht"
+
+#: culturefeed.helpers.inc:297
+msgid "cashin"
+msgstr "voordeel omgeruild"
+
+#: culturefeed.helpers.inc:414
 msgid "Loading"
 msgstr "Laden"
 
-#: culturefeed.helpers.inc:512
+#: culturefeed.helpers.inc:573
 msgid "I thought this might interest you:"
 msgstr "Ik dacht dat dit je wel zou interesseren:"
 
-#: culturefeed.helpers.inc:205
+#: culturefeed.helpers.inc:223
 msgid "culturefeed"
 msgstr ""
 
-#: culturefeed.helpers.inc:205
+#: culturefeed.helpers.inc:223
 msgid "The shared secret for Application key (@app_key) cannot be found!"
 msgstr ""
 
-#: culturefeed.helpers.inc:533;538
+#: culturefeed.helpers.inc:594;599
 msgid "mobile_detect"
 msgstr ""
 
-#: culturefeed.helpers.inc:533
+#: culturefeed.helpers.inc:594
 msgid "Could not instantiate Mobile_Detect(): %message"
 msgstr ""
 
-#: culturefeed.helpers.inc:538
+#: culturefeed.helpers.inc:599
 msgid "Mobile_Detect() class does not exist"
 msgstr ""
 
@@ -119,38 +232,38 @@ msgstr "Geen toegang"
 msgid "You are not authorized to access this page."
 msgstr "U heeft geen toegangsrechten voor deze pagina."
 
-#: culturefeed.module:159
+#: culturefeed.module:163
 msgid "CultureFeed cache"
 msgstr ""
 
-#: culturefeed.module:161
+#: culturefeed.module:165
 msgid ""
 "Enabling the CultureFeed cache will cache some parsed results of requests to "
 "the CultureFeed API. This will reduce the number of requests made directly "
 "to the API service."
 msgstr ""
 
-#: culturefeed.module:165
+#: culturefeed.module:169
 msgid "Cache API requests"
 msgstr ""
 
-#: culturefeed.module:57;67 culturefeed.info:0;0;0
+#: culturefeed.module:61;71 culturefeed.info:0;0;0
 msgid "CultureFeed"
 msgstr "CultureFeed"
 
-#: culturefeed.module:58
+#: culturefeed.module:62
 msgid "Settings related to CultureFeed."
 msgstr ""
 
-#: culturefeed.module:68
+#: culturefeed.module:72
 msgid "Change CultureFeed API setting like API Appliction key, location, ..."
 msgstr ""
 
-#: culturefeed.module:75;82;90
+#: culturefeed.module:79;86;94
 msgid "Connect"
-msgstr ""
+msgstr "Koppelen"
 
-#: culturefeed.module:98
+#: culturefeed.module:102
 msgid "Log in"
 msgstr "Aanmelden"
 
@@ -206,7 +319,7 @@ msgid ""
 "settings from the <a href=\"@url\">CultureFeed settings page</a>."
 msgstr ""
 
-#: (duplicate) culturefeed.install:118 ;129 ;140
+#: (duplicate) culturefeed.install:118 ;129 ;140 ;192
 msgid "Not configured"
 msgstr ""
 
@@ -228,4 +341,57 @@ msgstr ""
 msgid ""
 "The location of the CultureFeed has not been set yet. Please configure its "
 "settings from the <a href=\"@url\">CultureFeed settings page</a>."
+msgstr ""
+
+#: (duplicate) culturefeed.install:189
+msgid "Composer.lock"
+msgstr ""
+
+#: (duplicate) culturefeed.install:190
+msgid ""
+"The location of the composer.lock file is not set or incorrect. Please "
+"configure its location on the <a href=\"@url\">CultureFeed settings page</a>."
+msgstr ""
+
+#: (duplicate) culturefeed.install:201
+msgid "PHP library :library"
+msgstr ""
+
+#: (duplicate) culturefeed.install:204
+msgid "Install the composer/composer PHP library"
+msgstr ""
+
+#: (duplicate) culturefeed.install:225
+msgid "CultureFeed dependency :library"
+msgstr ""
+
+#: (duplicate) culturefeed.install:231
+msgid ""
+"According to composer.lock the :package-name PHP library is missing, while "
+"at least version :minimum is required. Please install the library."
+msgstr ""
+
+#: (duplicate) culturefeed.install:251
+msgid ""
+"According to composer.lock version :version of the :package-name PHP library "
+"is in use, while at least version :minimum is required. Please upgrade the "
+"library to a compatible version."
+msgstr ""
+
+#: (duplicate) culturefeed.install:259
+msgid "Incompatible version detected (@version)"
+msgstr ""
+
+#: (duplicate) culturefeed.install:266
+msgid ""
+"According to composer.lock an unstable (:stability) version of the :package-"
+"name PHP library is in use. It is advisable to upgrade to a stable release."
+msgstr ""
+
+#: (duplicate) culturefeed.install:273
+msgid "Unstable version detected (@version)"
+msgstr ""
+
+#: (duplicate) culturefeed.install:280
+msgid "Compatible version detected (@version)"
 msgstr ""
