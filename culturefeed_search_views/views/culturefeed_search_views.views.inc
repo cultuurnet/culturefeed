@@ -341,6 +341,22 @@ function culturefeed_search_views_data() {
 		),
 	);
 
+  $data['cdb_items']['permanent'] = array(
+    'title' => t('Permanent'),
+    'help' => t('Sort on permanent status.'),
+    'sort' => array(
+      'handler' => 'views_handler_sort_culturefeed_search_permanent'
+    ),
+  );
+
+  $data['cdb_items']['availableto'] = array(
+    'title' => t('Available to'),
+    'help' => t('Sort on availableto.'),
+    'sort' => array(
+      'handler' => 'views_handler_sort_culturefeed_search_availableto'
+    ),
+  );
+
   return $data;
 
 }
