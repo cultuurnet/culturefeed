@@ -798,13 +798,7 @@ function culturefeed_calendar_settings_form($form, &$form_state) {
     return $form;
   }
 
-  $form['privacy_share'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Privacy & share'),
-    '#tree' => TRUE,
-  );
-
-  $form['privacy_share']['visibility'] = array(
+  $form['visibility'] = array(
     '#type' => 'radios',
     '#title' => t('Who can see your calendar'),
     '#default_value' => !empty($cf_user->privacyConfig->calendarId) ? $cf_user->privacyConfig->calendarId : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC,
@@ -821,9 +815,14 @@ function culturefeed_calendar_settings_form($form, &$form_state) {
     '#submit' => array('culturefeed_calendar_settings_form_submit'),
   );
 
+  $form['actions']['cancel'] = array(
+    '#markup' => l(t('Cancel'),culturefeed_calendar_get_url(), array('attributes' => array('class' => array('btn', 'btn-link'))))
+  );
+
   return $form;
 
 }
+
 
 /**
  * Submit handler for the calendar settings form.
@@ -833,7 +832,7 @@ function culturefeed_calendar_settings_form_submit($form, &$form_state) {
     $cf_user = DrupalCultureFeed::getLoggedInUser();
 
     // Update the user privacy.
-    $cf_user->privacyConfig->calendarId = $form_state['values']['privacy_share']['visibility'];
+    $cf_user->privacyConfig->calendarId = $form_state['values']['visibility'];
     DrupalCultureFeed::updateUserPrivacy($cf_user->id, $cf_user->privacyConfig);
 
     // If the privacy is set to not published, unset the calenderId.
@@ -846,6 +845,8 @@ function culturefeed_calendar_settings_form_submit($form, &$form_state) {
     DrupalCultureFeed::updateUser($cf_user, array('calendarId'));
 
     drupal_set_message(t('Changes succesfully saved.'));
+
+    $form_state['redirect'] = culturefeed_calendar_get_url();
 
   }
   catch (Exception $ex) {

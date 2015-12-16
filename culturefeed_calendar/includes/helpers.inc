@@ -511,3 +511,11 @@ function culturefeed_calendar_enabled() {
     return false;
   }*/
 }
+
+/**
+ * Helper function to get the url of the calendar
+ */
+function culturefeed_calendar_get_url() {
+  global $base_url;
+  return $base_url . '/culturefeed/calendar';
+}
