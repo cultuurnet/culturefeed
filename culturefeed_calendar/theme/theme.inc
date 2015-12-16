@@ -93,11 +93,20 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
 
     if ($cf_user->privacyConfig->calendarId == CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC) {
       $variables['shared'] = TRUE;
+      $variables['data_content'] = theme('culturefeed_calendar_share_page');
     }
     else {
       $variables['shared'] = FALSE;
       $variables['data_content'] = theme('culturefeed_calendar_share_page');
     }
+  }
+
+
+  if ($cf_user && $cf_user->privacyConfig->calendarId == CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC) {
+
+    $variables['calendar_share_path'] = 'culturefeed/calendar/' . $cf_user->id;
+    $variables['calendar_share_url'] = url($variables['calendar_share_path'], array('absolute' => TRUE));
+
   }
 
 }

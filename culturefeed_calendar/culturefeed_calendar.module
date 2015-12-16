@@ -14,6 +14,9 @@ function culturefeed_calendar_init() {
     drupal_add_library('system', 'jquery.cookie');
     drupal_add_js(drupal_get_path('module', 'culturefeed_calendar') . '/js/culturefeed_calendar.js');
   }
+  drupal_add_js(drupal_get_path('module', 'culturefeed_calendar') . '/js/clipboard.min.js');
+  drupal_add_js(drupal_get_path('module', 'culturefeed_calendar') . '/js/culturefeed_calendar_clipboard.js');
+
 }
 
 /**
