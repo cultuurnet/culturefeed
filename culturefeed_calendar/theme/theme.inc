@@ -333,14 +333,3 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_share_page(&$varia
 
   }
 }
-
-/**
- * Preprocess the calendar settings page.
- *
- * @param type $variables
- */
-function culturefeed_calendar_preprocess_culturefeed_calendar_settings_page(&$variables) {
-  global $base_url;
-  $variables['back_to_calendar_url'] =  $base_url . '/culturefeed/calendar';
-
-}
