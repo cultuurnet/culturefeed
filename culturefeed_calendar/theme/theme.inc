@@ -206,6 +206,8 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activities_going(&
 
   $variables['months'] = array_fill_keys(array_map(function($element){return $element['full_month'];}, $months), array());
 
+  culturefeed_calendar_remove_finished_activities($activities);
+
   foreach ($activities as $activity) {
     if ($selected_date = culturefeed_calendar_get_selected_date($activity)) {
       $month = format_date($selected_date, 'custom', 'F');

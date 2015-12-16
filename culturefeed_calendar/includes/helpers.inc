@@ -511,3 +511,24 @@ function culturefeed_calendar_enabled() {
     return false;
   }*/
 }
+
+/**
+ * Helper function to remove "finished" events from array
+ */
+function culturefeed_calendar_remove_finished_activities(&$activities) {
+  foreach ($activities as $key => $activity) {
+    if ($selected_date = culturefeed_calendar_get_selected_date($activity)) {
+
+      // Only show activities between current month and 11 months in the future
+      $activity_month = format_date($selected_date, 'custom', 'mY');
+      $current_month = format_date(time(), 'custom', 'mY');
+
+      if ($activity_month < $current_month || $activity_month > $current_month+11) {
+        unset($activities[$key]);
+      }
+      
+    }else {
+      unset($activities[$key]);
+    }
+  }
+}
