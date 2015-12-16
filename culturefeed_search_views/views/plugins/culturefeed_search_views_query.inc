@@ -11,6 +11,12 @@ class culturefeed_search_views_query extends views_plugin_query {
   private $parameters = array();
 
   /**
+   * The default operator to use when connecting the WHERE groups. May be
+   * AND or OR.
+   */
+  var $group_operator = 'AND';
+
+  /**
    * add_field method to support field row plugin and click sorting.
    */
   function add_field($table, $field, $alias = '', $params = array()) {
