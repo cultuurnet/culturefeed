@@ -250,7 +250,7 @@ function culturefeed_calendar_render_calendar_buttons($item) {
         $actions = array('view');
       }
       else {
-        $actions = array('add', 'like');
+        $actions = array('like', 'add');
       }
 
       foreach($actions as $action) {
