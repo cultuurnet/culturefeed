@@ -244,7 +244,7 @@ function culturefeed_calendar_edit_calendar_event($activity, $request_type = 'aj
   $event = culturefeed_agenda_event_load($activity->nodeId);
 
   $params = _culturefeed_calendar_get_event_params($event);
-  $params['title'] = t('Schedule !title', array('!title' => $params['node_title']));
+  $params['title'] = t('When do you want to go?');
   $params['button_text'] = t('Update event');
   $params['use_ajax'] = $request_type == 'ajax';
   $params['activity'] = $activity;
@@ -308,7 +308,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
     }
 
     $form['date'] = array(
-      '#title' => t('When do you want to go?') . "<br/>" . $help,
+      '#title' => $help,
       '#type' => 'date_popup',
       '#date_format' => 'd-m-Y',
       '#date_year_range' => '-0:+1',
