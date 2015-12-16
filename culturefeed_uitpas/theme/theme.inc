@@ -33,18 +33,15 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
   }
 
   // Get the counters information.
-  $vars['counters'] = array();
-  if (isset($advantage->counters[0])) {
-    foreach ($advantage->counters as $key => $counter) {
-      $extendedCounter = culturefeed_agenda_actor_load($counter->id);
-      if ($extendedCounter) {
-        $new_counter = array('item' => $extendedCounter);
-        module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
-        culturefeed_agenda_preprocess_culturefeed_actor($new_counter);
-        $vars['counters'][] = $new_counter;
-      }
-    }
+  $counters = array(
+    '#theme' => 'item_list',
+    '#type' => 'ul',
+    '#items' => array(),
+  );
+  foreach ($advantage->counters as $counter) {
+    $counters['#items'][] = l($counter->name, 'agenda/a/' . culturefeed_search_slug($counter->name) . '/' . $counter->id);
   }
+  $vars['counters'] = count($counters['#items']) ? drupal_render($counters) : '';
 
   // Period.
   $vars['period'] = '';

@@ -32,7 +32,7 @@
       <button class="show-exchange-info" onclick="Drupal.CultureFeed.UiTPASToggleExchangeInfo()"><?php print t('How to exchange'); ?></button>
       <div class="exchange-info">
         <div class="locations">
-          <?php print t('At') . ' ' . implode(', ', $location_links); ?>
+          <?php print t('Offered by') . ' ' . implode(', ', $location_links); ?>
         </div>
         <?php if ($description2): ?>
         <div class="description2"><?php print $description2; ?></div>
