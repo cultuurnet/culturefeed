@@ -32,6 +32,19 @@ function culturefeed_search_init() {
  */
 function culturefeed_search_menu() {
 
+  if (!module_exists('culturefeed')) {
+    $items['admin/config/culturefeed'] = array(
+      'title' => 'CultureFeed',
+      'description' => 'Settings related to CultureFeed.',
+      'position' => 'right',
+      'weight' => 0,
+      'page callback' => 'system_admin_menu_block_page',
+      'access arguments' => array('access administration pages'),
+      'file' => 'system.admin.inc',
+      'file path' => drupal_get_path('module', 'system'),
+    );
+  }
+
   $items['admin/config/culturefeed/search'] = array(
     'title' => 'CultureFeed Search',
     'description' => 'Change CultureFeed Search API setting like API Appliction key, location, ...',
@@ -195,6 +208,10 @@ function culturefeed_search_get_search_url_query($search_query) {
       }
       $query['search'] = $param[1];
     }
+    // Param datetype
+    elseif ($param[0] == 'datetype') {
+      $query['datetype'][0] = $param[1];
+    }
     // Search on location
     elseif ($param[0] == 'zipcode') {
       // Check if distance is included.
@@ -229,7 +246,8 @@ function culturefeed_search_get_search_url_query($search_query) {
           continue;
         }
 
-        $search_on = explode(':', $condition);
+        // Add a limit because timestamps also contains ':' 
+        $search_on = explode(':', $condition, 2);
 
         if (count($search_on) == 2) {
           $facet_field = $search_on[0];
@@ -250,7 +268,7 @@ function culturefeed_search_get_search_url_query($search_query) {
         if (strpos($facet_field, '!') === 0) {
           $inverse = TRUE;
           $facet_field = substr($facet_field, 1);
-          $facet_value = substr($$facet_value, 1);
+          $facet_value = substr($facet_value, 1);
         }
         $facet_value = str_replace(array('(', ')', '"'), '', $facet_value);
         $previous_field = $facet_field;
@@ -285,6 +303,17 @@ function culturefeed_search_get_search_url_query($search_query) {
           // Filter location category facility Id.
           case 'location_category_facility_id':
             $query['facet']['location_category_facility_id'][] = $facet_value;
+            break;
+            
+          // Daterage  
+          case 'startdate':
+            $dates = str_replace (array('[',']','T','Z'), '' , explode('TO', $facet_value));
+            $date_range = DateTime::createFromFormat('Y-m-dH:i:s', trim($dates[0]))->format('d/m/Y');
+            if (isset($dates[1])) {
+              $end_date = DateTime::createFromFormat('Y-m-dH:i:s', trim($dates[1]))->format('d/m/Y');
+              $date_range .= ' - ' . $end_date;
+            }
+            $query['date_range'] = $date_range;
             break;
 
           // Normal facets.
@@ -376,22 +405,22 @@ function culturefeed_search_get_search_url_query($search_query) {
   $total_locations = count($locations);
   if ($total_locations > 1) {
     foreach ($locations as $location) {
-      $query['facet']['flandersregion'][] = $location;
+      $query['facet']['category_flandersregion_id'][] = $location;
     }
   }
   elseif ($total_locations == 1) {
 
-    $term = culturefeed_search_get_term_by_id($locations[0], LANGUAGE_NONE);
-    $term_parts = explode(' ', $term->name);
+    $term = culturefeed_search_get_term_translation($locations[0], LANGUAGE_NONE);
+    $term_parts = explode(' ', $term);
 
     // If first part is numeric: do location search.
     if (is_numeric($term_parts[0])) {
-      $query['regId'] = $facet_value;
-      $query['location'] = culturefeed_search_get_term_translation($facet_value);
+      $query['regId'] = $locations[0];
+      $query['location'] = $term->name;
     }
     // Otherwise set flandersregion facet active.
     else {
-      $query['facet']['flandersregion'][] = $facet_value;
+      $query['facet']['category_flandersregion_id'][] = $locations[0];
     }
 
   }

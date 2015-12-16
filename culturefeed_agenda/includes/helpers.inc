@@ -797,18 +797,20 @@ function culturefeed_agenda_get_category_list_of_item($category_type, $cdb_item)
   $categories = $cdb_item->getCategories()->getCategoriesByType($category_type);
   foreach ($categories as $category) {
 
-    $options = array(
-      'query' => array(
-        'facet' => array(
-          'category_' . $category_type . '_id' => array($category->getId()),
+    // Don't add 'Thema onbepaald' and 'Type onbepaald'
+    if ($category->getId() != '1.58.0.0.0' || $category->getId() != '0.51.0.0.0') {
+      $options = array(
+        'query' => array(
+          'facet' => array(
+            'category_' . $category_type . '_id' => array($category->getId()),
+          ),
         ),
-      ),
-    );
+      );
 
-    $text_list[] = check_plain($category->getName());
-    $links_list[] = l($category->getName(), 'agenda/search', $options);
-    $id_list[] = check_plain($category->getId());
-
+      $text_list[] = check_plain($category->getName());
+      $links_list[] = l($category->getName(), 'agenda/search', $options);
+      $id_list[] = check_plain($category->getId());
+    }
   }
 
   return array(
@@ -837,4 +839,11 @@ function culturefeed_agenda_get_plain_text_calendar_formatter() {
   $formatter = new CultuurNet\CalendarSummary\CalendarPlainTextFormatter();
 
   return $formatter;
+}
+
+/**
+ * Returns TRUE if social links preprocessing is enabled.
+ */
+function culturefeed_agenda_social_links_preprocessing_enabled() {
+  return variable_get('culturefeed_agenda_enable_activity_links_preprocessing', TRUE) && module_exists('culturefeed_social');
 }

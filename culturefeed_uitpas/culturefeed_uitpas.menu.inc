@@ -30,7 +30,8 @@ function culturefeed_uitpas_menu() {
     ),
     'advantages' => array(
       'title' => variable_get('culturefeed_uitpas_advantages_title', 'UiTPAS advantages'),
-      'page callback' => 'culturefeed_uitpas_advantages_get',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('culturefeed_uitpas_advantages_filter_sort'),
       'file' => 'includes/advantages.inc',
       'access arguments' => array('access content'),
     ),
@@ -40,6 +41,12 @@ function culturefeed_uitpas_menu() {
       'page arguments' => array('culturefeed_uitpas_promotions_filter_sort'),
       'file' => 'includes/promotions.inc',
       'access arguments' => array('access content'),
+    ),
+    'culturefeed/profile/uitpas' => array(
+      'title callback' => 'culturefeed_ui_title_callback_profile_name',
+      'page callback' => 'culturefeed_uitpas_profile_details_get',
+      'access callback' => 'culturefeed_uitpas_is_passholder',
+      'file' => 'includes/profile_details.inc',
     ),
     'culturefeed/profile/uitpas/actions' => array(
       'title callback' => 'culturefeed_uitpas_profile_actions_title',
@@ -59,16 +66,10 @@ function culturefeed_uitpas_menu() {
     'culturefeed/profile/uitpas/advantages' => array(
       'title callback' => 'culturefeed_uitpas_profile_advantages_title',
       'description' => variable_get('culturefeed_uitpas_profile_details_menu_advantages_description', t('Discover which promotions and advantages you are entitled to.')),
-      'page callback' => 'culturefeed_uitpas_profile_advantages_get',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('culturefeed_uitpas_profile_advantages_filter_sort'),
       'access callback' => 'culturefeed_uitpas_is_passholder',
       'file' => 'includes/profile_advantages.inc',
-    ),
-    'culturefeed/profile/uitpas/notifications' => array(
-      'title callback' => 'culturefeed_uitpas_profile_notifications_title',
-      'description' => variable_get('culturefeed_uitpas_profile_details_menu_notifications_description', t('Change your preferences for receiving personal notifications via email.')),
-      'page callback' => 'culturefeed_uitpas_profile_notifications_get',
-      'access callback' => 'culturefeed_uitpas_is_passholder',
-      'file' => 'includes/profile_notifications.inc',
     ),
     'promotion/%/%uitpas_promotion' => array(
       'title callback' => 'culturefeed_uitpas_promotion_details_title_get',
@@ -101,9 +102,9 @@ function culturefeed_uitpas_menu() {
       'type' => MENU_CALLBACK,
     ),
     'register_uitpas' => array(
-      'title callback' => 'culturefeed_uitpas_register_uitpas_title',
+      'access callback' => 'culturefeed_is_culturefeed_user',
+      'title callback' => 'culturefeed_ui_title_callback_profile_name',
       'page callback' => 'culturefeed_uitpas_user_register_get',
-      'access callback' => TRUE,
       'file' => 'includes/user_register.inc',
       'type' => MENU_CALLBACK,
     ),
@@ -112,6 +113,13 @@ function culturefeed_uitpas_menu() {
       'page callback' => 'culturefeed_uitpas_toggle_reminder',
       'access callback' => 'user_is_logged_in',
       'file' => 'includes/reminder.inc',
+      'type' => MENU_CALLBACK,
+    ),
+    'culturefeed/uitpas/synchronization' => array(
+      'access callback' => TRUE,
+      'file' => 'includes/synchronization.inc',
+      'page callback' => 'culturefeed_uitpas_synchronization',
+      'title' => 'Update personal data',
       'type' => MENU_CALLBACK,
     ),
   );

@@ -9,7 +9,9 @@
 /* print '<h1>' . $title . '</h1>'; */
 ?>
 
-<?php print $recommend_link; ?>
+<?php if (!empty($recommend_link)) : ?>
+  <?php print $recommend_link; ?>
+<?php endif; ?>
 
 <?php if (!empty($shortdescription)) : ?>
   <p>
@@ -60,6 +62,11 @@
   </dd>
   <?php endif; ?>
 
+  <?php if (!empty($weekscheme)): ?>
+  <dt><?php print t('Opening hours'); ?></dt>
+  <dd><?php print $when_lg; ?></dd>
+  <?php endif; ?>
+
 </dl>
 
 <img src="<?php print $main_picture; ?>" />
@@ -72,7 +79,9 @@
   <?php print $video; ?>
 <?php endforeach; ?>
 
-<?php print $recommend_link; ?>
+<?php if (!empty($recommend_link)) : ?>
+  <?php print $recommend_link; ?>
+<?php endif; ?>
 
 <div>
   <?php print $facebook_link; ?>

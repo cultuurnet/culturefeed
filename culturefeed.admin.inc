@@ -34,6 +34,13 @@ function culturefeed_admin_settings() {
     '#size' => 40,
     '#maxlength' => 40,
   );
+
+  $form['culturefeed_api_uitid_light_permission'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('My consumer has UiTiD light permissions.'),
+    '#default_value' => CULTUREFEED_API_LIGHT_ID_ALLOWED,
+  );
+
   $form['culturefeed_entry_api_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Entry API path'),
@@ -56,6 +63,14 @@ function culturefeed_admin_settings() {
     '#description' => t('Timeout on requests by the HTTP client.'),
     '#default_value' => variable_get('culturefeed_http_client_timeout', 10),
     '#field_suffix' => t('seconds'),
+  );
+
+  $form['culturefeed_composer_lock_path'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Path to the composer.lock file.',
+    '#description' => t('Use "." (without quotes) for the root directory of the Drupal installation.'),
+    '#default_value' => variable_get('culturefeed_composer_lock_path', CULTUREFEED_DEFAULT_COMPOSER_LOCK_PATH),
+    '#field_suffix' => '/composer.lock',
   );
 
   return system_settings_form($form);

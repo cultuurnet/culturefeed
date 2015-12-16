@@ -143,6 +143,12 @@ function culturefeed_agenda_theme() {
 		'file' => 'theme.inc',
 	);
 
+	$theme['culturefeed_agenda_page_list_rss'] = array(
+    'render element' => 'element',
+    'path' => $path,
+    'file' => 'theme.inc',
+  );
+
   return $theme;
 
 }
@@ -882,7 +888,7 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
         if (is_array($requested_query)) {
           $has_sub_query = FALSE;
           foreach ($requested_query as $requested_subquery) {
-            if (!empty($requested_subquery)) {
+            if (!empty($requested_subquery) || $requested_subquery === 0) {
               $has_sub_query = TRUE;
             }
           }

@@ -1,0 +1,16 @@
+#profile-edit-intro {
+  padding-bottom: 20px;
+}
+
+#profile-edit-synchronization {
+  padding-bottom: 5px;
+}
+
+#profile-edit-synchronization a,
+#profile-edit-synchronization span {
+  vertical-align: middle;
+}
+
+#profile-edit-synchronization .ajax-progress .throbber {
+  margin-top: 0px;
+}

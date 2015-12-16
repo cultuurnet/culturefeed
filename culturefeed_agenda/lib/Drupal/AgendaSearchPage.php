@@ -257,7 +257,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
     $this->prepareSlugs();
 
     // This part only needs to be done in case culturefeed_social is enabled.
-    if (module_exists('culturefeed_social') && culturefeed_is_culturefeed_user()) {
+    if (culturefeed_agenda_social_links_preprocessing_enabled() && culturefeed_is_culturefeed_user()) {
       culturefeed_social_warmup_activities_cache($this->result->getItems());
     }
   }

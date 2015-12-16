@@ -11,6 +11,18 @@
   Drupal.CulturefeedSearch.Activities.filterSelect;
   Drupal.CulturefeedSearch.Activities.throbber = $('<div class="ajax-progress ajax-progress-throbber"><div class="throbber">&nbsp;</div></div>');
 
+  Drupal.behaviors.culturefeedActivitiesFilter = {
+    attach: function (context, settings) {
+      $('#edit-filter').change(function (e) {
+        $('#activities-table').hide();
+        $(this).after(Drupal.CulturefeedSearch.Activities.throbber);
+        $(this).parents('form').submit();
+
+      });
+      $('#edit-submit').hide();
+    }
+  };
+
   Drupal.behaviors.culturefeedActivitiesOverview = {
    attach: function (context, settings) {
      $('.activity-list-wrapper').find('.pager-link').bind('click', Drupal.CulturefeedSearch.Activities.pagerClickListener);
@@ -19,6 +31,10 @@
        Drupal.CulturefeedSearch.Activities.filterSelect = Drupal.CulturefeedSearch.Activities.filterForm.find('#edit-filter');
        Drupal.CulturefeedSearch.Activities.filterSelect.bind('change', Drupal.CulturefeedSearch.Activities.filterListener);
      }
+
+     $('#activities-table tr').hover(function () {
+       $(this).toggleClass("hover");
+     });
 
    }
   };

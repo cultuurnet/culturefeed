@@ -15,6 +15,9 @@ function culturefeed_search_ui_preprocess_culturefeed_search_page(&$vars) {
 
   $vars['results_found'] = $vars['searchresult']->getTotalCount();
 
+  $vars['rss_url'] = url(current_path() . '/rss', array('absolute' => TRUE, 'query' => drupal_get_query_parameters(NULL, array('q', 'page'))));
+  $vars['rss_title'] = t('Subscribe to an RSS feed with recently added items for this search');
+
 }
 
 /**
@@ -79,11 +82,6 @@ function theme_culturefeed_search_facet_with_depth_settings($variables) {
   if(count($active_options) > 0)
   {
     $has_active_filter = true;
-  }
-
-  // Remove distance.
-  if (isset($query['distance'])) {
-    unset($query['distance']);
   }
 
   $facet_links = _culturefeed_search_ui_get_nested_facet_links($facet_items, $facet_key, $path, $query, $active_options, $variables['sort'], $variables['show_subitems']);
@@ -407,9 +405,30 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
   $facet_item = $variables['facet_item'];
   $query = $variables['query'];
 
-  // Every filter will reset the current facet.
-  // Remove this facet from URL, URL will function as removal URL.
-  unset($query['facet'][$facet_key]);
+  // Create array with facet_keys that should support multiple select/unselect.
+  // Don't add 'agefrom as this is not handled as a facet.
+  $multiple_facet_keys = array(
+    'category_eventtype_id',
+    'category_theme_id',
+    'location_category_facility_id',
+  );
+
+  // Every filter will reset the current facet item.
+  // Remove this facet item from URL, URL will function as removal URL.
+  if (in_array($facet_key, $multiple_facet_keys)) {
+    foreach ($query['facet'] as $facet_id => $facet) {
+      foreach ($facet as $item_id => $item) {
+        if ($facet_item->getValue() == $item) {
+          unset($query['facet'][$facet_id][$item_id]);
+        }
+      }
+
+    }
+  }
+  else {
+    unset($query['facet'][$facet_key]);
+  }
+
 
   if (isset($query['facet']['category_id'])) {
     $key = array_search($facet_item->getValue(), $query['facet']['category_id']);
@@ -421,20 +440,39 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
     }
 
   }
+  
+  if (isset($query['distance'])) {
+    // We have to unset distance when region of level 1, 2 and 3 is used (distance only works with level 4)
+    $regions_query = db_select('culturefeed_search_terms', 'cst');
+    $regions_query->fields('cst', array('tid', 'name'));
+    $regions_query->condition('cst.tid', $facet_item->getValue());
+    $regions_query->condition('cst.did', 'flandersregion');
+    $db_or = db_or();
+    $db_or->isNull('cst.p1');
+    $db_or->isNull('cst.p2');
+    $db_or->isNull('cst.p3');
+    $regions_query->condition($db_or);
+    $result = $regions_query->execute();
+    if ($result->rowCount() > 0) {    
+      unset($query['distance']);
+    }   
+  }
 
-
+  // Handle multiple select/unselect for 'agefrom' facet items.
   if ($is_age_facet) {
-    unset($query['min_age']);
+    if (isset($query['min_age'])) {
+      foreach ($query['min_age'] as $age_key => $min_age) {
+        if($min_age == $facet_item->getValue()) {
+          unset($query['min_age'][$age_key]);
+          $variables['active'] = TRUE;
+        }
+      }
+    }
   }
 
   // When the facet is datetype, we don't want to keep a date range filter..
   if ($facet_key == 'datetype' && isset($query['date_range'])) {
     unset($query['date_range']);
-  }
-
-  // Agefrom facet is active when min_age is given.
-  if ($is_age_facet && isset($_GET['min_age']) && $_GET['min_age'] == $facet_item->getValue()) {
-    $variables['active'] = TRUE;
   }
 
   if ($facet_key == 'location' && (isset($_GET['location']) || isset($_GET['facet']['category_flandersregion_id']))) {
@@ -449,7 +487,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
   if (!$variables['active']) {
     // min_age is the key for agefrom.
     if ($is_age_facet) {
-      $query['min_age'] = $facet_item->getValue();
+      $query['min_age'][] = $facet_item->getValue();
     }
     else {
       $query['facet'][$facet_key][] = $facet_item->getValue();

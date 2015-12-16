@@ -191,8 +191,12 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
       $facets = $query['facet'];
       if ($query['facet']['type'][0] == 'actor') {
-        unset($facets['type']);
-        unset($facets['category_flandersregion_id']);
+        unset($facets['type']);      
+        if (isset($query['facet']['category_flandersregion_id'])) {
+          if (count($query['facet']['category_flandersregion_id']) <= 1) {
+            unset($facets['category_flandersregion_id']);
+          }
+        }
       }
 
       // If type=actor is the only parameter with flandersregion, set noindex to false.
@@ -208,7 +212,12 @@ function culturefeed_search_ui_set_noindex_metatag() {
       $facets = $query['facet'];
       unset($facets['category_actortype_id']);
       unset($facets['type']);
-      unset($facets['category_flandersregion_id']);
+      
+      if (isset($query['facet']['category_flandersregion_id'])) {
+        if (count($query['facet']['category_flandersregion_id']) <= 1) {
+          unset($facets['category_flandersregion_id']);
+        }
+      }
 
       unset($query['location']);
       unset($query['regId']);
@@ -225,18 +234,32 @@ function culturefeed_search_ui_set_noindex_metatag() {
     // No index is FALSE, if user is filtering on event type.
     elseif (isset($query['facet']['category_eventtype_id'])) {
 
-      $facets = $query['facet'];
-      unset($facets['category_eventtype_id']);
-      unset($facets['category_theme_id']);
-      unset($facets['category_flandersregion_id']);
+      if (count($query['facet']['category_eventtype_id']) == 1) {
 
-      unset($query['location']);
-      unset($query['regId']);
-      unset($query['facet']);
+        $facets = $query['facet'];
+        unset($facets['category_eventtype_id']);
+      
+        if (isset($query['facet']['category_theme_id'])) {
+          if (count($query['facet']['category_theme_id']) <= 1) {
+            unset($facets['category_theme_id']);
+          }
+        }
+      
+        if (isset($query['facet']['category_flandersregion_id'])) {
+          if (count($query['facet']['category_flandersregion_id']) <= 1) {
+            unset($facets['category_flandersregion_id']);
+          }
+        }
+  
+        unset($query['location']);
+        unset($query['regId']);
+        unset($query['facet']);
+  
+        // If theme_id, flandersregion and/or regId was the only extra facet / parameters, set noindex to false.
+        if (count($facets) == 0 && count($query) == 0) {
+          $noindex = FALSE;
+        }
 
-      // If theme_id, flandersregion and/or regId was the only extra facet / parameters, set noindex to false.
-      if (count($facets) == 0 && count($query) == 0) {
-        $noindex = FALSE;
       }
 
     }
@@ -244,17 +267,26 @@ function culturefeed_search_ui_set_noindex_metatag() {
     // No index is FALSE, if user is filtering on umv category and/or region.
     elseif (isset($query['facet']['category_umv_id'])) {
 
-      $facets = $query['facet'];
-      unset($facets['category_umv_id']);
-      unset($facets['category_flandersregion_id']);
+      if (count($query['facet']['category_umv_id']) == 1) {
 
-      unset($query['location']);
-      unset($query['regId']);
-      unset($query['facet']);
+        $facets = $query['facet'];
+        unset($facets['category_umv_id']);
+      
+        if (isset($query['facet']['category_flandersregion_id'])) {
+          if (count($query['facet']['category_flandersregion_id']) <= 1) {
+            unset($facets['category_flandersregion_id']);
+          }
+        }
+  
+        unset($query['location']);
+        unset($query['regId']);
+        unset($query['facet']);
+  
+        // If flandersregion or regId was the only extra facet / parameters, set noindex to false.
+        if (count($facets) == 0 && count($query) == 0) {
+          $noindex = FALSE;
+        }
 
-      // If flandersregion or regId was the only extra facet / parameters, set noindex to false.
-      if (count($facets) == 0 && count($query) == 0) {
-        $noindex = FALSE;
       }
 
     }
@@ -262,13 +294,17 @@ function culturefeed_search_ui_set_noindex_metatag() {
     // No index is FALSE, if user is filtering on flandersregion Id.
     elseif (isset($query['facet']['category_flandersregion_id'])) {
 
-      $facets = $query['facet'];
-      unset($facets['category_flandersregion_id']);
-      unset($query['facet']);
+      if(count($query['facet']['category_flandersregion_id']) == 1) {
 
-      // If flandersregion Id was the only filter set noindex to false.
-      if (count($facets) == 0 && count($query) == 0) {
-        $noindex = FALSE;
+        $facets = $query['facet'];
+        unset($facets['category_flandersregion_id']);
+        unset($query['facet']);
+  
+        // If flandersregion Id was the only filter set noindex to false.
+        if (count($facets) == 0 && count($query) == 0) {
+          $noindex = FALSE;
+        }
+
       }
 
     }
@@ -430,8 +466,8 @@ function culturefeed_search_ui_get_headings_mapping($heading) {
     54 => array('category_eventtype_id' => '0.54.0.0.0','category_theme_id' => '1.9.2.0.0'),
     55 => array('category_eventtype_id' => '0.54.0.0.0','category_theme_id' => '1.9.3.0.0'),
     56 => array('category_eventtype_id' => '0.54.0.0.0','category_theme_id' => '1.9.5.0.0'),
-    57 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.3.1.0.0 '),
-    58 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.3.1.0.0 '),
+    57 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.3.1.0.0'),
+    58 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.3.1.0.0'),
     59 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.3.10.0.0'),
     60 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.4.0.0.0'),
     61 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.3.5.0.0'),
@@ -614,6 +650,10 @@ function culturefeed_get_searchable_type_by_path($path = '') {
   if (!$path) {
     $menu_item = menu_get_item();
     $path = $menu_item['path'];
+    // If path contains % argument for rss of ajax we use agenda/search
+    if ($path == 'agenda/search/%') {
+      $path = 'agenda/search';
+    }
   }
   foreach (culturefeed_get_searchable_types() as $name => $type) {
     if ($type['path'] == $path) {

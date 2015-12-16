@@ -71,7 +71,6 @@ function culturefeed_social_page_ajax_get_activities() {
  * Page callback for the management of the activities of current user.
  */
 function culturefeed_social_page_activities($type = NULL) {
-
   $types = culturefeed_social_get_activity_filter_options(TRUE);
 
   // If a type was passed, check if it's valid.
@@ -98,30 +97,28 @@ function culturefeed_social_page_activities($type = NULL) {
     $query->type = array_keys($types);
   }
 
+  $build['intro'] = array(
+    '#prefix' => '<div class="activities-intro">',
+    '#markup' => variable_get('culturefeed_social_activities_page_intro'),
+    '#suffix' => '</div>',
+  );
+
   // Do the query.
   try {
-
-    $cf_account = DrupalCultureFeed::getLoggedInUser();
-    $build['view-profile'] = array(
-      '#prefix' => '<div id="view-profile">',
-      '#markup' => l(t('View profile'), 'user/' . culturefeed_get_uid_for_cf_uid($cf_account->id, $cf_account->nick)),
-      '#suffix' => '</div>',
-    );
-
     $activities = DrupalCultureFeed::searchActivities($query);
-
   }
   catch (Exception $e) {
+    watchdog('culturefeed_social', $e);
     return $build;
   }
 
   // Initialize the pager.
   pager_default_initialize($activities->total, $pagelength);
 
+  // Build the activities table.
   $rows = array();
-
   foreach ($activities->objects as $activity) {
-
+    // Add the remove link.
     $remove_path = 'culturefeed/activity/delete/' . $activity->id;
     $attributes = array(
       'class' => array('remove-link'),
@@ -131,23 +128,26 @@ function culturefeed_social_page_activities($type = NULL) {
       'data-remote' => url($remove_path . "/ajax", array('query' => drupal_get_destination())),
     );
 
+    // Add the delete link.
     $delete = array(
       '#type' => 'link',
       '#title' => t('Remove activity'),
       '#href' => $remove_path . '/nojs',
       '#attributes' => $attributes,
-      '#options' => array('query' => drupal_get_destination()),
+      '#options' => array('query' => drupal_get_destination(), 'html' => TRUE),
     );
 
+    // Add the privacy toggle link.
     $privacy = array(
       '#type' => 'link',
-      '#title' => $activity->private ? t('Private') : t('Public'),
+      '#title' => $activity->private  ? t('Private') : t('Public'),
       '#href' => 'culturefeed/activity/privacy/' . $activity->id . '/' . ($activity->private ? '0' : '1') . '/nojs',
       '#attributes' => array('id' => 'activity-privacy-' . $activity->id, 'class' => 'privacy-link ' . ($activity->private ? 'status-prive' : 'status-publiek'), 'title' => ($activity->private ? t('Make public') : t('Make private'))),
-      '#options' => array('query' => drupal_get_destination()),
+      '#options' => array('query' => drupal_get_destination(), 'html' => TRUE),
       '#ajax' => array(),
     );
 
+    // Add the activity type
     $type_text = isset($types[$activity->type]) ? $types[$activity->type]->label : '';
 
     $url = culturefeed_social_activity_object_path($activity->contentType, $activity->nodeId, $activity->nodeTitle);
@@ -160,7 +160,10 @@ function culturefeed_social_page_activities($type = NULL) {
       'data' => array(
         $data,
         $type_text,
-        format_interval(REQUEST_TIME - $activity->creationDate) . ' ' . t('ago <br />on') . ' ' . $activity->createdVia,
+        t('@time_ago ago <br />on @created_via', array(
+          '@time_ago' => format_interval(REQUEST_TIME - $activity->creationDate),
+          '@created_via' => $activity->createdVia,
+        )),
         drupal_render($privacy),
         drupal_render($delete) . $wrapper,
       ),
@@ -172,8 +175,12 @@ function culturefeed_social_page_activities($type = NULL) {
     '#header' => array(t('Page'), t('Action'), t('Time and publication channel'), t('Status'), ''),
     '#rows' => $rows,
     '#empty' => t('You didn\'t perform any actions yet.'),
+    '#attributes' => array(
+      'id' => 'activities-table'
+    )
   );
 
+  // Add the Facebook privacy toggle.
   $facebook_privacy_toggle = NULL;
   $facebook = _culturefeed_ui_facebook_privacy_toggle();
   if ($facebook) {
@@ -199,7 +206,6 @@ function culturefeed_social_page_activities($type = NULL) {
   );
 
   return $build;
-
 }
 
 /**

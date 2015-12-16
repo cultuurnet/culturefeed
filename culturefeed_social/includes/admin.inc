@@ -17,11 +17,10 @@ function culturefeed_social_admin_settings_form() {
 
   $form = array();
 
-  $form['culturefeed_social_activity_filters'] = array(
-    '#type' => 'checkboxes',
-    '#title' => t('Visible filters on activity lists'),
-    '#options' => $options,
-    '#default_value' => variable_get('culturefeed_social_activity_filters', array()),
+  $form['culturefeed_social_activities_page_intro'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Activities page intro'),
+    '#default_value' => variable_get('culturefeed_social_activities_page_intro'),
   );
 
   $form['culturefeed_social_notifications_enabled'] = array(
