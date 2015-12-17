@@ -149,12 +149,6 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $cdb_item = $item->getEntity();
   $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
-  // Enhance event-details with UiTPAS-information if culturefeed_uitpas is enabled
-  if (module_exists('culturefeed_uitpas')) {
-    $uitpas_event = culturefeed_uitpas_get_uitpas_event($item);
-    $variables['uitpas_info'] = $uitpas_event;
-  }
-
   // Themes of this item (as plain text and as links).
   $themes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME, $cdb_item);
   $variables['themes'] = $themes['text'];
@@ -417,8 +411,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       }
 
       foreach (array_keys($keywords) as $keyword) {
-
-        if(stripos('uitpas', $keyword)>=0 || stripos('paspartoe', $keyword)>=0)
+        if(stripos($keyword, 'uitpas')!==false || stripos($keyword, 'paspartoe')!==false)
         {
           $variables['uitpas'] = TRUE;
         }
@@ -488,7 +481,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   $item = $variables['item'];
   $cdb_item = $item->getEntity();
   $detail= $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-  
+
   // Facilities: only for events with a location
   if ($cdb_item instanceof CultureFeed_Cdb_Item_Event) {
     $actor_id = $cdb_item->getLocation()->getCdbid();
@@ -499,6 +492,12 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
         $variables['locations_facilities'] = $facilities['text'];
       }
     }
+  }
+  
+  // Enhance event-details with UiTPAS-information if culturefeed_uitpas is enabled
+  if (module_exists('culturefeed_uitpas')) {
+    $uitpas_event = culturefeed_uitpas_get_uitpas_event($item);
+    $variables['uitpas_info'] = $uitpas_event;
   }
 
   if ($detail) {

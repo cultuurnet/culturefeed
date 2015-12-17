@@ -39,7 +39,10 @@ function culturefeed_uitpas_profile_promotions_get($filter = NULL) {
           $query->applicableCardSystemId = array_slice(explode('+', $filter), 1);
         }
       }
-      $query->orderByOwningCardSystemId = variable_get('culturefeed_uitpas_cardsystem_id');
+      $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+      if ($card_system_id) {
+        $query->orderByOwningCardSystemId = $card_system_id;
+      }
       $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
 
       $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
@@ -60,9 +63,7 @@ function culturefeed_uitpas_profile_promotions_get($filter = NULL) {
     }
 
     // Title.
-    $singular = 'My promotions (1 point saved)';
-    $plural = 'My promotions (@count points saved)';
-    drupal_set_title(format_plural($uitpas_user->passholder->points, $singular, $plural), PASS_THROUGH);
+    drupal_set_title(t('My promotions'), PASS_THROUGH);
 
   }
 

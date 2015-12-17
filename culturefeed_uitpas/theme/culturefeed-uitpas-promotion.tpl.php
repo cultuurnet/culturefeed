@@ -24,7 +24,7 @@
   <dl class="clearfix">
 
     <?php if ($counters): ?>
-    <dt><?php print t('Where'); ?></dt>
+    <dt><?php print t('Offered by'); ?></dt>
     <dd class="counters"><?php print $counters; ?></dd>
     <?php endif; ?>
 
@@ -50,7 +50,7 @@
     <button class="show-exchange-info" onclick="Drupal.CultureFeed.UiTPASToggleExchangeInfo()"><?php print t('How to exchange'); ?></button>
     <div class="exchange-info">
       <div class="locations">
-        <?php print t('At') . ' ' . implode(', ', $location_links); ?>
+        <?php print t('Offered by') . ' ' . implode(', ', $location_links); ?>
       </div>
       <div class="description2"><?php print $description2; ?></div>
     </div>

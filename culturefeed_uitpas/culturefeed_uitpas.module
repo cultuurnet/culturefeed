@@ -65,13 +65,13 @@ function culturefeed_uitpas_culturefeed_ui_profile_box_dropdown_items(CultureFee
     $items['uitpas-advantages'] = array(
       'data' => l(t('My promotions'), 'culturefeed/profile/uitpas/promotions'),
       'class' => 'uitpas-advantages',
-      'weight' => 10,
+      'weight' => 11,
     );
 
     $items['uitpas-history'] = array(
-      'data' => l(t('UiTPAS history'), 'culturefeed/profile/uitpas/actions'),
+      'data' => l(t('Points history'), 'culturefeed/profile/uitpas/actions'),
       'class' => 'uitpas-history',
-      'weight' => 10,
+      'weight' => 12,
     );
 
     return $items;
@@ -80,8 +80,7 @@ function culturefeed_uitpas_culturefeed_ui_profile_box_dropdown_items(CultureFee
 
   else {
 
-    if(culturefeed_uitpas_not_yet_registered())
-    {
+    if (culturefeed_uitpas_not_yet_registered()) {
 
       $items['uitpas-divider'] = array(
         'data' => '',
@@ -90,7 +89,7 @@ function culturefeed_uitpas_culturefeed_ui_profile_box_dropdown_items(CultureFee
       );
 
       $items['uitpas-register'] = array(
-        'data' => l(t('UiTPAS register'), 'authenticated?destination=register_uitpas'),
+        'data' => l(t('Register your UiTPAS'), 'register_uitpas'),
         'class' => 'uitpas-register',
         'weight' => 10,
       );

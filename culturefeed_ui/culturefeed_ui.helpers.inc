@@ -97,9 +97,7 @@ function culturefeed_ui_profile_intro() {
 
   $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
 
-  $user_id = culturefeed_get_uid_for_cf_uid($culturefeed_user->id, $culturefeed_user->nick);
-
-  $profile_intro = t('Complete your profile information for a more personal experience. You <a href="/culturefeed/profile/privacy">decide what personal information</a> is visible to others in your <a href="@profile-url">public profile</a>. All your user activities can be managed in your <a href="@history-url">personal history</a>.', array('@profile-url' => url('user/' . $user_id), '@history-url' => url('culturefeed/activities')));
+  $profile_intro = t('Update your profile information here. All your user activities can be managed in your <a href="@history-url">personal history</a>.', array('@history-url' => url('culturefeed/activities')));
 
   return $profile_intro;
 
@@ -214,7 +212,7 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
   }
 
   $redirect = url('culturefeed/account/edit', array('absolute' => TRUE));
-  $connect_link = l(t('Connect application'), DrupalCultureFeed::getUrlAddSocialNetwork($online_account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect')));
+  $connect_link = l(t('Connect'), DrupalCultureFeed::getUrlAddSocialNetwork($online_account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect')));
 
   $vars = array(
     'account_type'     => $online_account_type,

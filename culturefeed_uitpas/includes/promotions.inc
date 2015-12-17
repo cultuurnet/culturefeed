@@ -37,7 +37,10 @@ function culturefeed_uitpas_promotions_get($filter = NULL) {
     if ($filter) {
       $query->owningCardSystemId = $filter;
     }
-    $query->orderByOwningCardSystemId = variable_get('culturefeed_uitpas_cardsystem_id');
+    $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+    if ($card_system_id) {
+      $query->orderByOwningCardSystemId = $card_system_id;
+    }
     $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
 
     $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
@@ -158,7 +161,7 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
     $total += $advantages['#advantages_total'];
   }
   $title = t('Found %count promotions', array('%count' => $total));
-  $filter_reset_link = l(t('Show all'), 'promotions');
+  $filter_reset_link = l(t('Show all promotions'), 'promotions');
   if ($filter) {
     $form['promotions']['title']['#markup'] = '<h2>' . $title . ' <small>' . $options[$filter] . ' (' . $filter_reset_link . ')</small></h2>';
   }

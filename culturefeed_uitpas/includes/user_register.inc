@@ -198,10 +198,3 @@ function culturefeed_uitpas_user_register_form_process_year($element) {
   return $element;
 
 }
-
-/**
- * Title callback.
- */
-function culturefeed_uitpas_register_uitpas_title() {
-  return t('Register your UiTPAS');
-}

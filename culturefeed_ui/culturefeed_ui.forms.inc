@@ -114,6 +114,7 @@ function culturefeed_ui_account_edit_form_submit(array $form, array &$form_state
   $culturefeed_user = $form['#culturefeed_user'];
 
   $error = FALSE;
+  $duplicate = FALSE;
 
   // User.
   $culturefeed_user_update = new CultureFeed_User();
@@ -137,10 +138,19 @@ function culturefeed_ui_account_edit_form_submit(array $form, array &$form_state
   /* @var CultureFeed $cf */
   $cf = DrupalCultureFeed::getLoggedInUserInstance();
   $passholder = $cf->uitpas()->getPassholderByUser($culturefeed_user->id);
-  $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
-  if ($passholder && $card_system_id && isset($passholder->cardSystemSpecific[$card_system_id])) {
+  
+  if ($passholder) {
 
-    $uitpas_number = $passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber;
+    $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+    // Save for first card, or do we have to save for all cards?
+    $first_card = key($passholder->cardSystemSpecific);
+
+    if ($card_system_id && isset($passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber)) {
+      $uitpas_number = $passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber;
+    }
+    elseif (isset($passholder->cardSystemSpecific[$first_card]->currentCard->uitpasNumber)) {
+      $uitpas_number = $passholder->cardSystemSpecific[$first_card]->currentCard->uitpasNumber;
+    }
 
     $passholder_update = new CultureFeed_Uitpas_Passholder();
     $passholder_update->uitpasNumber = $uitpas_number;
@@ -302,12 +312,14 @@ function culturefeed_ui_privacy_settings_form(array $form, array &$form_state, C
     $default_value = 'nick';
   }
 
+  $user_id = culturefeed_get_uid_for_cf_uid($culturefeed_user->id, $culturefeed_user->nick);
+
   $form['#culturefeed_user'] = $culturefeed_user;
 
   $form['setting'] = array(
     '#default_value' => $default_value,
     '#options' => $options,
-    '#title' => t('Select they way your user details are displayed'),
+    '#title' => t('Select the way your user details are visible to others in your <a href="@profile-url">public profile</a>.', array('@profile-url' => url('user/' . $user_id))),
     '#type' => 'radios',
   );
 

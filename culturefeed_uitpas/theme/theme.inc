@@ -33,18 +33,15 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
   }
 
   // Get the counters information.
-  $vars['counters'] = array();
-  if (isset($advantage->counters[0])) {
-    foreach ($advantage->counters as $key => $counter) {
-      $extendedCounter = culturefeed_agenda_actor_load($counter->id);
-      if ($extendedCounter) {
-        $new_counter = array('item' => $extendedCounter);
-        module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
-        culturefeed_agenda_preprocess_culturefeed_actor($new_counter);
-        $vars['counters'][] = $new_counter;
-      }
-    }
+  $counters = array(
+    '#theme' => 'item_list',
+    '#type' => 'ul',
+    '#items' => array(),
+  );
+  foreach ($advantage->counters as $counter) {
+    $counters['#items'][] = l($counter->name, 'agenda/a/' . culturefeed_search_slug($counter->name) . '/' . $counter->id);
   }
+  $vars['counters'] = count($counters['#items']) ? drupal_render($counters) : '';
 
   // Period.
   $vars['period'] = '';
@@ -214,8 +211,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
       }
 
       // Points.
-      $singular = '@formatted_count point';
-      $plural = '@formatted_count points';
+      $singular = t('@formatted_count point');
+      $plural = t('@formatted_count points');
       $formatted_count = number_format($activity->points, 2, ',', '.');
       if ($activity->points > 0) {
         $formatted_count = '+' . $formatted_count;
@@ -651,7 +648,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_register_where(&$vars)
     'quantity' => $vars['pos_total'],
   );
 
-  $vars['intro'] = t('You can get an UiTPAS at one of these registration counters. An UiTPAS costs 5 EURO. Younger than 18 years? Then you\'ll pay 2 EURO. For people with an opportunities tarrif UiTPAS is free. You\'ll need your eID to register your UiTPAS.');
+  $vars['intro'] = t('You can get an UiTPAS at one of these registration counters. An UiTPAS costs € 5. Younger than 18 years? Then you\'ll pay € 2. For people with an opportunities tarrif UiTPAS is free. You\'ll need your eID to register your UiTPAS.');
   $vars['pos_table'] = theme_table($table) . theme('pager', $pager);
   $vars['outro'] = t('Important: you\'ll need your eID to register your UiTPAS. <a href="@read-more">Read more</a> about the UiTPAS project.', array('@read-more' => 'http://www.cultuurnet.be/project/uitpas'));
 

@@ -27,6 +27,7 @@ function culturefeed_uitpas_register_where_get() {
     $query = new CultureFeed_Uitpas_Counter_Query_SearchCounterOptions();
     $query->start = $pos_page * $pos_max;
     $query->max = $pos_max;
+    $query->visible = TRUE;
 
     if ($card_system_id != 'all') {
       $query->cardSystemId = $card_system_id;
@@ -38,7 +39,6 @@ function culturefeed_uitpas_register_where_get() {
       $query->groupName[] = CultureFeed_Uitpas_Counter_Query_SearchCounterOptions::GROUP_NOT_AUTHORIZED;
     }
 
-    $query->visible = TRUE;
     $result = $cf->uitpas()->searchCounters($query);
 
     if ($result->total) {
