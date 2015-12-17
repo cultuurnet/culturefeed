@@ -69,15 +69,23 @@ function culturefeed_uitpas_get_uitpas_event($item) {
 
     $cdb_item = $item->getEntity();
     $cdbid = $cdb_item->getCdbid();
-
-    $query = new CultureFeed_Uitpas_Event_Query_SearchEventsOptions();
-    $query->cdbid = $cdbid;
-
-    $cf = DrupalCultureFeed::getConsumerInstance();
-    $result = $cf->uitpas()->searchEvents($query);
-
-    if ($result->total && !empty($result->objects[0])) {
-      $event = $result->objects[0];
+    $cache_prefix = 'culturefeed:uitpas:cultureevent:';
+    
+    if ($cache = cache_get($cache_prefix . $cdbid, 'cache_culturefeed')) {
+      $event = $cache->data;
+    }
+    else {
+  
+      $query = new CultureFeed_Uitpas_Event_Query_SearchEventsOptions();
+      $query->cdbid = $cdbid;
+  
+      $cf = DrupalCultureFeed::getConsumerInstance();
+      $result = $cf->uitpas()->searchEvents($query);
+  
+      if ($result->total && !empty($result->objects[0])) {
+        $event = $result->objects[0];
+      }
+      cache_set($cache_prefix . $cdbid, $event, 'cache_culturefeed');
     }
 
   }
