@@ -1,3 +1,10 @@
+<?php
+/**
+ * @file
+ * Template for second block in mailing.
+ */
+?>
+
 <tr>
   <td valign="top">
     <table border="0" cellpadding="0" cellspacing="0">
@@ -27,10 +34,10 @@
 <tr>
     <td height="10" style="LINE-HEIGHT: 1px; FONT-SIZE: 1px;"><?php print $spacer; ?>
     </td>
-</tr>                           
+</tr>
 <tr>
     <td bgcolor="#efeeec" height="1" width="600"></td>
-</tr>	
+</tr>
 <tr>
     <td height="10" style="LINE-HEIGHT: 1px; FONT-SIZE: 1px;"><?php print $spacer; ?>
     </td>

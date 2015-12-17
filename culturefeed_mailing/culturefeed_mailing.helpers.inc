@@ -6,7 +6,7 @@
  */
 
 /**
- * Helper function to build mailing optin toggle
+ * Helper function to build mailing optin toggle.
  */
 function _culturefeed_mailing_optin_toggle($mailing_id) {
 
@@ -30,7 +30,10 @@ function _culturefeed_mailing_optin_toggle($mailing_id) {
     '#type' => 'link',
     '#title' => $subscribed ? t('Unsubscribe') : t('Subscribe'),
     '#href' => 'culturefeed/toggle/newsletter-optin/' . $mailing_id . '/' . ($subscribed ? '0' : '1') . '/nojs',
-    '#attributes' => array('id' => 'newsletter-optin-link-' . $mailing_id, 'class' => array('btn btn-primary newsletter-optin-link', $subscribed_class)),
+    '#attributes' => array(
+      'id' => 'newsletter-optin-link-' . $mailing_id,
+      'class' => array('btn btn-primary newsletter-optin-link', $subscribed_class),
+    ),
     '#options' => array('query' => drupal_get_destination()),
     '#ajax' => array(),
   );
@@ -41,7 +44,7 @@ function _culturefeed_mailing_optin_toggle($mailing_id) {
 
 
 /**
- * Helper function to check if user is subscribed to mailing list
+ * Helper function to check if user is subscribed to mailing list.
  */
 function _culturefeed_mailing_check_user_subscription($user_id, $mailing_id, $use_auth = TRUE) {
   try {
@@ -59,7 +62,7 @@ function _culturefeed_mailing_check_user_subscription($user_id, $mailing_id, $us
 }
 
 /**
- * Helper function to retrieve the postal code from cookie
+ * Helper function to retrieve the postal code from cookie.
  */
 function _culturefeed_mailing_get_postal_from_cookie() {
   if (!empty($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
@@ -73,7 +76,7 @@ function _culturefeed_mailing_get_postal_from_cookie() {
 }
 
 /**
- * Helper function to retrieve the postal code from cookie
+ * Helper function to retrieve the postal code from cookie.
  */
 function _culturefeed_mailing_set_postal_to_cookie($postal) {
 
