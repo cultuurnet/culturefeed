@@ -226,8 +226,7 @@ function culturefeed_uitpas_is_passholder() {
  */
 
 function culturefeed_uitpas_not_yet_registered() {
-  if(culturefeed_uitpas_email_is_passholder() && !culturefeed_uitpas_is_passholder())
-  {
+  if(!culturefeed_uitpas_is_passholder() && culturefeed_uitpas_email_is_passholder()) {
     return true;
   }
 }
