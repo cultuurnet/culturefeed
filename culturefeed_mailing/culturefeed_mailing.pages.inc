@@ -73,7 +73,7 @@ function culturefeed_mailing_subscribe_form() {
 
   // Show nothing if no mailing list available.
   if (!(variable_get('culturefeed_mailing_list', ''))) {
-    return;
+    //return;
   }
 
   $form = array();
@@ -102,20 +102,13 @@ function culturefeed_mailing_subscribe_form() {
   );
 
   $show_zip = variable_get('culturefeed_mailing_block_show_zip', 0);
-  if (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip) {
-    $postal = _culturefeed_mailing_get_postal_from_cookie();
-  }
 
-  if (empty($postal)) {
-    if (!empty($_GET['zip'])) {
-      $postal = $_GET['zip'];
-    }
-    elseif ($account) {
-      $postal = $account->zip;
-    }
-    else {
-      $postal = '';
-    }
+  $postal = ''; 
+  if (!empty($_GET['zip'])) {
+    $postal = $_GET['zip'];
+  }
+  elseif ($account) {
+    $postal = $account->zip;
   }
 
   $form['zip'] = array(
@@ -126,7 +119,10 @@ function culturefeed_mailing_subscribe_form() {
     '#maxlength' => 255,
     '#default_value' => $postal,
     '#weight' => -9,
-    '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED || (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip)
+    '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED || (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip),
+    '#attributes' => array(
+      'class' => array('zip-field'),
+    ),
   );
 
   $form['firstname'] = array(
@@ -171,14 +167,17 @@ function culturefeed_mailing_subscribe_form() {
     '#weight' => 10
   );
 
-  drupal_add_library('system', 'jquery.cookie');
+  if (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip) { 
+    // Attach jquery.cookie library
+    $form['#attached']['library'][] = array('system', 'jquery.cookie');
 
-  // Attach scripts
-  $form['#attached']['js'][] = array(
-    'data' => drupal_get_path('module', 'culturefeed_mailing') . '/js/culturefeed_mailing.js',
-    'type' => 'file',
-    'weight' => 0,
-  );
+    // Attach scripts
+    $form['#attached']['js'][] = array(
+      'data' => drupal_get_path('module', 'culturefeed_mailing') . '/js/culturefeed_mailing.js',
+      'type' => 'file',
+      'weight' => 0,
+    );
+  }
 
   return $form;
 
