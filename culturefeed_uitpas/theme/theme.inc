@@ -587,6 +587,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_register_where(&$vars)
 
     foreach ($vars['pos'] as $pos) {
 
+      // Address.
       $address = array();
 
       if (isset($vars['actors'][$pos->id])) {
@@ -623,8 +624,18 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_register_where(&$vars)
 
       }
 
+      // Card systems.
+      $card_systems = array();
+      if (!empty($pos->cardSystems)) {
+        foreach ($pos->cardSystems as $card_system) {
+          /* @var CultureFeed_Uitpas_CardSystem $card_system */
+          $card_systems[] = $card_system->name;
+        }
+      }
+
       $table['rows'][] = array(
         l($pos->name, 'agenda/a/' . culturefeed_search_slug($pos->name) . '/' . $pos->id),
+        (count($card_systems)) ? theme('item_list', array('items' => $card_systems, 'type' => 'ul')) : '',
         implode(' ', $address),
       );
 
