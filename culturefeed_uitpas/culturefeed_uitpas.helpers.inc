@@ -251,10 +251,18 @@ function culturefeed_uitpas_email_is_passholder() {
     $uitpas_user = culturefeed_uitpas_get_uitpas_user();
 
     if ($uitpas_user->user && $uitpas_user->user->mbox) {
-
-      $query = new CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions();
-      $query->email = $uitpas_user->user->mbox;
-      $passholders = $uitpas_user->cf->uitpas()->searchPassholders($query);
+    
+      $cache_prefix = 'culturefeed:uitpas:passholders:';
+    
+      if ($cache = cache_get($cache_prefix . $uitpas_user->user->mbox, 'cache_culturefeed')) {
+        $passholders = $cache->data;
+      }
+      else {
+        $query = new CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions();
+        $query->email = $uitpas_user->user->mbox;
+        $passholders = $uitpas_user->cf->uitpas()->searchPassholders($query);
+        cache_set($cache_prefix . $uitpas_user->user->mbox, $passholders, 'cache_culturefeed');
+      }
       if ($passholders->total > 0) {
         return true;
       }
