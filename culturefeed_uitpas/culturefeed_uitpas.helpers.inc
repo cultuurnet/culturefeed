@@ -187,18 +187,26 @@ function culturefeed_uitpas_get_uitpas_user() {
         $uitpas_user->cf = DrupalCultureFeed::getLoggedInUserInstance();
 
         if ($uitpas_user->user) {
+        
+          $cache_prefix = 'culturefeed:uitpas:passholder:';
+          
+          if ($cache = cache_get($cache_prefix . $uitpas_user->user->id, 'cache_culturefeed')) {
+            $uitpas_user = $cache->data;
+          }
+          else {
 
-          $uitpas_user->passholder = $uitpas_user->cf->uitpas()->getPassholderByUser($uitpas_user->user->id);
-          if ($uitpas_user->passholder) {
-
-            $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
-            if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id])) {
-              $uitpas_user->card_system = $uitpas_user->passholder->cardSystemSpecific[$card_system_id];
+            $uitpas_user->passholder = $uitpas_user->cf->uitpas()->getPassholderByUser($uitpas_user->user->id);
+            if ($uitpas_user->passholder) {
+  
+              $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+              if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id])) {
+                $uitpas_user->card_system = $uitpas_user->passholder->cardSystemSpecific[$card_system_id];
+              }
+              else {
+                $uitpas_user->card_system = reset($uitpas_user->passholder->cardSystemSpecific);
+              }
             }
-            else {
-              $uitpas_user->card_system = reset($uitpas_user->passholder->cardSystemSpecific);
-            }
-
+            cache_set($cache_prefix . $uitpas_user->user->id, $uitpas_user, 'cache_culturefeed');
           }
 
         }
