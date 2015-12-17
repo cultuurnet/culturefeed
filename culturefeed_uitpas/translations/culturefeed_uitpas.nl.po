@@ -277,8 +277,8 @@ msgid "Found %count advantages"
 msgstr "%count voordelen gevonden"
 
 #: includes/advantages.inc:125 includes/promotions.inc:161
-msgid "Show all"
-msgstr "Toon alle"
+msgid "Show all promotions"
+msgstr "Toon alle voordelen"
 
 #: includes/advantages.inc:138 includes/promotions.inc:190
 msgid "No results found"
