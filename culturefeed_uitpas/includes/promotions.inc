@@ -143,6 +143,17 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
     ),
   );
 
+  if(isset($filter)) {
+    $filter_reset_link = "<hr>" . l(t('Show all promotions'), 'promotions', array('attributes' => array('class' => 'reset-filter')));
+  }
+  else {
+    $filter_reset_link = '';
+  }
+
+  $form['promotions']['filter']['#prefix'] = '<div class="form-group">';
+  $form['promotions']['filter']['#suffix'] = $filter_reset_link . '</div>';
+
+
   $promotions_intro = t('This page shows all promotions for which UiTPAS holders can save points.');
   
   if (culturefeed_uitpas_is_passholder()) {

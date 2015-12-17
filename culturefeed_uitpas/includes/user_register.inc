@@ -10,8 +10,13 @@
  */
 function culturefeed_uitpas_user_register_get() {
 
-  $uitpas_user = culturefeed_uitpas_get_uitpas_user();
-  return drupal_get_form('culturefeed_uitpas_user_register_form', $uitpas_user);
+  if (culturefeed_uitpas_is_passholder()) {
+    drupal_goto('/culturefeed/profile/uitpas');
+  }
+  else {
+    $uitpas_user = culturefeed_uitpas_get_uitpas_user();
+    return drupal_get_form('culturefeed_uitpas_user_register_form', $uitpas_user);
+  }
 
 }
 

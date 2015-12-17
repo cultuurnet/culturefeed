@@ -69,7 +69,8 @@ function culturefeed_uitpas_event_details_advantages_get() {
       foreach ($promotions as $promotion) {
 
         /* @var \CultureFeed_Uitpas_Passholder_PointsPromotion $promotion */
-        $promotion_title = l($promotion->title, 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id);
+        $promotion_path = 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id;
+        $promotion_title = l($promotion->title, $promotion_path);
         $promotion_points = $promotion->points;
         $points_remark = '';
         $points_classes = array('points-value', 'points-value__brand');
