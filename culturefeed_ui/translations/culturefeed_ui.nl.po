@@ -300,8 +300,8 @@ msgid "An error occurred when updating your account."
 msgstr "Er is een fout opgetreden bij het aanpassen van je account."
 
 #: culturefeed_ui.forms.inc:310
-msgid "Select they way your user details are displayed"
-msgstr "Kies hoe jouw persoonsgegevens getoond worden aan anderen"
+msgid "Select the way your user details are visible to others in your <a href="@profile-url">public profile</a>."
+msgstr "Kies hoe je gegevens getoond worden aan anderen op je <a href="@profile-url">publieke profielpagina</a>."
 
 #: culturefeed_ui.forms.inc:391
 msgid "Your privacy settings have been saved."
@@ -418,15 +418,11 @@ msgstr "Zoeken"
 
 #: culturefeed_ui.helpers.inc:98
 msgid ""
-"Complete your profile information for a more personal experience. You <a "
-"href=\"/culturefeed/profile/privacy\">decide what personal information</a> "
-"is visible to others in your <a href=\"@profile-url\">public profile</a>. "
+"Update your profile information here. "
 "All your user activities can be managed in your <a href=\"@history-url"
 "\">personal history</a>."
 msgstr ""
-"Vervolledig je online profiel. Je <a href=\"/culturefeed/profile/privacy"
-"\">kiest zelf</a> welke informatie zichtbaar is voor anderen op je <a href="
-"\"@profile-url\">publieke profielpagina</a>. Al je gebruikersacties kan je "
+"Je kan hier je gegevens aanpassen. Al je gebruikersacties kan je "
 "beheren via je persoonlijke <a href=\"@history-url\">gebruikershistoriek</a>."
 
 #: culturefeed_ui.helpers.inc:118

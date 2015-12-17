@@ -269,7 +269,7 @@ msgid ""
 "promotions and points balance."
 msgstr ""
 "<a href=\"@register-where\">Ontdek waar</a> je een UiTPAS kan halen of <a "
-"href=\"@login\">meld je aan</a> en registreer je UiTPAS om je persoonlijke "
+"href=\"@login\">meld je aan</a> en activeer je UiTPAS om je persoonlijke "
 "voordelen en puntensaldo te raadplegen."
 
 #: includes/advantages.inc:124
@@ -532,7 +532,7 @@ msgstr "Er is een tijdelijke fout opgetreden. Probeer het later opnieuw."
 
 #: includes/registration_confirmation.inc:95
 msgid "Your UiTPAS is registered"
-msgstr "Je UiTPAS werd goed geregistreerd"
+msgstr "Je UiTPAS werd goed geactiveerd"
 
 #: includes/synchronization.inc:37
 msgid "Can we use your UiTPAS data to complete your profile?"
@@ -554,7 +554,7 @@ msgstr "Update persoonlijke gegevens"
 msgid ""
 "Register here, so you can follow your UiTPAS advantages and points balance "
 "online."
-msgstr "Activeer je UiTPAS en beheer jouw puntensaldo en voordelen online."
+msgstr "Activeer je UiTPAS en raadpleeg je puntensaldo en persoonlijke voordelen."
 
 #: includes/user_register.inc:51
 msgid "Username"
@@ -582,7 +582,7 @@ msgstr "Gelieve een geldig UiTPAS nummer in te vullen."
 
 #: includes/user_register.inc:146
 msgid "User already activated."
-msgstr "Dit UiTPAS nummer is reeds in gebruik."
+msgstr "Dit UiTPAS nummer is reeds geactiveerd."
 
 #: includes/user_register.inc:151
 msgid "Missing required fields."
@@ -604,7 +604,7 @@ msgstr "Er is een fout opgetreden. Probeer het later opnieuw."
 msgid ""
 "We are unable to process your request at this moment. Please try again later."
 msgstr ""
-"Het registreren van je UiTPAS is tijdelijk niet mogelijk. Probeer het later "
+"Het activeren van je UiTPAS is tijdelijk niet mogelijk. Probeer het later "
 "opnieuw."
 
 #: theme/culturefeed-uitpas-advantage.tpl.php:32
@@ -764,7 +764,7 @@ msgid ""
 "has been registered when buying your card."
 msgstr ""
 "Alle details van je UiTPAS-kaart(en) en de persoonlijke gegevens waarmee je "
-"UiTPAS geregistreerd werd."
+"UiTPAS geactiveerd werd."
 
 #: theme/theme.inc:275;306
 msgid "valid till !date"

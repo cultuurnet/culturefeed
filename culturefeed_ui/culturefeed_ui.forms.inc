@@ -307,7 +307,7 @@ function culturefeed_ui_privacy_settings_form(array $form, array &$form_state, C
   $form['setting'] = array(
     '#default_value' => $default_value,
     '#options' => $options,
-    '#title' => t('Select they way your user details are displayed'),
+    '#title' => t('Select the way your user details are visible to others in your <a href="@profile-url">public profile</a>.'),
     '#type' => 'radios',
   );
 
