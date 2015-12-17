@@ -85,7 +85,7 @@ function culturefeed_uitpas_get_uitpas_event($item) {
       if ($result->total && !empty($result->objects[0])) {
         $event = $result->objects[0];
       }
-      cache_set($cache_prefix . $cdbid, $event, 'cache_culturefeed');
+      cache_set($cache_prefix . $cdbid, $event, 'cache_culturefeed', REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
     }
 
   }
@@ -194,19 +194,26 @@ function culturefeed_uitpas_get_uitpas_user() {
             $uitpas_user = $cache->data;
           }
           else {
-
-            $uitpas_user->passholder = $uitpas_user->cf->uitpas()->getPassholderByUser($uitpas_user->user->id);
-            if ($uitpas_user->passholder) {
-  
-              $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
-              if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id])) {
-                $uitpas_user->card_system = $uitpas_user->passholder->cardSystemSpecific[$card_system_id];
-              }
-              else {
-                $uitpas_user->card_system = reset($uitpas_user->passholder->cardSystemSpecific);
+          
+            try {
+              $uitpas_user->passholder = $uitpas_user->cf->uitpas()->getPassholderByUser($uitpas_user->user->id);
+              if ($uitpas_user->passholder) {
+    
+                $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+                if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id])) {
+                  $uitpas_user->card_system = $uitpas_user->passholder->cardSystemSpecific[$card_system_id];
+                }
+                else {
+                  $uitpas_user->card_system = reset($uitpas_user->passholder->cardSystemSpecific);
+                }
               }
             }
-            cache_set($cache_prefix . $uitpas_user->user->id, $uitpas_user, 'cache_culturefeed');
+            catch (Exception $e) {
+              if ($e->error_code == 'UNKNOWN_PASSHOLDER_UID') {
+                $uitpas_user->passholder = null;
+              }
+            }
+            cache_set($cache_prefix . $uitpas_user->user->id, $uitpas_user, 'cache_culturefeed', REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
           }
 
         }
@@ -269,7 +276,7 @@ function culturefeed_uitpas_email_is_passholder() {
         $query = new CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions();
         $query->email = $uitpas_user->user->mbox;
         $passholders = $uitpas_user->cf->uitpas()->searchPassholders($query);
-        cache_set($cache_prefix . $uitpas_user->user->mbox, $passholders, 'cache_culturefeed');
+        cache_set($cache_prefix . $uitpas_user->user->mbox, $passholders, 'cache_culturefeed', REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
       }
       if ($passholders->total > 0) {
         return true;
