@@ -519,3 +519,26 @@ function culturefeed_calendar_get_url() {
   global $base_url;
   return $base_url . '/culturefeed/calendar';
 }
+
+/*
+ * Helper function to check if an activity is finished (date not between now and now + 11 months)
+ */
+function culturefeed_calendar_activity_is_finished($activity) {
+  if ($selected_date = culturefeed_calendar_get_selected_date($activity)) {
+
+    // Only show activities between current month and 11 months in the future
+    $activity_month = format_date($selected_date, 'custom', 'mY');
+    $current_month = format_date(REQUEST_TIME, 'custom', 'mY');
+
+    if ($activity_month < $current_month || $activity_month > $current_month+11) {
+      return TRUE;
+    }
+
+  }
+  else {
+    return TRUE;
+  }
+
+  return FALSE;
+
+}
