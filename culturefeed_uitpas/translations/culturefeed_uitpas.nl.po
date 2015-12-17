@@ -252,7 +252,7 @@ msgstr "Alle kaartsystemen"
 #: includes/advantages.inc:110 theme/theme.inc:123
 msgid ""
 "This page shows all advantages for which UiTPAS holders can save points."
-msgstr "Deze pagina toont alle welkomstgeschenken voor UiTPAS-houders."
+msgstr "Deze pagina toont alle welkomstvoordeelen voor UiTPAS-houders."
 
 #: includes/advantages.inc:113 includes/promotions.inc:146
 msgid ""
@@ -268,7 +268,7 @@ msgid ""
 "\"@login\">login</a> and register your UiTPAS to discover your personal "
 "promotions and points balance."
 msgstr ""
-"<a href=\"@register-where\">Ontdek waar</a> je een UiTPAS kan kopen of <a "
+"<a href=\"@register-where\">Ontdek waar</a> je een UiTPAS kan halen of <a "
 "href=\"@login\">meld je aan</a> en registreer je UiTPAS om je persoonlijke "
 "voordelen en puntensaldo te raadplegen."
 
@@ -312,7 +312,7 @@ msgstr "Mijn voordelen"
 
 #: includes/profile_advantages.inc:86
 msgid "My UiTPAS advantages settings"
-msgstr "Mijn UiTPAS welkomstgeschenken instellingen"
+msgstr "Mijn UiTPAS welkomstvoordeelen instellingen"
 
 #: includes/profile_advantages.inc:119 includes/profile_promotions.inc:126
 msgid "My Promotions"
@@ -471,7 +471,7 @@ msgstr "%count voordelen gevonden"
 
 #: includes/promotions.inc:183
 msgid "Show all advantages"
-msgstr "Toon alle welkomstgeschenken"
+msgstr "Toon alle welkomstvoordeelen"
 
 #: includes/promotions.inc:217 views/culturefeed_uitpas.views.inc:34;37
 msgid "UiTPAS promotions"
@@ -688,7 +688,7 @@ msgstr "Enkel geldig voor"
 #: theme/theme.inc:135
 msgid "This page only shows the advantages that you didn't receive yet."
 msgstr ""
-"Deze pagina toont enkel de welkomstgeschenken die je nog niet in ontvangst "
+"Deze pagina toont enkel de welkomstvoordeelen die je nog niet in ontvangst "
 "nam."
 
 #: theme/theme.inc:136
@@ -696,7 +696,7 @@ msgid ""
 "Discover <a href=\"@all-advantages\">all advantages</a> that are currently "
 "available for new UiTPAS holders."
 msgstr ""
-"Ontdek <a href=\"@all-advantages\">alle welkomstgeschenken</a> die momenteel "
+"Ontdek <a href=\"@all-advantages\">alle welkomstvoordeelen</a> die momenteel "
 "beschikbaar zijn voor nieuwe UiTPAS-houders."
 
 #: theme/theme.inc:146
@@ -819,12 +819,12 @@ msgstr "Zolang voorraad strekt"
 #: theme/theme.inc:643
 msgid ""
 "You can get an UiTPAS at one of these registration counters. An UiTPAS costs "
-"5 EURO. Younger than 18 years? Then you'll pay 2 EURO. For people with an "
+"€ 5. Younger than 18 years? Then you'll pay € 2. For people with an "
 "opportunities tarrif UiTPAS is free. You'll need your eID to register your "
 "UiTPAS."
 msgstr ""
-"Je kan een UiTPAS halen op één van deze registratiepunten. Een UiTPAS kost 5 "
-"EURO. Ben je jonger dan 18 jaar? Dan betaal je slechts 2 EURO. Voor mensen "
+"Je kan een UiTPAS halen op één van deze registratiepunten. Een UiTPAS kost € 5"
+". Ben je jonger dan 18 jaar? Dan betaal je slechts € 2. Voor mensen "
 "met een kansenstatuut is de UiTPAS gratis. Voor de registratie van een "
 "UiTPAS heb je een eID nodig."
 
@@ -854,7 +854,7 @@ msgstr "geleden"
 
 #: theme/theme.inc:767
 msgid "This is a welcome advantage"
-msgstr "Dit is een welkomstgeschenk"
+msgstr "Dit is een welkomstvoordeel"
 
 #: theme/theme.inc:858
 msgid "not any longer in stock"
