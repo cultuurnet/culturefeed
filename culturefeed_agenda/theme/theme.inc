@@ -149,12 +149,6 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $cdb_item = $item->getEntity();
   $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
-  // Enhance event-details with UiTPAS-information if culturefeed_uitpas is enabled
-  if (module_exists('culturefeed_uitpas')) {
-    $uitpas_event = culturefeed_uitpas_get_uitpas_event($item);
-    $variables['uitpas_info'] = $uitpas_event;
-  }
-
   // Themes of this item (as plain text and as links).
   $themes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME, $cdb_item);
   $variables['themes'] = $themes['text'];
@@ -498,6 +492,12 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
         $variables['locations_facilities'] = $facilities['text'];
       }
     }
+  }
+  
+  // Enhance event-details with UiTPAS-information if culturefeed_uitpas is enabled
+  if (module_exists('culturefeed_uitpas')) {
+    $uitpas_event = culturefeed_uitpas_get_uitpas_event($item);
+    $variables['uitpas_info'] = $uitpas_event;
   }
 
   if ($detail) {
