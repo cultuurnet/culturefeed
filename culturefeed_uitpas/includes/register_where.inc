@@ -10,8 +10,8 @@
  */
 function culturefeed_uitpas_register_where_get() {
 
-  $location = culturefeed_uitpas_get_uitpas_location();
-  $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+  $card_system_id = isset($_GET['region']) ? $_GET['region'] : 'all';
+  $kansenstatuut = isset($_GET['kansenstatuut']) && $_GET['kansenstatuut'];
 
   $pos = array();
   $pos_max = variable_get('culturefeed_uitpas_register_where_pos_max', 10);
@@ -27,13 +27,18 @@ function culturefeed_uitpas_register_where_get() {
     $query = new CultureFeed_Uitpas_Counter_Query_SearchCounterOptions();
     $query->start = $pos_page * $pos_max;
     $query->max = $pos_max;
-    if ($card_system_id) {
+    $query->visible = TRUE;
+
+    if ($card_system_id != 'all') {
       $query->cardSystemId = $card_system_id;
     }
-    $query->visible = TRUE;
-    if ($location != 'all') {
-      $query->city = $location;
+    $query->groupName = array(
+      CultureFeed_Uitpas_Counter_Query_SearchCounterOptions::GROUP_AUTHORIZED,
+    );
+    if (!$kansenstatuut) {
+      $query->groupName[] = CultureFeed_Uitpas_Counter_Query_SearchCounterOptions::GROUP_NOT_AUTHORIZED;
     }
+
     $result = $cf->uitpas()->searchCounters($query);
 
     if ($result->total) {
@@ -108,33 +113,26 @@ function culturefeed_uitpas_register_where_title() {
  */
 function culturefeed_uitpas_register_where_filter_form($form, $form_state) {
 
-  $locations = variable_get('culturefeed_uitpas_locations');
-  $location = culturefeed_uitpas_get_uitpas_location();
 
-  $options = array('all' => t('All')) + drupal_map_assoc($locations);
-
-  $title = t('Registration counters');
-  if ($title) {
-
-    $form['title'] = array(
-      '#type' => 'markup',
-      '#markup' => $title,
-    );
-
+  $options = array('all' => t('All regions'));
+  $card_systems = culturefeed_uitpas_get_card_systems();
+  foreach ($card_systems as $card_system) {
+    $options[$card_system->id] = $card_system->name;
   }
 
-  $form['location'] = array(
+  $default_value = isset($_GET['region']) ? $_GET['region'] : '';
+
+  $form['region'] = array(
     '#type' => 'select',
-    '#title' => t('City'),
+    '#title' => t('UiTPAS Region'),
     '#options' => $options,
-    '#default_value' => $location,
+    '#default_value' => $default_value,
   );
 
-  $form['location'] = array(
-    '#type' => 'select',
-    '#title' => t('City'),
-    '#options' => $options,
-    '#default_value' => $location,
+  $form['kansenstatuut'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('I have a kansenstatuut'),
+    '#default_value' => isset($_GET['kansenstatuut']) ? $_GET['kansenstatuut'] : 0,
   );
 
   $form['actions'] = array(
@@ -154,8 +152,11 @@ function culturefeed_uitpas_register_where_filter_form($form, $form_state) {
 function culturefeed_uitpas_register_where_filter_form_submit($form, &$form_state) {
 
   $query = array();
-  if (isset($form_state['values']['location'])) {
-    $query['uitpas_location'] = $form_state['values']['location'];
+  if (isset($form_state['values']['region'])) {
+    $query['region'] = $form_state['values']['region'];
+  }
+  if (isset($form_state['values']['kansenstatuut'])) {
+    $query['kansenstatuut'] = $form_state['values']['kansenstatuut'];
   }
 
   $form_state['redirect'] = array(current_path(), array('query' => $query));
