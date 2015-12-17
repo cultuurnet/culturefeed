@@ -4,16 +4,15 @@
  * Block callback functions for culturefeed mailing.
  */
 
-
 /**
- * Newsletter opt-in visibility callback
+ * Newsletter opt-in visibility callback.
  */
 function culturefeed_mailing_block_newsletter_opt_in_is_visible() {
   return DrupalCultureFeed::isCultureFeedUser();
 }
 
 /**
- * Newsletter opt-in content callback
+ * Newsletter opt-in content callback.
  */
 function culturefeed_mailing_block_newsletter_opt_in_view() {
   $block['subject'] = '';
@@ -28,7 +27,7 @@ function culturefeed_mailing_block_newsletter_form_view() {
 
   return array(
     'subject' => t('Newsletter'),
-    'content' => drupal_get_form('culturefeed_mailing_newsletter_block_form')
+    'content' => drupal_get_form('culturefeed_mailing_newsletter_block_form'),
   );
 
 }
