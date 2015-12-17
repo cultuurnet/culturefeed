@@ -73,7 +73,7 @@ function culturefeed_mailing_subscribe_form() {
 
   // Show nothing if no mailing list available.
   if (!(variable_get('culturefeed_mailing_list', ''))) {
-    //return;
+    return;
   }
 
   $form = array();
