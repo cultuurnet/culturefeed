@@ -417,8 +417,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       }
 
       foreach (array_keys($keywords) as $keyword) {
-
-        if(stripos('uitpas', $keyword)>=0 || stripos('paspartoe', $keyword)>=0)
+        if(stripos($keyword, 'uitpas')!==false || stripos($keyword, 'paspartoe')!==false)
         {
           $variables['uitpas'] = TRUE;
         }
@@ -488,7 +487,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   $item = $variables['item'];
   $cdb_item = $item->getEntity();
   $detail= $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-  
+
   // Facilities: only for events with a location
   if ($cdb_item instanceof CultureFeed_Cdb_Item_Event) {
     $actor_id = $cdb_item->getLocation()->getCdbid();
