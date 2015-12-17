@@ -302,12 +302,14 @@ function culturefeed_ui_privacy_settings_form(array $form, array &$form_state, C
     $default_value = 'nick';
   }
 
+  $user_id = culturefeed_get_uid_for_cf_uid($culturefeed_user->id, $culturefeed_user->nick);
+
   $form['#culturefeed_user'] = $culturefeed_user;
 
   $form['setting'] = array(
     '#default_value' => $default_value,
     '#options' => $options,
-    '#title' => t('Select the way your user details are visible to others in your <a href="@profile-url">public profile</a>.'),
+    '#title' => t('Select the way your user details are visible to others in your <a href="@profile-url">public profile</a>.', array('@profile-url' => url('user/' . $user_id))),
     '#type' => 'radios',
   );
 

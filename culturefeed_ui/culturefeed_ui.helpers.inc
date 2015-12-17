@@ -97,9 +97,7 @@ function culturefeed_ui_profile_intro() {
 
   $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
 
-  $user_id = culturefeed_get_uid_for_cf_uid($culturefeed_user->id, $culturefeed_user->nick);
-
-  $profile_intro = t('Update your profile information here. All your user activities can be managed in your <a href="@history-url">personal history</a>.', array('@profile-url' => url('user/' . $user_id), '@history-url' => url('culturefeed/activities')));
+  $profile_intro = t('Update your profile information here. All your user activities can be managed in your <a href="@history-url">personal history</a>.', array('@history-url' => url('culturefeed/activities')));
 
   return $profile_intro;
 
