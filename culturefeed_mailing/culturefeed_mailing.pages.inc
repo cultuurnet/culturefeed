@@ -73,7 +73,7 @@ function culturefeed_mailing_subscribe_form() {
 
   // Show nothing if no mailing list available.
   if (!(variable_get('culturefeed_mailing_list', ''))) {
-    return;
+    //return;
   }
 
   $form = array();
@@ -169,6 +169,15 @@ function culturefeed_mailing_subscribe_form() {
     '#type' => 'submit',
     '#value' => t('Subscribe'),
     '#weight' => 10
+  );
+
+  drupal_add_library('system', 'jquery.cookie');
+
+  // Attach scripts
+  $form['#attached']['js'][] = array(
+    'data' => drupal_get_path('module', 'culturefeed_mailing') . '/js/culturefeed_mailing.js',
+    'type' => 'file',
+    'weight' => 0,
   );
 
   return $form;
