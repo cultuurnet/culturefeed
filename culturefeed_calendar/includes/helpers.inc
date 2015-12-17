@@ -520,7 +520,7 @@ function culturefeed_calendar_activity_is_finished($activity) {
 
     // Only show activities between current month and 11 months in the future
     $activity_month = format_date($selected_date, 'custom', 'mY');
-    $current_month = format_date(time(), 'custom', 'mY');
+    $current_month = format_date(REQUEST_TIME, 'custom', 'mY');
 
     if ($activity_month < $current_month || $activity_month > $current_month+11) {
       return TRUE;
