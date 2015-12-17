@@ -189,6 +189,15 @@ function culturefeed_uitpas_theme() {
   );
 }
 
+function culturefeed_uitpas_preprocess_culturefeed_actor(&$vars) {
+
+  // Promotions.
+  module_load_include('inc', 'culturefeed_uitpas', 'includes/event_details_advantages');
+  $promotions = culturefeed_uitpas_event_details_advantages_get();
+  $vars['uitpas_promotions'] = drupal_render($promotions);
+
+}
+
 /**
  * Preprocess function for culturefeed_agenda_event.
  */
