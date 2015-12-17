@@ -39,7 +39,10 @@ function culturefeed_uitpas_profile_promotions_get($filter = NULL) {
           $query->applicableCardSystemId = array_slice(explode('+', $filter), 1);
         }
       }
-      $query->orderByOwningCardSystemId = variable_get('culturefeed_uitpas_cardsystem_id');
+      $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+      if ($card_system_id) {
+        $query->orderByOwningCardSystemId = $card_system_id;
+      }
       $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
 
       $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
