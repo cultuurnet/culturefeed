@@ -73,11 +73,11 @@ function culturefeed_mailing_subscribe_form() {
 
   // Show nothing if no mailing list available.
   if (!(variable_get('culturefeed_mailing_list', ''))) {
-    //return;
+    return;
   }
 
   $form = array();
-  
+
   // Set defaults for the email field.
   if ($account) {
     $email = (!empty($_GET['email'])) ? $_GET['email'] : ($account ? $account->mbox : '');
@@ -103,7 +103,7 @@ function culturefeed_mailing_subscribe_form() {
 
   $show_zip = variable_get('culturefeed_mailing_block_show_zip', 0);
 
-  $postal = ''; 
+  $postal = '';
   if (!empty($_GET['zip'])) {
     $postal = $_GET['zip'];
   }
@@ -167,7 +167,7 @@ function culturefeed_mailing_subscribe_form() {
     '#weight' => 10
   );
 
-  if (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip) { 
+  if (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip) {
     // Attach jquery.cookie library
     $form['#attached']['library'][] = array('system', 'jquery.cookie');
 
