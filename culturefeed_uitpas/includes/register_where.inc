@@ -27,7 +27,9 @@ function culturefeed_uitpas_register_where_get() {
     $query = new CultureFeed_Uitpas_Counter_Query_SearchCounterOptions();
     $query->start = $pos_page * $pos_max;
     $query->max = $pos_max;
-    $query->cardSystemId = $card_system_id;
+    if ($card_system_id) {
+      $query->cardSystemId = $card_system_id;
+    }
     $query->visible = TRUE;
     if ($location != 'all') {
       $query->city = $location;
