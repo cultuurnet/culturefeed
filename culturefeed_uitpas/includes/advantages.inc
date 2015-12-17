@@ -34,7 +34,6 @@ function culturefeed_uitpas_advantages_get($filter = NULL) {
       $query->owningCardSystemId = $filter;
     }
     $result = $cf->uitpas()->searchWelcomeAdvantages($query);
-    pager_default_initialize($result->total, $advantages_max, $advantages_pager_element);
     $advantages = $result->objects;
     $advantages_total = $result->total;
 
