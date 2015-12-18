@@ -129,6 +129,19 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
   $form['promotions']['#prefix'] = "<div id=\"" . $id . "\">";
   $form['promotions']["#suffix"] = "</div>";
 
+  $promotions_intro = t('This page shows all promotions for which UiTPAS holders can save points.');
+  
+  if (culturefeed_uitpas_is_passholder()) {
+   $promotions_intro .= ' '. t('Discover <a href="@my-promotions">your personal promotions</a>  and points balance.', array('@my-promotions' => url('culturefeed/profile/uitpas/promotions')));
+  }
+  else {
+   $promotions_intro .= ' '. t('<a href="@register-where">Find out where</a> to get an UiTPAS or <a href="@login">login</a> and register your UiTPAS to discover your personal promotions and points balance.', array('@register-where' => url('register_where'), '@login' => url('culturefeed/oauth/connect', array('query' => array('destination' => 'register_uitpas'))))); 
+  }
+
+  if (trim($promotions_intro)) {
+    $form['promotions']['intro']['#markup'] = '<div class="promotions-intro">' . $promotions_intro . '</div>';
+  }
+
   $form['promotions']['filter'] = array(
     '#type' => 'radios',
     '#title' => t('Filter by'),
@@ -152,20 +165,6 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
 
   $form['promotions']['filter']['#prefix'] = '<div class="form-group">';
   $form['promotions']['filter']['#suffix'] = $filter_reset_link . '</div>';
-
-
-  $promotions_intro = t('This page shows all promotions for which UiTPAS holders can save points.');
-  
-  if (culturefeed_uitpas_is_passholder()) {
-   $promotions_intro .= ' '. t('Discover <a href="@my-promotions">your personal promotions</a>  and points balance.', array('@my-promotions' => url('culturefeed/profile/uitpas/promotions')));
-  }
-  else {
-   $promotions_intro .= ' '. t('<a href="@register-where">Find out where</a> to get an UiTPAS or <a href="@login">login</a> and register your UiTPAS to discover your personal promotions and points balance.', array('@register-where' => url('register_where'), '@login' => url('culturefeed/oauth/connect', array('query' => array('destination' => 'culturefeed/profile/edit'))))); 
-  }
-  
-  if (trim($promotions_intro)) {
-    $form['promotions']['intro']['#markup'] = '<div class="promotions-intro">' . $promotions_intro . '</div>';
-  }
 
   $total = $promotions['#promotions_total'];
   if (isset($advantages['#advantages_total'])) {
