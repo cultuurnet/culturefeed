@@ -402,11 +402,19 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         }
 
         $variables['keywords'] = implode(', ', $linked_keywords);
-        // check if event is suitable for kids
-        if (array_key_exists('ook voor kinderen', $keywords)) {
-          $variables['forkids'] = TRUE;
-        }
 
+      }
+
+      // check if event is suitable for kids
+      if (array_key_exists('ook voor kinderen', $keywords)) {
+        $variables['forkids'] = TRUE;
+      }
+
+      foreach (array_keys($keywords) as $keyword) {
+        if(stripos($keyword, 'uitpas')!==false || stripos($keyword, 'paspartoe')!==false)
+        {
+          $variables['uitpas'] = TRUE;
+        }
       }
 
     }
@@ -429,6 +437,10 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       // check if event is suitable for kids
       if (array_key_exists('ook voor kinderen', $keywords)) {
         $variables['forkids'] = TRUE;
+      }
+
+      if (sizeof(preg_grep('/uitpas/i', $keywords))>0 or sizeof(preg_grep('/paspartoe/i', $keywords))>0) {
+        $variables['uitpas'] = TRUE;
       }
     }
   }
@@ -469,7 +481,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   $item = $variables['item'];
   $cdb_item = $item->getEntity();
   $detail= $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-  
+
   // Facilities: only for events with a location
   if ($cdb_item instanceof CultureFeed_Cdb_Item_Event) {
     $actor_id = $cdb_item->getLocation()->getCdbid();
@@ -480,6 +492,12 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
         $variables['locations_facilities'] = $facilities['text'];
       }
     }
+  }
+  
+  // Enhance event-details with UiTPAS-information if culturefeed_uitpas is enabled
+  if (module_exists('culturefeed_uitpas')) {
+    $uitpas_event = culturefeed_uitpas_get_uitpas_event($item);
+    $variables['uitpas_info'] = $uitpas_event;
   }
 
   if ($detail) {

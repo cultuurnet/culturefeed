@@ -20,13 +20,12 @@ function culturefeed_uitpas_profile_advantages_get($filter = NULL) {
   if ($uitpas_user->user && $uitpas_user->passholder) {
 
     $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
-    $first_card = key($uitpas_user->passholder->cardSystemSpecific);
+    $card_systems = $uitpas_user->passholder->cardSystemSpecific;
+    $first_card = key($card_systems);
 
+    $uitpas_number = $uitpas_user->passholder->cardSystemSpecific[$first_card]->currentCard->uitpasNumber;
     if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber)) {
       $uitpas_number = $uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber;
-    }
-    elseif (isset($uitpas_user->passholder->cardSystemSpecific[$first_card]->currentCard->uitpasNumber)) {
-      $uitpas_number = $uitpas_user->passholder->cardSystemSpecific[$first_card]->currentCard->uitpasNumber;
     }
 
     // Welcome advantages.
@@ -35,7 +34,12 @@ function culturefeed_uitpas_profile_advantages_get($filter = NULL) {
       $query->uitpas_number = $uitpas_number;
       $query->cashedIn = FALSE;
       if ($filter) {
-        $query->owningCardSystemId = $filter;
+        if (strpos($filter, '+') === FALSE) {
+          $query->owningCardSystemId = $filter;
+        }
+        else {
+          $query->applicableCardSystemId = array_slice(explode('+', $filter), 1);
+        }
       }
 
       $query->start = $advantages_page * $advantages_max;
@@ -51,9 +55,7 @@ function culturefeed_uitpas_profile_advantages_get($filter = NULL) {
     }
 
     // Title.
-    $singular = 'My advantages (1 point saved)';
-    $plural = 'My advantages (@count points saved)';
-    drupal_set_title(format_plural($uitpas_user->passholder->points, $singular, $plural), PASS_THROUGH);
+    drupal_set_title(t('My advantages'), PASS_THROUGH);
 
   }
 
@@ -98,7 +100,7 @@ function culturefeed_uitpas_profile_advantages_settings_get(&$form) {
  */
 function culturefeed_uitpas_profile_advantages_title() {
 
-  return variable_get('culturefeed_uitpas_profile_details_menu_advantages_title', t('My advantages'));
+  return t('My advantages');
 
 }
 
@@ -124,14 +126,8 @@ function culturefeed_uitpas_profile_advantages_filter_sort($form, $form_state) {
     '#theme' => 'links',
   );
 
-  $cf = DrupalCultureFeed::getConsumerInstance();
-  $kind_of_card_systems = 'permanent';
-  $card_systems = $cf->uitpas()->getCardSystems($kind_of_card_systems);
-
-  $options = array();
-  foreach ($card_systems as $system) {
-    $options[$system->id] = $system->name;
-  }
+  // Get the card systems for the passholder.
+  $options = culturefeed_uitpas_get_user_card_systems_as_options();
 
   $id = drupal_html_id('profile-advantages-filter-sort');
   $form['profile_advantages']['#prefix'] = '<div id="' . $id . '">';

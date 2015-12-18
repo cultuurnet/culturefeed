@@ -39,9 +39,27 @@ function culturefeed_uitpas_theme() {
       'template' => 'culturefeed-uitpas-advantages-table',
       'file' => 'theme.inc',
     ),
+    'culturefeed_uitpas_event_details_advantages' => array(
+      'file' => 'theme.inc',
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'template' => 'culturefeed-uitpas-event-details-advantages',
+      'variables' => array(
+        'title' => '',
+        'show_all_link_title' => '',
+        'show_all_link_path' => '',
+        'show_all_link_default_render' => '',
+        'promotions' => array(),
+        'promotions_array' => array(),
+        'promotions_default_render' => '',
+      ),
+    ),
     'culturefeed_uitpas_profile_section' => array(
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
       'template' => 'culturefeed-uitpas-profile-section',
+    ),
+    'culturefeed_uitpas_profile_section_register' => array(
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'template' => 'culturefeed-uitpas-profile-section-register',
     ),
     'culturefeed_uitpas_promotion' => array(
       'variables' => array('promotion' => NULL),
@@ -92,9 +110,7 @@ function culturefeed_uitpas_theme() {
     ),
     'culturefeed_uitpas_profile_actions' => array(
       'variables' => array(
-        'actions' => array(),
-        'actions_total' => 0,
-        'actions_pager_element' => 0,
+        'activities' => array(),
       ),
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
       'file' => 'theme.inc',
@@ -147,14 +163,6 @@ function culturefeed_uitpas_theme() {
       'file' => 'theme.inc',
       'template' => 'culturefeed-uitpas-profile-summary',
     ),
-    'culturefeed_uitpas_event_details_advantages' => array(
-			'variables' => array(
-        'items' => array(),
-      ),
-      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
-      'file' => 'theme.inc',
-      'template' => 'culturefeed-uitpas-event-details-advantages',
-		),
     'culturefeed_uitpas_recent_actions' => array(
       'variables' => array('actions' => array()),
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
@@ -179,6 +187,15 @@ function culturefeed_uitpas_theme() {
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
     )
   );
+}
+
+function culturefeed_uitpas_preprocess_culturefeed_actor(&$vars) {
+
+  // Promotions.
+  module_load_include('inc', 'culturefeed_uitpas', 'includes/event_details_advantages');
+  $promotions = culturefeed_uitpas_event_details_advantages_get();
+  $vars['uitpas_promotions'] = drupal_render($promotions);
+
 }
 
 /**
@@ -222,8 +239,13 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
     }
 
     if (count($prices)) {
-      $vars['price'] = implode('<br />', array_unique($prices));
+      $vars['price'] = '<p>' . implode('</p><p>', array_unique($prices)) . '</p>';
     }
+
+    // Promotions.
+    module_load_include('inc', 'culturefeed_uitpas', 'includes/event_details_advantages');
+    $promotions = culturefeed_uitpas_event_details_advantages_get();
+    $vars['uitpas_promotions'] = drupal_render($promotions);
 
   }
 

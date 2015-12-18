@@ -26,8 +26,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-11-25 01:58+0100\n"
-"PO-Revision-Date: 2015-11-25 02:11+0100\n"
+"POT-Creation-Date: 2015-12-03 22:01+0100\n"
+"PO-Revision-Date: 2015-12-03 22:03+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -196,15 +196,6 @@ msgid "Internal path to the page with cookie terms"
 msgstr ""
 
 #: culturefeed_ui.admin.inc:50
-msgid "Update your password or email address. Your username cannot be changed."
-msgstr ""
-"Wijzig hier je paswoord of e-mailadres. Je gebruikersnaam is niet aanpasbaar."
-
-#: culturefeed_ui.admin.inc:51
-msgid "Account edit page: intro"
-msgstr ""
-
-#: culturefeed_ui.admin.inc:56
 msgid ""
 "This email address has been connected to your UiTPAS card. Any communication "
 "regarding your UiTPAS will be sent to this email address as well."
@@ -213,48 +204,17 @@ msgstr ""
 "geregistreerd werd. Bij een aanpassing zal je communicatie ivm UiTPAS dus "
 "ook op dit adres ontvangen."
 
-#: culturefeed_ui.admin.inc:57
+#: culturefeed_ui.admin.inc:51
 msgid "Account edit page: email description"
 msgstr ""
 
-#: culturefeed_ui.admin.inc:62
-msgid ""
-"Choose what personal information is visible to others in your <a href="
-"\"@profile-url\">public profile</a>. When choosing <em>Anonymous</em> only "
-"your username will be visible."
-msgstr ""
-"Kies zelf welke persoonsgegevens voor anderen zichtbaar zijn op je <a href="
-"\"@profile-url\">publieke profielpagina</a>. Kies je voor <em>Anoniem</em>, "
-"dan zal enkel je gebruikersnaam zichtbaar zijn."
-
-#: culturefeed_ui.admin.inc:63
-msgid "Privacy settings: intro"
-msgstr ""
-
-#: culturefeed_ui.admin.inc:68
+#: culturefeed_ui.admin.inc:56
 msgid "All your user activities will be set to private too."
 msgstr ""
 "Al je gebruikersacties uit het verleden worden hiermee ook op privé gezet."
 
-#: culturefeed_ui.admin.inc:69
+#: culturefeed_ui.admin.inc:57
 msgid "Privacy settings: anonymous tooltip"
-msgstr ""
-
-#: culturefeed_ui.admin.inc:74
-msgid ""
-"Complete your profile information for a more personal experience. You <a "
-"href=\"/culturefeed/profile/privacy\">decide what personal information</a> "
-"is visible to others in your <a href=\"@profile-url\">public profile</a>. "
-"All your user activities can be managed in your <a href=\"@history-url"
-"\">personal history</a>."
-msgstr ""
-"Vervolledig je online profiel. Je <a href=\"/culturefeed/profile/privacy"
-"\">kiest zelf</a> welke informatie zichtbaar is voor anderen op je <a href="
-"\"@profile-url\">publieke profielpagina</a>. Al je gebruikersacties kan je "
-"beheren via je persoonlijke <a href=\"@history-url\">gebruikershistoriek</a>."
-
-#: culturefeed_ui.admin.inc:75
-msgid "Profile edit page: intro"
 msgstr ""
 
 #: culturefeed_ui.blocks.inc:38
@@ -278,7 +238,7 @@ msgstr "Teveel te doen?"
 msgid "Manage profile"
 msgstr "Beheer je profiel"
 
-#: culturefeed_ui.blocks.inc:309 culturefeed_ui.helpers.inc:293
+#: culturefeed_ui.blocks.inc:309 culturefeed_ui.helpers.inc:307
 #: culturefeed_ui.module:480;536
 msgid "My profile"
 msgstr "Mijn profiel"
@@ -295,7 +255,7 @@ msgstr "Gebruikersnaam"
 msgid "Email address"
 msgstr "E-mailadres"
 
-#: culturefeed_ui.forms.inc:70;310;522
+#: culturefeed_ui.forms.inc:70;318;530
 msgid "Save"
 msgstr "Opslaan"
 
@@ -307,15 +267,23 @@ msgstr "Paswoord wijzigen"
 msgid "Invalid email"
 msgstr "Ongeldig e-mailadres"
 
-#: culturefeed_ui.forms.inc:155
+#: culturefeed_ui.forms.inc:160
 msgid "An error occurred."
 msgstr "Er is een tijdelijke fout opgetreden. Probeer het later opnieuw."
 
-#: culturefeed_ui.forms.inc:158 culturefeed_ui.helpers.inc:103
+#: culturefeed_ui.forms.inc:163
+msgid ""
+"The email address you entered (@email) is already in use by another user. </"
+"br> Please provide a another email address."
+msgstr ""
+"Het e-mailadres (@email) is reeds in gebruik. <br />Gelieve een ander e-"
+"mailadres te gebruiken."
+
+#: culturefeed_ui.forms.inc:166 culturefeed_ui.helpers.inc:117
 msgid "Changes saved successfully."
 msgstr "De wijzigingen werden goed bewaard."
 
-#: culturefeed_ui.forms.inc:185
+#: culturefeed_ui.forms.inc:193
 msgid ""
 "I accept that my UiTiD actions on !site_name will be published automatically "
 "on !online_account_type."
@@ -323,206 +291,212 @@ msgstr ""
 "Mijn gebruikersacties op !site_name mogen automatisch gepubliceerd worden "
 "op !online_account_type."
 
-#: culturefeed_ui.forms.inc:265
+#: culturefeed_ui.forms.inc:273
 msgid "Your account was updated successfully."
 msgstr "De wijzigingen aan je account werden goed bewaard."
 
-#: culturefeed_ui.forms.inc:269
+#: culturefeed_ui.forms.inc:277
 msgid "An error occurred when updating your account."
 msgstr "Er is een fout opgetreden bij het aanpassen van je account."
 
-#: culturefeed_ui.forms.inc:302
-msgid "Select they way your user details are displayed"
-msgstr ""
-"Kies zelf welke persoonsgegevens voor anderen zichtbaar zijn op je "
-"profielpagina. Kies je voor \"Anoniem\", dan zal er behalve je "
-"gebruikersnaam niets van jou terug te vinden zijn."
+#: culturefeed_ui.forms.inc:310
+msgid "Select the way your user details are visible to others in your <a href="@profile-url">public profile</a>."
+msgstr "Kies hoe je gegevens getoond worden aan anderen op je <a href="@profile-url">publieke profielpagina</a>."
 
-#: culturefeed_ui.forms.inc:383
+#: culturefeed_ui.forms.inc:391
 msgid "Your privacy settings have been saved."
 msgstr "Je privacy instellingen werden goed bewaard."
 
-#: culturefeed_ui.forms.inc:386;638
+#: culturefeed_ui.forms.inc:394;647
 msgid "Error occurred while saving your privacy settings."
 msgstr ""
 "Er is een fout opgetreden bij het bewaren van jouw privacy instellingen."
 
-#: culturefeed_ui.forms.inc:414
+#: culturefeed_ui.forms.inc:422
 msgid "First name"
 msgstr "Voornaam"
 
-#: culturefeed_ui.forms.inc:421
+#: culturefeed_ui.forms.inc:429
 msgid "Family name"
 msgstr "Naam"
 
-#: culturefeed_ui.forms.inc:435
+#: culturefeed_ui.forms.inc:443
 msgid "Date of birth"
 msgstr "Geboortedatum"
 
-#: culturefeed_ui.forms.inc:438
+#: culturefeed_ui.forms.inc:446
 msgid "Format : dd/mm/yyyy"
 msgstr "Formaat : dd/mm/jjjj"
 
-#: culturefeed_ui.forms.inc:445
+#: culturefeed_ui.forms.inc:453
 msgid "Gender"
 msgstr "Geslacht"
 
-#: culturefeed_ui.forms.inc:446 culturefeed_ui.preprocess.inc:73
+#: culturefeed_ui.forms.inc:454 culturefeed_ui.preprocess.inc:73
 msgid "Male"
 msgstr "Man"
 
-#: culturefeed_ui.forms.inc:446 culturefeed_ui.preprocess.inc:73
+#: culturefeed_ui.forms.inc:454 culturefeed_ui.preprocess.inc:73
 msgid "Female"
 msgstr "Vrouw"
 
-#: culturefeed_ui.forms.inc:454
+#: culturefeed_ui.forms.inc:462
 msgid "Choose picture"
 msgstr "Kies een foto"
 
-#: culturefeed_ui.forms.inc:455
+#: culturefeed_ui.forms.inc:463
 msgid "Allowed extensions: jpg, jpeg, gif or png"
 msgstr "Toegelaten formaten: jpg, jpeg, gif of png"
 
-#: culturefeed_ui.forms.inc:475
+#: culturefeed_ui.forms.inc:483
 msgid "Street and number"
 msgstr "Straatnaam en nummer"
 
-#: culturefeed_ui.forms.inc:480
+#: culturefeed_ui.forms.inc:488
 msgid "Zipcode"
 msgstr "Postcode"
 
-#: culturefeed_ui.forms.inc:485
+#: culturefeed_ui.forms.inc:493
 msgid "City"
 msgstr "Stad of gemeente"
 
-#: culturefeed_ui.forms.inc:491
+#: culturefeed_ui.forms.inc:499
 msgid "Country"
 msgstr "Land"
 
-#: culturefeed_ui.forms.inc:498
+#: culturefeed_ui.forms.inc:506
 msgid "Biography"
 msgstr "Beschrijf jezelf"
 
-#: culturefeed_ui.forms.inc:500
+#: culturefeed_ui.forms.inc:508
 msgid "Maximum 250 characters"
 msgstr "Maximum 250 karakters"
 
-#: culturefeed_ui.forms.inc:508
+#: culturefeed_ui.forms.inc:516
 msgid "Preferred language"
 msgstr "Voorkeur taal"
 
-#: culturefeed_ui.forms.inc:511
+#: culturefeed_ui.forms.inc:519
 msgid "Dutch"
 msgstr "Nederlands"
 
-#: culturefeed_ui.forms.inc:512
+#: culturefeed_ui.forms.inc:520
 msgid "French"
 msgstr "Frans"
 
-#: culturefeed_ui.forms.inc:513
+#: culturefeed_ui.forms.inc:521
 msgid "English"
 msgstr "Engels"
 
-#: culturefeed_ui.forms.inc:514
+#: culturefeed_ui.forms.inc:522
 msgid "German"
 msgstr "Duits"
 
-#: culturefeed_ui.forms.inc:527 culturefeed_ui.module:108
+#: culturefeed_ui.forms.inc:535 culturefeed_ui.module:108
 msgid "Delete account"
 msgstr "Account verwijderen"
 
-#: culturefeed_ui.forms.inc:550
+#: culturefeed_ui.forms.inc:558
 msgid "The maximum of 250 characters is exceeded"
 msgstr "Het maximum aantal van 250 karakters is overschreden"
 
-#: culturefeed_ui.forms.inc:599
+#: culturefeed_ui.forms.inc:608
 msgid "Error occurred while saving your personal data."
 msgstr "Er is een fout opgetreden bij het bewaren van jouw gegevens."
 
-#: culturefeed_ui.forms.inc:623
+#: culturefeed_ui.forms.inc:632
 msgid "Error occurred while saving your picture."
 msgstr "Er is een fout opgetreden bij het opladen van jouw afbeelding."
 
-#: culturefeed_ui.forms.inc:675
+#: culturefeed_ui.forms.inc:684
 msgid "Name"
 msgstr "Naam"
 
-#: culturefeed_ui.forms.inc:681
+#: culturefeed_ui.forms.inc:690
 msgid "Search"
 msgstr "Zoeken"
 
-#: culturefeed_ui.helpers.inc:104
+#: culturefeed_ui.helpers.inc:98
+msgid ""
+"Update your profile information here. "
+"All your user activities can be managed in your <a href=\"@history-url"
+"\">personal history</a>."
+msgstr ""
+"Je kan hier je gegevens aanpassen. Al je gebruikersacties kan je "
+"beheren via je persoonlijke <a href=\"@history-url\">gebruikershistoriek</a>."
+
+#: culturefeed_ui.helpers.inc:118
 msgid "<a href=\"@profile\">View your profile</a> as shown to others."
 msgstr ""
 "<a href=\"@profile\">Bekijk je profiel</a> zoals het zichtbaar is voor "
 "anderen."
 
-#: culturefeed_ui.helpers.inc:182
+#: culturefeed_ui.helpers.inc:196
 msgid "Remove connection"
 msgstr "Verwijder koppeling"
 
-#: culturefeed_ui.helpers.inc:199
-msgid "Connect application"
-msgstr "Kanaal koppelen"
+#: culturefeed_ui.helpers.inc:213
+msgid "Connect"
+msgstr "Koppelen"
 
-#: culturefeed_ui.helpers.inc:214
+#: culturefeed_ui.helpers.inc:228
 msgid "Like"
 msgstr "Vind ik leuk"
 
-#: culturefeed_ui.helpers.inc:215
+#: culturefeed_ui.helpers.inc:229
 msgid "Attend"
 msgstr "Ik ga hier naartoe"
 
-#: culturefeed_ui.helpers.inc:216
+#: culturefeed_ui.helpers.inc:230
 msgid "Share on Facebook"
 msgstr "Delen via Facebook"
 
-#: culturefeed_ui.helpers.inc:217
+#: culturefeed_ui.helpers.inc:231
 msgid "Share on Twitter"
 msgstr "Delen op Twitter"
 
-#: culturefeed_ui.helpers.inc:248
+#: culturefeed_ui.helpers.inc:262
 msgid "ON"
 msgstr "AAN"
 
-#: culturefeed_ui.helpers.inc:248
+#: culturefeed_ui.helpers.inc:262
 msgid "OFF"
 msgstr "UIT"
 
-#: culturefeed_ui.helpers.inc:252;254
+#: culturefeed_ui.helpers.inc:266;268
 msgid "Switch off"
 msgstr "Zet uit"
 
-#: culturefeed_ui.helpers.inc:252;254
+#: culturefeed_ui.helpers.inc:266;268
 msgid "Switch on"
 msgstr "Zet aan"
 
-#: culturefeed_ui.helpers.inc:259
+#: culturefeed_ui.helpers.inc:273
 msgid "Post my actions to Facebook"
 msgstr "Publiceer mijn acties op Facebook"
 
-#: culturefeed_ui.helpers.inc:269
-#: culturefeed_ui.pages.inc:66;105;115;315;366;403;434;446;516
+#: culturefeed_ui.helpers.inc:283
+#: culturefeed_ui.pages.inc:66;105;115;313;364;401;432;444;514
 msgid "Error occurred"
 msgstr "Er is een fout opgetreden."
 
-#: culturefeed_ui.helpers.inc:285
+#: culturefeed_ui.helpers.inc:299
 msgid "Home"
 msgstr "Home"
 
-#: culturefeed_ui.helpers.inc:339
+#: culturefeed_ui.helpers.inc:353
 msgid "is using cookies"
 msgstr "maakt gebruik van cookies"
 
-#: culturefeed_ui.helpers.inc:339
+#: culturefeed_ui.helpers.inc:353
 msgid "Learn more"
 msgstr "Meer weten"
 
-#: culturefeed_ui.helpers.inc:360 includes/privacy_settings.inc:167;199
+#: culturefeed_ui.helpers.inc:374 includes/privacy_settings.inc:167;199
 msgid "Anonymous"
 msgstr "Anoniem"
 
-#: culturefeed_ui.helpers.inc:362
+#: culturefeed_ui.helpers.inc:376
 msgid "This profile is private."
 msgstr "Dit profiel is privé"
 
@@ -534,7 +508,7 @@ msgstr "Ben je zeker dat je jouw UiTiD wil verwijderen?"
 msgid "This action cannot be undone."
 msgstr "Deze actie kan niet ongedaan worden gemaakt."
 
-#: culturefeed_ui.pages.inc:8;458
+#: culturefeed_ui.pages.inc:8;456
 msgid "Delete"
 msgstr "Verwijder"
 
@@ -572,7 +546,11 @@ msgstr ""
 "Er is een fout opgetreden bij het laden van jouw account. Probeer het later "
 "opnieuw."
 
-#: culturefeed_ui.pages.inc:476
+#: culturefeed_ui.pages.inc:284
+msgid "Update personal data"
+msgstr "Update persoonlijke gegevens"
+
+#: culturefeed_ui.pages.inc:474
 msgid "No channels found."
 msgstr "Geen kanalen gevonden."
 

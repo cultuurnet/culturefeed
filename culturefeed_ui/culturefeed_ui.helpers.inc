@@ -88,6 +88,22 @@ function culturefeed_ui_get_privacy_setting(CultureFeed_User $culturefeed_user =
 }
 
 /**
+ * Returns the intro message for profile, account and privacy settings pages.
+ *
+ * @return string
+ *   The profile intro message.
+ */
+function culturefeed_ui_profile_intro() {
+
+  $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
+
+  $profile_intro = t('Update your profile information here. All your user activities can be managed in your <a href="@history-url">personal history</a>.', array('@history-url' => url('culturefeed/activities')));
+
+  return $profile_intro;
+
+}
+
+/**
  * Returns the drupal message after making profile changes.
  *
  * @param CultureFeed_User $culturefeed_user
@@ -196,7 +212,7 @@ function culturefeed_ui_online_account($online_account_type, $online_account = N
   }
 
   $redirect = url('culturefeed/account/edit', array('absolute' => TRUE));
-  $connect_link = l(t('Connect application'), DrupalCultureFeed::getUrlAddSocialNetwork($online_account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect')));
+  $connect_link = l(t('Connect'), DrupalCultureFeed::getUrlAddSocialNetwork($online_account_type, $redirect), array('attributes' => array('class' => 'culturefeedconnect')));
 
   $vars = array(
     'account_type'     => $online_account_type,
@@ -235,7 +251,7 @@ function _culturefeed_ui_users_list($user_objects) {
   return $items;
 }
 
-    
+
 /**
  * Helper function to build facebook privacy toggle
  */

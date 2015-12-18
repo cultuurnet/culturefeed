@@ -19,7 +19,7 @@ require_once 'culturefeed_uitpas.theme.inc';
 function culturefeed_uitpas_culturefeed_login_redirect_destination_alter(&$destination) {
 
   if (isset($_GET['isnewpassholder'])) {
-    $destination = 'registration_confirmation';
+    $destination = 'culturefeed/profile/edit';
   }
 
 }
@@ -46,6 +46,8 @@ function culturefeed_uitpas_views_api() {
  */
 function culturefeed_uitpas_culturefeed_ui_profile_box_dropdown_items(CultureFeed_User $cf_account) {
 
+
+
   if (culturefeed_uitpas_is_passholder()) {
 
     $items['uitpas-divider'] = array(
@@ -61,18 +63,39 @@ function culturefeed_uitpas_culturefeed_ui_profile_box_dropdown_items(CultureFee
     );
 
     $items['uitpas-advantages'] = array(
-      'data' => l(t('UiTPAS advantages'), 'culturefeed/profile/uitpas/promotions'),
+      'data' => l(t('My promotions'), 'culturefeed/profile/uitpas/promotions'),
       'class' => 'uitpas-advantages',
-      'weight' => 10,
+      'weight' => 11,
     );
 
     $items['uitpas-history'] = array(
-      'data' => l(t('UiTPAS history'), 'culturefeed/profile/uitpas/actions'),
+      'data' => l(t('Points history'), 'culturefeed/profile/uitpas/actions'),
       'class' => 'uitpas-history',
-      'weight' => 10,
+      'weight' => 12,
     );
 
     return $items;
+
+  }
+
+  else {
+
+    if (culturefeed_uitpas_not_yet_registered()) {
+
+      $items['uitpas-divider'] = array(
+        'data' => '',
+        'class' => 'divider',
+        'weight' => 9,
+      );
+
+      $items['uitpas-register'] = array(
+        'data' => l(t('Register your UiTPAS'), 'register_uitpas'),
+        'class' => 'uitpas-register',
+        'weight' => 10,
+      );
+
+      return $items;
+    }
 
   }
 
@@ -92,10 +115,8 @@ function culturefeed_uitpas_init() {
       return;
     }
 
-    $uitpas_user = culturefeed_uitpas_get_uitpas_user();
-
-    if ($uitpas_user->user && !$uitpas_user->passholder) {
-      $message = variable_get('culturefeed_uitpas_remind_user_without_uitpas_text', t('You have successfully logged in, but you did not register your UiTPAS yet. Fill in the <a href="@register_url">necessary information</a> to consult your benefits and points balance. <a href="@toggle_url">Do not show this message again</a>.'));
+    if (culturefeed_uitpas_not_yet_registered()) {
+      $message = t('You have successfully logged in, but you did not register your UiTPAS yet. Fill in the <a href="@register_url">necessary information</a> to consult your benefits and points balance. <a href="@toggle_url">Do not show this message again</a>.');
       $args = array(
         '@register_url' => url('register_uitpas'),
         '@toggle_url' => url('culturefeed/uitpas/reminder/toggle'),
@@ -104,12 +125,4 @@ function culturefeed_uitpas_init() {
       drupal_set_message($message, 'warning', FALSE);
     }
   }
-}
-
-
-/**
- * Title callback.
- */
-function culturefeed_uitpas_register_uitpas_title() {
-  return variable_get('culturefeed_uitpas_user_register_confirmation_title', t('Already own an UiTPAS?'));
 }

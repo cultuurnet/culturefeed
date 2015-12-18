@@ -19,21 +19,24 @@ function culturefeed_uitpas_culturefeed_ui_profile_sections() {
 
     $links = array(
       array(
-        'title' => variable_get('culturefeed_uitpas_profile_details_title', t('My UiTPAS')),
+        'title' => t('My UiTPAS'),
         'href' => 'culturefeed/profile/uitpas',
-      ),
-      array(
-        'title' => variable_get('culturefeed_uitpas_profile_details_menu_advantages_title', t('My promotions')),
-        'href' => 'culturefeed/profile/uitpas/promotions',
         'attributes' => array(
-          'title' => variable_get('culturefeed_uitpas_profile_details_menu_advantages_description', t('Find out which promotions and advantages you are entitled to.')),
+          'title' => t('Check your personal UiTPAS data and cardnumber.'),
         ),
       ),
       array(
-        'title' => variable_get('culturefeed_uitpas_profile_details_menu_actions_title', t('Points history')),
+        'title' => t('My promotions'),
+        'href' => 'culturefeed/profile/uitpas/promotions',
+        'attributes' => array(
+          'title' => t('Find out which promotions and advantages you are entitled to.'),
+        ),
+      ),
+      array(
+        'title' => t('Points history'),
         'href' => 'culturefeed/profile/uitpas/actions',
         'attributes' => array(
-          'title' => variable_get('culturefeed_uitpas_profile_details_menu_actions_description', t('An overview of all your UiTPAS actions.')),
+          'title' => t('An overview of all your UiTPAS actions.'),
         ),
       ),
     );
@@ -50,5 +53,12 @@ function culturefeed_uitpas_culturefeed_ui_profile_sections() {
 
   }
 
-}
+  else {
+    return array(
+      'classes' => array('uitpas'),
+      'content' => theme('culturefeed_uitpas_profile_section_register'),
+      'title' => variable_get('culturefeed_uitpas_card_name', 'UiTPAS'),
+    );
+  }
 
+}
