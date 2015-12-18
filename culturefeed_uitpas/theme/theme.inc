@@ -126,6 +126,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages(&$vars) {
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$vars) {
 
   // Advantages.
+  $total = $vars['advantages_total'];
+  $vars['page_elements'] = t('Found %count advantages', array('%count' => $total));
   $vars['profile_advantages_table'] = theme('culturefeed_uitpas_advantages_table', $vars);
 
   // Info.
@@ -164,7 +166,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_promotions(&$v
   $min = $vars['promotions_pager_min'];
   $max = $vars['promotions_pager_max'];
   $total = $vars['promotions_total'];
-  $vars['page_elements'] = $min . ' - ' . $max . t(' of ') . $total . ' ' . t('promotions');
+  $vars['page_elements'] = t('Found %count promotions', array('%count' => $total));
 
   // Promotions.
   $vars['profile_promotions_table'] = theme('culturefeed_uitpas_promotions_table', $vars);
