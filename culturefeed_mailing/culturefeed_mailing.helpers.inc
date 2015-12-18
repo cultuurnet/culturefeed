@@ -91,5 +91,5 @@ function _culturefeed_mailing_set_postal_to_cookie($postal) {
   }
 
   $user_location->postal = $postal;
-  setrawcookie('Drupal_visitor_uitid_userLocation', rawurlencode(json_encode($user_location)));
+  user_cookie_save(array('uitid.userLocation' => json_encode($user_location)));
 }

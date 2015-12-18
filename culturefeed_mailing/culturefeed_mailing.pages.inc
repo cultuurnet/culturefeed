@@ -167,7 +167,7 @@ function culturefeed_mailing_subscribe_form() {
     '#weight' => 10,
   );
 
-  if (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip) {
+  if (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip && empty($postal)) {
     // Attach jquery.cookie library.
     $form['#attached']['library'][] = array('system', 'jquery.cookie');
 

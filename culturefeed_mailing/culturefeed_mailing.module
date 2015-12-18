@@ -472,14 +472,16 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
 
       // Set zipcode with cookie
       // Attach jquery.cookie library.
-      $form['#attached']['library'][] = array('system', 'jquery.cookie');
+      if (empty($zipcode)) {
+        $form['#attached']['library'][] = array('system', 'jquery.cookie');
 
-      // Attach scripts.
-      $form['#attached']['js'][] = array(
-        'data' => drupal_get_path('module', 'culturefeed_mailing') . '/js/culturefeed_mailing.js',
-        'type' => 'file',
-        'weight' => 0,
-      );
+        // Attach scripts.
+        $form['#attached']['js'][] = array(
+          'data' => drupal_get_path('module', 'culturefeed_mailing') . '/js/culturefeed_mailing.js',
+          'type' => 'file',
+          'weight' => 0,
+        );
+      }
 
     }
 
@@ -503,7 +505,6 @@ function culturefeed_mailing_newsletter_block_form_submit($form, &$form_state) {
   if (!empty($form_state['values']['zip'])) {
     $query['zip'] = $form_state['values']['zip'];
     _culturefeed_mailing_set_postal_to_cookie($query['zip']);
-
   }
 
   if (CULTUREFEED_API_LIGHT_ID_ALLOWED) {
