@@ -89,7 +89,7 @@ function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
 
   $id = drupal_html_id('advantages-filter-sort');
 
-  $form['advantages']['#prefix'] = "<div id=\"" . $id . "\">";
+  $form['advantages']['#prefix'] = "<div class=\"filters\" id=\"" . $id . "\">";
   $form['advantages']["#suffix"] = "</div>";
 
   $advantages_intro = t('This page shows all advantages for which UiTPAS holders can save points.');
@@ -108,7 +108,7 @@ function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
   }
 
   if (trim($advantages_intro)) {
-    $form['advantages']['intro']['#markup'] = '<div class="advantages-intro">' . $advantages_intro . '</div>';
+    $form['advantages']['intro']['#markup'] = '<div class="intro intro-advantages">' . $advantages_intro . '</div>';
   }
 
   $form['advantages']['filter'] = array(
@@ -140,10 +140,10 @@ function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
   $filter_reset_link = l(t('Show all'), 'promotions');
 
   if ($filter) {
-    $form['advantages']['title']['#markup'] = '<h2>' . $title . ' <small>' . $options[$filter] . ' (' . $filter_reset_link . ')</small></h2>';
+    $form['advantages']['title']['#markup'] = '<h2 class="results-title">' . $title . ' <small>' . $options[$filter] . ' (' . $filter_reset_link . ')</small></h2>';
   }
   else {
-    $form['advantages']['title']['#markup'] = '<h2>' . $title . ' <small>(' . $filter_reset_link . ')</small></h2>';
+    $form['advantages']['title']['#markup'] = '<h2 class="results-title">' . $title . ' <small>(' . $filter_reset_link . ')</small></h2>';
   }
 
   if (count($advantages['#advantages'])) {
