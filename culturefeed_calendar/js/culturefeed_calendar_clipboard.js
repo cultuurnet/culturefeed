@@ -1,7 +1,7 @@
 (function($) {
 
   Drupal.CultureFeed = Drupal.CultureFeed || {};
-  Drupal.CultureFeed.Calendar = {};
+  Drupal.CultureFeed.Calendar = Drupal.CultureFeed.Calendar || {};
 
   $(document).ready(function() {
     Drupal.CultureFeed.Calendar.copyToClipboard();
