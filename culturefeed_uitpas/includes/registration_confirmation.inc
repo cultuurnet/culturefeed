@@ -11,6 +11,10 @@
 function culturefeed_uitpas_registration_confirmation_get() {
 
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
+  
+  // User is registered so we clear cache
+  cache_clear_all('culturefeed:uitpas:passholder:' . $uitpas_user->user->id, 'cache_culturefeed');
+  cache_clear_all('culturefeed:uitpas:passholders:' . $uitpas_user->user->mbox, 'cache_culturefeed');
 
   return array(
     'intro' => array(
