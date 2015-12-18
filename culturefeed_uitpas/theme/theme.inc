@@ -58,17 +58,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
     $vars['period'] = $period;
   }
 
-  // Location.
-  $locations = array();
-  $location_links = array();
-  foreach ($vars['counters'] as $counter) {
-    $locations[] = $counter['title'];
-    $location_links[] = culturefeed_search_detail_l('actor', $counter['cdbid'], $counter['title'], $counter['title']);
-  }
-  $vars['location'] = t('At') . " " . implode(', ', $locations);
-  $vars['location_raw'] = $locations;
-  $vars['location_links'] = $location_links;
-
   // Provider.
   $vars['provider'] = '';
   if (isset($advantage->owningCardSystem->name)) {
@@ -481,17 +470,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
     $period = t('Until end of stock');
   }
   $vars['period'] = $period;
-
-  // Location.
-  $locations = array();
-  $location_links = array();
-  foreach ($vars['counters'] as $counter) {
-    $locations[] = $counter['title'];
-    $location_links[] = culturefeed_search_detail_l('actor', $counter['cdbid'], $counter['title'], $counter['title']);
-  }
-  $vars['location'] = t('At') . " " . implode(', ', $locations);
-  $vars['location_raw'] = $locations;
-  $vars['location_links'] = $location_links;
 
   // Provider.
   $vars['provider'] = '';
