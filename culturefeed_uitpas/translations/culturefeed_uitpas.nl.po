@@ -22,8 +22,8 @@
 #  ctools/plugins/views_wizard/culturefeed_uitpas_views_wizard_promotions.inc: n/a
 #  includes/advantages.inc: n/a
 #  includes/profile_advantages.inc: n/a
-#  includes/promotions.inc: n/a
 #  theme/theme.inc: n/a
+#  includes/promotions.inc: n/a
 #  includes/event_details_advantages.inc: n/a
 #  includes/synchronization.inc: n/a
 #  includes/promotions_highlight.inc: n/a
@@ -42,8 +42,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-12-17 21:55+0100\n"
-"PO-Revision-Date: 2015-12-17 21:56+0100\n"
+"POT-Creation-Date: 2015-12-18 12:09+0100\n"
+"PO-Revision-Date: 2015-12-18 12:15+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -237,25 +237,12 @@ msgstr "UiTPAS welkomstvoordelen instellingen"
 msgid "Number of advantages to display"
 msgstr "Aantal weer te geven welkomstvoordelen"
 
-#: includes/advantages.inc:97 includes/promotions.inc:134
-msgid "Filter by"
-msgstr "Filter op"
-
-#: includes/advantages.inc:99 includes/profile_advantages.inc:142
-#: includes/profile_promotions.inc:152 includes/promotions.inc:136
-msgid "All card systems"
-msgstr "Alle kaartsystemen"
-
-#: includes/advantages.inc:110 includes/promotions.inc:197
-msgid "Show all advantages"
-msgstr "Toon alle welkomstvoordelen"
-
-#: includes/advantages.inc:119 theme/theme.inc:120
+#: includes/advantages.inc:95 theme/theme.inc:120
 msgid ""
 "This page shows all advantages for which UiTPAS holders can save points."
-msgstr "Deze pagina toont alle welkomstvoordelen voor UiTPAS-houders."
+msgstr "Hier vind je alle welkomstvoordelen voor UiTPAS-houders."
 
-#: includes/advantages.inc:122 includes/promotions.inc:160
+#: includes/advantages.inc:98 includes/promotions.inc:135
 msgid ""
 "Discover <a href=\"@my-promotions\">your personal promotions</a>  and points "
 "balance."
@@ -263,17 +250,30 @@ msgstr ""
 "Bekijk <a href=\"@my-promotions\">je persoonlijke voordelen</a> en "
 "puntensaldo."
 
-#: includes/advantages.inc:125 includes/promotions.inc:163
+#: includes/advantages.inc:101
 msgid ""
 "<a href=\"@register-where\">Find out where</a> to get an UiTPAS or <a href="
 "\"@login\">login</a> and register your UiTPAS to discover your personal "
 "promotions and points balance."
 msgstr ""
-"<a href=\"@register-where\">Ontdek waar</a> je een UiTPAS kan halen of <a "
-"href=\"@login\">meld je aan</a> en activeer je UiTPAS om je persoonlijke "
-"voordelen en puntensaldo te raadplegen."
+"Interesse? <a href=\"@register-where\">Ontdek waar</a> je een UiTPAS kan "
+"halen of <a href=\"@login\">meld je aan</a> en activeer je UiTPAS om je "
+"persoonlijke voordelen en puntensaldo te raadplegen."
 
-#: includes/advantages.inc:133
+#: includes/advantages.inc:110 includes/promotions.inc:153
+msgid "Filter by"
+msgstr "Filter op"
+
+#: includes/advantages.inc:112 includes/profile_advantages.inc:142
+#: includes/profile_promotions.inc:152 includes/promotions.inc:155
+msgid "All card systems"
+msgstr "Alle kaartsystemen"
+
+#: includes/advantages.inc:123 includes/promotions.inc:202
+msgid "Show all advantages"
+msgstr "Toon alle welkomstvoordelen"
+
+#: includes/advantages.inc:133 theme/theme.inc:130
 msgid "Found %count advantages"
 msgstr "%count voordelen gevonden"
 
@@ -281,7 +281,7 @@ msgstr "%count voordelen gevonden"
 msgid "Show all"
 msgstr "Toon alle"
 
-#: includes/advantages.inc:147 includes/promotions.inc:204
+#: includes/advantages.inc:147 includes/promotions.inc:209
 msgid "No results found"
 msgstr "Geen resultaten gevonden"
 
@@ -289,19 +289,19 @@ msgstr "Geen resultaten gevonden"
 msgid "UiTPAS advantages"
 msgstr "UiTPAS welkomstvoordelen"
 
-#: includes/event_details_advantages.inc:56
+#: includes/event_details_advantages.inc:58
 msgid "Promotions at @organisation"
 msgstr "Voordelen bij @organisation"
 
-#: includes/event_details_advantages.inc:57
+#: includes/event_details_advantages.inc:59
 msgid "All promotions"
 msgstr "Alle voordelen"
 
-#: includes/event_details_advantages.inc:81 theme/theme.inc:883
+#: includes/event_details_advantages.inc:83 theme/theme.inc:885
 msgid "You have insufficient points"
 msgstr "Je hebt onvoldoende punten"
 
-#: includes/event_details_advantages.inc:90 theme/theme.inc:453;774;888
+#: includes/event_details_advantages.inc:92 theme/theme.inc:455;776;890
 msgid "1 point"
 msgid_plural "@count points"
 msgstr[0] "1 punt"
@@ -427,7 +427,7 @@ msgstr "Aantal weer te geven voordelen"
 msgid "Title for the promotions"
 msgstr "Voordelen"
 
-#: includes/profile_summary.inc:114 theme/theme.inc:388
+#: includes/profile_summary.inc:114 theme/theme.inc:390
 msgid "Your UiTPAS advantages"
 msgstr "Jouw UiTPAS voordelen"
 
@@ -435,7 +435,7 @@ msgstr "Jouw UiTPAS voordelen"
 msgid "Title for the upcoming promotions"
 msgstr "Wordt verwacht"
 
-#: includes/profile_summary.inc:119 theme/theme.inc:405
+#: includes/profile_summary.inc:119 theme/theme.inc:407
 msgid "Just a few points more for"
 msgstr "Nog enkele punten sparen ..."
 
@@ -443,7 +443,7 @@ msgstr "Nog enkele punten sparen ..."
 msgid "More link text"
 msgstr "Meer informatie"
 
-#: includes/profile_summary.inc:124 theme/theme.inc:422
+#: includes/profile_summary.inc:124 theme/theme.inc:424
 msgid "Show all my promotions"
 msgstr "Toon al mijn UiTPAS voordelen"
 
@@ -460,22 +460,33 @@ msgid "Number of advantages to show above the promotions list"
 msgstr ""
 "Aantal welkomstvoordelen die getoond worden boven lijst met ruilvoordelen."
 
-#: includes/promotions.inc:147;175 includes/promotions_highlight.inc:63
-#: theme/theme.inc:563
+#: includes/promotions.inc:132 theme/theme.inc:157
+msgid ""
+"This page shows all promotions for which UiTPAS holders can save points."
+msgstr "Hier vind je alle voordelen voor UiTPAS-houders."
+
+#: includes/promotions.inc:138
+msgid "<a href=\"@register-where\">Find out where</a> to get an UiTPAS"
+msgstr "<a href=\"@register-where\">Ontdek waar</a> je een UiTPAS kan halen"
+
+#: includes/promotions.inc:140
+msgid ""
+"or <a href=\"@login\">login</a> and register your UiTPAS to discover your "
+"personal promotions and points balance."
+msgstr ""
+"of <a href=\"@login\">meld je aan</a> en activeer je UiTPAS om je "
+"persoonlijke voordelen en puntensaldo te bekijken."
+
+#: includes/promotions.inc:166;180 includes/promotions_highlight.inc:63
+#: theme/theme.inc:565
 msgid "Show all promotions"
 msgstr "Toon alle UiTPAS voordelen"
 
-#: includes/promotions.inc:157 theme/theme.inc:155
-msgid ""
-"This page shows all promotions for which UiTPAS holders can save points."
-msgstr ""
-"Deze pagina toont alle voordelen waar UiTPAS-houders voor kunnen sparen."
-
-#: includes/promotions.inc:174
+#: includes/promotions.inc:179 theme/theme.inc:169
 msgid "Found %count promotions"
 msgstr "%count voordelen gevonden"
 
-#: includes/promotions.inc:231 views/culturefeed_uitpas.views.inc:34;37
+#: includes/promotions.inc:236 views/culturefeed_uitpas.views.inc:34;37
 msgid "UiTPAS promotions"
 msgstr "UiTPAS voordelen"
 
@@ -668,33 +679,33 @@ msgstr "Nog beschikbaar"
 msgid "Conditions"
 msgstr "Voorwaarden"
 
-#: theme/theme.inc:50;470
+#: theme/theme.inc:50;472
 msgid "From !date"
 msgstr "Van !date"
 
-#: theme/theme.inc:56;472
+#: theme/theme.inc:56;474
 msgid "valid until !date"
 msgstr "geldig tot !date"
 
-#: theme/theme.inc:68;490
+#: theme/theme.inc:68;492
 msgid "At"
 msgstr "Bij"
 
-#: theme/theme.inc:75;497
+#: theme/theme.inc:75;499
 msgid "Provided by @provider"
 msgstr "Aangeboden door @provider"
 
-#: theme/theme.inc:86;505
+#: theme/theme.inc:86;507
 msgid "Only available for"
 msgstr "Enkel geldig voor"
 
-#: theme/theme.inc:132
+#: theme/theme.inc:134
 msgid "This page only shows the advantages that you didn't receive yet."
 msgstr ""
 "Deze pagina toont enkel de welkomstvoordelen die je nog niet in ontvangst "
 "nam."
 
-#: theme/theme.inc:133
+#: theme/theme.inc:135
 msgid ""
 "Discover <a href=\"@all-advantages\">all advantages</a> that are currently "
 "available for new UiTPAS holders."
@@ -702,19 +713,11 @@ msgstr ""
 "Ontdek <a href=\"@all-advantages\">alle welkomstvoordelen</a> die momenteel "
 "beschikbaar zijn voor nieuwe UiTPAS-houders."
 
-#: theme/theme.inc:143
+#: theme/theme.inc:145
 msgid "@min - @max of @total promotions"
 msgstr "@min - @max van @total voordelen"
 
-#: theme/theme.inc:167
-msgid " of "
-msgstr " van "
-
-#: theme/theme.inc:167
-msgid "promotions"
-msgstr "voordelen"
-
-#: theme/theme.inc:173
+#: theme/theme.inc:175
 msgid ""
 "This page only shows the promotions you can get with your current points "
 "balance"
@@ -722,46 +725,46 @@ msgstr ""
 "Deze pagina toont enkel de voordelen die je kan omruilen met je huidige "
 "puntensaldo"
 
-#: theme/theme.inc:174
+#: theme/theme.inc:176
 msgid ""
 "Discover <a href=\"@all-promotions\">all promotions</a> you can save for."
 msgstr ""
 "Ontdek <a href=\"@all-promotions\">alle voordelen</a> waar je voor kan "
 "sparen."
 
-#: theme/theme.inc:197
+#: theme/theme.inc:199
 msgid "This page shows an overview of all your UiTPAS actions"
 msgstr "Een overzicht van de plaatsen waar je je UiTPAS reeds gebruikte"
 
-#: theme/theme.inc:200
+#: theme/theme.inc:202
 msgid "Date"
 msgstr "Datum"
 
-#: theme/theme.inc:200
+#: theme/theme.inc:202
 msgid "Action"
 msgstr "Actie"
 
-#: theme/theme.inc:200 views/culturefeed_uitpas.views.inc:68
+#: theme/theme.inc:202 views/culturefeed_uitpas.views.inc:68
 msgid "Points"
 msgstr "Punten"
 
-#: theme/theme.inc:210
+#: theme/theme.inc:212
 msgid "at @location"
 msgstr "bij @location"
 
-#: theme/theme.inc:214
+#: theme/theme.inc:216
 msgid "@formatted_count point"
 msgstr "@formatted_count punt"
 
-#: theme/theme.inc:215
+#: theme/theme.inc:217
 msgid "@formatted_count points"
 msgstr "@formatted_count punten"
 
-#: theme/theme.inc:232;643
+#: theme/theme.inc:234;645
 msgid "No results found."
 msgstr "Geen resultaten gevonden."
 
-#: theme/theme.inc:260
+#: theme/theme.inc:262
 msgid ""
 "This page shows the UiTPAS card(s) you own and the personal information that "
 "has been registered when buying your card."
@@ -769,23 +772,23 @@ msgstr ""
 "Alle details van je UiTPAS-kaart(en) en de persoonlijke gegevens waarmee je "
 "UiTPAS geactiveerd werd."
 
-#: theme/theme.inc:275;306
+#: theme/theme.inc:277;308
 msgid "valid till !date"
 msgstr "Geldig tot !date"
 
-#: theme/theme.inc:276
+#: theme/theme.inc:278
 msgid "Opportunity status"
 msgstr "Kansentarief"
 
-#: theme/theme.inc:283
+#: theme/theme.inc:285
 msgid "UiTPAS number(s)"
 msgstr "UiTPAS nummer(s)"
 
-#: theme/theme.inc:289
+#: theme/theme.inc:291
 msgid "My personal data"
 msgstr "Mijn persoonlijke gegevens"
 
-#: theme/theme.inc:290
+#: theme/theme.inc:292
 msgid ""
 "This information has been read from your eID and cannot be changed. Updates "
 "can only be done at official <a href=\"@counters-url\">UiTPAS registration "
@@ -795,31 +798,31 @@ msgstr ""
 "Wijzigingen kunnen enkel uitgevoerd worden in één van de <a href=\"@counters-"
 "url\">UiTPAS registratiebalies</a>."
 
-#: theme/theme.inc:294
+#: theme/theme.inc:296
 msgid "Status"
 msgstr "Status"
 
-#: theme/theme.inc:367;684
+#: theme/theme.inc:369;686
 msgid "point"
 msgstr "punt"
 
-#: theme/theme.inc:368;685
+#: theme/theme.inc:370;687
 msgid "points"
 msgstr "punten"
 
-#: theme/theme.inc:397;414
+#: theme/theme.inc:399;416
 msgid "!points points"
 msgstr "!points punten"
 
-#: theme/theme.inc:476
+#: theme/theme.inc:478
 msgid "Valid until !date"
 msgstr "Geldig tot !date"
 
-#: theme/theme.inc:479;769;772;877
+#: theme/theme.inc:481;771;774;879
 msgid "Until end of stock"
 msgstr "Zolang voorraad strekt"
 
-#: theme/theme.inc:651
+#: theme/theme.inc:653
 msgid ""
 "You can get an UiTPAS at one of these registration counters. An UiTPAS costs "
 "€ 5. Younger than 18 years? Then you'll pay € 2. For people with an "
@@ -831,7 +834,7 @@ msgstr ""
 "kansenstatuut is de UiTPAS gratis. Voor de registratie van een UiTPAS heb je "
 "een eID nodig."
 
-#: theme/theme.inc:653
+#: theme/theme.inc:655
 msgid ""
 "Important: you'll need your eID to register your UiTPAS. <a href=\"@read-more"
 "\">Read more</a> about the UiTPAS project."
@@ -839,35 +842,35 @@ msgstr ""
 "Belangrijk: voor de aankoop van een UiTPAS heb je je eID nodig. <a href="
 "\"@read-more\">Lees meer</a> over het UiTPAS-project."
 
-#: theme/theme.inc:678
+#: theme/theme.inc:680
 msgid "Anonymous"
 msgstr "Anoniem"
 
-#: theme/theme.inc:684;685
+#: theme/theme.inc:686;687
 msgid "saved"
 msgstr "spaarde"
 
-#: theme/theme.inc:684;685
+#: theme/theme.inc:686;687
 msgid "at"
 msgstr "bij"
 
-#: theme/theme.inc:684;685
+#: theme/theme.inc:686;687
 msgid "ago"
 msgstr "geleden"
 
-#: theme/theme.inc:775
+#: theme/theme.inc:777
 msgid "This is a welcome advantage"
 msgstr "Dit is een welkomstvoordeel"
 
-#: theme/theme.inc:866
+#: theme/theme.inc:868
 msgid "not any longer in stock"
 msgstr "Niet meer op voorraad"
 
-#: theme/theme.inc:870
+#: theme/theme.inc:872
 msgid "Until @date"
 msgstr "Tot @date"
 
-#: theme/theme.inc:873
+#: theme/theme.inc:875
 msgid "From @date"
 msgstr "Vanaf @date"
 

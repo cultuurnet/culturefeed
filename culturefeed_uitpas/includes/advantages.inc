@@ -98,7 +98,13 @@ function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
    $advantages_intro .= ' '. t('Discover <a href="@my-promotions">your personal promotions</a>  and points balance.', array('@my-promotions' => url('culturefeed/profile/uitpas/promotions')));
   }
   else {
-   $advantages_intro .= ' '. t('<a href="@register-where">Find out where</a> to get an UiTPAS or <a href="@login">login</a> and register your UiTPAS to discover your personal promotions and points balance.', array('@register-where' => url('register_where'), '@login' => url('culturefeed/oauth/connect', array('query' => array('destination' => 'register_uitpas')))));
+    $advantages_intro .= ' '. t('<a href="@register-where">Find out where</a> to get an UiTPAS', array('@register-where' => url('register_where'))); 
+    if (!culturefeed_is_culturefeed_user()) {
+      $advantages_intro .= ' '. t('or <a href="@login">login</a> and register your UiTPAS to discover your personal promotions and points balance.', array('@login' => url('culturefeed/oauth/connect', array('query' => array('destination' => 'register_uitpas'))))); 
+    }
+    else {
+      $advantages_intro .= '.';
+    }
   }
 
   if (trim($advantages_intro)) {
