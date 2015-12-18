@@ -89,7 +89,7 @@ function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
 
   $id = drupal_html_id('advantages-filter-sort');
 
-  $form['advantages']['#prefix'] = "<div class=\"filters\" id=\"" . $id . "\">";
+  $form['advantages']['#prefix'] = "<div class=\"filters filters-regions\" id=\"" . $id . "\">";
   $form['advantages']["#suffix"] = "</div>";
 
   $advantages_intro = t('This page shows all advantages for which UiTPAS holders can save points.');
