@@ -11,7 +11,7 @@
 function culturefeed_uitpas_user_register_get() {
 
   if (culturefeed_uitpas_is_passholder()) {
-    drupal_goto('/culturefeed/profile/uitpas');
+    drupal_goto('culturefeed/profile/uitpas');
   }
   else {
     $uitpas_user = culturefeed_uitpas_get_uitpas_user();
