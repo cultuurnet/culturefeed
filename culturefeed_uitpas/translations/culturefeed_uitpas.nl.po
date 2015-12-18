@@ -248,12 +248,12 @@ msgstr "Alle kaartsystemen"
 
 #: includes/advantages.inc:110 includes/promotions.inc:197
 msgid "Show all advantages"
-msgstr "Toon alle welkomstvoordeelen"
+msgstr "Toon alle welkomstvoordelen"
 
 #: includes/advantages.inc:119 theme/theme.inc:120
 msgid ""
 "This page shows all advantages for which UiTPAS holders can save points."
-msgstr "Deze pagina toont alle welkomstvoordeelen voor UiTPAS-houders."
+msgstr "Deze pagina toont alle welkomstvoordelen voor UiTPAS-houders."
 
 #: includes/advantages.inc:122 includes/promotions.inc:160
 msgid ""
@@ -313,7 +313,7 @@ msgstr "Mijn voordelen"
 
 #: includes/profile_advantages.inc:86
 msgid "My UiTPAS advantages settings"
-msgstr "Mijn UiTPAS welkomstvoordeelen instellingen"
+msgstr "Mijn UiTPAS welkomstvoordelen instellingen"
 
 #: includes/profile_advantages.inc:119 includes/profile_promotions.inc:129
 msgid "My Promotions"
@@ -691,7 +691,7 @@ msgstr "Enkel geldig voor"
 #: theme/theme.inc:132
 msgid "This page only shows the advantages that you didn't receive yet."
 msgstr ""
-"Deze pagina toont enkel de welkomstvoordeelen die je nog niet in ontvangst "
+"Deze pagina toont enkel de welkomstvoordelen die je nog niet in ontvangst "
 "nam."
 
 #: theme/theme.inc:133
@@ -699,7 +699,7 @@ msgid ""
 "Discover <a href=\"@all-advantages\">all advantages</a> that are currently "
 "available for new UiTPAS holders."
 msgstr ""
-"Ontdek <a href=\"@all-advantages\">alle welkomstvoordeelen</a> die momenteel "
+"Ontdek <a href=\"@all-advantages\">alle welkomstvoordelen</a> die momenteel "
 "beschikbaar zijn voor nieuwe UiTPAS-houders."
 
 #: theme/theme.inc:143
