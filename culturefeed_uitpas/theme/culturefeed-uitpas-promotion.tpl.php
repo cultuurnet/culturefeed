@@ -7,8 +7,8 @@
  * - $points: The number of points.
  * - $image
  * - $period: The period.
- * - $location: The location.
- * - $provider: The provider.
+ * - $counters: The providing organisations.
+ * - $provider: The providing cardsystem.
  * - $available: The availability.
  * - $description1.
  * - $description2.
@@ -49,9 +49,6 @@
   <div class="how-to-exchange">
     <button class="show-exchange-info" onclick="Drupal.CultureFeed.UiTPASToggleExchangeInfo()"><?php print t('How to exchange'); ?></button>
     <div class="exchange-info">
-      <div class="locations">
-        <?php print t('Offered by') . ' ' . implode(', ', $location_links); ?>
-      </div>
       <div class="description2"><?php print $description2; ?></div>
     </div>
   </div>
