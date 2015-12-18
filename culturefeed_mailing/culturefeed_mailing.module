@@ -4,10 +4,10 @@
  * Creates a tool to subscribe to and construct mailings on CultureFeed.
  */
 
-require_once('culturefeed_mailing.helpers.inc');
+require_once 'culturefeed_mailing.helpers.inc';
 
 /**
- * Implements hook_permission
+ * Implements hook_permission().
  */
 function culturefeed_mailing_permission() {
   return array(
@@ -43,7 +43,7 @@ function culturefeed_mailing_menu() {
   );
 
   $items['subscribe'] = array(
-    'title' =>  'Subscribe to our newsletter',
+    'title' => 'Subscribe to our newsletter',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_mailing_subscribe_form'),
     'access arguments' => array('subscribe to mailings'),
@@ -51,7 +51,7 @@ function culturefeed_mailing_menu() {
   );
 
   $items['subscribe/subscribed'] = array(
-    'title' =>  'Subscribed to our newsletter',
+    'title' => 'Subscribed to our newsletter',
     'page callback' => 'culturefeed_mailing_user_subscribed',
     'access arguments' => array('subscribe to mailings'),
     'file' => 'culturefeed_mailing.pages.inc',
@@ -206,32 +206,80 @@ function culturefeed_mailing_theme() {
       'file' => 'theme.inc',
     ),
     'culturefeed_mailing_content_block_1' => array(
-      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'variables' => array(
+        'url_title' => NULL,
+        'url_image' => NULL,
+        'url_readon' => NULL,
+        'image' => NULL,
+        'title' => NULL,
+        'intro' => NULL,
+        'link_title' => NULL,
+      ),
       'template' => 'culturefeed-mailing-content-block-1',
       'path' => $path,
     ),
     'culturefeed_mailing_content_block_2' => array(
-      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'variables' => array(
+        'url_title' => NULL,
+        'url_image' => NULL,
+        'url_readon' => NULL,
+        'image' => NULL,
+        'title' => NULL,
+        'intro' => NULL,
+        'link_title' => NULL,
+      ),
       'template' => 'culturefeed-mailing-content-block-2',
       'path' => $path,
     ),
     'culturefeed_mailing_content_block_3' => array(
-      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'variables' => array(
+        'url_title' => NULL,
+        'url_image' => NULL,
+        'url_readon' => NULL,
+        'image' => NULL,
+        'title' => NULL,
+        'intro' => NULL,
+        'link_title' => NULL,
+      ),
       'template' => 'culturefeed-mailing-content-block-3',
       'path' => $path,
     ),
     'culturefeed_mailing_content_block_4' => array(
-      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'variables' => array(
+        'url_title' => NULL,
+        'url_image' => NULL,
+        'url_readon' => NULL,
+        'image' => NULL,
+        'title' => NULL,
+        'intro' => NULL,
+        'link_title' => NULL,
+      ),
       'template' => 'culturefeed-mailing-content-block-4',
       'path' => $path,
     ),
     'culturefeed_mailing_content_block_5' => array(
-      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'variables' => array(
+        'url_title' => NULL,
+        'url_image' => NULL,
+        'url_readon' => NULL,
+        'image' => NULL,
+        'title' => NULL,
+        'intro' => NULL,
+        'link_title' => NULL,
+      ),
       'template' => 'culturefeed-mailing-content-block-5',
       'path' => $path,
     ),
     'culturefeed_mailing_content_block_6' => array(
-      'variables' => array('url_title' => NULL, 'url_image' => NULL, 'url_readon' => NULL, 'image' => NULL, 'title' => NULL, 'intro' => NULL, 'link_title' => NULL),
+      'variables' => array(
+        'url_title' => NULL,
+        'url_image' => NULL,
+        'url_readon' => NULL,
+        'image' => NULL,
+        'title' => NULL,
+        'intro' => NULL,
+        'link_title' => NULL,
+      ),
       'template' => 'culturefeed-mailing-content-block-6',
       'path' => $path,
     ),
@@ -296,7 +344,7 @@ function culturefeed_mailing_block_configure($delta) {
     $form['uitid_light'] = array(
       '#title' => t('UiTiD Light settings.'),
       '#type' => 'fieldset',
-      '#access' => CULTUREFEED_API_LIGHT_ID_ALLOWED
+      '#access' => CULTUREFEED_API_LIGHT_ID_ALLOWED,
     );
 
     $form['uitid_light']['show_zip_code'] = array(
@@ -346,8 +394,8 @@ function culturefeed_mailing_culturefeed_ui_profile_menu() {
  * Subscribe a given user to a mailing.
  */
 function culturefeed_mailing_subscribe_user($account, $mailing_id, $use_auth = TRUE) {
-    DrupalCultureFeed::subscribeToMailing($account->id, $mailing_id, $use_auth);
-    module_invoke_all('culturefeed_mailing_user_subscribed', $account);
+  DrupalCultureFeed::subscribeToMailing($account->id, $mailing_id, $use_auth);
+  module_invoke_all('culturefeed_mailing_user_subscribed', $account);
 }
 
 /**
@@ -385,7 +433,7 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
     if ($account) {
       $email = $account->mbox;
       $disabled = TRUE;
-      $description = '<span>' . t('Change your email address <a href="!url">here</a>.', array('!url' => url('culturefeed/account/edit'))) .'</span>';
+      $description = '<span>' . t('Change your email address <a href="!url">here</a>.', array('!url' => url('culturefeed/account/edit'))) . '</span>';
     }
     else {
       $email = '';
@@ -405,23 +453,35 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
 
     if ($show_zip && CULTUREFEED_API_LIGHT_ID_ALLOWED) {
 
-      // Set defaults for the zipcode field.
-      $cookie_zip = _culturefeed_mailing_get_postal_from_cookie();
+      $zipcode = '';
       if ($account) {
-        $zipcode = (!empty($account->zip) ? $account->zip : $cookie_zip);
-      }
-      else {
-        $zipcode = $cookie_zip;
+        $zipcode = !empty($account->zip) ? $account->zip : '';
       }
 
       $form['zip'] = array(
         '#type' => 'textfield',
         '#title' => t('Zipcode'),
         '#required' => FALSE,
-        //'#description' => t('Zipcode'),
+        // '#description' => t('Zipcode'),
         '#size' => 40,
         '#default_value' => $zipcode,
+        '#attributes' => array(
+          'class' => array('zip-field'),
+        ),
       );
+
+      // Set zipcode with cookie
+      // Attach jquery.cookie library.
+      if (empty($zipcode)) {
+        $form['#attached']['library'][] = array('system', 'jquery.cookie');
+
+        // Attach scripts.
+        $form['#attached']['js'][] = array(
+          'data' => drupal_get_path('module', 'culturefeed_mailing') . '/js/culturefeed_mailing.js',
+          'type' => 'file',
+          'weight' => 0,
+        );
+      }
 
     }
 
@@ -431,7 +491,6 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
     );
 
   }
-
 
   return $form;
 
@@ -444,9 +503,8 @@ function culturefeed_mailing_newsletter_block_form_submit($form, &$form_state) {
 
   $query = array('email' => $form_state['values']['mail']);
   if (!empty($form_state['values']['zip'])) {
-    $query['zip'] =  $form_state['values']['zip'];
+    $query['zip'] = $form_state['values']['zip'];
     _culturefeed_mailing_set_postal_to_cookie($query['zip']);
-
   }
 
   if (CULTUREFEED_API_LIGHT_ID_ALLOWED) {
@@ -486,8 +544,9 @@ function culturefeed_mailing_newsletter_block_form_submit($form, &$form_state) {
 /**
  * Load a culturefeed mailing.
  *
- * @param $id
- *   Mailing id
+ * @param int $id
+ *   Mailing id.
+ *
  * @return Culturefeed_Mailing
  *   Returns a mailing if found, else FALSE.
  */
@@ -503,8 +562,9 @@ function culturefeed_mailing_load($id) {
 /**
  * Load a culturefeed template.
  *
- * @param $id
- *   Template id
+ * @param int $id
+ *   Template id.
+ *
  * @return CultureFeed_Template
  *   Returns a template if found, else FALSE.
  */
