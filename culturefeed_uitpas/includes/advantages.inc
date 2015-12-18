@@ -92,6 +92,19 @@ function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
   $form['advantages']['#prefix'] = "<div id=\"" . $id . "\">";
   $form['advantages']["#suffix"] = "</div>";
 
+  $advantages_intro = t('This page shows all advantages for which UiTPAS holders can save points.');
+
+  if (culturefeed_uitpas_is_passholder()) {
+   $advantages_intro .= ' '. t('Discover <a href="@my-promotions">your personal promotions</a>  and points balance.', array('@my-promotions' => url('culturefeed/profile/uitpas/promotions')));
+  }
+  else {
+   $advantages_intro .= ' '. t('<a href="@register-where">Find out where</a> to get an UiTPAS or <a href="@login">login</a> and register your UiTPAS to discover your personal promotions and points balance.', array('@register-where' => url('register_where'), '@login' => url('culturefeed/oauth/connect', array('query' => array('destination' => 'register_uitpas')))));
+  }
+
+  if (trim($advantages_intro)) {
+    $form['advantages']['intro']['#markup'] = '<div class="advantages-intro">' . $advantages_intro . '</div>';
+  }
+
   $form['advantages']['filter'] = array(
     '#type' => 'radios',
     '#title' => t('Filter by'),
@@ -115,19 +128,6 @@ function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
 
   $form['advantages']['filter']['#prefix'] = '<div class="form-group">';
   $form['advantages']['filter']['#suffix'] = $filter_reset_link . '</div>';
-
-  $advantages_intro = t('This page shows all advantages for which UiTPAS holders can save points.');
-
-  if (culturefeed_uitpas_is_passholder()) {
-   $advantages_intro .= ' '. t('Discover <a href="@my-promotions">your personal promotions</a>  and points balance.', array('@my-promotions' => url('culturefeed/profile/uitpas/promotions')));
-  }
-  else {
-   $advantages_intro .= ' '. t('<a href="@register-where">Find out where</a> to get an UiTPAS or <a href="@login">login</a> and register your UiTPAS to discover your personal promotions and points balance.', array('@register-where' => url('register_where'), '@login' => url('culturefeed/oauth/connect', array('query' => array('destination' => 'culturefeed/profile/edit')))));
-  }
-
-  if (trim($advantages_intro)) {
-    $form['advantages']['intro']['#markup'] = '<div class="advantages-intro">' . $advantages_intro . '</div>';
-  }
 
   $total = $advantages['#advantages_total'];
   $title = t('Found %count advantages', array('%count' => $total));
