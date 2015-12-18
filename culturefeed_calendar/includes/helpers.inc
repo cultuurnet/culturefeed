@@ -85,6 +85,9 @@ function culturefeed_calendar_get_culturefeed_user_activities($use_search, $user
     watchdog_exception('culturefeed_calendar', $e);
   }
 
+  // Filter activities to make sure there are no duplicates.
+  $activities->objects = culturefeed_calendar_filter_duplicate_activities($activities->objects);
+
   return $activities;
 
 }
@@ -173,7 +176,7 @@ function culturefeed_calendar_render_calendar_buttons($item) {
 
   $authenticated = DrupalCultureFeed::isCultureFeedUser();
   $id = $item->getId();
-  $actions = array('view', 'add');
+  $actions = array('view', 'add', 'like');
   $buttons = array();
   $button = array();
 
@@ -191,55 +194,71 @@ function culturefeed_calendar_render_calendar_buttons($item) {
   }
 
   $event_is_passed = FALSE;
+
   if ($item->getType() == 'event') {
     $event = $item->getEntity();
     if ($event instanceof CultureFeed_Cdb_Item_Event) {
       $objDateTime = new DateTime('NOW');
       $calendar = $event->getCalendar();
+
       if ($calendar instanceof CultureFeed_Cdb_Data_Calendar_TimestampList || $calendar instanceof CultureFeed_Cdb_Data_Calendar_PeriodList) {
 
         // Check if 1 of the items is still in the future.
         $event_is_passed = TRUE;
         foreach ($calendar as $calendar_item) {
-          if ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period && DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() >= $objDateTime->getTimestamp()) {
+
+          if (  $calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period
+                && DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() >= $objDateTime->getTimestamp() ) {
             $event_is_passed = FALSE;
             break;
           }
-          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp && DateTime::createFromFormat('Y-m-d', $calendar_item->getDate())->getTimestamp() >= $objDateTime->getTimestamp()) {
-            $event_is_passed = FALSE;
-            break;
+          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp)
+          {
+            $endtime = "23:59:59";
+
+            if(!empty($calendar_item->getEndTime())) {
+              if($calendar_item->getEndTime() !== "00:00:00") {
+                $endtime = $calendar_item->getEndTime();
+              }
+            }
+
+            if(DateTime::createFromFormat('Y-m-d H:i:s', $calendar_item->getDate() . " " . $endtime)->getTimestamp()  >= $objDateTime->getTimestamp()) {
+              $event_is_passed = FALSE;
+              break;
+            }
           }
         }
-
       }
     }
   }
 
-  // When event is passed, show only a message in the footer.
+  // When event is passed, show only a message aside.
   if ($event_is_passed) {
-    $locations = array('footer');
+    $locations = array('aside');
   }
   else {
-    $locations = array('content', 'footer');
+    // else show message in content and aside
+    $locations = array('content', 'aside');
   }
+
+  // locations = aside and/or content
   foreach ($locations as $location) {
-
     $button['location'] = $location;
-
     // Show the correct button for authenticated users.
     if ($authenticated) {
-
       if (in_array($id, $ids_to_check)) {
-        $action = 'view';
+        $actions = array('view');
       }
       else {
-        $action = 'add';
+        $actions = array('like', 'add');
       }
 
-      $button['action'] = $action;
-      $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated, 'closed' => $event_is_passed));
+      foreach($actions as $action) {
+        $button['action'] = $action;
+        $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated, 'closed' => $event_is_passed));
+      }
     }
-    // Show both buttons for anonymous users. JS will show the correct one.
+    // Show all buttons for anonymous users. JS will show the correct one.
     else {
       foreach ($actions as $action) {
         $button['action'] = $action;
@@ -260,9 +279,7 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
   if ($authenticated) {
     $activity = new CultureFeed_Activity();
     if (!empty($date)) {
-      $selection = new stdClass();
-      $selection->calendar_date = strtotime($date);
-      $activity->value = json_encode($selection);
+      $activity->calendarDate = gmdate('c', strtotime($date));
       $activity->type = CultureFeed_Activity::TYPE_IK_GA;
     }
     else {
@@ -280,9 +297,7 @@ function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
     $activity = new stdClass();
 
     if (!empty($date)) {
-      $selection = new stdClass();
-      $selection->calendar_date = strtotime($date);
-      $activity->value = json_encode($selection);
+      $activity->calendarDate = gmdate('c', strtotime($date));
       $activity->type = CultureFeed_Activity::TYPE_IK_GA;
     }
     else {
@@ -409,19 +424,121 @@ function culturefeed_calendar_delete_calendar_event_cookie($activity) {
  */
 function culturefeed_calendar_get_selected_date($activity) {
 
-  if (isset($activity->value)) {
+  if (!empty($activity->calendarDate)) {
+    return $activity->calendarDate;
+  }
+  else if (!empty($activity->value) ) {
     $calendar_info = json_decode($activity->value);
     if ($calendar_info && !empty($calendar_info->calendar_date)) {
       return $calendar_info->calendar_date;
     }
   }
-
 }
 
 /**
  * Helper function to sort activities by date.
  */
-function culturefeed_calendar_sort_by_date( $a, $b ) {
+function culturefeed_calendar_sort_by_date($a, $b) {
 
-    return json_decode($a->value)->calendar_date - json_decode($b->value)->calendar_date;
+  $calendar_date_a = 0;
+  $calendar_date_b = 0;
+
+  // Calendar date property of a exists.
+  if (!empty($a->calendarDate)) {
+    $calendar_date_a = $a->calendarDate;
+  }
+  // Calendar date a is stored in value.
+  elseif (!empty($calendar_date_a->value)) {
+    $json_value_a = json_decode($a->value);
+    if ($json_value_a && !empty($json_value_a->calendar_date)) {
+      $calendar_date_a = $json_value_a->calendar_date;
+    }
+  }
+
+  // Calendar date property of b exists.
+  if (!empty($b->calendarDate)) {
+    $calendar_date_b = $b->calendarDate;
+  }
+  // Calendar date b is stored in value.
+  elseif (!empty($calendar_date_b->value)) {
+    $json_value_b = json_decode($b->value);
+    if ($json_value_b && !empty($json_value_b->calendar_date)) {
+      $calendar_date_b = $json_value_b->calendar_date;
+    }
+  }
+
+  return $calendar_date_a - $calendar_date_b;
+
+}
+
+/**
+ * Helper function to filter out duplicate activities.
+ */
+function culturefeed_calendar_filter_duplicate_activities($activities) {
+  $filtered_activities = array();
+
+  foreach ($activities as $key => $activity) {
+
+    // First time this activity is found.
+    if (empty($filtered_activities[$activity->nodeId])) {
+      $filtered_activities[$activity->nodeId] = $activity;
+    }
+
+    // go's are more important then like's
+    else if ($activity->type == CultureFeed_Activity::TYPE_IK_GA && $filtered_activities[$activity->nodeId]->type == CultureFeed_Activity::TYPE_LIKE) {
+      $filtered_activities[$activity->nodeId] = $activity;
+    }
+
+    // When type is go. Activities with a date are more important.
+    else if ($activity->type == CultureFeed_Activity::TYPE_IK_GA && (!empty($activity->calendarDate) || !empty($activity->value))) {
+      $filtered_activities[$activity->nodeId] = $activity;
+    }
+  }
+
+  return $filtered_activities;
+}
+
+/**
+ * Helper function to read cookie betaCalendar (in progress)
+ */
+function culturefeed_calendar_enabled() {
+  return true;
+  /*
+  if($_COOKIE['betaCalendar']=="true") {
+    return true;
+  }
+  else {
+    return false;
+  }*/
+}
+
+/**
+ * Helper function to get the url of the calendar
+ */
+function culturefeed_calendar_get_url() {
+  global $base_url;
+  return $base_url . '/culturefeed/calendar';
+}
+
+/*
+ * Helper function to check if an activity is finished (date not between now and now + 11 months)
+ */
+function culturefeed_calendar_activity_is_finished($activity) {
+  if ($selected_date = culturefeed_calendar_get_selected_date($activity)) {
+
+    // Only show activities between current month and 11 months in the future
+    $activity_month = format_date($selected_date, 'custom', 'mY');
+    $current_month = format_date(REQUEST_TIME, 'custom', 'mY');
+
+    if ($activity_month < $current_month || $activity_month > $current_month+11) {
+      return TRUE;
+    }
+
+  }
+  else {
+    return TRUE;
+  }
+
+  return FALSE;
+
 }

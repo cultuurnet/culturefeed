@@ -93,11 +93,20 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
 
     if ($cf_user->privacyConfig->calendarId == CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC) {
       $variables['shared'] = TRUE;
+      $variables['data_content'] = theme('culturefeed_calendar_share_page');
     }
     else {
       $variables['shared'] = FALSE;
       $variables['data_content'] = theme('culturefeed_calendar_share_page');
     }
+  }
+
+
+  if ($cf_user && $cf_user->privacyConfig->calendarId == CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC) {
+
+    $variables['calendar_share_path'] = 'culturefeed/calendar/' . $cf_user->id;
+    $variables['calendar_share_url'] = url($variables['calendar_share_path'], array('absolute' => TRUE));
+
   }
 
 }
@@ -134,7 +143,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
       $variables['button']['description'] = t('This event is added to your calendar.');
       $variables['button']['text'] = t('View calendar');
     }
-    elseif ($variables['button']['location'] == 'footer') {
+    elseif ($variables['button']['location'] == 'aside') {
       $variables['button']['text'] = t('to your calendar');
     }
 
@@ -149,10 +158,27 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
 
     $variables['button']['path'] = 'culturefeed/calendar/add/' . $variables['button']['item_id'] . '/nojs';
     if ($variables['button']['location'] == 'content') {
-      $variables['button']['text'] = t('Add to my calendar');
+      $variables['button']['text'] = t('Going');
     }
-    elseif ($variables['button']['location'] == 'footer') {
-      $variables['button']['text'] = t('Add to calendar');
+    elseif ($variables['button']['location'] == 'aside') {
+      $variables['button']['text'] = t('Going');
+    }
+
+  }
+  elseif ($variables['button']['action'] == 'like'){
+
+    $variables['classes_array'][] = 'btn-like-calendar';
+
+    $variables['button']['options'] = array(
+      'query' => drupal_get_destination(),
+    );
+
+    $variables['button']['path'] = 'culturefeed/calendar/like/' . $variables['button']['item_id'] . '/nojs';
+    if ($variables['button']['location'] == 'content') {
+      $variables['button']['text'] = t('Interested');
+    }
+    elseif ($variables['button']['location'] == 'aside') {
+      $variables['button']['text'] = t('Interested');
     }
 
   }
@@ -190,6 +216,10 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_activities_going(&
   $variables['months'] = array_fill_keys(array_map(function($element){return $element['full_month'];}, $months), array());
 
   foreach ($activities as $activity) {
+    if (culturefeed_calendar_activity_is_finished($activity)) {
+      continue;
+    }
+
     if ($selected_date = culturefeed_calendar_get_selected_date($activity)) {
       $month = format_date($selected_date, 'custom', 'F');
       $variables['months'][$month][] = $activity;
@@ -316,16 +346,3 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_share_page(&$varia
 
   }
 }
-
-/**
- * Preprocess the calendar settings page.
- *
- * @param type $variables
- */
-function culturefeed_calendar_preprocess_culturefeed_calendar_settings_page(&$variables) {
-  global $base_url;
-  $variables['back_to_calendar_url'] =  $base_url . '/culturefeed/calendar';
-
-}
-
-

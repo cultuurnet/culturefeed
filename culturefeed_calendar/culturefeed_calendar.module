@@ -14,6 +14,9 @@ function culturefeed_calendar_init() {
     drupal_add_library('system', 'jquery.cookie');
     drupal_add_js(drupal_get_path('module', 'culturefeed_calendar') . '/js/culturefeed_calendar.js');
   }
+  drupal_add_js(drupal_get_path('module', 'culturefeed_calendar') . '/js/clipboard.min.js');
+  drupal_add_js(drupal_get_path('module', 'culturefeed_calendar') . '/js/culturefeed_calendar_clipboard.js');
+
 }
 
 /**
@@ -53,6 +56,14 @@ function culturefeed_calendar_menu() {
   $items['culturefeed/calendar/add/%culturefeed_agenda_event/%'] = array(
     'title' => t('Add to calendar'),
     'page callback' => 'culturefeed_calendar_add_to_calendar',
+    'page arguments' => array(3, 4),
+    'access arguments' => array('access content'),
+    'file' => 'includes/pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['culturefeed/calendar/like/%culturefeed_agenda_event/%'] = array(
+    'title' => t('I\'m interested'),
+    'page callback' => 'culturefeed_calendar_like',
     'page arguments' => array(3, 4),
     'access arguments' => array('access content'),
     'file' => 'includes/pages.inc',
@@ -197,11 +208,13 @@ function culturefeed_calendar_culturefeed_ui_profile_menu() {
 function culturefeed_calendar_culturefeed_ui_profile_box_dropdown_items() {
   $items = array();
 
-  $items['calendar'] = array(
-    'data' => l(t('My calendar'), 'culturefeed/calendar'),
-    'class' => 'calendar',
-    'weight' => -16,
-  );
+  if(culturefeed_calendar_enabled()):
+    $items['calendar'] = array(
+      'data' => l(t('My calendar'), 'culturefeed/calendar'),
+      'class' => 'calendar',
+      'weight' => -16,
+    );
+  endif;
 
   return $items;
 }
