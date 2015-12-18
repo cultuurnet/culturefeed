@@ -140,7 +140,7 @@ function culturefeed_uitpas_profile_promotions_filter_sort($form, $form_state) {
   $options = culturefeed_uitpas_get_user_card_systems_as_options();
 
   $id = drupal_html_id('profile-promotions-filter-sort');
-  $form['profile_promotions']['#prefix'] = '<div id="' . $id . '">';
+  $form['profile_promotions']['#prefix'] = '<div class="filters" id="' . $id . '">';
   $form['profile_promotions']["#suffix"] = '</div>';
 
   $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : (isset($_GET['filter']) ? $_GET['filter'] : NULL);
