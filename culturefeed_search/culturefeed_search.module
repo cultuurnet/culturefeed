@@ -416,7 +416,7 @@ function culturefeed_search_get_search_url_query($search_query) {
     // If first part is numeric: do location search.
     if (is_numeric($term_parts[0])) {
       $query['regId'] = $locations[0];
-      $query['location'] = $term->name;
+      $query['location'] = $term;
     }
     // Otherwise set flandersregion facet active.
     else {
