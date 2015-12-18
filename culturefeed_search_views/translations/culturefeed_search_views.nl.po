@@ -240,6 +240,14 @@ msgstr "Link de titel met de detailpagina"
 msgid "Category to filter on"
 msgstr "Categorie"
 
+#: views/handlers/filter/views_handler_filter_culturefeed_search_category.inc:41
+msgid "Is not one of"
+msgstr "Is geen van"
+
+#: views/handlers/filter/views_handler_filter_culturefeed_search_category.inc:42
+msgid "not in"
+msgstr "geen van"
+
 #: views/handlers/filter/views_handler_filter_culturefeed_search_daterange.inc:39
 msgid "Start date"
 msgstr "Begindatum"
