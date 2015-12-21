@@ -537,7 +537,7 @@ function culturefeed_calendar_edit_calendar_event_form_submit($form, &$form_stat
       DrupalCultureFeed::createActivity($new_activity);
 
       // Add a timeout of 5 second, this gives index the time to place the new activity into the search index.
-      sleep(5);
+      sleep(2);
 
     }
     catch (Exception $e) {
