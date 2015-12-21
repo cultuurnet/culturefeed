@@ -216,7 +216,7 @@ function culturefeed_calendar_render_calendar_buttons($item) {
           {
             $endtime = "23:59:59";
 
-            if(!empty($calendar_item->getEndTime())) {
+            if($calendar_item->getEndTime()) {
               if($calendar_item->getEndTime() !== "00:00:00") {
                 $endtime = $calendar_item->getEndTime();
               }
