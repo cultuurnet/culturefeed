@@ -126,7 +126,7 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
 
   $id = drupal_html_id('promotions-filter-sort');
 
-  $form['promotions']['#prefix'] = "<div class=\"filters\" id=\"" . $id . "\">";
+  $form['promotions']['#prefix'] = "<div class=\"filters filters-regions\" id=\"" . $id . "\">";
   $form['promotions']["#suffix"] = "</div>";
 
   $promotions_intro = t('This page shows all promotions for which UiTPAS holders can save points.');
