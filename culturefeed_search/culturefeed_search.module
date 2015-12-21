@@ -206,6 +206,7 @@ function culturefeed_search_get_search_url_query($search_query) {
       if ($param[1] == '*:*') {
         continue;
       }
+      $param[1] = str_replace('%22', '"', $param[1]);
       $query['search'] = $param[1];
     }
     // Param datetype

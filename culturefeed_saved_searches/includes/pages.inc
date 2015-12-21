@@ -14,6 +14,13 @@ function culturefeed_saved_searches_save_search_form() {
     drupal_set_message(t('No query to save was given'), 'error');
     drupal_goto();
   }
+  
+  // Encode double quotes for back end
+  parse_str($params['query'], $query_parts);
+  if ($query_parts['q']) {
+    $query_parts['q'] = str_replace('"', '%2522', $query_parts['q']);
+  }
+  $params['query'] = urldecode(http_build_query($query_parts));
 
   $form = array();
   $form['save_search_title'] = array(
@@ -109,6 +116,9 @@ function culturefeed_saved_searches_save_search_form_submit($form, &$form_state)
     watchdog_exception('saved_searches', $e);
     drupal_set_message(t('There was an error while saving your search. Please try again.'), 'error');
   }
+  
+  // Remove %2522 encoding
+  $savedSearch->query = str_replace('%2522', '"', $savedSearch->query);
 
   // Construct URL redirect with same search params.
   $form_state['redirect'] = array('agenda/search', array('query' => culturefeed_search_get_search_url_query($savedSearch->query)));

@@ -102,7 +102,7 @@ function culturefeed_saved_searches_get_cta_query() {
             unset($saved_query[$key]);
           }
         }
-        $saved_query = implode('&', $saved_query);
+        $saved_query = implode('&', str_replace('%22', '"', $saved_query));
 
         if ($saved_query == $query['query']) {
           $exists = TRUE;
