@@ -816,7 +816,7 @@ function culturefeed_calendar_settings_form($form, &$form_state) {
   );
 
   $form['actions']['cancel'] = array(
-    '#markup' => l(t('Cancel'),culturefeed_calendar_get_url(), array('attributes' => array('class' => array('btn', 'btn-link'))))
+    '#markup' => l(t('Cancel'), 'culturefeed/calendar', array('attributes' => array('class' => array('btn', 'btn-link'))))
   );
 
   return $form;
