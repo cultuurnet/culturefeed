@@ -15,12 +15,16 @@ function culturefeed_saved_searches_save_search_form() {
     drupal_goto();
   }
   
-  // Encode double quotes for back end
-  parse_str($params['query'], $query_parts);
-  if ($query_parts['q']) {
-    $query_parts['q'] = str_replace('"', '%2522', $query_parts['q']);
-  }
-  $params['query'] = urldecode(http_build_query($query_parts));
+  // Encode double quotes for back end  
+  $query_parts = explode('&', $params['query']);
+  $parsed_array = array();
+  foreach ($query_parts as $query_part) {
+    if (substr($query_part, 0, 1) === 'q') {
+      $query_part = str_replace('"', '%2522', $query_part);
+    }
+    $parsed_array[] = $query_part;
+  } 
+  $params['query'] = implode($parsed_array, '&');
 
   $form = array();
   $form['save_search_title'] = array(
