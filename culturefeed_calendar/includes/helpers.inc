@@ -272,7 +272,7 @@ function culturefeed_calendar_render_calendar_buttons($item) {
 /**
  * Helper function to add an activity to the calendar.
  */
-function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
+function culturefeed_calendar_add_activity($node_id, $node_title, $date = '') {
 
   $authenticated = DrupalCultureFeed::isCultureFeedUser();
 
