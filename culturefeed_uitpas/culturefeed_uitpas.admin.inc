@@ -15,6 +15,20 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
     '#default_value' => variable_get('culturefeed_uitpas_cardsystem_id', 3),
   );
 
+  $card_system_ids = array();
+  $cf = DrupalCultureFeed::getConsumerInstance();
+  $card_systems = $cf->uitpas()->getCardSystems('permanent');
+  foreach ($card_systems as $card_system) {
+    $card_system_ids[$card_system->id] = $card_system->name;
+  }
+
+  $form['culturefeed_uitpas_cardsystem_ids'] = array(
+    '#default_value' => variable_get('culturefeed_uitpas_cardsystem_ids', array()),
+    '#options' => $card_system_ids,
+    '#title' => t('Card system IDs'),
+    '#type' => 'checkboxes',
+  );
+
   $form['culturefeed_uitpas_card_name'] = array(
     '#default_value' => variable_get('culturefeed_uitpas_card_name', 'UiTPAS'),
     '#description' => t('The card name, used as title in profile sections block.'),
@@ -27,18 +41,6 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
     '#title' => t('Show message to users without UiTPAS'),
     '#description' => t('When checked a message is shown on each page when the UiTiD user does not have a UiTPAS activated, to remind him/her to activate their card.'),
     '#default_value' => variable_get('culturefeed_uitpas_remind_user_without_uitpas', 1),
-  );
-
-  $form['culturefeed_uitpas_remind_user_without_uitpas_text'] = array(
-    '#type' => 'textarea',
-    '#title' => t('The message to show to users without UiTPAS'),
-    '#default_value' => variable_get('culturefeed_uitpas_remind_user_without_uitpas_text', t('You have successfully logged in, but you did not register your UiTPAS yet. Fill in the <a href="@register_url">necessary information</a> to consult your benefits and points balance. <a href="@toggle_url">Do not show this message again</a>.')),
-    '#description' => check_plain(t('You can use @register_url to insert the registration URL in the message, and @toggle_url to insert the URL to toggle the message off, for example: Go <a href="@register_url">register your UiTPAS</a> now! <a href="@toggle_url">Do not show this message again<a>.')),
-    '#states' => array(
-      'visible' => array(
-        ':input[name="culturefeed_uitpas_remind_user_without_uitpas"]' => array('checked' => TRUE),
-      ),
-    ),
   );
 
   // Advantages.
@@ -57,7 +59,7 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
     '#collapsed' => TRUE,
   );
 
-  $locations = variable_get('culturefeed_uitpas_locations', 'Brussel');
+  $locations = variable_get('culturefeed_uitpas_locations');
   if (!$locations) {
     $locations = array();
   }
@@ -68,10 +70,6 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
     '#value_callback' => 'culturefeed_uitpas_locations_value_callback',
     '#default_value' => implode("\r\n", $locations),
   );
-
-  // Profile actions.
-  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_actions');
-  culturefeed_uitpas_profile_actions_settings_get($form);
 
   // Profile promotions.
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_promotions');
@@ -85,31 +83,9 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_advantages');
   culturefeed_uitpas_profile_advantages_settings_get($form);
 
-  // Profile details.
-  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/profile_details');
-  culturefeed_uitpas_profile_details_settings_get($form);
-
   // Register where.
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/register_where');
   culturefeed_uitpas_register_where_settings_get($form);
-
-  // Registration/validation page & block.
-  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/user_register');
-  $form['user_register'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('UiTPAS registration page & block settings'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  culturefeed_uitpas_user_register_settings_get($form['user_register'], TRUE);
-
-  // Registration confirmation.
-  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/registration_confirmation');
-  culturefeed_uitpas_registration_confirmation_settings_get($form);
-
-  // Synchronization.
-  form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/synchronization');
-  culturefeed_uitpas_synchronization_settings_get($form);
 
   return system_settings_form($form);
 

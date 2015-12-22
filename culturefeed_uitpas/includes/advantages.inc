@@ -34,7 +34,6 @@ function culturefeed_uitpas_advantages_get($filter = NULL) {
       $query->owningCardSystemId = $filter;
     }
     $result = $cf->uitpas()->searchWelcomeAdvantages($query);
-    pager_default_initialize($result->total, $advantages_max, $advantages_pager_element);
     $advantages = $result->objects;
     $advantages_total = $result->total;
 
@@ -66,16 +65,6 @@ function culturefeed_uitpas_advantages_settings_get(&$form) {
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
-  $form['advantages']['culturefeed_uitpas_advantages_title'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Page title'),
-    '#default_value' => variable_get('culturefeed_uitpas_advantages_title', t('UiTPAS advantages')),
-  );
-  $form['advantages']['culturefeed_uitpas_advantages_info'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Info text'),
-    '#default_value' => variable_get('culturefeed_uitpas_advantages_info', t('This page shows all advantages for which UiTPAS holders can save points. Find out <a href="@search-url">where to save points</a>.', array('@search-url' => url('agenda/search?search=UITPAS*')))),
-  );
   $form['advantages']['culturefeed_uitpas_advantages_advantages_max'] = array(
     '#type' => 'textfield',
     '#title' => t('Number of advantages to display'),
@@ -89,10 +78,7 @@ function culturefeed_uitpas_advantages_settings_get(&$form) {
  */
 function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
 
-  $cf = DrupalCultureFeed::getConsumerInstance();
-  $kind_of_card_systems = 'permanent';
-  $card_systems = $cf->uitpas()->getCardSystems($kind_of_card_systems);
-
+  $card_systems = culturefeed_uitpas_get_card_systems();
   $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : (isset($_GET['filter']) ? $_GET['filter'] : NULL);
   $advantages = culturefeed_uitpas_advantages_get($filter);
 
@@ -103,12 +89,26 @@ function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
 
   $id = drupal_html_id('advantages-filter-sort');
 
-  $form['advantages']['#prefix'] = "<div id=\"" . $id . "\">";
+  $form['advantages']['#prefix'] = "<div class=\"filters filters-regions\" id=\"" . $id . "\">";
   $form['advantages']["#suffix"] = "</div>";
 
-  $advantages_intro = variable_get('culturefeed_uitpas_advantages_info');
+  $advantages_intro = t('This page shows all advantages for which UiTPAS holders can save points.');
+
+  if (culturefeed_uitpas_is_passholder()) {
+   $advantages_intro .= ' '. t('Discover <a href="@my-promotions">your personal promotions</a>  and points balance.', array('@my-promotions' => url('culturefeed/profile/uitpas/promotions')));
+  }
+  else {
+    $advantages_intro .= ' '. t('<a href="@register-where">Find out where</a> to get an UiTPAS', array('@register-where' => url('register_where'))); 
+    if (!culturefeed_is_culturefeed_user()) {
+      $advantages_intro .= ' '. t('or <a href="@login">login</a> and register your UiTPAS to discover your personal promotions and points balance.', array('@login' => url('culturefeed/oauth/connect', array('query' => array('destination' => 'register_uitpas'))))); 
+    }
+    else {
+      $advantages_intro .= '.';
+    }
+  }
+
   if (trim($advantages_intro)) {
-    $form['advantages']['intro']['#markup'] = '<div class="advantages-intro">' . $advantages_intro . '</div>';
+    $form['advantages']['intro']['#markup'] = '<div class="intro intro-advantages">' . $advantages_intro . '</div>';
   }
 
   $form['advantages']['filter'] = array(
@@ -125,15 +125,25 @@ function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
     ),
   );
 
+  if(isset($filter)) {
+    $filter_reset_link = "<hr>" . l(t('Show all advantages'), 'advantages', array('attributes' => array('class' => 'reset-filter')));
+  }
+  else {
+    $filter_reset_link = '';
+  }
+
+  $form['advantages']['filter']['#prefix'] = '<div class="form-group">';
+  $form['advantages']['filter']['#suffix'] = $filter_reset_link . '</div>';
+
   $total = $advantages['#advantages_total'];
   $title = t('Found %count advantages', array('%count' => $total));
   $filter_reset_link = l(t('Show all'), 'promotions');
 
   if ($filter) {
-    $form['advantages']['title']['#markup'] = '<h2>' . $title . ' <small>' . $options[$filter] . ' (' . $filter_reset_link . ')</small></h2>';
+    $form['advantages']['title']['#markup'] = '<h2 class="results-title">' . $title . ' <small>' . $options[$filter] . ' (' . $filter_reset_link . ')</small></h2>';
   }
   else {
-    $form['advantages']['title']['#markup'] = '<h2>' . $title . ' <small>(' . $filter_reset_link . ')</small></h2>';
+    $form['advantages']['title']['#markup'] = '<h2 class="results-title">' . $title . ' <small>(' . $filter_reset_link . ')</small></h2>';
   }
 
   if (count($advantages['#advantages'])) {
@@ -160,4 +170,13 @@ function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
 
 function culturefeed_uitpas_advantages_ajax_callback($form, $form_state) {
   return $form['advantages'];
+}
+
+/**
+ * Title callback for the advantages page.
+ */
+function culturefeed_uitpas_advantages_title() {
+
+  return t('UiTPAS advantages');
+
 }

@@ -259,6 +259,49 @@ function culturefeed_get_content_type($type) {
 }
 
 /**
+ * Returns a human readable string for the activity type.
+ *
+ * @param int $type
+ *   The activity type.
+ *
+ * @return string
+ *   The readable string
+ */
+function culturefeed_get_human_readable_activity_type($type) {
+
+  $types = array(
+    CultureFeed_Activity::TYPE_VIEW => t('view'),
+    CultureFeed_Activity::TYPE_DETAIL => t('detail'),
+    CultureFeed_Activity::TYPE_LIKE => t('like'),
+    CultureFeed_Activity::TYPE_MAIL => t('mail'),
+    CultureFeed_Activity::TYPE_PRINT => t('print'),
+    CultureFeed_Activity::TYPE_FACEBOOK => t('Facebook'),
+    CultureFeed_Activity::TYPE_TWITTER => t('Twitter'),
+    CultureFeed_Activity::TYPE_IK_GA => t('attend'),
+    CultureFeed_Activity::TYPE_TICKET => t('ticket'),
+    CultureFeed_Activity::TYPE_ROUTE => t('route'),
+    CultureFeed_Activity::TYPE_MORE_INFO => t('more info'),
+    CultureFeed_Activity::TYPE_UITPAS => t('uitpas checkin'),
+    CultureFeed_Activity::TYPE_REGULAR_CHECKIN => t('regular checkin'),
+    CultureFeed_Activity::TYPE_COMMENT => t('comment'),
+    CultureFeed_Activity::TYPE_RECOMMEND => t('recommend'),
+    CultureFeed_Activity::TYPE_FOLLOW => t('follow'),
+    CultureFeed_Activity::TYPE_PAGE_MEMBER => t('page member'),
+    CultureFeed_Activity::TYPE_PAGE_ADMIN => t('page admin'),
+    CultureFeed_Activity::TYPE_NEW_EVENT => t('new event'),
+    CultureFeed_Activity::TYPE_REVIEW => t('review'),
+    CultureFeed_Activity::TYPE_MEDIA_PHOTO => t('media photo'),
+    CultureFeed_Activity::TYPE_MEDIA_VIDEO => t('media video'),
+    CultureFeed_Activity::TYPE_PAGE_CREATED => t('page created'),
+    CultureFeed_Activity::TYPE_NEWS => t('news'),
+    CultureFeed_Activity::TYPE_CASHIN => t('cashin'),
+  );
+
+  return isset($types[$type]) ? $types[$type] : '';
+
+}
+
+/**
  * Get the preferred language of current cf user.
  */
 function culturefeed_get_preferred_language() {

@@ -38,7 +38,7 @@ function culturefeed_ui_account_edit_form(array $form, array $form_state, Cultur
   );
 
   // Tooltip.
-  $info = variable_get('culturefeed_ui_account_edit_email_description', '');
+  $info = t('This email address has been connected to your UiTPAS card. Any communication regarding your UiTPAS will be sent to this email address as well.');
   /* @var CultureFeed $cf */
   $cf = DrupalCultureFeed::getLoggedInUserInstance();
   try {
@@ -114,6 +114,7 @@ function culturefeed_ui_account_edit_form_submit(array $form, array &$form_state
   $culturefeed_user = $form['#culturefeed_user'];
 
   $error = FALSE;
+  $duplicate = FALSE;
 
   // User.
   $culturefeed_user_update = new CultureFeed_User();
@@ -137,10 +138,19 @@ function culturefeed_ui_account_edit_form_submit(array $form, array &$form_state
   /* @var CultureFeed $cf */
   $cf = DrupalCultureFeed::getLoggedInUserInstance();
   $passholder = $cf->uitpas()->getPassholderByUser($culturefeed_user->id);
-  $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
-  if ($passholder && $card_system_id && isset($passholder->cardSystemSpecific[$card_system_id])) {
+  
+  if ($passholder) {
 
-    $uitpas_number = $passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber;
+    $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
+    // Save for first card, or do we have to save for all cards?
+    $first_card = key($passholder->cardSystemSpecific);
+
+    if ($card_system_id && isset($passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber)) {
+      $uitpas_number = $passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber;
+    }
+    elseif (isset($passholder->cardSystemSpecific[$first_card]->currentCard->uitpasNumber)) {
+      $uitpas_number = $passholder->cardSystemSpecific[$first_card]->currentCard->uitpasNumber;
+    }
 
     $passholder_update = new CultureFeed_Uitpas_Passholder();
     $passholder_update->uitpasNumber = $uitpas_number;
@@ -302,12 +312,14 @@ function culturefeed_ui_privacy_settings_form(array $form, array &$form_state, C
     $default_value = 'nick';
   }
 
+  $user_id = culturefeed_get_uid_for_cf_uid($culturefeed_user->id, $culturefeed_user->nick);
+
   $form['#culturefeed_user'] = $culturefeed_user;
 
   $form['setting'] = array(
     '#default_value' => $default_value,
     '#options' => $options,
-    '#title' => t('Select they way your user details are displayed'),
+    '#title' => t('Select the way your user details are visible to others in your <a href="@profile-url">public profile</a>.', array('@profile-url' => url('user/' . $user_id))),
     '#type' => 'radios',
   );
 
@@ -320,7 +332,7 @@ function culturefeed_ui_privacy_settings_form(array $form, array &$form_state, C
   );
 
   // Tooltip.
-  $info = variable_get('culturefeed_ui_privacy_settings_anonymous_tooltip', '');
+  $info = t('All your user activities will be set to private too.');
   if ($info) {
 
     $form['#attached'] = array(
@@ -364,14 +376,22 @@ function culturefeed_ui_privacy_settings_form_submit(array $form, array &$form_s
     // Activities.
     $query = new CultureFeed_SearchActivitiesQuery();
     $query->userId = $culturefeed_user->id;
+    $query->start = 0;
+    $query->max = 1;
 
-    /* @var CultureFeed_ResultSet $activities */
-    $activities = DrupalCultureFeed::searchActivities($query);
-    if ($activities->total > 0) {
+    $activities = array();
+    do {
+
+      /* @var CultureFeed_ResultSet $result_set */
+      $result_set = DrupalCultureFeed::searchActivities($query);
+      $activities = array_merge($activities, $result_set->objects);
+      $query->start += $query->max;
+
+    } while ($query->start < $result_set->total);
+
+    foreach ($activities as $activity) {
       /* @var CultureFeed_Activity $activity */
-      foreach ($activities->objects as $activity) {
-        DrupalCultureFeed::updateActivity($activity->id, TRUE);
-      }
+      DrupalCultureFeed::updateActivity($activity->id, TRUE);
     }
 
     // Preferences.
@@ -393,6 +413,10 @@ function culturefeed_ui_privacy_settings_form_submit(array $form, array &$form_s
   catch (Exception $e) {
     form_set_error('submit', t('Error occurred while saving your privacy settings.'));
   }
+
+  $uid = db_query("SELECT uid FROM {culturefeed_user} WHERE cf_uid = :uid", array(':uid' => $culturefeed_user->id))->fetchField();
+  $cid = url('user/' . $uid, array('absolute' => TRUE));
+  cache_clear_all($cid, 'cache_page');
 
 }
 
@@ -571,6 +595,7 @@ function culturefeed_ui_profile_edit_form_validate(array $form, array &$form_sta
   $culturefeed_user_update->zip = $values['zip'];
   $culturefeed_user_update->city = $values['city'];
   $culturefeed_user_update->country = $values['country'];
+  $culturefeed_user_update->dob = NULL;
   // For the moment this field is removed, so we default to Dutch.
   $culturefeed_user_update->preferredLanguage = (isset($values['preferredLanguage'])) ? $values['preferredLanguage'] : 'nl';
 

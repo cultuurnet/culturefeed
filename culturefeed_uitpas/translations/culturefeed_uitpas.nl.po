@@ -4,31 +4,33 @@
 # Copyright YEAR NAME <EMAIL@ADDRESS>
 # Generated from files:
 #  culturefeed_uitpas.admin.inc: n/a
-#  culturefeed_uitpas.module: n/a
 #  culturefeed_uitpas.blocks.inc: n/a
 #  culturefeed_uitpas.profile.inc: n/a
+#  culturefeed_uitpas.module: n/a
 #  includes/profile_details.inc: n/a
-#  theme/theme.inc: n/a
-#  includes/user_register.inc: n/a
 #  culturefeed_uitpas.forms.inc: n/a
 #  includes/registration_confirmation.inc: n/a
+#  culturefeed_uitpas.helpers.inc: n/a
 #  culturefeed_uitpas.menu.inc: n/a
 #  includes/profile_promotions.inc: n/a
 #  includes/profile_actions.inc: n/a
 #  culturefeed_uitpas.theme.inc: n/a
-#  includes/event_details_advantages.inc: n/a
 #  culturefeed_uitpas.variable.inc: n/a
-#  includes/advantages.inc: n/a
+#  includes/user_register.inc: n/a
+#  theme/culturefeed-uitpas-profile-section-register.tpl.php: n/a
 #  culturefeed_uitpas.info: n/a
 #  ctools/plugins/views_wizard/culturefeed_uitpas_views_wizard_promotions.inc: n/a
-#  includes/promotions.inc: n/a
+#  includes/advantages.inc: n/a
 #  includes/profile_advantages.inc: n/a
-#  includes/register_where.inc: n/a
-#  includes/recent_actions.inc: n/a
+#  theme/theme.inc: n/a
+#  includes/promotions.inc: n/a
+#  includes/event_details_advantages.inc: n/a
 #  includes/synchronization.inc: n/a
 #  includes/promotions_highlight.inc: n/a
 #  includes/profile_summary.inc: n/a
 #  views/culturefeed_uitpas.views.inc: n/a
+#  includes/recent_actions.inc: n/a
+#  includes/register_where.inc: n/a
 #  theme/culturefeed-uitpas-advantage.tpl.php: n/a
 #  theme/culturefeed-uitpas-promotion.tpl.php: n/a
 #  views/handlers/culturefeed_uitpas_views_handler_field_image.inc: n/a
@@ -40,8 +42,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-11-25 01:36+0100\n"
-"PO-Revision-Date: 2015-11-25 01:57+0100\n"
+"POT-Creation-Date: 2015-12-18 12:09+0100\n"
+"PO-Revision-Date: 2015-12-18 12:15+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -54,64 +56,37 @@ msgstr ""
 msgid "Card system ID"
 msgstr "Kaartsysteem nummer"
 
-#: culturefeed_uitpas.admin.inc:20
+#: culturefeed_uitpas.admin.inc:28
+msgid "Card system IDs"
+msgstr "Andere kaartsysteem ID's"
+
+#: culturefeed_uitpas.admin.inc:34
 msgid "The card name, used as title in profile sections block."
 msgstr "Naam van kaart (deze wordt gebruikt als titel in profielblok)"
 
-#: culturefeed_uitpas.admin.inc:21
+#: culturefeed_uitpas.admin.inc:35
 msgid "Card name"
 msgstr "Naam kaart"
 
-#: culturefeed_uitpas.admin.inc:27
+#: culturefeed_uitpas.admin.inc:41
 msgid "Show message to users without UiTPAS"
 msgstr "Bericht weergeven voor UiTPAS gebruikers"
 
-#: culturefeed_uitpas.admin.inc:28
+#: culturefeed_uitpas.admin.inc:42
 msgid ""
 "When checked a message is shown on each page when the UiTiD user does not "
 "have a UiTPAS activated, to remind him/her to activate their card."
 msgstr "Ja, herinner UiTiD gebruikers eraan om hun UiTPAS online te activeren."
 
-#: culturefeed_uitpas.admin.inc:34
-msgid "The message to show to users without UiTPAS"
-msgstr "Bericht voor UiTPAS gebruikers"
-
-#: culturefeed_uitpas.admin.inc:35 culturefeed_uitpas.module:98
-msgid ""
-"You have successfully logged in, but you did not register your UiTPAS yet. "
-"Fill in the <a href=\"@register_url\">necessary information</a> to consult "
-"your benefits and points balance. <a href=\"@toggle_url\">Do not show this "
-"message again</a>."
-msgstr ""
-"Je bent goed aangemeld. <a href=\"@register_url\">Registreer je UiTPAS</a> "
-"om je voordelen en puntensaldo te raadplegen. <a href=\"@toggle_url\">Dit "
-"bericht niet meer tonen</a>."
-
-#: culturefeed_uitpas.admin.inc:36
-msgid ""
-"You can use @register_url to insert the registration URL in the message, and "
-"@toggle_url to insert the URL to toggle the message off, for example: Go <a "
-"href=\"@register_url\">register your UiTPAS</a> now! <a href=\"@toggle_url"
-"\">Do not show this message again<a>."
-msgstr ""
-"Er zijn 2 variabelen beschikbaar: '@register_url' (=URL registratiepagina) "
-"&  '@toggle_url' (=URL om melding niet meer weer te geven). Voorbeeld "
-"integratie:  <a href=\"@register_url\">Registreer je UiTPAS</a> nu! <a href="
-"\"@toggle_url\">Bericht niet meer weergeven<a>."
-
-#: culturefeed_uitpas.admin.inc:55
+#: culturefeed_uitpas.admin.inc:57
 msgid "UiTPAS locations"
 msgstr "UiTPAS steden / gemeenten"
 
-#: culturefeed_uitpas.admin.inc:67
+#: culturefeed_uitpas.admin.inc:69
 msgid "Locations"
 msgstr ""
 "Steden / Gemeenten (Voeg alle beschikbare steden en gemeenten toe. Deze "
 "worden gebruikt als filter opties op /register_where)"
-
-#: culturefeed_uitpas.admin.inc:100
-msgid "UiTPAS registration page & block settings"
-msgstr "UiTPAS registratieinstellingen (pagina & block)"
 
 #: culturefeed_uitpas.blocks.inc:15
 msgid "Culturefeed uitpas: event details advantages"
@@ -134,31 +109,28 @@ msgstr "Culturefeed uitpas: recente acties"
 msgid "Culturefeed uitpas: user register"
 msgstr "Culturefeed uitpas: UiTPAS registratie"
 
-#: culturefeed_uitpas.blocks.inc:119
+#: culturefeed_uitpas.blocks.inc:114
 msgid "UiTPAS Advantages"
 msgstr "UiTPAS voordelen"
 
-#: culturefeed_uitpas.blocks.inc:129 culturefeed_uitpas.profile.inc:22
-#: culturefeed_uitpas.module:58 includes/profile_details.inc:286
-#: theme/theme.inc:255
+#: culturefeed_uitpas.blocks.inc:124 culturefeed_uitpas.profile.inc:22
+#: culturefeed_uitpas.module:60 includes/profile_details.inc:247
 msgid "My UiTPAS"
 msgstr "Mijn UiTPAS"
 
-#: culturefeed_uitpas.blocks.inc:140
+#: culturefeed_uitpas.blocks.inc:135
 msgid "Spotlight promotions"
 msgstr "Voordelen in de kijker"
 
-#: culturefeed_uitpas.blocks.inc:151
+#: culturefeed_uitpas.blocks.inc:146
 msgid "Recent actions"
 msgstr "Recente gebeurtenissen"
 
-#: culturefeed_uitpas.blocks.inc:163 culturefeed_uitpas.module:114
-#: includes/user_register.inc:212
+#: culturefeed_uitpas.blocks.inc:158
 msgid "Already own an UiTPAS?"
 msgstr "Heb je al een UiTPAS?"
 
-#: culturefeed_uitpas.forms.inc:31
-#: includes/registration_confirmation.inc:43;115
+#: culturefeed_uitpas.forms.inc:31 includes/registration_confirmation.inc:43
 msgid "Make my UiTPAS actions available for others"
 msgstr "Toon op mijn profielpagina wanneer ik ergens een punt gespaard heb"
 
@@ -166,29 +138,37 @@ msgstr "Toon op mijn profielpagina wanneer ik ergens een punt gespaard heb"
 msgid "Confirm"
 msgstr "Bevestigen"
 
-#: culturefeed_uitpas.menu.inc:53 culturefeed_uitpas.profile.inc:36
-#: includes/profile_details.inc:271
+#: culturefeed_uitpas.helpers.inc:114
+msgid "Other regions"
+msgstr "Andere regio's"
+
+#: culturefeed_uitpas.menu.inc:53 culturefeed_uitpas.profile.inc:39
 msgid "An overview of all your UiTPAS actions."
 msgstr "Jouw UiTPAS acties."
 
-#: culturefeed_uitpas.menu.inc:60;68 includes/profile_details.inc:261
+#: culturefeed_uitpas.menu.inc:60;68
 msgid "Discover which promotions and advantages you are entitled to."
 msgstr "Ontdek jouw UiTPAS voordelen."
 
-#: culturefeed_uitpas.profile.inc:26 includes/profile_promotions.inc:109
+#: culturefeed_uitpas.profile.inc:25
+msgid "Check your personal UiTPAS data and cardnumber."
+msgstr "Bekijk je persoonlijke UiTPAS-gegevens en kaartnummer."
+
+#: culturefeed_uitpas.profile.inc:29 culturefeed_uitpas.module:66
+#: includes/profile_promotions.inc:66;113
 msgid "My promotions"
 msgstr "Mijn voordelen"
 
-#: culturefeed_uitpas.profile.inc:29
+#: culturefeed_uitpas.profile.inc:32
 msgid "Find out which promotions and advantages you are entitled to."
 msgstr "Ontdek op welke voordelen en geschenken je recht hebt"
 
-#: culturefeed_uitpas.profile.inc:33 includes/profile_actions.inc:86
-#: includes/profile_details.inc:266
+#: culturefeed_uitpas.profile.inc:36 culturefeed_uitpas.module:72
+#: includes/profile_actions.inc:77
 msgid "Points history"
 msgstr "Puntenhistoriek"
 
-#: culturefeed_uitpas.profile.inc:45
+#: culturefeed_uitpas.profile.inc:48
 msgid "Points balance"
 msgstr "Puntensaldo"
 
@@ -196,138 +176,42 @@ msgstr "Puntensaldo"
 msgid "Advantages"
 msgstr "Voordelen"
 
-#: culturefeed_uitpas.theme.inc:76 includes/event_details_advantages.inc:109
+#: culturefeed_uitpas.theme.inc:94
 msgid "Promotions"
 msgstr "Voordelen"
 
-#: culturefeed_uitpas.theme.inc:209
+#: culturefeed_uitpas.theme.inc:226
 msgid "Opportunities tariff with @system: !tariff"
 msgstr "Kansentarief voor @system: !tariff"
 
-#: culturefeed_uitpas.theme.inc:213
+#: culturefeed_uitpas.theme.inc:230
 msgid "Opportunities tariff for pass holders from another region: !tariff"
 msgstr ""
 "Kansentarief voor UiTPAS gebruikers uit een andere stad of gemeente: !tariff"
 
 #: culturefeed_uitpas.variable.inc:15
-msgid "Culturefeed uitpas: advantages: info"
-msgstr "Culturefeed uitpas: welkomstvoordelen: info"
-
-#: culturefeed_uitpas.variable.inc:19
-msgid "Culturefeed uitpas: advantages: title"
-msgstr "Culturefeed uitpas: welkomstvoordelen: titel"
-
-#: culturefeed_uitpas.variable.inc:23
-msgid "Culturefeed uitpas: promotions: info"
-msgstr "Culturefeed uitpas: ruilvoordelen: info"
-
-#: culturefeed_uitpas.variable.inc:27
-msgid "Culturefeed uitpas: promotions: title"
-msgstr "Culturefeed uitpas: ruilvoordelen: titel"
-
-#: culturefeed_uitpas.variable.inc:31
-msgid "Culturefeed uitpas: profile actions: intro"
-msgstr "Culturefeed uitpas: gebruikersacties : inleiding"
-
-#: culturefeed_uitpas.variable.inc:35
-msgid "Culturefeed uitpas: profile details: menu: advantages title"
-msgstr "Culturefeed uitpas: profielgegevens: menu: voordeel > titel"
-
-#: culturefeed_uitpas.variable.inc:39
-msgid "Culturefeed uitpas: profile details: menu: advantages description"
-msgstr "Culturefeed uitpas: profielgegevens: menu: voordeel > beschrijving"
-
-#: culturefeed_uitpas.variable.inc:43
-msgid "Culturefeed uitpas: profile details: menu: actions title"
-msgstr "Culturefeed uitpas: profielgegevens: menu: acties > titel"
-
-#: culturefeed_uitpas.variable.inc:47
-msgid "Culturefeed uitpas: profile details: menu: actions description"
-msgstr "Culturefeed uitpas: profielgegevens: menu: acties > beschrijving"
-
-#: culturefeed_uitpas.variable.inc:51
-msgid "Culturefeed uitpas: profile details: menu: notifications title"
-msgstr "Culturefeed uitpas: profielgegevens: menu: meldingen > titel"
-
-#: culturefeed_uitpas.variable.inc:55
-msgid "Culturefeed uitpas: profile details: menu: notifications description"
-msgstr "Culturefeed uitpas: profielgegevens: menu: meldingen > beschrijving"
-
-#: culturefeed_uitpas.variable.inc:59
-msgid "Culturefeed uitpas: profile details: title"
-msgstr "Culturefeed uitpas: profielgegevens: titel"
-
-#: culturefeed_uitpas.variable.inc:63
-msgid "Culturefeed uitpas: profile details: uitpas number"
-msgstr "Culturefeed uitpas: profielgegevens: UiTPAS nummer"
-
-#: culturefeed_uitpas.variable.inc:67
-msgid "Culturefeed uitpas: profile details: intro"
-msgstr "Culturefeed uitpas: profielgegevens: inleiding"
-
-#: culturefeed_uitpas.variable.inc:71
-msgid "Culturefeed uitpas: profile details: outro"
-msgstr "Culturefeed uitpas: profielgegevens: slot"
-
-#: culturefeed_uitpas.variable.inc:75
 msgid "Culturefeed uitpas: profile notifications: intro"
 msgstr "Culturefeed uitpas: meldingen: inleiding"
 
-#: culturefeed_uitpas.variable.inc:79
+#: culturefeed_uitpas.variable.inc:19
 msgid "Culturefeed uitpas: promotions highlight: more link text"
 msgstr "Culturefeed uitpas: voordeel in de kijker: lees meer > tekstlink"
 
-#: culturefeed_uitpas.variable.inc:83
-msgid "Culturefeed uitpas: register where: title"
-msgstr "Culturefeed uitpas: registreren / aankopen:  titel"
+#: culturefeed_uitpas.module:92 includes/user_register.inc:47
+#: theme/culturefeed-uitpas-profile-section-register.tpl.php:24
+msgid "Register your UiTPAS"
+msgstr "Activeer je UiTPAS"
 
-#: culturefeed_uitpas.variable.inc:87
-msgid "Culturefeed uitpas: register where: filters title"
-msgstr "Culturefeed uitpas: registreren / aankopen:  titel (filters)"
-
-#: culturefeed_uitpas.variable.inc:91
-msgid "Culturefeed uitpas: register where: intro"
-msgstr "Culturefeed uitpas: registreren / aankopen:  inleiding"
-
-#: culturefeed_uitpas.variable.inc:95
-msgid "Culturefeed uitpas: register where: outro"
-msgstr "Culturefeed uitpas: registreren / aankopen:  slot"
-
-#: culturefeed_uitpas.variable.inc:99
-msgid "Culturefeed uitpas: registration confirmation: actions label"
-msgstr "Culturefeed uitpas: registratie bevestiging: label voor acties"
-
-#: culturefeed_uitpas.variable.inc:103
-msgid "Culturefeed uitpas: registration confirmation: intro"
-msgstr "Culturefeed uitpas: registratie bevestiging: inleiding"
-
-#: culturefeed_uitpas.variable.inc:107
-msgid "Culturefeed uitpas: registration confirmation: title"
-msgstr "Culturefeed uitpas: registratie bevestiging: titel"
-
-#: culturefeed_uitpas.variable.inc:111
-msgid "Culturefeed uitpas: user register: intro text"
-msgstr "Culturefeed uitpas: UiTPAS registratie: inleiding"
-
-#: culturefeed_uitpas.variable.inc:115
-msgid "Culturefeed uitpas: user register: number label"
-msgstr "Culturefeed uitpas: UiTPAS registratie: label voor UiTPAS nummer"
-
-#: culturefeed_uitpas.variable.inc:119
-msgid "Culturefeed uitpas: user register: submit value"
-msgstr "Culturefeed uitpas: UiTPAS registratie: label voor actieknop"
-
-#: culturefeed_uitpas.variable.inc:123
-msgid "Culturefeed uitpas: user register: apply text"
-msgstr "Culturefeed uitpas: UiTPAS registratie: label voor aanmelden"
-
-#: culturefeed_uitpas.module:64 includes/advantages.inc:72
-msgid "UiTPAS advantages"
-msgstr "UiTPAS welkomstvoordelen"
-
-#: culturefeed_uitpas.module:70
-msgid "UiTPAS history"
-msgstr "UiTPAS historiek"
+#: culturefeed_uitpas.module:119
+msgid ""
+"You have successfully logged in, but you did not register your UiTPAS yet. "
+"Fill in the <a href=\"@register_url\">necessary information</a> to consult "
+"your benefits and points balance. <a href=\"@toggle_url\">Do not show this "
+"message again</a>."
+msgstr ""
+"Je bent goed aangemeld, maar je UiTPAS is nog niet geactiveerd. <a href="
+"\"@register_url\">Activeer je UiTPAS</a> om je voordelen en puntensaldo te "
+"raadplegen. <a href=\"@toggle_url\">Dit bericht niet meer tonen</a>."
 
 #: culturefeed_uitpas.info:0
 msgid "CultureFeed Uitpas"
@@ -345,101 +229,101 @@ msgstr "CultureFeed"
 msgid "UiTPAS Promotions"
 msgstr "UiTPAS ruilvoordelen"
 
-#: includes/advantages.inc:65
+#: includes/advantages.inc:64
 msgid "UiTPAS advantages settings"
 msgstr "UiTPAS welkomstvoordelen instellingen"
 
-#: includes/advantages.inc:71 includes/promotions.inc:82
-#: includes/registration_confirmation.inc:104
-msgid "Page title"
-msgstr "Paginatitel"
-
-#: includes/advantages.inc:76 includes/promotions.inc:87
-msgid "Info text"
-msgstr "Informatie"
-
-#: includes/advantages.inc:77
-msgid ""
-"This page shows all advantages for which UiTPAS holders can save points. "
-"Find out <a href=\"@search-url\">where to save points</a>."
-msgstr ""
-"Dit zijn alle welkomstgeschenken die je ontvangt na aankoop van je UiTPAS."
-
-#: includes/advantages.inc:81 includes/profile_advantages.inc:90
+#: includes/advantages.inc:70 includes/profile_advantages.inc:92
 msgid "Number of advantages to display"
 msgstr "Aantal weer te geven welkomstvoordelen"
 
-#: includes/advantages.inc:116 includes/promotions.inc:149
+#: includes/advantages.inc:95 theme/theme.inc:120
+msgid ""
+"This page shows all advantages for which UiTPAS holders can save points."
+msgstr "Hier vind je alle welkomstvoordelen voor UiTPAS-houders."
+
+#: includes/advantages.inc:98 includes/promotions.inc:135
+msgid ""
+"Discover <a href=\"@my-promotions\">your personal promotions</a>  and points "
+"balance."
+msgstr ""
+"Bekijk <a href=\"@my-promotions\">je persoonlijke voordelen</a> en "
+"puntensaldo."
+
+#: includes/advantages.inc:101
+msgid ""
+"<a href=\"@register-where\">Find out where</a> to get an UiTPAS or <a href="
+"\"@login\">login</a> and register your UiTPAS to discover your personal "
+"promotions and points balance."
+msgstr ""
+"Interesse? <a href=\"@register-where\">Ontdek waar</a> je een UiTPAS kan "
+"halen of <a href=\"@login\">meld je aan</a> en activeer je UiTPAS om je "
+"persoonlijke voordelen en puntensaldo te raadplegen."
+
+#: includes/advantages.inc:110 includes/promotions.inc:153
 msgid "Filter by"
 msgstr "Filter op"
 
-#: includes/advantages.inc:118 includes/profile_advantages.inc:146
-#: includes/profile_promotions.inc:154 includes/promotions.inc:151
+#: includes/advantages.inc:112 includes/profile_advantages.inc:142
+#: includes/profile_promotions.inc:152 includes/promotions.inc:155
 msgid "All card systems"
 msgstr "Alle kaartsystemen"
 
-#: includes/advantages.inc:129
+#: includes/advantages.inc:123 includes/promotions.inc:202
+msgid "Show all advantages"
+msgstr "Toon alle welkomstvoordelen"
+
+#: includes/advantages.inc:133 theme/theme.inc:130
 msgid "Found %count advantages"
 msgstr "%count voordelen gevonden"
 
-#: includes/advantages.inc:130 includes/promotions.inc:166
+#: includes/advantages.inc:134
 msgid "Show all"
 msgstr "Toon alle"
 
-#: includes/advantages.inc:143 includes/promotions.inc:195
+#: includes/advantages.inc:147 includes/promotions.inc:209
 msgid "No results found"
 msgstr "Geen resultaten gevonden"
 
-#: includes/event_details_advantages.inc:46
-msgid "Price at underprivileged tariff: € @tariff"
-msgstr "Kansentarief: € @tariff"
+#: includes/advantages.inc:174
+msgid "UiTPAS advantages"
+msgstr "UiTPAS welkomstvoordelen"
 
-#: includes/event_details_advantages.inc:52
-msgid "Underprivileged tariffs"
-msgstr "Kansentarieven"
+#: includes/event_details_advantages.inc:58
+msgid "Promotions at @organisation"
+msgstr "Voordelen bij @organisation"
 
-#: includes/event_details_advantages.inc:63
-msgid "Collect points"
-msgstr "Spaar punten"
+#: includes/event_details_advantages.inc:59
+msgid "All promotions"
+msgstr "Alle voordelen"
 
-#: includes/event_details_advantages.inc:90;96
-msgid "Show advantages at"
-msgstr "Toon voordelen bij"
+#: includes/event_details_advantages.inc:83 theme/theme.inc:885
+msgid "You have insufficient points"
+msgstr "Je hebt onvoldoende punten"
 
-#: includes/profile_actions.inc:64
-msgid "UiTPAS profile actions settings"
-msgstr "UiTPAS privacyinstellingen"
+#: includes/event_details_advantages.inc:92 theme/theme.inc:455;776;890
+msgid "1 point"
+msgid_plural "@count points"
+msgstr[0] "1 punt"
+msgstr[1] "@count punten"
 
-#: includes/profile_actions.inc:70 includes/profile_details.inc:295
-#: includes/register_where.inc:104
-msgid "Intro"
-msgstr "Inleiding"
-
-#: includes/profile_actions.inc:71
-msgid "This page shows an overview of all your UiTPAS actions"
-msgstr "Een overzicht van de plaatsen waar je je UiTPAS reeds gebruikte"
-
-#: includes/profile_actions.inc:75 includes/recent_actions.inc:51
-msgid "Number of actions to display"
-msgstr "Aantal weer te geven acties"
-
-#: includes/profile_advantages.inc:84
-msgid "My UiTPAS advantages settings"
-msgstr "Mijn UiTPAS welkomstgeschenken instellingen"
-
-#: includes/profile_advantages.inc:101 includes/profile_details.inc:256
+#: includes/profile_advantages.inc:58;103
 msgid "My advantages"
 msgstr "Mijn voordelen"
 
-#: includes/profile_advantages.inc:117 includes/profile_promotions.inc:125
+#: includes/profile_advantages.inc:86
+msgid "My UiTPAS advantages settings"
+msgstr "Mijn UiTPAS welkomstvoordelen instellingen"
+
+#: includes/profile_advantages.inc:119 includes/profile_promotions.inc:129
 msgid "My Promotions"
 msgstr "Mijn voordelen"
 
-#: includes/profile_advantages.inc:121 includes/profile_promotions.inc:129
+#: includes/profile_advantages.inc:123 includes/profile_promotions.inc:133
 msgid "Welcome Advantages"
 msgstr "Welkomstvoordelen"
 
-#: includes/profile_advantages.inc:144 includes/profile_promotions.inc:152
+#: includes/profile_advantages.inc:140 includes/profile_promotions.inc:150
 msgid "Filter"
 msgstr "Filter"
 
@@ -451,7 +335,7 @@ msgstr "Voornaam"
 msgid "Name"
 msgstr "Naam"
 
-#: includes/profile_details.inc:44 includes/user_register.inc:65
+#: includes/profile_details.inc:44 includes/user_register.inc:69
 msgid "Date of birth"
 msgstr "Geboortedatum"
 
@@ -487,7 +371,7 @@ msgstr "Nummer"
 msgid "Zip"
 msgstr "Postcode"
 
-#: includes/profile_details.inc:93 includes/register_where.inc:151;158
+#: includes/profile_details.inc:93
 msgid "City"
 msgstr "Stad of gemeente"
 
@@ -503,6 +387,16 @@ msgstr "Mobiel"
 msgid "Email"
 msgstr "E-mail"
 
+#: includes/profile_details.inc:121
+msgid ""
+"This email address is synchronized with your <a href=\"@edit-account"
+"\">online account</a> and  will be used for all communication regarding "
+"@site-name and @card-name."
+msgstr ""
+"Dit e-mailadres wordt ook gebruikt voor je <a href=\"@edit-account"
+"\">logingegevens</a> en wordt gebruikt voor alle communicatie aangaande "
+"@site-name en @card-name."
+
 #: includes/profile_details.inc:128
 msgid "Save"
 msgstr "Opslaan"
@@ -511,116 +405,20 @@ msgstr "Opslaan"
 msgid "Invalid e-mail address"
 msgstr "Gelieve een geldig e-mailadres in te vullen"
 
-#: includes/profile_details.inc:216 includes/synchronization.inc:151
+#: includes/profile_details.inc:216 includes/synchronization.inc:128
 msgid "An error occurred."
 msgstr "Er is een tijdelijke fout opgetreden. Probeer het later opnieuw."
 
 #: includes/profile_details.inc:219 includes/registration_confirmation.inc:78
-#: includes/synchronization.inc:163
+#: includes/synchronization.inc:140
 msgid "Your changes have been saved."
 msgstr "Jouw wijzigingen werden bewaard."
 
-#: includes/profile_details.inc:249
-msgid "UiTPAS profile details settings"
-msgstr "UiTPAS accountinstellingen"
-
-#: includes/profile_details.inc:255
-msgid "Menu: advantages title"
-msgstr "Menu: voordelen > titel"
-
-#: includes/profile_details.inc:260
-msgid "Menu: advantages description"
-msgstr "Menu: voordelen > beschrijving"
-
-#: includes/profile_details.inc:265
-msgid "Menu: actions title"
-msgstr "Menu: acties > titel"
-
-#: includes/profile_details.inc:270
-msgid "Menu: actions description"
-msgstr "Menu: acties > beschrijving"
-
-#: includes/profile_details.inc:275
-msgid "Menu: notifications title"
-msgstr "Menu: meldingen > titel"
-
-#: includes/profile_details.inc:276
-msgid "My notifications"
-msgstr "Mijn meldingen"
-
-#: includes/profile_details.inc:280
-msgid "Menu: notifications description"
-msgstr "Menu: meldingen > beschrijving"
-
-#: includes/profile_details.inc:281
-msgid "Change your preferences for receiving personal notifications via email."
-msgstr ""
-"Wijzig jouw instellingen om via e-mail op de hoogte gehouden te worden."
-
-#: includes/profile_details.inc:285
-msgid "UiTPAS Title"
-msgstr "UiTPAS titel"
-
-#: includes/profile_details.inc:290
-msgid "UiTPAS Number (label)"
-msgstr "UiTPAS nummer (label)"
-
-#: includes/profile_details.inc:291 theme/theme.inc:281
-msgid "UiTPAS number(s)"
-msgstr "UiTPAS nummer(s)"
-
-#: includes/profile_details.inc:296
-msgid ""
-"This page shows the UiTPAS card(s) you own and the personal information that "
-"has been registered when buying your card."
-msgstr ""
-"Alle details van je UiTPAS-kaart(en) en de persoonlijke gegevens waarmee je "
-"UiTPAS geregistreerd werd."
-
-#: includes/profile_details.inc:300
-msgid "Form title"
-msgstr "Titel formulier"
-
-#: includes/profile_details.inc:301
-msgid "My personal information"
-msgstr "Mijn persoonlijke gegevens"
-
-#: includes/profile_details.inc:305
-msgid "Form intro"
-msgstr "Introtekst formulier"
-
-#: includes/profile_details.inc:306;316
-msgid ""
-"This information has been captured from your eID and cannot be changed. "
-"Updates can only be done at official UiTPAS registration counters"
-msgstr ""
-"Deze informatie werd ingelezen van je eiD en kan niet aangepast worden. "
-"Wijzigingen kunnen enkel doorgevoerd worden aan een officiële UiTPAS "
-"registratiebalie."
-
-#: includes/profile_details.inc:310
-msgid "Email description"
-msgstr "Beschrijving e-mail"
-
-#: includes/profile_details.inc:311
-msgid ""
-"This email address has been connected to your <a href=\"@edit-profile"
-"\">online profile</a>. This address will be used for all communication "
-"regarding @site_name and UiTPAS."
-msgstr ""
-"Dit e-mailadres is gekoppeld aan je <a href=\"@edit-profile\">UiTiD-profiel</"
-"a> en zal gebruikt worden voor alle communicatie aangaande @site_name en "
-"UiTPAS."
-
-#: includes/profile_details.inc:315 includes/register_where.inc:109
-msgid "Outro"
-msgstr "Slot"
-
-#: includes/profile_promotions.inc:92
+#: includes/profile_promotions.inc:96
 msgid "My UiTPAS promotions settings"
 msgstr "Mijn UiTPAS voordelen instellingen"
 
-#: includes/profile_promotions.inc:98 includes/promotions.inc:92
+#: includes/profile_promotions.inc:102 includes/promotions.inc:85
 #: includes/promotions_highlight.inc:57
 msgid "Number of promotions to display"
 msgstr "Aantal weer te geven voordelen"
@@ -629,7 +427,7 @@ msgstr "Aantal weer te geven voordelen"
 msgid "Title for the promotions"
 msgstr "Voordelen"
 
-#: includes/profile_summary.inc:114 theme/theme.inc:387
+#: includes/profile_summary.inc:114 theme/theme.inc:390
 msgid "Your UiTPAS advantages"
 msgstr "Jouw UiTPAS voordelen"
 
@@ -637,7 +435,7 @@ msgstr "Jouw UiTPAS voordelen"
 msgid "Title for the upcoming promotions"
 msgstr "Wordt verwacht"
 
-#: includes/profile_summary.inc:119 theme/theme.inc:404
+#: includes/profile_summary.inc:119 theme/theme.inc:407
 msgid "Just a few points more for"
 msgstr "Nog enkele punten sparen ..."
 
@@ -645,42 +443,56 @@ msgstr "Nog enkele punten sparen ..."
 msgid "More link text"
 msgstr "Meer informatie"
 
-#: includes/profile_summary.inc:124 theme/theme.inc:421
+#: includes/profile_summary.inc:124 theme/theme.inc:424
 msgid "Show all my promotions"
 msgstr "Toon al mijn UiTPAS voordelen"
 
-#: includes/promotions.inc:76
+#: includes/promotions.inc:79
 msgid "UiTPAS promotions settings"
 msgstr "UiTPAS voordelen instellingen"
 
-#: includes/promotions.inc:88
-msgid ""
-"This page shows all promotions for which UiTPAS holders can save points. "
-"Find out <a href=\"@search-url\">where to save points</a>."
-msgstr ""
-"Dit zijn alle voordelen waarvoor je met een UiTPAS punten kan sparen. Punten "
-"sparen kan op <a href=\"@search-url\">deze evenementen</a>."
-
-#: includes/promotions.inc:97
+#: includes/promotions.inc:90
 msgid "Show advantages above the promotions list."
 msgstr "Toon welkomstvoordelen boven de lijst met ruilvoordelen"
 
-#: includes/promotions.inc:102
+#: includes/promotions.inc:95
 msgid "Number of advantages to show above the promotions list"
 msgstr ""
 "Aantal welkomstvoordelen die getoond worden boven lijst met ruilvoordelen."
 
-#: includes/promotions.inc:165
+#: includes/promotions.inc:132 theme/theme.inc:157
+msgid ""
+"This page shows all promotions for which UiTPAS holders can save points."
+msgstr "Hier vind je alle voordelen voor UiTPAS-houders."
+
+#: includes/promotions.inc:138
+msgid "<a href=\"@register-where\">Find out where</a> to get an UiTPAS"
+msgstr "<a href=\"@register-where\">Ontdek waar</a> je een UiTPAS kan halen"
+
+#: includes/promotions.inc:140
+msgid ""
+"or <a href=\"@login\">login</a> and register your UiTPAS to discover your "
+"personal promotions and points balance."
+msgstr ""
+"of <a href=\"@login\">meld je aan</a> en activeer je UiTPAS om je "
+"persoonlijke voordelen en puntensaldo te bekijken."
+
+#: includes/promotions.inc:166;180 includes/promotions_highlight.inc:63
+#: theme/theme.inc:565
+msgid "Show all promotions"
+msgstr "Toon alle UiTPAS voordelen"
+
+#: includes/promotions.inc:179 theme/theme.inc:169
 msgid "Found %count promotions"
 msgstr "%count voordelen gevonden"
 
-#: includes/promotions.inc:188
-msgid "Show all advantages"
-msgstr "Toon alle welkomstgeschenken"
+#: includes/promotions.inc:236 views/culturefeed_uitpas.views.inc:34;37
+msgid "UiTPAS promotions"
+msgstr "UiTPAS voordelen"
 
-#: includes/promotions_highlight.inc:63 theme/theme.inc:569
-msgid "Show all promotions"
-msgstr "Toon alle UiTPAS voordelen"
+#: includes/recent_actions.inc:51
+msgid "Number of actions to display"
+msgstr "Aantal weer te geven acties"
 
 #: includes/recent_actions.inc:57
 msgid "Default image"
@@ -690,61 +502,38 @@ msgstr "Standaardafbeelding"
 msgid "Use full url or an absolute path."
 msgstr "Gebruik een volledige URL of een absolute hyperlink."
 
-#: includes/register_where.inc:88
+#: includes/register_where.inc:90
 msgid "UiTPAS register where settings"
 msgstr "UiTPAS registreren / aankopen instellingen"
 
-#: includes/register_where.inc:94 views/culturefeed_uitpas.views.inc:55
-msgid "Title"
-msgstr "Titel"
-
-#: includes/register_where.inc:95
-msgid "Get your UiTPAS"
-msgstr "Haal nu je UiTPAS"
-
-#: includes/register_where.inc:99
-msgid "Filters title"
-msgstr "Titel (Filters)"
-
-#: includes/register_where.inc:100
-msgid "Registration counters"
-msgstr "Registratiebalies"
-
-#: includes/register_where.inc:105
-msgid ""
-"You can get an UiTPAS at one of these registration counters. An UiTPAS costs "
-"5 EURO. Younger than 18 years? Then you'll pay 2 EURO. For people with an "
-"opportunities tarrif UiTPAS is free. You'll need your eID to register your "
-"UiTPAS."
-msgstr ""
-"Je kan een UiTPAS halen op één van deze registratiepunten. Een UiTPAS kost 5 "
-"EURO. Ben je jonger dan 18 jaar? Dan betaal je slechts 2 EURO. Voor mensen "
-"met een kansenstatuut is de UiTPAS gratis. Voor de registratie van een "
-"UiTPAS heb je een eID nodig."
-
-#: includes/register_where.inc:110
-msgid ""
-"Important: you'll need your eID to register your UiTPAS. <a href=\"@read-more"
-"\">Read more</a> about the UiTPAS project."
-msgstr ""
-"Belangrijk: voor de aankoop van een UiTPAS heb je je eID nodig. <a href="
-"\"@read-more\">Lees meer</a> over het UiTPAS-project."
-
-#: includes/register_where.inc:114
+#: includes/register_where.inc:96
 msgid "Number of points of sale to display"
 msgstr "Aantal weer te geven verkooppunten (standaard)"
 
-#: includes/register_where.inc:125 includes/user_register.inc:43
-msgid "Register your UiTPAS"
-msgstr "Registreer jouw UiTPAS"
+#: includes/register_where.inc:107
+msgid "Get your UiTPAS"
+msgstr "Haal nu je UiTPAS"
 
-#: includes/register_where.inc:137
-msgid "All"
-msgstr "Alle"
+#: includes/register_where.inc:117
+msgid "All regions"
+msgstr "Alle regio's"
 
-#: includes/register_where.inc:166
+#: includes/register_where.inc:127
+msgid "UiTPAS Region"
+msgstr "UiTPAS-regio"
+
+#: includes/register_where.inc:134
+msgid "I have a kansenstatuut"
+msgstr "Ik heb een kansenstatuut"
+
+#: includes/register_where.inc:141
 msgid "Search"
 msgstr "Zoeken"
+
+#: includes/registration_confirmation.inc:18
+msgid "You can now manage your points balance and personal promotions"
+msgstr ""
+"Je kan voortaan je puntensaldo en persoonlijke voordelen online raadplegen."
 
 #: includes/registration_confirmation.inc:54
 msgid "Complete your profile"
@@ -754,28 +543,11 @@ msgstr "Vervolledig je profiel"
 msgid "An error occured."
 msgstr "Er is een tijdelijke fout opgetreden. Probeer het later opnieuw."
 
-#: includes/registration_confirmation.inc:98
-msgid "UiTPAS registration confirmation settings"
-msgstr "UiTPAS registratieinstellingen"
+#: includes/registration_confirmation.inc:95
+msgid "Your UiTPAS is registered"
+msgstr "Je UiTPAS werd goed geactiveerd"
 
-#: includes/registration_confirmation.inc:105;133
-msgid "You are now registered on UiTPAS"
-msgstr "Je UiTPAS werd goed geregistreerd"
-
-#: includes/registration_confirmation.inc:109 includes/user_register.inc:218
-msgid "Intro text"
-msgstr "Inleiding"
-
-#: includes/registration_confirmation.inc:110
-msgid "You can now manage your points balance and personal promotions"
-msgstr ""
-"Je kan voortaan je puntensaldo en persoonlijke voordelen online raadplegen."
-
-#: includes/registration_confirmation.inc:114
-msgid "Actions label"
-msgstr "Tekstlabel om UiTPAS acties zichtbaar te maken voor andere gebruikers"
-
-#: includes/synchronization.inc:37;101
+#: includes/synchronization.inc:37
 msgid "Can we use your UiTPAS data to complete your profile?"
 msgstr "Mogen we je profiel updaten met de gegevens op je UiTPAS?"
 
@@ -787,222 +559,320 @@ msgstr "Ja"
 msgid "No"
 msgstr "Nee"
 
-#: includes/synchronization.inc:93
-msgid "UiTPAS synchronization settings"
-msgstr "UiTPAS synchronisatie instellingen"
+#: includes/synchronization.inc:152
+msgid "Update personal data"
+msgstr "Update persoonlijke gegevens"
 
-#: includes/synchronization.inc:100
-msgid "Text"
-msgstr "Tekst"
-
-#: includes/user_register.inc:44;219
+#: includes/user_register.inc:48
 msgid ""
 "Register here, so you can follow your UiTPAS advantages and points balance "
 "online."
-msgstr "Registreer je UiTPAS en beheer jouw puntensaldo en voordelen online."
+msgstr ""
+"Activeer je UiTPAS en raadpleeg je puntensaldo en persoonlijke voordelen."
 
-#: includes/user_register.inc:52
+#: includes/user_register.inc:56
 msgid "Username"
 msgstr "Gebruikersnaam"
 
-#: includes/user_register.inc:58;224
+#: includes/user_register.inc:62
 msgid "UiTPAS number"
 msgstr "UiTPAS nummer"
 
-#: includes/user_register.inc:78
+#: includes/user_register.inc:82
 msgid "Register UiTPAS"
-msgstr "Registreer UiTPAS"
+msgstr "Activeer UiTPAS"
 
-#: includes/user_register.inc:85;234
+#: includes/user_register.inc:89
 msgid "Already registered?  <a href=\"@url\">Apply here</a>."
 msgstr "Ben je al geregistreerd?  <a href=\"@url\">Aanmelden</a>."
 
-#: includes/user_register.inc:137
+#: includes/user_register.inc:141
 msgid "Invalid date of birth."
 msgstr "Gelieve een geldige geboortedatum in te vullen."
 
-#: includes/user_register.inc:142
+#: includes/user_register.inc:146
 msgid "Invalid UiTPAS number."
 msgstr "Gelieve een geldig UiTPAS nummer in te vullen."
 
-#: includes/user_register.inc:147
+#: includes/user_register.inc:151
 msgid "User already activated."
-msgstr "Dit UiTPAS nummer is reeds in gebruik."
+msgstr "Dit UiTPAS nummer is reeds geactiveerd."
 
-#: includes/user_register.inc:152
+#: includes/user_register.inc:156
 msgid "Missing required fields."
 msgstr "Gelieve alle verplichte velden in te vullen."
 
-#: includes/user_register.inc:157
+#: includes/user_register.inc:161
 msgid "Invalid date."
 msgstr "Gelieve een geldige datum in te vullen."
 
-#: includes/user_register.inc:162
+#: includes/user_register.inc:166
 msgid "Unknown UiTPAS number."
 msgstr "Dit UiTPAS nummer is niet in gebruik."
 
-#: includes/user_register.inc:167
+#: includes/user_register.inc:171
 msgid "Action failed."
 msgstr "Er is een fout opgetreden. Probeer het later opnieuw."
 
-#: includes/user_register.inc:172;177
+#: includes/user_register.inc:176;181
 msgid ""
 "We are unable to process your request at this moment. Please try again later."
 msgstr ""
-"Het registreren van je UiTPAS is tijdelijk niet mogelijk. Probeer het later "
+"Het activeren van je UiTPAS is tijdelijk niet mogelijk. Probeer het later "
 "opnieuw."
 
-#: includes/user_register.inc:211
-msgid "Title for the registration page"
-msgstr "Titel (Registratiepagina)"
-
-#: includes/user_register.inc:223
-msgid "Label for UiTPAS number field"
-msgstr "UiTPAS nummer"
-
-#: includes/user_register.inc:228
-msgid "Value for the submit button"
-msgstr "Label actieknop UiTPAS registreren"
-
-#: includes/user_register.inc:229
-msgid "Continue"
-msgstr "Doorgaan"
-
-#: includes/user_register.inc:233
-msgid "Apply text"
-msgstr "Tekstlink aanmelden UiTPAS gebruikers"
-
 #: theme/culturefeed-uitpas-advantage.tpl.php:32
-#: theme/culturefeed-uitpas-promotion.tpl.php:35
+#: theme/culturefeed-uitpas-promotion.tpl.php:50
 msgid "How to exchange"
 msgstr "Hoe omruilen"
 
 #: theme/culturefeed-uitpas-advantage.tpl.php:35
-#: theme/culturefeed-uitpas-promotion.tpl.php:38 theme/theme.inc:71;496
-msgid "At"
-msgstr "Bij"
+#: theme/culturefeed-uitpas-promotion.tpl.php:27;53
+msgid "Offered by"
+msgstr "Aangeboden door"
 
-#: theme/theme.inc:53;472
+#: theme/culturefeed-uitpas-profile-section-register.tpl.php:12
+msgid "You did not register your UiTPAS yet."
+msgstr "Je hebt je UiTPAS nog niet geactiveerd."
+
+#: theme/culturefeed-uitpas-profile-section-register.tpl.php:14
+msgid "Register and..."
+msgstr "Activeer je pas en ..."
+
+#: theme/culturefeed-uitpas-profile-section-register.tpl.php:17
+msgid "consult your benefits"
+msgstr "raadpleeg je voordelen"
+
+#: theme/culturefeed-uitpas-profile-section-register.tpl.php:18
+msgid "check points balance"
+msgstr "check je puntensaldo"
+
+#: theme/culturefeed-uitpas-profile-section-register.tpl.php:19
+msgid "access your information"
+msgstr "bekijk al je gegevens"
+
+#: theme/culturefeed-uitpas-profile-section-register.tpl.php:31
+msgid ""
+"Holders of an UiTPAS can earn points by participating in leisure activities "
+"and exchange them for "
+msgstr ""
+"UiTPAS-houders sparen punten door deel te nemen aan vrijetijdsactiviteiten "
+"en kunnen deze inwisselen voor"
+
+#: theme/culturefeed-uitpas-profile-section-register.tpl.php:31
+msgid "nice benefits"
+msgstr "leuke voordelen"
+
+#: theme/culturefeed-uitpas-profile-section-register.tpl.php:36
+msgid "Get an UiTPAS"
+msgstr "Haal je UiTPAS"
+
+#: theme/culturefeed-uitpas-promotion.tpl.php:32
+msgid "Valid till"
+msgstr "Geldig tot"
+
+#: theme/culturefeed-uitpas-promotion.tpl.php:37
+msgid "Still available"
+msgstr "Nog beschikbaar"
+
+#: theme/culturefeed-uitpas-promotion.tpl.php:42
+msgid "Conditions"
+msgstr "Voorwaarden"
+
+#: theme/theme.inc:50;472
 msgid "From !date"
 msgstr "Van !date"
 
-#: theme/theme.inc:59;478;484
+#: theme/theme.inc:56;474
 msgid "valid until !date"
 msgstr "geldig tot !date"
 
-#: theme/theme.inc:78;503
+#: theme/theme.inc:68;492
+msgid "At"
+msgstr "Bij"
+
+#: theme/theme.inc:75;499
 msgid "Provided by @provider"
 msgstr "Aangeboden door @provider"
 
-#: theme/theme.inc:89;511
+#: theme/theme.inc:86;507
 msgid "Only available for"
 msgstr "Enkel geldig voor"
+
+#: theme/theme.inc:134
+msgid "This page only shows the advantages that you didn't receive yet."
+msgstr ""
+"Deze pagina toont enkel de welkomstvoordelen die je nog niet in ontvangst "
+"nam."
+
+#: theme/theme.inc:135
+msgid ""
+"Discover <a href=\"@all-advantages\">all advantages</a> that are currently "
+"available for new UiTPAS holders."
+msgstr ""
+"Ontdek <a href=\"@all-advantages\">alle welkomstvoordelen</a> die momenteel "
+"beschikbaar zijn voor nieuwe UiTPAS-houders."
 
 #: theme/theme.inc:145
 msgid "@min - @max of @total promotions"
 msgstr "@min - @max van @total voordelen"
 
-#: theme/theme.inc:169
-msgid " of "
-msgstr " van "
+#: theme/theme.inc:175
+msgid ""
+"This page only shows the promotions you can get with your current points "
+"balance"
+msgstr ""
+"Deze pagina toont enkel de voordelen die je kan omruilen met je huidige "
+"puntensaldo"
 
-#: theme/theme.inc:169
-msgid "promotions"
-msgstr "voordelen"
+#: theme/theme.inc:176
+msgid ""
+"Discover <a href=\"@all-promotions\">all promotions</a> you can save for."
+msgstr ""
+"Ontdek <a href=\"@all-promotions\">alle voordelen</a> waar je voor kan "
+"sparen."
 
-#: theme/theme.inc:203
+#: theme/theme.inc:199
+msgid "This page shows an overview of all your UiTPAS actions"
+msgstr "Een overzicht van de plaatsen waar je je UiTPAS reeds gebruikte"
+
+#: theme/theme.inc:202
 msgid "Date"
 msgstr "Datum"
 
-#: theme/theme.inc:203
-msgid "Activity name"
-msgstr "Activiteit"
+#: theme/theme.inc:202
+msgid "Action"
+msgstr "Actie"
 
-#: theme/theme.inc:203
-msgid "Location"
-msgstr "Locatie"
-
-#: theme/theme.inc:203 views/culturefeed_uitpas.views.inc:68
+#: theme/theme.inc:202 views/culturefeed_uitpas.views.inc:68
 msgid "Points"
 msgstr "Punten"
 
-#: theme/theme.inc:222;638
+#: theme/theme.inc:212
+msgid "at @location"
+msgstr "bij @location"
+
+#: theme/theme.inc:216
+msgid "@formatted_count point"
+msgstr "@formatted_count punt"
+
+#: theme/theme.inc:217
+msgid "@formatted_count points"
+msgstr "@formatted_count punten"
+
+#: theme/theme.inc:234;645
 msgid "No results found."
 msgstr "Geen resultaten gevonden."
 
-#: theme/theme.inc:273;303
+#: theme/theme.inc:262
+msgid ""
+"This page shows the UiTPAS card(s) you own and the personal information that "
+"has been registered when buying your card."
+msgstr ""
+"Alle details van je UiTPAS-kaart(en) en de persoonlijke gegevens waarmee je "
+"UiTPAS geactiveerd werd."
+
+#: theme/theme.inc:277;308
 msgid "valid till !date"
 msgstr "Geldig tot !date"
 
-#: theme/theme.inc:274
+#: theme/theme.inc:278
 msgid "Opportunity status"
 msgstr "Kansentarief"
 
-#: theme/theme.inc:283
-msgid "Register new UiTPAS"
-msgstr "Registreer nieuwe UiTPAS"
+#: theme/theme.inc:285
+msgid "UiTPAS number(s)"
+msgstr "UiTPAS nummer(s)"
 
-#: theme/theme.inc:286
+#: theme/theme.inc:291
 msgid "My personal data"
 msgstr "Mijn persoonlijke gegevens"
 
-#: theme/theme.inc:291
+#: theme/theme.inc:292
+msgid ""
+"This information has been read from your eID and cannot be changed. Updates "
+"can only be done at official <a href=\"@counters-url\">UiTPAS registration "
+"counters</a>."
+msgstr ""
+"Deze informatie werd ingelezen van je eID en kan hier niet aangepast worden. "
+"Wijzigingen kunnen enkel uitgevoerd worden in één van de <a href=\"@counters-"
+"url\">UiTPAS registratiebalies</a>."
+
+#: theme/theme.inc:296
 msgid "Status"
 msgstr "Status"
 
-#: theme/theme.inc:366;679
+#: theme/theme.inc:369;686
 msgid "point"
 msgstr "punt"
 
-#: theme/theme.inc:367;680
+#: theme/theme.inc:370;687
 msgid "points"
 msgstr "punten"
 
-#: theme/theme.inc:396;413
+#: theme/theme.inc:399;416
 msgid "!points points"
 msgstr "!points punten"
 
-#: theme/theme.inc:673
-msgid "Anonymous"
-msgstr "Anoniem"
+#: theme/theme.inc:478
+msgid "Valid until !date"
+msgstr "Geldig tot !date"
 
-#: theme/theme.inc:679;680
-msgid "saved"
-msgstr "spaarde"
-
-#: theme/theme.inc:679;680
-msgid "at"
-msgstr "bij"
-
-#: theme/theme.inc:679;680
-msgid "ago"
-msgstr "geleden"
-
-#: theme/theme.inc:764;767;868
+#: theme/theme.inc:481;771;774;879
 msgid "Until end of stock"
 msgstr "Zolang voorraad strekt"
 
-#: theme/theme.inc:770
-msgid "This is a welcome advantage"
-msgstr "Dit is een welkomstgeschenk"
+#: theme/theme.inc:653
+msgid ""
+"You can get an UiTPAS at one of these registration counters. An UiTPAS costs "
+"€ 5. Younger than 18 years? Then you'll pay € 2. For people with an "
+"opportunities tarrif UiTPAS is free. You'll need your eID to register your "
+"UiTPAS."
+msgstr ""
+"Je kan een UiTPAS halen op één van deze registratiepunten. Een UiTPAS kost € "
+"5. Ben je jonger dan 18 jaar? Dan betaal je slechts € 2. Voor mensen met een "
+"kansenstatuut is de UiTPAS gratis. Voor de registratie van een UiTPAS heb je "
+"een eID nodig."
 
-#: theme/theme.inc:861
+#: theme/theme.inc:655
+msgid ""
+"Important: you'll need your eID to register your UiTPAS. <a href=\"@read-more"
+"\">Read more</a> about the UiTPAS project."
+msgstr ""
+"Belangrijk: voor de aankoop van een UiTPAS heb je je eID nodig. <a href="
+"\"@read-more\">Lees meer</a> over het UiTPAS-project."
+
+#: theme/theme.inc:680
+msgid "Anonymous"
+msgstr "Anoniem"
+
+#: theme/theme.inc:686;687
+msgid "saved"
+msgstr "spaarde"
+
+#: theme/theme.inc:686;687
+msgid "at"
+msgstr "bij"
+
+#: theme/theme.inc:686;687
+msgid "ago"
+msgstr "geleden"
+
+#: theme/theme.inc:777
+msgid "This is a welcome advantage"
+msgstr "Dit is een welkomstvoordeel"
+
+#: theme/theme.inc:868
 msgid "not any longer in stock"
 msgstr "Niet meer op voorraad"
 
-#: theme/theme.inc:865
+#: theme/theme.inc:872
 msgid "Until @date"
 msgstr "Tot @date"
 
-#: theme/theme.inc:874
-msgid "You have insufficient points"
-msgstr "Je hebt onvoldoende punten"
-
-#: theme/theme.inc:452;769;879
-msgid "1 point"
-msgid_plural "@count points"
-msgstr[0] "1 punt"
-msgstr[1] "@count punten"
+#: theme/theme.inc:875
+msgid "From @date"
+msgstr "Vanaf @date"
 
 #: views/culturefeed_uitpas.views.inc:19
 msgid "Culturefeed UiTPAS promotions query"
@@ -1012,10 +882,6 @@ msgstr "Culturefeed UiTPAS zoekopdracht voordelen"
 msgid "Query on UiTPAS promotions."
 msgstr "Zoekopdracht UiTPAS voordelen"
 
-#: views/culturefeed_uitpas.views.inc:34;37
-msgid "UiTPAS promotions"
-msgstr "UiTPAS voordelen"
-
 #: views/culturefeed_uitpas.views.inc:46
 msgid "ID"
 msgstr "ID"
@@ -1023,6 +889,10 @@ msgstr "ID"
 #: views/culturefeed_uitpas.views.inc:47
 msgid "The promotion ID."
 msgstr "Voordeel ID"
+
+#: views/culturefeed_uitpas.views.inc:55
+msgid "Title"
+msgstr "Titel"
 
 #: views/culturefeed_uitpas.views.inc:56
 msgid "The promotion title."

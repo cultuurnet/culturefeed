@@ -166,6 +166,11 @@
   </dd>
   <?php endif; ?>
 
+  <?php if ($uitpas_promotions): ?>
+  <dt><?php print t('Promotions'); ?></dt>
+  <dd class="promotions"><?php print $uitpas_promotions; ?></dd>
+  <?php endif; ?>
+
 </dl>
 
 <?php if (!empty($main_picture)): ?>
@@ -183,7 +188,9 @@
 <?php endforeach; ?>
 <?php endif; ?>
 
-<?php print $recommend_link; ?>
+<?php if (!empty($recommend_link)) : ?>
+  <?php print $recommend_link; ?>
+<?php endif; ?>
 
 <?php if (!empty($personal_calendar_buttons)): ?>
 <?php foreach ($personal_calendar_buttons['aside'] as $button) : ?>

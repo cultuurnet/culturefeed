@@ -216,7 +216,7 @@ function culturefeed_calendar_render_calendar_buttons($item) {
           {
             $endtime = "23:59:59";
 
-            if(!empty($calendar_item->getEndTime())) {
+            if($calendar_item->getEndTime()) {
               if($calendar_item->getEndTime() !== "00:00:00") {
                 $endtime = $calendar_item->getEndTime();
               }
@@ -527,10 +527,10 @@ function culturefeed_calendar_activity_is_finished($activity) {
   if ($selected_date = culturefeed_calendar_get_selected_date($activity)) {
 
     // Only show activities between current month and 11 months in the future
-    $activity_month = format_date($selected_date, 'custom', 'mY');
-    $current_month = format_date(REQUEST_TIME, 'custom', 'mY');
-
-    if ($activity_month < $current_month || $activity_month > $current_month+11) {
+    $activity_month = format_date($selected_date, 'custom', 'Ym');
+    $current_month = format_date(REQUEST_TIME, 'custom', 'Ym');
+    
+    if ($activity_month < $current_month || $activity_month > date('Ym', strtotime("11 months"))) {
       return TRUE;
     }
 

@@ -9,6 +9,7 @@
  * Configuration form for general settings.
  *
  * @ingroup forms
+ *
  * @see system_settings_form()
  */
 function culturefeed_mailing_admin_settings() {

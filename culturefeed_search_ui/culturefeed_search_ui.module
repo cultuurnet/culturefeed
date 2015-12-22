@@ -1025,24 +1025,13 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
 
           // remove facet from query so it works for multiple selections
           $url_query = $search_query;
-          unset($url_query['facet'][$active_facet_name]);
-
           $url = url($path, array('query' => $url_query));
 
-          if(isset($build['item_' . $active_facet_name][0])) {
-            $filter = $build['item_' . $active_facet_name][0]['#label'];
-            $operator = drupal_strtoupper(variable_get
-            ('culturefeed_multiple_categories_operator', 'and'));
-            $build['item_' . $active_facet_name][0]['#label'] = $filter . ' '
-              . $operator . ' ' . $label;
-          }
-          else {
-            $build['item_' . $active_facet_name][0] = array(
-              '#theme' => 'culturefeed_search_active_filters_item',
-              '#label' => isset($human_names[$active_facet_name][$label]) ? $human_names[$active_facet_name][$label] : $label,
-              '#url' => $url
-            );
-          }
+          $build['item_' . $active_facet_name][] = array(
+            '#theme' => 'culturefeed_search_active_filters_item',
+            '#label' => isset($human_names[$active_facet_name][$label]) ? $human_names[$active_facet_name][$label] : $label,
+            '#url' => $url
+          );
 
         }
       }

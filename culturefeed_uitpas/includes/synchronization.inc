@@ -34,7 +34,7 @@ function culturefeed_uitpas_synchronization_form($form, &$form_state) {
       'id' => 'uitpas-synchronize-confirmation'
     ),
     'text' => array(
-      '#markup' => variable_get('culturefeed_uitpas_synchronization_confirmation', t('Can we use your UiTPAS data to complete your profile?')),
+      '#markup' => t('Can we use your UiTPAS data to complete your profile?'),
     ),
   );
 
@@ -77,29 +77,6 @@ function culturefeed_uitpas_synchronization_form_submit($form, &$form_state) {
   }
 
   $form_state['redirect'] = 'culturefeed/profile/edit';
-
-}
-
-/**
- * Sets form elements for synchronize settings.
- *
- * @param array $form
- *   The form.
- */
-function culturefeed_uitpas_synchronization_settings_get(&$form) {
-
-  $form['synchronization'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('UiTPAS synchronization settings'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-
-  $form['synchronization']['culturefeed_uitpas_synchronization_confirmation'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Text'),
-    '#default_value' => variable_get('culturefeed_uitpas_synchronization_confirmation', t('Can we use your UiTPAS data to complete your profile?')),
-  );
 
 }
 
@@ -164,5 +141,14 @@ function culturefeed_uitpas_synchronization_synchronize() {
     }
 
   }
+
+}
+
+/**
+ * Title callback for the synchronization page.
+ */
+function culturefeed_uitpas_synchronization_title() {
+
+  return t('Update personal data');
 
 }

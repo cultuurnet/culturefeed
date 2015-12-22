@@ -149,20 +149,6 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $cdb_item = $item->getEntity();
   $detail = $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
-  // Facilities: only for events with a location
-
-  if ($cdb_item instanceof CultureFeed_Cdb_Item_Event) {
-    $location = $cdb_item->getLocation();
-    $actor_id = $location->getCdbid();
-    if ($actor_id) {
-      if(culturefeed_agenda_actor_load($actor_id)) {
-        $actor = culturefeed_agenda_actor_load($actor_id)->getEntity();
-        $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $actor);
-        $variables['locations_facilities'] = $facilities['text'];
-      }
-    }
-  }
-
   // Themes of this item (as plain text and as links).
   $themes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_THEME, $cdb_item);
   $variables['themes'] = $themes['text'];
@@ -352,7 +338,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   // Social actions.
   $variables['recommend_link'] = '';
   $variables['attend_link'] = '';
-  if (module_exists('culturefeed_social')) {
+  if (culturefeed_agenda_social_links_preprocessing_enabled()) {
     $variables['recommend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_RECOMMEND, $item);
     $variables['attend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_IK_GA, $item);
   }
@@ -416,11 +402,19 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         }
 
         $variables['keywords'] = implode(', ', $linked_keywords);
-        // check if event is suitable for kids
-        if (array_key_exists('ook voor kinderen', $keywords)) {
-          $variables['forkids'] = TRUE;
-        }
 
+      }
+
+      // check if event is suitable for kids
+      if (array_key_exists('ook voor kinderen', $keywords)) {
+        $variables['forkids'] = TRUE;
+      }
+
+      foreach (array_keys($keywords) as $keyword) {
+        if(stripos($keyword, 'uitpas')!==false || stripos($keyword, 'paspartoe')!==false)
+        {
+          $variables['uitpas'] = TRUE;
+        }
       }
 
     }
@@ -444,13 +438,17 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       if (array_key_exists('ook voor kinderen', $keywords)) {
         $variables['forkids'] = TRUE;
       }
+
+      if (sizeof(preg_grep('/uitpas/i', $keywords))>0 or sizeof(preg_grep('/paspartoe/i', $keywords))>0) {
+        $variables['uitpas'] = TRUE;
+      }
     }
   }
 
   $variables['device'] = '(not set)';
   $variables['is_ios'] = FALSE;
   $variables['is_android'] = FALSE;
-  
+
   if (module_exists('culturefeed')) {
     $detect = culturefeed_mobile_detect_get_object();
   }
@@ -483,6 +481,24 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   $item = $variables['item'];
   $cdb_item = $item->getEntity();
   $detail= $cdb_item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+
+  // Facilities: only for events with a location
+  if ($cdb_item instanceof CultureFeed_Cdb_Item_Event) {
+    $actor_id = $cdb_item->getLocation()->getCdbid();
+    if ($actor_id) {
+      $actor = $cdb_item->getLocation()->getActor() ?: culturefeed_agenda_actor_load($actor_id)->getEntity();
+      if ($actor) {
+        $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $actor);
+        $variables['locations_facilities'] = $facilities['text'];
+      }
+    }
+  }
+  
+  // Enhance event-details with UiTPAS-information if culturefeed_uitpas is enabled
+  if (module_exists('culturefeed_uitpas')) {
+    $uitpas_event = culturefeed_uitpas_get_uitpas_event($item);
+    $variables['uitpas_info'] = $uitpas_event;
+  }
 
   if ($detail) {
 
@@ -628,7 +644,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
 
   }
 
-  if (module_exists('culturefeed_social')) {
+  if (culturefeed_agenda_social_links_preprocessing_enabled()) {
     $variables['recommend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_RECOMMEND, $item, FALSE, FALSE, '', '', FALSE);
   }
 
@@ -989,28 +1005,28 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
   // Location information.
   $variables['location'] = '';
   $variables['contact'] = array();
-  
+
   if ($actor->getWeekScheme()) {
-    
+
     $variables['weekscheme'] = culturefeed_agenda_parse_weekscheme($actor->getWeekScheme());
-    
+
     // Format Calendar details to readable & themable HTML.
     $html_formatter = culturefeed_agenda_get_html_calendar_formatter();
-    
+
     // Use Permanent Calendar because html_formatter uses CultureFeed_Cdb_Data_Calendar and not Weekscheme
     $calendar = new CultureFeed_Cdb_Data_Calendar_Permanent();
     $calendar->setWeekScheme($actor->getWeekScheme());
-    
+
     // Large Calendar format (for detail pages).
     $variables['when_lg'] = '';
     try {
       $variables['when_lg'] = $html_formatter->format($calendar, 'lg');
     }
     catch (Exception $e) {
-    }  
-    
+    }
+
   }
-  
+
   if ($actor->getContactInfo()) {
 
     $contact_info = $actor->getContactInfo();
@@ -1525,7 +1541,7 @@ function theme_culturefeed_agenda_page_list_rss($variables) {
 
       $body = '';
       if (isset($object['city']) && !empty($object['city'])) {
-        $body .= strtoupper($object['city']) . ', ';     
+        $body .= strtoupper($object['city']) . ', ';
       }
       if (isset($object['when_md_txt']) && !empty($object['when_md_txt'])) {
         $body .= strtolower($object['when_md_txt']) . ' - ';
@@ -1534,7 +1550,7 @@ function theme_culturefeed_agenda_page_list_rss($variables) {
       $items .= format_rss_item($object['title'], $object_url, $body, $args);
     }
   }
-  
+
   $site_name = variable_get('site_name', 'Drupal');
   $url = url('', array('absolute' => TRUE, 'query' => array('utm_campaign' => 'rss', 'utm_medium' => 'content', 'utm_source' => 'external', 'utm_content' => 'feed')));
   $description = t('Recently added in:') . ' ' . $active_filters ;

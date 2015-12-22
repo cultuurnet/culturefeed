@@ -268,7 +268,7 @@ function culturefeed_search_get_search_url_query($search_query) {
         if (strpos($facet_field, '!') === 0) {
           $inverse = TRUE;
           $facet_field = substr($facet_field, 1);
-          $facet_value = substr($$facet_value, 1);
+          $facet_value = substr($facet_value, 1);
         }
         $facet_value = str_replace(array('(', ')', '"'), '', $facet_value);
         $previous_field = $facet_field;
@@ -416,7 +416,7 @@ function culturefeed_search_get_search_url_query($search_query) {
     // If first part is numeric: do location search.
     if (is_numeric($term_parts[0])) {
       $query['regId'] = $locations[0];
-      $query['location'] = $term->name;
+      $query['location'] = $term;
     }
     // Otherwise set flandersregion facet active.
     else {

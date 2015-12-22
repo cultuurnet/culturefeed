@@ -19,7 +19,7 @@ function theme_culturefeed_mailing_optin($variables) {
           'data' => $optin,
           'id' => 'newsletter-optin-' . $variables['mailing_id'],
         ),
-      )
+      ),
     );
     return drupal_render($item_list);
   }
@@ -27,6 +27,7 @@ function theme_culturefeed_mailing_optin($variables) {
 
 /**
  * Preprocess variables for the overview of possible mailings.
+ *
  * @see culturefeed-mailing-user-profile-admin.tpl.php
  */
 function culturefeed_mailing_preprocess_culturefeed_mailing_user_profile_admin(&$variables) {
@@ -42,6 +43,7 @@ function culturefeed_mailing_preprocess_culturefeed_mailing_user_profile_admin(&
 
 /**
  * Preprocess variables for the overview of 1 possible mailing item.
+ *
  * @see culturefeed-mailing-user-profile-admin-item.tpl.php
  */
 function culturefeed_mailing_preprocess_culturefeed_mailing_user_profile_admin_item(&$variables) {
@@ -57,6 +59,7 @@ function culturefeed_mailing_preprocess_culturefeed_mailing_user_profile_admin_i
 
 /**
  * Preprocess variables for subscription thank you message.
+ *
  * @see culturefeed-mailing-content-block-subscribed.tpl.php
  */
 function culturefeed_mailing_preprocess_culturefeed_mailing_content_block_subscribed(&$variables) {

@@ -33,18 +33,15 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
   }
 
   // Get the counters information.
-  $vars['counters'] = array();
-  if (isset($advantage->counters[0])) {
-    foreach ($advantage->counters as $key => $counter) {
-      $extendedCounter = culturefeed_agenda_actor_load($counter->id);
-      if ($extendedCounter) {
-        $new_counter = array('item' => $extendedCounter);
-        module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
-        culturefeed_agenda_preprocess_culturefeed_actor($new_counter);
-        $vars['counters'] = $new_counter;
-      }
-    }
+  $counters = array(
+    '#theme' => 'item_list',
+    '#type' => 'ul',
+    '#items' => array(),
+  );
+  foreach ($advantage->counters as $counter) {
+    $counters['#items'][] = l($counter->name, 'agenda/a/' . culturefeed_search_slug($counter->name) . '/' . $counter->id);
   }
+  $vars['counters'] = count($counters['#items']) ? drupal_render($counters) : '';
 
   // Period.
   $vars['period'] = '';
@@ -60,17 +57,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
     }
     $vars['period'] = $period;
   }
-
-  // Location.
-  $locations = array();
-  $location_links = array();
-  foreach ($vars['counters'] as $counter) {
-    $locations[] = $counter['title'];
-    $location_links[] = culturefeed_search_detail_l('actor', $counter['cdbid'], $counter['title'], $counter['title']);
-  }
-  $vars['location'] = t('At') . " " . implode(', ', $locations);
-  $vars['location_raw'] = $locations;
-  $vars['location_links'] = $location_links;
 
   // Provider.
   $vars['provider'] = '';
@@ -120,7 +106,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages(&$vars) {
   $vars['advantages_table'] = theme('culturefeed_uitpas_advantages_table', $vars);
 
   // Info.
-  $vars['info'] = variable_get('culturefeed_uitpas_advantages_info');
+  $vars['info'] = t('This page shows all advantages for which UiTPAS holders can save points.');
 }
 
 /**
@@ -128,11 +114,14 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages(&$vars) {
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_advantages(&$vars) {
 
-    // Advantages.
-    $vars['profile_advantages_table'] = theme('culturefeed_uitpas_advantages_table', $vars);
+  // Advantages.
+  $total = $vars['advantages_total'];
+  $vars['page_elements'] = t('Found %count advantages', array('%count' => $total));
+  $vars['profile_advantages_table'] = theme('culturefeed_uitpas_advantages_table', $vars);
 
-    // Info.
-    $vars['info'] = variable_get('culturefeed_uitpas_advantages_info');
+  // Info.
+  $vars['info'] = t('This page only shows the advantages that you didn\'t receive yet.') . '<br>';
+  $vars['info'] .= t('Discover <a href="@all-advantages">all advantages</a> that are currently available for new UiTPAS holders.', array('@all-advantages' => url('advantages')));
 
 }
 
@@ -154,7 +143,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions(&$vars) {
   $vars['promotions_table'] = theme('culturefeed_uitpas_promotions_table', $vars);
 
   // Info.
-  $vars['info'] = variable_get('culturefeed_uitpas_promotions_info');
+  $vars['info'] = t('This page shows all promotions for which UiTPAS holders can save points.');
 }
 
 /**
@@ -166,13 +155,14 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_promotions(&$v
   $min = $vars['promotions_pager_min'];
   $max = $vars['promotions_pager_max'];
   $total = $vars['promotions_total'];
-  $vars['page_elements'] = $min . ' - ' . $max . t(' of ') . $total . ' ' . t('promotions');
+  $vars['page_elements'] = t('Found %count promotions', array('%count' => $total));
 
   // Promotions.
   $vars['profile_promotions_table'] = theme('culturefeed_uitpas_promotions_table', $vars);
 
   // Info.
-  $vars['info'] = variable_get('culturefeed_uitpas_promotions_info');
+  $vars['info'] = t('This page only shows the promotions you can get with your current points balance') . '<br>';
+  $vars['info'] .= t('Discover <a href="@all-promotions">all promotions</a> you can save for.', array('@all-promotions' => url('promotions')));
 
   // User points.
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
@@ -184,9 +174,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_promotions(&$v
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars) {
 
-  $actions = $vars['actions'];
-  $actions_total = $vars['actions_total'];
-  $actions_pager_element = $vars['actions_pager_element'];
+  $activities = $vars['activities'];
 
   $table = array(
     'attributes' => array(),
@@ -197,22 +185,35 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
   );
 
   // Intro.
-  $vars['intro'] = variable_get('culturefeed_uitpas_profile_actions_intro');
+  $vars['intro'] = t('This page shows an overview of all your UiTPAS actions');
 
   // Actions.
-  $header = array(t('Date'), t('Activity name'), t('Location'), t('Points'));
+  $header = array(t('Date'), t('Action'), t('Points'));
   $rows = array();
-  if (count($actions)) {
+  if (count($activities)) {
 
-    foreach ($actions as $action) {
+    foreach ($activities as $activity) {
 
-      $singular = '@count point';
-      $plural = '@count points';
+      /* @var \CultureFeed_Activity $activity */
+      $action = culturefeed_get_human_readable_activity_type($activity->type);
+      $action .= '<br /><strong>' . $activity->nodeTitle . '</strong>';
+      if ($activity->createdVia) {
+        $action .= ' ' . t('at @location', array('@location' => $activity->createdVia));
+      }
+
+      // Points.
+      $singular = t('@formatted_count point');
+      $plural = t('@formatted_count points');
+      $formatted_count = number_format($activity->points, 2, ',', '.');
+      if ($activity->points > 0) {
+        $formatted_count = '+' . $formatted_count;
+      }
+      $points = '<span>' . format_plural($activity->points, $singular, $plural, array('@formatted_count' => $formatted_count)) . '</span>';
+
       $rows[] = array(
-        date('j/m/Y', $action->creationDate),
-        $action->nodeTitle,
-        $action->location,
-        format_plural($action->points, $singular, $plural),
+        date('j/m/Y', $activity->creationDate) . '<br />' . date('H:i', $activity->creationDate),
+        $action,
+        $points,
       );
 
     }
@@ -223,12 +224,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
   }
 
   $table += array('header' => $header, 'rows' => $rows);
-  $pager = array(
-    'element' => $actions_pager_element,
-    'quantity' => $actions_total,
-  );
-
-  $vars['actions_table'] = theme_table($table) . theme('pager', $pager);
+  $vars['actions_table'] = theme_table($table);
 
   // Publish actions form.
   $vars['activity_preferences_form'] = '';
@@ -251,11 +247,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   // @codingStandardsIgnoreEnd
   $passholder = $uitpas_user->passholder;
 
-  // Title.
-  $vars['uitpas_title'] = variable_get('culturefeed_uitpas_profile_details_title', t('My UiTPAS'));
-
   // Intro.
-  $vars['intro'] = variable_get('culturefeed_uitpas_profile_details_intro');
+  $vars['intro'] = t('This page shows the UiTPAS card(s) you own and the personal information that has been registered when buying your card.');
 
   // Card numbers.
   $uitpas_numbers = array(
@@ -278,13 +271,14 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
     }
 
   }
-  $uitpas_numbers_output = '<h3>' . variable_get('culturefeed_uitpas_profile_details_uitpas_number', t('UiTPAS number(s)')) . ':</h3> ';
+  $uitpas_numbers_title = t('UiTPAS number(s)');
+  $uitpas_numbers_output = '<h3>' . $uitpas_numbers_title . ':</h3> ';
   $uitpas_numbers_output .= theme('item_list', $uitpas_numbers);
-  $uitpas_numbers_output .= l(t('Register new UiTPAS'), 'register_uitpas');
+  $vars['uitpas_numbers_title'] = $uitpas_numbers_title;
   $vars['uitpas_numbers'] = $uitpas_numbers_output;
 
-  $vars['form_title'] = variable_get('culturefeed_uitpas_profile_details_form_title', t('My personal data'));
-  $vars['form_intro'] = variable_get('culturefeed_uitpas_profile_details_form_intro');
+  $vars['form_title'] = t('My personal data');
+  $vars['form_intro'] = t('This information has been read from your eID and cannot be changed. Updates can only be done at official <a href="@counters-url">UiTPAS registration counters</a>.', array('@counters-url' => url('register_where')));
   $form = drupal_get_form('culturefeed_uitpas_profile_details_form');
   $vars['form'] = drupal_render($form);
 
@@ -312,8 +306,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   else {
     $vars['memberships'] = '';
   }
-
-  $vars['outro'] = variable_get('culturefeed_uitpas_profile_details_outro');
 
 }
 
@@ -452,50 +444,32 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   $vars['points'] = format_plural($promotion->points, '1 point', '@count points');
 
   // Get the counters information.
-  $vars['counters'] = array();
-  if (isset($promotion->counters[0])) {
-    foreach ($promotion->counters as $key => $counter) {
-      $extendedCounter = culturefeed_agenda_actor_load($counter->id);
-      if ($extendedCounter) {
-        $new_counter = array('item' => $extendedCounter);
-        module_load_include('inc', 'culturefeed_agenda', 'theme/theme');
-        culturefeed_agenda_preprocess_culturefeed_actor($new_counter);
-        $vars['counters'][] = $new_counter;
-      }
-    }
+  $counters = array(
+    '#theme' => 'item_list',
+    '#type' => 'ul',
+    '#items' => array(),
+  );
+  foreach ($promotion->counters as $counter) {
+    $counters['#items'][] = l($counter->name, 'agenda/a/' . culturefeed_search_slug($counter->name) . '/' . $counter->id);
   }
+  $vars['counters'] = count($counters['#items']) ? drupal_render($counters) : '';
 
   // Period.
-  $vars['period'] = '';
-  if ($promotion->cashingPeriodBegin) {
-    if (date('j/m/Y', $promotion->cashingPeriodBegin) <= date('j/m/Y')) {
-      $period = t('From !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodBegin))) . ' ';
-    }
-    else {
-      $period = '';
-    }
+  $period = '';
+  $now = time();
+  if ($promotion->cashingPeriodBegin && $promotion->cashingPeriodBegin > $now) {
+    $period = t('From !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodBegin))) . ' ';
     if ($promotion->cashingPeriodEnd) {
       $period .= t('valid until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
     }
-    $vars['period'] = $period;
+  }
+  else if ($promotion->cashingPeriodEnd) {
+    $period .= t('Valid until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
   }
   else {
-    if ($promotion->cashingPeriodEnd) {
-      $period = t('valid until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
-    }
-    $vars['period'] = $period;
+    $period = t('Until end of stock');
   }
-
-  // Location.
-  $locations = array();
-  $location_links = array();
-  foreach ($vars['counters'] as $counter) {
-    $locations[] = $counter['title'];
-    $location_links[] = culturefeed_search_detail_l('actor', $counter['cdbid'], $counter['title'], $counter['title']);
-  }
-  $vars['location'] = t('At') . " " . implode(', ', $locations);
-  $vars['location_raw'] = $locations;
-  $vars['location_links'] = $location_links;
+  $vars['period'] = $period;
 
   // Provider.
   $vars['provider'] = '';
@@ -590,6 +564,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_register_where(&$vars)
 
     foreach ($vars['pos'] as $pos) {
 
+      // Address.
       $address = array();
 
       if (isset($vars['actors'][$pos->id])) {
@@ -626,8 +601,18 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_register_where(&$vars)
 
       }
 
+      // Card systems.
+      $card_systems = array();
+      if (!empty($pos->cardSystems)) {
+        foreach ($pos->cardSystems as $card_system) {
+          /* @var CultureFeed_Uitpas_CardSystem $card_system */
+          $card_systems[] = $card_system->name;
+        }
+      }
+
       $table['rows'][] = array(
         l($pos->name, 'agenda/a/' . culturefeed_search_slug($pos->name) . '/' . $pos->id),
+        (count($card_systems)) ? theme('item_list', array('items' => $card_systems, 'type' => 'ul')) : '',
         implode(' ', $address),
       );
 
@@ -643,9 +628,9 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_register_where(&$vars)
     'quantity' => $vars['pos_total'],
   );
 
-  $vars['intro'] = variable_get('culturefeed_uitpas_register_where_intro');
+  $vars['intro'] = t('You can get an UiTPAS at one of these registration counters. An UiTPAS costs € 5. Younger than 18 years? Then you\'ll pay € 2. For people with an opportunities tarrif UiTPAS is free. You\'ll need your eID to register your UiTPAS.');
   $vars['pos_table'] = theme_table($table) . theme('pager', $pager);
-  $vars['outro'] = variable_get('culturefeed_uitpas_register_where_outro');
+  $vars['outro'] = t('Important: you\'ll need your eID to register your UiTPAS. <a href="@read-more">Read more</a> about the UiTPAS project.', array('@read-more' => 'http://www.cultuurnet.be/project/uitpas'));
 
 }
 
@@ -863,6 +848,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_table(&$var
       }
       else if ($promotion->cashingPeriodEnd) {
         $item['availability'] = t('Until @date', array('@date' => date('j/n/Y', $promotion->cashingPeriodEnd)));
+      }
+      else if ($promotion->cashingPeriodBegin && $promotion->cashingPeriodBegin > time()) {
+        $item['availability'] = t('From @date', array('@date' => date('j/n/Y', $promotion->cashingPeriodBegin)));
+        $points_classes[] = 'available-from';
       }
       else {
         $item['availability'] = t('Until end of stock');
