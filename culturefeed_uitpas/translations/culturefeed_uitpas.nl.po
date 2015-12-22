@@ -393,8 +393,8 @@ msgid ""
 "\">online account</a> and  will be used for all communication regarding "
 "@site-name and @card-name."
 msgstr ""
-"Dit e-mailadres wordt ook gebruikt voor je <a href=\"@edit-account"
-"\">logingegevens</a> en wordt gebruikt voor alle communicatie aangaande "
+"Dit e-mailadres wordt gebruikt voor je <a href=\"@edit-account"
+"\">logingegevens</a> en voor alle communicatie aangaande "
 "@site-name en @card-name."
 
 #: includes/profile_details.inc:128
