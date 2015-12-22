@@ -303,8 +303,11 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       if ($timestamp < $_SERVER['REQUEST_TIME']) {
         $start_date = format_date($_SERVER['REQUEST_TIME'], 'custom', 'Y-m-d');
       }
+      else {
+        $start_date = $params['date_from'];
+      }
 
-      $help = t('Choose a date between ') . " " . $start_date . " ". t('and') . " " . $params['date_to'] . ".";
+      $help = t('Choose a date between ') . " " . date("d/m/Y", strtotime($start_date)) . " ". t('and') . " " . date("d/m/Y", strtotime($params['date_to'])) . ".";
     }
 
     $form['date'] = array(
