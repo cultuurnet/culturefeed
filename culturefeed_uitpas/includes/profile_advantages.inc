@@ -22,10 +22,12 @@ function culturefeed_uitpas_profile_advantages_get($filter = NULL) {
     $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
     $card_systems = $uitpas_user->passholder->cardSystemSpecific;
     $first_card = key($card_systems);
-
-    $uitpas_number = $uitpas_user->passholder->cardSystemSpecific[$first_card]->currentCard->uitpasNumber;
-    if ($card_system_id && isset($uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber)) {
-      $uitpas_number = $uitpas_user->passholder->cardSystemSpecific[$card_system_id]->currentCard->uitpasNumber;
+    
+    foreach ($uitpas_user->passholder->cardSystemSpecific as $cardsystem) {
+      if (isset($cardsystem->currentCard->uitpasNumber)) {
+        $uitpas_number = $cardsystem->currentCard->uitpasNumber;
+        continue;
+      }
     }
 
     // Welcome advantages.
