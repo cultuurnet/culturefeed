@@ -503,12 +503,14 @@ function culturefeed_calendar_filter_duplicate_activities($activities) {
  */
 function culturefeed_calendar_enabled() {
 
-  if(isset($_COOKIE['betaCalendar']) && $_COOKIE['betaCalendar'] == 'true') {
+  return true;
+
+  /*if(isset($_COOKIE['betaCalendar']) && $_COOKIE['betaCalendar'] == 'true') {
     return true;
   }
   else {
     return false;
-  }
+  }*/
 }
 
 /**
