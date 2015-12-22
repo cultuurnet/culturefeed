@@ -475,7 +475,7 @@ msgid ""
 "personal promotions and points balance."
 msgstr ""
 "of <a href=\"@login\">meld je aan</a> en activeer je UiTPAS om je "
-"persoonlijke voordelen en puntensaldo te bekijken."
+"puntensaldo en de voordelen waar jij recht op hebt te bekijken."
 
 #: includes/promotions.inc:166;180 includes/promotions_highlight.inc:63
 #: theme/theme.inc:565
