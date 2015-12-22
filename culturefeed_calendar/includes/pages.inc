@@ -307,7 +307,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
         $start_date = $params['date_from'];
       }
 
-      $help = t('Choose a date between ') . " " . date("d/m/Y", strtotime($start_date)) . " ". t('and') . " " . date("d/m/Y", strtotime($params['date_to'])) . ".";
+      $help = t('Choose a date between ') . " " . format_date(strtotime($start_date), 'custom', 'd/m/Y') . " ". t('and') . " " . format_date(strtotime($params['date_to']), 'custom', 'd/m/Y') . ".";
     }
 
     $form['date'] = array(
