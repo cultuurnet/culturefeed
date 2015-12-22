@@ -176,7 +176,7 @@ function culturefeed_calendar_render_calendar_buttons($item) {
 
   $authenticated = DrupalCultureFeed::isCultureFeedUser();
   $id = $item->getId();
-  $actions = array('view', 'add', 'like');
+  $actions = array('view', 'like', 'add');
   $buttons = array();
   $button = array();
 
