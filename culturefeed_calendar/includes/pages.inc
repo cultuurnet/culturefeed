@@ -337,14 +337,14 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
         $starthour = format_date($timestamp, 'custom', 'H:i');
         if (!empty($date['end'])) {
           $endhour = format_date(strtotime($date['date'] . ' ' . $date['end']), 'custom', 'H:i');
-          $dates[$date['date'] . ' ' . $starthour] = t('!date from !starthour to !endhour', array('!date' => $date['date'], '!starthour' => $starthour, '!endhour' => $endhour));
+          $dates[$date['date'] . ' ' . $starthour] = t('!date from !starthour to !endhour', array('!date' => format_date(strtotime($date['date']), 'custom', 'd/m/Y'), '!starthour' => $starthour, '!endhour' => $endhour));
         }
         else {
-          $dates[$date['date']  . ' ' .  $starthour] = t('!date from !starthour', array('!date' => $date['date'], '!starthour' => $starthour));
+          $dates[$date['date']  . ' ' .  $starthour] = t('!date from !starthour', array('!date' => format_date(strtotime($date['date']), 'custom', 'd/m/Y'), '!starthour' => $starthour));
         }
       }
       else {
-        $dates[$date['date']] = t('!date', array('!date' => $date['date']));
+        $dates[$date['date']] = t('!date', array('!date' => format_date(strtotime($date['date']), 'custom', 'd/m/Y')));
       }
 
     }
@@ -353,7 +353,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       '#title' => t('When do you want to go?'),
       '#type' => 'radios',
       '#options' => $dates,
-      '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d') : '',
+      '#default_value' => $edit ? format_date($selected_date, 'custom', 'd/m/Y') : '',
     );
   }
 
