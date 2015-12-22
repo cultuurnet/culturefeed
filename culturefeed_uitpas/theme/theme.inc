@@ -259,7 +259,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars
   );
   foreach ($passholder->cardSystemSpecific as $card_system_specific) {
 
-    if ($card_system_specific->currentCard->uitpasNumber) {
+    if (isset($card_system_specific->currentCard->uitpasNumber)) {
 
       $output = $card_system_specific->currentCard->uitpasNumber . ' (' . $card_system_specific->cardSystem->name . ')';
       if ($card_system_specific->kansenStatuut && time() < $card_system_specific->kansenStatuutEndDate) {
