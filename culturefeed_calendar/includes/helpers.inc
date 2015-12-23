@@ -105,6 +105,15 @@ function culturefeed_calendar_get_anonymous_user_activities($use_search) {
   if (isset($_COOKIE['Drupal_visitor_calendar'])) {
 
     $calendar = json_decode($_COOKIE['Drupal_visitor_calendar']);
+    
+    // Parse calendarDate back to time
+    $calendar_to_time = array();
+    foreach ($calendar as $calendar_item) {
+      $calendar_item->calendarDate = strtotime($calendar_item->calendarDate);
+      $calendar_to_time[] = $calendar_item;
+    }
+    $calendar = $calendar_to_time;
+    
     // Check if cookie is valid.
     if (is_array($calendar)) {
 
