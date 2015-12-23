@@ -126,7 +126,7 @@ function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
   );
 
   if(isset($filter)) {
-    $filter_reset_link = "<hr>" . l(t('Show all advantages'), 'advantages', array('attributes' => array('class' => 'reset-filter')));
+    $filter_reset_link = "<hr>" . l(t('Show all advantages'), 'advantages', array('attributes' => array('class' => array('reset-filter'))));
   }
   else {
     $filter_reset_link = '';

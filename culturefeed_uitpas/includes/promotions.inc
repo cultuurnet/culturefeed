@@ -163,7 +163,7 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
   );
 
   if(isset($filter)) {
-    $filter_reset_link = "<hr>" . l(t('Show all promotions'), 'promotions', array('attributes' => array('class' => 'reset-filter')));
+    $filter_reset_link = "<hr>" . l(t('Show all promotions'), 'promotions', array('attributes' => array('class' => array('reset-filter'))));
   }
   else {
     $filter_reset_link = '';
