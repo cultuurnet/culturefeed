@@ -1027,3 +1027,9 @@ function culturefeed_search_set_noindex_metatag() {
   drupal_add_html_head($element, 'robots');
 
 }
+
+function culturefeed_search_get_city_by_zipcode($zip) {
+  $city = db_query('SELECT name FROM {culturefeed_search_cities} WHERE zip = :zip', array(':zip' => $zip))->fetchField();
+
+  return $city;
+}
