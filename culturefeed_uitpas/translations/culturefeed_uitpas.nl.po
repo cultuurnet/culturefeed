@@ -275,7 +275,7 @@ msgstr "Toon alle welkomstvoordelen"
 
 #: includes/advantages.inc:133 theme/theme.inc:130
 msgid "Found %count advantages"
-msgstr "%count voordelen gevonden"
+msgstr "%count welkomstvoordelen gevonden"
 
 #: includes/advantages.inc:134
 msgid "Show all"
