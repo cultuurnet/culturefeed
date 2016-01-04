@@ -136,14 +136,15 @@ function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
   $form['advantages']['filter']['#suffix'] = $filter_reset_link . '</div>';
 
   $total = $advantages['#advantages_total'];
-  $title = t('Found %count advantages', array('%count' => $total));
-  $filter_reset_link = l(t('Show all'), 'promotions');
+  $title = t('Found %count advantages', array('%count' => $total));  
+  $filter_reset_link = l('&times;', 'advantages', array('attributes' => array('class' => array('reset-filter-inline')), 'html' => TRUE));  
+  $all_promotions_link = l(t('Show all promotions'), 'promotions', array('attributes' => array('class' => array('all-promotions-link'))));
 
   if ($filter) {
-    $form['advantages']['title']['#markup'] = '<h2 class="results-title">' . $title . ' <small>' . $options[$filter] . ' (' . $filter_reset_link . ')</small></h2>';
+    $form['advantages']['title']['#markup'] = '<h2 class="results-title">' . $title . ' <small>' . $options[$filter] . ' ' . $filter_reset_link . '</small></h2>';
   }
   else {
-    $form['advantages']['title']['#markup'] = '<h2 class="results-title">' . $title . ' <small>(' . $filter_reset_link . ')</small></h2>';
+    $form['advantages']['title']['#markup'] = '<h2 class="results-title">' . $title . ' <small>' . $all_promotions_link . '</small></h2>';
   }
 
   if (count($advantages['#advantages'])) {
