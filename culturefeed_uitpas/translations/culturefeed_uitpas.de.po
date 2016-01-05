@@ -492,7 +492,7 @@ msgid "Welcome advantages"
 msgstr ""
 
 #: theme/theme.inc:101;136;260;302;345
-msgid "Valid till"
+msgid "Availability"
 msgstr ""
 
 #: theme/theme.inc:102;137;261;303;346

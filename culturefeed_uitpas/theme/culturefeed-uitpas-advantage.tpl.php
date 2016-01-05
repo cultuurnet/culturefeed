@@ -27,7 +27,7 @@
     <?php endif; ?>
 
     <?php if ($period): ?>
-    <dt><?php print t('Valid till'); ?></dt>
+    <dt><?php print t('Availability'); ?></dt>
     <dd class="period"><?php print $period; ?></dd>
     <?php endif; ?>
 

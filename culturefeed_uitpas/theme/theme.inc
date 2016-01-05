@@ -53,7 +53,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
       $period = '';
     }
     if ($advantage->cashingPeriodEnd) {
-      $period .= t('valid until !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodEnd)));
+      $period .= t('until !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodEnd)));
     }
     $vars['period'] = $period;
   }
@@ -460,11 +460,11 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   if ($promotion->cashingPeriodBegin && $promotion->cashingPeriodBegin > $now) {
     $period = t('From !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodBegin))) . ' ';
     if ($promotion->cashingPeriodEnd) {
-      $period .= t('valid until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
+      $period .= t('until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
     }
   }
   else if ($promotion->cashingPeriodEnd) {
-    $period .= t('Valid until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
+    $period .= t('Until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
   }
   else {
     $period = t('Until end of stock');
