@@ -44,19 +44,21 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
   $vars['counters'] = count($counters['#items']) ? drupal_render($counters) : '';
 
   // Period.
-  $vars['period'] = '';
-  if ($advantage->cashingPeriodBegin) {
-    if (date('j/m/Y', $advantage->cashingPeriodBegin) <= date('j/m/Y')) {
-      $period = t('From !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodBegin))) . ' ';
-    }
-    else {
-      $period = '';
-    }
+  $period = '';
+  $now = time();
+  if ($advantage->cashingPeriodBegin && $advantage->cashingPeriodBegin > $now) {
+    $period = t('From !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodBegin))) . ' ';
     if ($advantage->cashingPeriodEnd) {
       $period .= t('until !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodEnd)));
     }
-    $vars['period'] = $period;
   }
+  else if ($advantage->cashingPeriodEnd) {
+    $period .= t('Until !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodEnd)));
+  }
+  else {
+    $period = t('Until end of stock');
+  }
+  $vars['period'] = $period;  
 
   // Provider.
   $vars['provider'] = '';
