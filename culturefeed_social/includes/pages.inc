@@ -161,7 +161,7 @@ function culturefeed_social_page_activities($type = NULL) {
         $data,
         $type_text,
         t('@time_ago ago <br />on @created_via', array(
-          '@time_ago' => format_interval(REQUEST_TIME - $activity->creationDate),
+          '@time_ago' => format_interval(REQUEST_TIME - $activity->creationDate, 1),
           '@created_via' => $activity->createdVia,
         )),
         drupal_render($privacy),
