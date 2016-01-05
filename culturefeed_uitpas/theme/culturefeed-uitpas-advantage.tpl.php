@@ -32,7 +32,7 @@
     <?php endif; ?>
 
     <?php if ($available): ?>
-    <dt><?php print t('Still available'); ?></dt>
+    <dt><?php print t('Only available for'); ?></dt>
     <dd class="available"><?php print $available; ?></dd>
     <?php endif; ?>
 

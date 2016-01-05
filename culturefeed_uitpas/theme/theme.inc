@@ -456,6 +456,12 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   }
   $vars['counters'] = count($counters['#items']) ? drupal_render($counters) : '';
 
+  // Stock.
+  $vars['out_of_stock'] = FALSE;
+  if ($promotion->maxAvailableUnits != NULL && $promotion->unitsTaken >= $promotion->maxAvailableUnits) {
+    $vars['out_of_stock'] = TRUE;
+  }
+
   // Period.
   $period = '';
   $now = time();
@@ -497,12 +503,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   $vars['description2'] = '';
   if ($promotion->description2) {
     $vars['description2'] = $promotion->description2;
-  }
-
-  // Stock.
-  $vars['stock'] = FALSE;
-  if ($promotion->maxAvailableUnits != NULL && $promotion->unitsTaken >= $promotion->maxAvailableUnits) {
-    $vars['stock'] = TRUE;
   }
 
   drupal_add_css(drupal_get_path('module', 'culturefeed_uitpas') . '/css/promotion_advantage.css');
@@ -845,7 +845,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_table(&$var
 
       $points_classes = array();
       if ($promotion->cashInState == $promotion::CASHIN_NOT_POSSIBLE_VOLUME_CONSTRAINT) {
-        $item['availability'] = t('not any longer in stock');
+        $item['availability'] = t('Out of stock');
         $points_classes[] = 'until-end-of-stock';
       }
       else if ($promotion->cashingPeriodEnd) {

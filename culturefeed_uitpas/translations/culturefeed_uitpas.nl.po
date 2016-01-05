@@ -863,7 +863,7 @@ msgid "This is a welcome advantage"
 msgstr "Dit is een welkomstvoordeel"
 
 #: theme/theme.inc:868
-msgid "not any longer in stock"
+msgid "Out of stock"
 msgstr "Niet meer op voorraad"
 
 #: theme/theme.inc:872
