@@ -25,10 +25,12 @@
 #  lib/Drupal/CultureFeedActivityConfigLike.php: n/a
 #  lib/Drupal/CultureFeedActivityConfigMediaPhoto.php: n/a
 #  lib/Drupal/CultureFeedActivityConfigMediaVideo.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigMoreInfo.php: n/a
 #  lib/Drupal/CultureFeedActivityConfigNews.php: n/a
 #  lib/Drupal/CultureFeedActivityConfigPageAdmin.php: n/a
 #  lib/Drupal/CultureFeedActivityConfigPageCreated.php: n/a
 #  lib/Drupal/CultureFeedActivityConfigPageMember.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigRoute.php: n/a
 #  theme/culturefeed-social-activity-summary.tpl.php: n/a
 #  theme/culturefeed-social-page-activity-summary.tpl.php: n/a
 #  theme/culturefeed-social-comment-list-item.tpl.php: n/a
@@ -39,8 +41,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-06-05 11:38+0200\n"
-"PO-Revision-Date: 2015-06-05 11:39+0100\n"
+"POT-Creation-Date: 2015-12-15 21:28+0100\n"
+"PO-Revision-Date: 2015-12-15 21:34+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -93,9 +95,9 @@ msgstr ""
 msgid "Items to show"
 msgstr "Te tonen items"
 
-#: culturefeed_social.module:557
-msgid "Actions"
-msgstr "Acties"
+#: culturefeed_social.module:557;42
+msgid "User history"
+msgstr "Gebruikersgeschiedenis"
 
 #: culturefeed_social.module:559
 msgid "Set which user actions are visible to others on your profile page."
@@ -106,18 +108,18 @@ msgid "Everything"
 msgstr "Alles"
 
 #: culturefeed_social.module:628
-msgid "Filter events on"
-msgstr "Filter activiteiten op"
+msgid "Filter actions"
+msgstr "Filter acties"
 
 #: culturefeed_social.module:646
 msgid "Filter"
 msgstr "Filter"
 
-#: culturefeed_social.module:712
+#: culturefeed_social.module:714
 msgid "Remove from list"
 msgstr "Schrijf je uit"
 
-#: culturefeed_social.module:713
+#: culturefeed_social.module:715
 msgid ""
 "You're currently receiving updates of new comments. <br/>!link to get no "
 "more posts."
@@ -125,15 +127,15 @@ msgstr ""
 "Je ontvangt momenteel updates van nieuwe reacties.<br />!link om geen "
 "berichten meer te ontvangen."
 
-#: culturefeed_social.module:724
+#: culturefeed_social.module:726
 msgid "Receive email about new comments"
 msgstr "Blijf via e-mail op de hoogte van nieuwe reacties"
 
-#: culturefeed_social.module:741;900
+#: culturefeed_social.module:743;902
 msgid "Submit"
 msgstr "Voeg toe"
 
-#: culturefeed_social.module:784
+#: culturefeed_social.module:786
 msgid ""
 "Due to technical problems it is currently not possible to send your message. "
 "Do not hesitate to directly contact via @site"
@@ -142,35 +144,35 @@ msgstr ""
 "te versturen. Aarzel niet om rechtstreeks met ons contact op te nemen via "
 "@site"
 
-#: culturefeed_social.module:787
+#: culturefeed_social.module:789
 msgid "Your response should not exceed 1000 characters."
 msgstr "Jouw reactie mag maximaal 1000 karakters bevatten."
 
-#: culturefeed_social.module:813
+#: culturefeed_social.module:815
 msgid "Your !comment has been sent."
 msgstr "Jouw !comment is verzonden."
 
-#: culturefeed_social.module:868
+#: culturefeed_social.module:870
 msgid "Inappropriate response"
 msgstr "Ongepaste reactie"
 
-#: culturefeed_social.module:869
+#: culturefeed_social.module:871
 msgid "Please tell us why you think this is an inappropriate response"
 msgstr "Geef aan waarom dit volgens jou een ongepaste reactie is"
 
-#: culturefeed_social.module:885
+#: culturefeed_social.module:887
 msgid "Send message as"
 msgstr "Verzend bericht als"
 
-#: culturefeed_social.module:908 includes/pages.inc:267
+#: culturefeed_social.module:910 includes/pages.inc:273
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: culturefeed_social.module:954
+#: culturefeed_social.module:956
 msgid "Something went wrong while sending"
 msgstr "Er is een onverwachte fout opgetreden"
 
-#: culturefeed_social.module:968
+#: culturefeed_social.module:970
 msgid "Message sent"
 msgstr "Het bericht werd verstuurd"
 
@@ -181,10 +183,6 @@ msgstr "CultureFeed Social"
 #: culturefeed_social.module:34
 msgid "Change CultureFeed Social settings"
 msgstr "Wijzig instellingen CulturFeed Social"
-
-#: culturefeed_social.module:42
-msgid "Administer actions"
-msgstr "Acties beheren"
 
 #: culturefeed_social.module:50;123;132;141
 msgid "Undo action"
@@ -212,7 +210,11 @@ msgstr "Voer actie uit"
 
 #: culturefeed_social.module:105;114
 msgid "Do action"
-msgstr ""
+msgstr "Actie uitvoeren"
+
+#: culturefeed_social.module:150
+msgid "Most recent actions"
+msgstr "Meest recente gebruikersacties"
 
 #: culturefeed_social.module:171 includes/blocks.inc:186
 msgid "My notifications"
@@ -236,20 +238,20 @@ msgid "CultureFeed"
 msgstr "CultureFeed"
 
 #: includes/admin.inc:22
-msgid "Visible filters on activity lists"
-msgstr "Zichtbare filters"
+msgid "Activities page intro"
+msgstr ""
 
-#: includes/admin.inc:29
+#: includes/admin.inc:28
 msgid "Enable notifications"
 msgstr "Schakel meldingen in "
 
-#: includes/admin.inc:35
+#: includes/admin.inc:34
 msgid "Report as abuse messages destination uid (Drupal)"
 msgstr ""
 "Een melding van ongepaste inhoud wordt verstuurd naar deze Drupal gebruiker "
 "(Drupal UID)"
 
-#: includes/admin.inc:37
+#: includes/admin.inc:36
 msgid ""
 "Report as abuse messages will be sent to this account.\n"
 "    Only if no destination page was available. Otherwise the message will be "
@@ -295,93 +297,89 @@ msgstr "Bekijk alle meldingen"
 msgid "No activities found"
 msgstr "Geen activiteiten gevonden"
 
-#: includes/pages.inc:107
-msgid "View profile"
-msgstr "Bekijk profiel"
-
-#: includes/pages.inc:136
+#: includes/pages.inc:134
 msgid "Remove activity"
 msgstr "Verwijder actie"
 
-#: includes/pages.inc:144;423
+#: includes/pages.inc:143;429
 msgid "Private"
 msgstr "Privé"
 
-#: includes/pages.inc:144;423
+#: includes/pages.inc:143;429
 msgid "Public"
 msgstr "Publiek"
 
-#: includes/pages.inc:146;425
+#: includes/pages.inc:145;431
 msgid "Make public"
 msgstr "Maak publiek"
 
-#: includes/pages.inc:146;425
+#: includes/pages.inc:145;431
 msgid "Make private"
 msgstr "Maak onzichtbaar"
 
 #: includes/pages.inc:163
-msgid "ago <br />on"
-msgstr "geleden <br />op"
+msgid "@time_ago ago <br />on @created_via"
+msgstr "@time_ago geleden <br />op @created_via"
 
-#: includes/pages.inc:172
+#: includes/pages.inc:175
 msgid "Page"
 msgstr "Pagina"
 
-#: includes/pages.inc:172
+#: includes/pages.inc:175
 msgid "Action"
 msgstr "Actie"
 
-#: includes/pages.inc:172
+#: includes/pages.inc:175
 msgid "Time and publication channel"
 msgstr "Tijdstip en publicatiekanaal"
 
-#: includes/pages.inc:172
+#: includes/pages.inc:175
 msgid "Status"
 msgstr "Status"
 
-#: includes/pages.inc:174
+#: includes/pages.inc:177
 msgid "You didn't perform any actions yet."
 msgstr "Je hebt nog geen acties uitgevoerd"
 
-#: includes/pages.inc:244;247;261
+#: includes/pages.inc:250;253;267
 msgid "Remove"
 msgstr "Verwijderen"
 
-#: includes/pages.inc:247
+#: includes/pages.inc:253
 msgid "Remove action"
 msgstr "Actie verwijderen"
 
-#: includes/pages.inc:256
+#: includes/pages.inc:262
 msgid "Are you sure you want to delete your @action permanently"
 msgstr "Ben je zeker dat je jouw @action definitief wil verwijderen"
 
-#: includes/pages.inc:256
+#: includes/pages.inc:262
 msgid "Are you sure you want to delete this action permanently"
 msgstr "Ben je zeker dat je deze actie definitief wil verwijderen"
 
-#: includes/pages.inc:320;359;461
+#: includes/pages.inc:326;365;467
 msgid "An unexpected error has occurred."
 msgstr "Er is iets foutgelopen."
 
-#: includes/pages.inc:391;397
+#: includes/pages.inc:397;403
 msgid "You will no longer receive updates of new comments"
 msgstr "Je ontvangt geen updates meer van nieuwe reacties"
 
-#: includes/pages.inc:559
+#: includes/pages.inc:565
 msgid "Action could not be undone."
 msgstr "Actie kon niet ongedaan gemaakt worden."
 
-#: includes/pages.inc:690
+#: includes/pages.inc:696
 msgid "No activities found."
 msgstr "Geen activiteiten gevonden."
 
 #: lib/Drupal/CultureFeedActivityConfigBase.php:43
 msgid "logged in"
-msgstr ""
+msgstr "aangemeld"
 
 #: lib/Drupal/CultureFeedActivityConfigComment.php:22
 msgid "Reply by"
-msgstr "Beantwoorden door"
+msgstr "Geplaatst door"
 
 #: lib/Drupal/CultureFeedActivityConfigComment.php:23
 msgid "Undo"
@@ -390,19 +388,19 @@ msgstr "Ongedaan maken"
 #: lib/Drupal/CultureFeedActivityConfigComment.php:24
 #: theme/culturefeed-social-comment-list.tpl.php:11
 msgid "Post a comment"
-msgstr "Post een reactie"
+msgstr "Reageer"
 
 #: lib/Drupal/CultureFeedActivityConfigComment.php:25
 msgid "Be the first to post a comment"
-msgstr "Post als eerste een reactie"
+msgstr "Reageer als eerste"
 
 #: lib/Drupal/CultureFeedActivityConfigComment.php:26
 msgid "Show all users who posted a comment"
-msgstr "Laat all gebruikers zien die een reactie geplaatst hebben"
+msgstr "Toon iedereen die reageerde"
 
 #: lib/Drupal/CultureFeedActivityConfigComment.php:29
 msgid "has replied to"
-msgstr "heeft geantwoord op"
+msgstr "heeft gereageerd op"
 
 #: lib/Drupal/CultureFeedActivityConfigComment.php:31
 msgid "Comment"
@@ -414,20 +412,20 @@ msgstr "reactie"
 
 #: lib/Drupal/CultureFeedActivityConfigComment.php:33
 msgid "You must be !sign_in_link to post a comment"
-msgstr ""
+msgstr "Je moet !sign_in_link zijn om een beoordeling te schrijven"
 
 #: lib/Drupal/CultureFeedActivityConfigComment.php:36
 msgid "Reply as"
-msgstr "Antwoord als"
+msgstr "Reageer als"
 
 #: lib/Drupal/CultureFeedActivityConfigComment.php:37
 msgid "Posted a comment on"
-msgstr "Heeft een reactie geplaatst op"
+msgstr "Heeft een reactie gepost op"
 
 #: lib/Drupal/CultureFeedActivityConfigDetail.php:21
 #: lib/Drupal/CultureFeedActivityConfigView.php:22
 msgid "Viewed by"
-msgstr "Gezien door"
+msgstr "Bekeken door"
 
 #: lib/Drupal/CultureFeedActivityConfigDetail.php:22
 #: lib/Drupal/CultureFeedActivityConfigFacebook.php:26
@@ -453,7 +451,7 @@ msgstr "Bekeken"
 #: lib/Drupal/CultureFeedActivityConfigFacebook.php:23;24
 #: lib/Drupal/CultureFeedActivityConfigTwitter.php:23;24
 msgid "Share"
-msgstr "Delen"
+msgstr "Deel"
 
 #: lib/Drupal/CultureFeedActivityConfigFacebook.php:25
 #: lib/Drupal/CultureFeedActivityConfigTwitter.php:25
@@ -462,16 +460,16 @@ msgstr "Gedeeld door"
 
 #: lib/Drupal/CultureFeedActivityConfigFacebook.php:27;31
 msgid "shared on Facebook"
-msgstr "gedeeld op Facebook"
+msgstr "via Facebook gedeeld"
 
 #: lib/Drupal/CultureFeedActivityConfigFacebook.php:28
 msgid "Share on Facebook"
-msgstr "Delen op Facebook"
+msgstr "Delen via Facebook"
 
 #: lib/Drupal/CultureFeedActivityConfigFacebook.php:29
 #: lib/Drupal/CultureFeedActivityConfigTwitter.php:29
 msgid "Successfully shared"
-msgstr "Met succes gedeeld"
+msgstr "Succesvol gedeeld"
 
 #: lib/Drupal/CultureFeedActivityConfigFacebook.php:30
 msgid "share"
@@ -491,11 +489,11 @@ msgstr "Ik volg deze pagina"
 
 #: lib/Drupal/CultureFeedActivityConfigFollow.php:20
 msgid "Be the first to follow this page"
-msgstr "Word de eerste die deze pagina volgt"
+msgstr "Volg deze pagina als eerste"
 
 #: lib/Drupal/CultureFeedActivityConfigFollow.php:21
 msgid "Show all users who follow this page"
-msgstr "Laat alle gebruikers zien die deze pagina volgen"
+msgstr "Toon alle volgers"
 
 #: lib/Drupal/CultureFeedActivityConfigFollow.php:24
 msgid "follows"
@@ -507,11 +505,11 @@ msgstr "Volg"
 
 #: lib/Drupal/CultureFeedActivityConfigFollow.php:26
 msgid "You must be !sign_in_link to follow a page"
-msgstr ""
+msgstr "Je moet !sign_in_link zijn om een pagina te volgen"
 
 #: lib/Drupal/CultureFeedActivityConfigGo.php:18
 msgid "Attend this"
-msgstr ""
+msgstr "Gaan hier naartoe"
 
 #: lib/Drupal/CultureFeedActivityConfigGo.php:19;20
 msgid "Attend"
@@ -519,7 +517,7 @@ msgstr "Ik ga hier naartoe"
 
 #: lib/Drupal/CultureFeedActivityConfigGo.php:21
 msgid "Not attending"
-msgstr "Ik ga hier niet naartoe"
+msgstr "Ik ga niet"
 
 #: lib/Drupal/CultureFeedActivityConfigGo.php:22
 msgid "will be attending"
@@ -527,11 +525,11 @@ msgstr "gaat naar"
 
 #: lib/Drupal/CultureFeedActivityConfigGo.php:23;27
 msgid "Will be attending"
-msgstr "Gaat naar"
+msgstr "Ik ga naar"
 
 #: lib/Drupal/CultureFeedActivityConfigGo.php:24
 msgid "You must be !sign_in_link to indicate that you will be attending"
-msgstr ""
+msgstr "Je moet !sign_in_link zijn om aan te geven dat je hier naartoe gaat"
 
 #: lib/Drupal/CultureFeedActivityConfigLike.php:23
 msgid "Like this"
@@ -567,7 +565,7 @@ msgstr "leuk"
 
 #: lib/Drupal/CultureFeedActivityConfigLike.php:34
 msgid "You must be !sign_in_link to like this item"
-msgstr ""
+msgstr "Je moet !sign_in_link zijn om dit leuk te vinden"
 
 #: lib/Drupal/CultureFeedActivityConfigLike.php:37
 msgid "liked"
@@ -621,21 +619,33 @@ msgstr "video"
 msgid "Video added"
 msgstr "Video toegevoegd"
 
+#: lib/Drupal/CultureFeedActivityConfigMoreInfo.php:23
+msgid "More info requested by"
+msgstr "Meer info bekeken door"
+
+#: lib/Drupal/CultureFeedActivityConfigMoreInfo.php:24
+msgid "has requested more info on"
+msgstr "heeft meer info bekeken over"
+
+#: lib/Drupal/CultureFeedActivityConfigMoreInfo.php:26
+msgid "More info requested"
+msgstr "Meer info bekeken"
+
 #: lib/Drupal/CultureFeedActivityConfigNewEvent.php:16
 msgid "added"
 msgstr "toegevoegd"
 
 #: lib/Drupal/CultureFeedActivityConfigNews.php:17
 msgid "news"
-msgstr ""
+msgstr "nieuws"
 
 #: lib/Drupal/CultureFeedActivityConfigNews.php:18
 msgid "has created a news message"
-msgstr ""
+msgstr "heeft een nieuwsbericht gemaakt"
 
 #: lib/Drupal/CultureFeedActivityConfigNews.php:19
 msgid "News created"
-msgstr ""
+msgstr "Nieuwsbericht gemaakt"
 
 #: lib/Drupal/CultureFeedActivityConfigPageAdmin.php:17
 msgid "became administrator of"
@@ -711,7 +721,7 @@ msgstr "Aanraden"
 
 #: lib/Drupal/CultureFeedActivityConfigRecommend.php:34
 msgid "You must be !sign_in_link to recommend this item"
-msgstr ""
+msgstr "Je moet !sign_in_link zijn om dit aan te raden"
 
 #: lib/Drupal/CultureFeedActivityConfigReview.php:19
 msgid "wrote a review"
@@ -736,6 +746,18 @@ msgstr "Schrijf als eerste een reactie"
 #: lib/Drupal/CultureFeedActivityConfigReview.php:24
 msgid "Wrote a review for"
 msgstr "Heeft een review geschreven voor"
+
+#: lib/Drupal/CultureFeedActivityConfigRoute.php:23
+msgid "Route viewed by"
+msgstr "Route bekeken door"
+
+#: lib/Drupal/CultureFeedActivityConfigRoute.php:24
+msgid "has viewed the route to"
+msgstr "heeft de route bekeken naar"
+
+#: lib/Drupal/CultureFeedActivityConfigRoute.php:26
+msgid "Route viewed"
+msgstr "Route bekeken"
 
 #: lib/Drupal/CultureFeedActivityConfigTwitter.php:27;30
 msgid "shared on Twitter"
@@ -780,7 +802,7 @@ msgstr "Verwijder nieuwsbericht"
 
 #: theme/culturefeed-social-page-activity-summary.tpl.php:34
 msgid "followers"
-msgstr ""
+msgstr "volgers"
 
 #: theme/culturefeed-social-page-activity-summary.tpl.php:35
 msgid "members"

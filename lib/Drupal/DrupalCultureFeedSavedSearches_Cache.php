@@ -65,7 +65,7 @@ class DrupalCultureFeedSavedSearches_Cache implements CultureFeed_SavedSearches 
   /**
    * {@inheritdoc}
    */
-  public function subscribe(CultureFeed_SavedSearches_SavedSearch $savedSearch) {
+  public function subscribe(CultureFeed_SavedSearches_SavedSearch $savedSearch, $use_auth = TRUE) {
     $this->realCultureFeedSavedSearches->subscribe($savedSearch);
     $this->cacheClear('list:' . DrupalCulturefeed::getLoggedInUserId() . ':', TRUE);
   }
@@ -73,7 +73,7 @@ class DrupalCultureFeedSavedSearches_Cache implements CultureFeed_SavedSearches 
   /**
    * {@inheritdoc}
    */
-  public function unsubscribe($savedSearchId, $userId) {
+  public function unsubscribe($savedSearchId, $userId, $use_auth = TRUE) {
     $this->realCultureFeedSavedSearches->unsubscribe($savedSearchId, $userId);
     $this->cacheClear('list:' . DrupalCulturefeed::getLoggedInUserId() . ':', TRUE);
     $this->cacheClear('detail:' . $savedSearchId);

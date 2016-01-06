@@ -6,7 +6,7 @@
  */
 
 /**
- * Page callback to toggle newsletter optin
+ * Page callback to toggle newsletter optin.
  */
 function culturefeed_mailing_toggle_optin($mailing_id, $optin, $type = 'ajax') {
 
@@ -27,10 +27,18 @@ function culturefeed_mailing_toggle_optin($mailing_id, $optin, $type = 'ajax') {
     }
 
   }
+  catch (CultureFeed_Exception $e) {
+
+    // If user was already subscribed, don't show a message.
+    if ($e->error_code != CultureFeed::CODE_MAILING_ALREADY_SUBSCRIBED) {
+      watchdog_exception('culturefeed_mailing', $e);
+      $success = FALSE;
+    }
+
+  }
   catch (Exception $e) {
     watchdog_exception('culturefeed_mailing', $e);
     $success = FALSE;
-    return;
   }
 
   if ($type == 'ajax') {
@@ -58,32 +66,63 @@ function culturefeed_mailing_subscribe_form() {
 
   $account = culturefeed_load_logged_in_user();
 
-  // Show nothing if not logged in, or no mailing list available.
-  if (!$account || !(variable_get('culturefeed_mailing_list', ''))) {
+  // Redirect to loginpage if not logged in and light id permission is off.
+  if (!$account && !CULTUREFEED_API_LIGHT_ID_ALLOWED) {
+    drupal_goto('authenticated', array('query' => array('destination' => 'subscribe')));
+  }
+
+  // Show nothing if no mailing list available.
+  if (!(variable_get('culturefeed_mailing_list', ''))) {
     return;
   }
 
   $form = array();
+
+  // Set defaults for the email field.
+  if ($account) {
+    $email = (!empty($_GET['email'])) ? $_GET['email'] : ($account ? $account->mbox : '');
+    $disabled = TRUE;
+    $description = '<span>' . t('Change your email address <a href="!url">here</a>.', array('!url' => url('culturefeed/account/edit'))) . '</span>';
+  }
+  else {
+    $email = (!empty($_GET['email'])) ? $_GET['email'] : '';
+    $disabled = FALSE;
+    $description = '';
+  }
   $form['mail'] = array(
     '#type' => 'textfield',
     '#title' => t('Email address'),
     '#required' => TRUE,
     '#size' => 40,
     '#maxlength' => 255,
-    '#default_value' => (!empty($_GET['email'])) ? $_GET['email'] : $account->mbox,
+    '#default_value' => $email,
     '#weight' => -10,
-    '#disabled' => TRUE,
-    '#description' => '<span>' . t('Change your email address <a href="!url">here</a>.', array('!url' => url('culturefeed/account/edit'))) .'</span>',
+    '#disabled' => $disabled,
+    '#description' => $description,
   );
+
+  $show_zip = variable_get('culturefeed_mailing_block_show_zip', 0);
+
+  $postal = '';
+  if (!empty($_GET['zip'])) {
+    $postal = $_GET['zip'];
+  }
+  elseif ($account) {
+    $postal = $account->zip;
+  }
 
   $form['zip'] = array(
     '#type' => 'textfield',
     '#title' => t('Zipcode'),
-    '#required' => TRUE,
+    '#required' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
     '#size' => 40,
     '#maxlength' => 255,
-    '#default_value' => $account->zip,
+    '#default_value' => $postal,
     '#weight' => -9,
+    '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED || (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip),
+    '#attributes' => array(
+      'class' => array('zip-field'),
+    ),
   );
 
   $form['firstname'] = array(
@@ -92,8 +131,9 @@ function culturefeed_mailing_subscribe_form() {
     '#required' => TRUE,
     '#size' => 40,
     '#maxlength' => 255,
-    '#default_value' => $account->givenName,
+    '#default_value' => ($account ? $account->givenName : ''),
     '#weight' => -8,
+    '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
   );
 
   $form['lastname'] = array(
@@ -102,27 +142,42 @@ function culturefeed_mailing_subscribe_form() {
     '#required' => TRUE,
     '#size' => 40,
     '#maxlength' => 255,
-    '#default_value' => isset($account->familyName) ? $account->familyName : '',
+    '#default_value' => ($account && isset($account->familyName) ? $account->familyName : ''),
     '#weight' => -7,
+    '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
   );
 
   if (variable_get('culturefeed_mailing_list_optional', '')) {
     $form['optional_mailing'] = array(
       '#type' => 'checkbox',
       '#title' => variable_get('culturefeed_mailing_optional_description', ''),
+      '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
     );
   }
 
   $form['privacy'] = array(
     '#type' => 'markup',
     '#value' => '<div id="privacy">' . l(t('Privacy statement'), 'privacyverklaring') . '</div>',
+    '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Subscribe'),
-    '#weight' => 10
+    '#weight' => 10,
   );
+
+  if (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip && empty($postal)) {
+    // Attach jquery.cookie library.
+    $form['#attached']['library'][] = array('system', 'jquery.cookie');
+
+    // Attach scripts.
+    $form['#attached']['js'][] = array(
+      'data' => drupal_get_path('module', 'culturefeed_mailing') . '/js/culturefeed_mailing.js',
+      'type' => 'file',
+      'weight' => 0,
+    );
+  }
 
   return $form;
 
@@ -133,16 +188,73 @@ function culturefeed_mailing_subscribe_form() {
  */
 function culturefeed_mailing_subscribe_form_submit($form, &$form_state) {
 
-  try {
+  if (!empty($form_state['values']['zip'])) {
+    $zip = $form_state['values']['zip'];
+    _culturefeed_mailing_set_postal_to_cookie($form_state['values']['zip']);
+  }
+  else {
+    $zip = '';
+  }
 
+  if (CULTUREFEED_API_LIGHT_ID_ALLOWED) {
+
+    try {
+      culturefeed_mailing_subscribe_user_light($form_state['values']['mail'], variable_get('culturefeed_mailing_list', ''), $zip);
+    }
+    catch (CultureFeed_Exception $e) {
+
+      // If user was already subscribed, don't show a message.
+      if ($e->error_code != CultureFeed::CODE_MAILING_ALREADY_SUBSCRIBED) {
+        drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
+        return;
+      }
+
+    }
+    catch (Exception $e) {
+      drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
+      return;
+    }
+
+  }
+  else {
     $account = DrupalCultureFeed::getLoggedInUser();
 
     // Subscribe to normal mailing.
-    culturefeed_mailing_subscribe_user($account, variable_get('culturefeed_mailing_list', ''));
+    try {
+      culturefeed_mailing_subscribe_user($account, variable_get('culturefeed_mailing_list', ''));
+    }
+    catch (CultureFeed_Exception $e) {
+
+      // If user was already subscribed, don't show a message.
+      if ($e->error_code != CultureFeed::CODE_MAILING_ALREADY_SUBSCRIBED) {
+        drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
+        return;
+      }
+
+    }
+    catch (Exception $e) {
+      drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
+      return;
+    }
 
     // Subscribe to optional mailing.
     if (!empty($form_state['values']['optional_mailing'])) {
-      culturefeed_mailing_subscribe_user($account, variable_get('culturefeed_mailing_list_optional', ''));
+      try {
+        culturefeed_mailing_subscribe_user($account, variable_get('culturefeed_mailing_list_optional', ''));
+      }
+      catch (CultureFeed_Exception $e) {
+
+        // If user was already subscribed, don't show a message.
+        if ($e->error_code != CultureFeed::CODE_MAILING_ALREADY_SUBSCRIBED) {
+          drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
+          return;
+        }
+
+      }
+      catch (Exception $e) {
+        drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
+        return;
+      }
     }
 
     // Update user with entered fields.
@@ -155,16 +267,15 @@ function culturefeed_mailing_subscribe_form_submit($form, &$form_state) {
     $user_update->givenName = $form_state['values']['firstname'];
     $user_update->familyName = $form_state['values']['lastname'];
 
-    DrupalCultureFeed::updateUser($user_update, $fields);
-
-    $form_state['redirect'] = 'subscribe/subscribed';
-
+    try {
+      DrupalCultureFeed::updateUser($user_update, $fields);
+    }
+    catch (Exception $e) {
+      // Show no error here.
+    }
   }
-  catch (Exception $e) {
-    watchdog_exception('culturefeed_ui', $e);
-    drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
-    return;
-  }
+
+  $form_state['redirect'] = 'subscribe/subscribed';
 
 }
 
@@ -176,7 +287,7 @@ function culturefeed_mailing_user_subscribed() {
 }
 
 /**
- * Page callback for the mailing list overview
+ * Page callback for the mailing list overview.
  */
 function culturefeed_mailing_lists_overview() {
 
@@ -206,7 +317,7 @@ function culturefeed_mailing_lists_overview() {
         '#type' => 'link',
         '#title' => t('send test mail'),
         '#href' => 'admin/content/mailing-lists/test/' . $list->id,
-        '#id' => 'ajax_link_'. $list->id,
+        '#id' => 'ajax_link_' . $list->id,
         '#ajax' => array(
           'method' => 'html',
         ),
@@ -218,7 +329,7 @@ function culturefeed_mailing_lists_overview() {
         '#items' => array(
           drupal_render($edit),
           drupal_render($test),
-        )
+        ),
       );
 
       $send = array(
@@ -258,7 +369,12 @@ function culturefeed_mailing_lists_overview() {
 
   return array(
     '#theme' => 'table',
-    '#header' => array(t('Mailing list'), t('Template'), t('Status'), t('Actions')),
+    '#header' => array(
+      t('Mailing list'),
+      t('Template'),
+      t('Status'),
+      t('Actions'),
+    ),
     '#rows' => $rows,
     '#empty' => t('No mailinglists yet'),
   );
@@ -304,7 +420,7 @@ function culturefeed_mailing_delete_form_submit($form, &$form_state) {
 }
 
 /**
- * FAPI Callback for mailing add / edit form
+ * FAPI Callback for mailing add / edit form.
  */
 function culturefeed_mailing_lists_form($form, &$form_state, $list = NULL) {
   $form = array();
@@ -334,7 +450,7 @@ function culturefeed_mailing_lists_form($form, &$form_state, $list = NULL) {
     }
     else {
       // For new template set default consumerKey from site.
-      $default_value =  variable_get('culturefeed_api_application_key', '');
+      $default_value = variable_get('culturefeed_api_application_key', '');
     }
     $options = array();
     if (!empty($consumers)) {
@@ -370,7 +486,6 @@ function culturefeed_mailing_lists_form($form, &$form_state, $list = NULL) {
     '#default_value' => !empty($list->template->id) ? $list->template->id : '',
   );
 
-
   $form['id'] = array(
     '#type' => 'value',
     '#value' => !empty($list->id) ? $list->id : NULL,
@@ -393,11 +508,11 @@ function culturefeed_mailing_lists_form($form, &$form_state, $list = NULL) {
 }
 
 /**
- * Submit handler for mailing add / edit form
+ * Submit handler for mailing add / edit form.
  */
 function culturefeed_mailing_lists_form_submit($form, &$form_state) {
 
-  // Check if mailing is new or update existing
+  // Check if mailing is new or update existing.
   if ($form_state['values']['id']) {
     try {
       $mailing = DrupalCultureFeed::getMailing($form_state['values']['id']);
@@ -451,7 +566,7 @@ function culturefeed_mailing_lists_form_submit($form, &$form_state) {
 
 
 /**
- * FAPI callback to send test mail
+ * FAPI callback to send test mail.
  */
 function culturefeed_mailing_test_list($list) {
   try {
@@ -480,7 +595,7 @@ function culturefeed_mailing_test_list($list) {
 }
 
 /**
- * FAPI callback to activate mail
+ * FAPI callback to activate mail.
  */
 function culturefeed_mailing_send_list_form($form, &$form_state, $list) {
   $form['id'] = array(
@@ -496,7 +611,7 @@ function culturefeed_mailing_send_list_form($form, &$form_state, $list) {
 
 
 /**
- * Submit handler to activate mail
+ * Submit handler to activate mail.
  */
 function culturefeed_mailing_send_list_form_submit($form, &$form_state) {
   try {
@@ -511,7 +626,7 @@ function culturefeed_mailing_send_list_form_submit($form, &$form_state) {
 
 
 /**
- * FAPI callback to deactivate mail
+ * FAPI callback to deactivate mail.
  */
 function culturefeed_mailing_disable_list_form($form, &$form_state, $list) {
   $form['id'] = array(
@@ -527,7 +642,7 @@ function culturefeed_mailing_disable_list_form($form, &$form_state, $list) {
 
 
 /**
- * Submit handler to deactivate mail
+ * Submit handler to deactivate mail.
  */
 function culturefeed_mailing_disable_list_form_submit($form, &$form_state) {
   try {
@@ -567,7 +682,7 @@ function culturefeed_mailing_page_my_newsletters() {
 }
 
 /**
- * Page callback for the template list overview
+ * Page callback for the template list overview.
  */
 function culturefeed_template_list_overview() {
   $rows = array();
@@ -592,7 +707,7 @@ function culturefeed_template_list_overview() {
         '#attributes' => array('class' => array('links', 'inline')),
         '#items' => array(
           drupal_render($edit),
-        )
+        ),
       );
 
       $options[$template->id] = $template->name;
@@ -662,7 +777,7 @@ function culturefeed_templates_delete_form_submit($form, &$form_state) {
 }
 
 /**
- * FAPI Callback for template add / edit form
+ * FAPI Callback for template add / edit form.
  */
 function culturefeed_templates_form($form, &$form_state, $template = NULL) {
   $form = array();
@@ -691,7 +806,7 @@ function culturefeed_templates_form($form, &$form_state, $template = NULL) {
     }
     else {
       // For new template set default consumerKey from site.
-      $default_value =  variable_get('culturefeed_api_application_key', '');
+      $default_value = variable_get('culturefeed_api_application_key', '');
     }
     $options = array();
     if (!empty($consumers)) {
@@ -1126,6 +1241,7 @@ function culturefeed_templates_form_validate($form, &$form_state) {
         form_set_error('once_minutes', t('Invalid start minutes: !minutes. Start minutes must be a value between 0 and 59 (both ends inclusive)', array('!minutes' => $values['once_minutes'])));
       }
       break;
+
     case 'DAILY':
       if ($values['daily_hour'] == '') {
         form_set_error('daily_hour', t('You need to set the hour when selecting "daily".'));
@@ -1140,6 +1256,7 @@ function culturefeed_templates_form_validate($form, &$form_state) {
         form_set_error('daily_minutes', t('Invalid start minutes: !minutes. Start minutes must be a value between 0 and 59 (both ends inclusive)', array('!minutes' => $values['daily_minutes'])));
       }
       break;
+
     case 'WEEKLY':
       if ($values['weekly_day'] == '') {
         form_set_error('weekly_day', t('You need to set the day when selecting "weekly".'));
@@ -1157,6 +1274,7 @@ function culturefeed_templates_form_validate($form, &$form_state) {
         form_set_error('weekly_minutes', t('Invalid start minutes: !minutes. Start minutes must be a value between 0 and 59 (both ends inclusive)', array('!minutes' => $values['weekly_minutes'])));
       }
       break;
+
     case 'BIWEEKLY':
       if ($values['biweekly_day'] == '') {
         form_set_error('biweekly_day', t('You need to set the day when selecting "biweekly".'));
@@ -1174,6 +1292,7 @@ function culturefeed_templates_form_validate($form, &$form_state) {
         form_set_error('biweekly_minutes', t('Invalid start minutes: !minutes. Start minutes must be a value between 0 and 59 (both ends inclusive)', array('!minutes' => $values['biweekly_minutes'])));
       }
       break;
+
     case 'MONTHLY':
       if ($values['monthly_day'] == '') {
         form_set_error('monthly_day', t('You need to set the day when selecting "monthly".'));
@@ -1207,7 +1326,7 @@ function culturefeed_templates_form_validate($form, &$form_state) {
  */
 function culturefeed_templates_form_submit($form, &$form_state) {
 
-  // Check if mailing is new or update existing
+  // Check if mailing is new or update existing.
   if ($form_state['values']['id']) {
     try {
       $template = DrupalCultureFeed::getTemplate($form_state['values']['id']);
@@ -1241,20 +1360,24 @@ function culturefeed_templates_form_submit($form, &$form_state) {
           $template->startHour = $form_state['values']['once_hour'];
           $template->startMinute = $form_state['values']['once_minutes'];
           break;
+
         case 'DAILY':
           $template->startHour = $form_state['values']['daily_hour'];
           $template->startMinute = $form_state['values']['daily_minutes'];
           break;
+
         case 'WEEKLY':
           $template->startDayOfWeek = $form_state['values']['weekly_day'];
           $template->startHour = $form_state['values']['weekly_hour'];
           $template->startMinute = $form_state['values']['weekly_minutes'];
           break;
+
         case 'BIWEEKLY':
           $template->startDayOfWeek = $form_state['values']['biweekly_day'];
           $template->startHour = $form_state['values']['biweekly_hour'];
           $template->startMinute = $form_state['values']['biweekly_minutes'];
           break;
+
         case 'MONTHLY':
           $template->startDay = $form_state['values']['monthly_day'];
           $template->startHour = $form_state['values']['monthly_hour'];
@@ -1303,20 +1426,24 @@ function culturefeed_templates_form_submit($form, &$form_state) {
           $template->startHour = $form_state['values']['once_hour'];
           $template->startMinute = $form_state['values']['once_minutes'];
           break;
+
         case 'DAILY':
           $template->startHour = $form_state['values']['daily_hour'];
           $template->startMinute = $form_state['values']['daily_minutes'];
           break;
+
         case 'WEEKLY':
           $template->startDayOfWeek = $form_state['values']['weekly_day'];
           $template->startHour = $form_state['values']['weekly_hour'];
           $template->startMinute = $form_state['values']['weekly_minutes'];
           break;
+
         case 'BIWEEKLY':
           $template->startDayOfWeek = $form_state['values']['biweekly_day'];
           $template->startHour = $form_state['values']['biweekly_hour'];
           $template->startMinute = $form_state['values']['biweekly_minutes'];
           break;
+
         case 'MONTHLY':
           $template->startDay = $form_state['values']['monthly_day'];
           $template->startHour = $form_state['values']['monthly_hour'];
@@ -1341,6 +1468,7 @@ function culturefeed_templates_form_submit($form, &$form_state) {
  * Helper function to return array with days of the week for select element.
  *
  * @return array
+ *   List of weekdays.
  */
 function _culturefeed_mailing_get_weekdays() {
   $daysofweek = array(
@@ -1360,6 +1488,7 @@ function _culturefeed_mailing_get_weekdays() {
  * Helper function to return array with days of the month for select element.
  *
  * @return array
+ *   List of days in current month.
  */
 function _culturefeed_mailing_get_day_of_the_month() {
   $daysofmonth = array();
@@ -1372,7 +1501,7 @@ function _culturefeed_mailing_get_day_of_the_month() {
 }
 
 /**
- * Page callback for the mailing content items markup for each block
+ * Page callback for the mailing content items markup for each block.
  */
 function culturefeed_mailing_page_mailing_content() {
 
@@ -1386,7 +1515,7 @@ function culturefeed_mailing_page_mailing_content() {
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'node');
   $query->entityCondition('bundle', 'mail_item');
-  //$query->propertyCondition('status', 1);
+  // $query->propertyCondition('status', 1);
   $query->entityOrderBy('entity_id', 'DESC');
   $query->range(0, 5);
   $result = $query->execute();
@@ -1424,8 +1553,22 @@ function culturefeed_mailing_page_mailing_content() {
         'title' => $node->title,
         'intro' => isset($intro['#items'][0]['value']) ? $intro['#items'][0]['value'] : '',
         'link_title' => $link['#items'][0]['title'],
-        'image' => theme('image_style', array('style_name' => 'thumbnail', 'path' => $image['#items'][0]['uri'], 'attributes' => array('style' => 'border: none; margin:0 !important; height:100px; width: 100px;'), 'alt' => $node->title)),
-        'spacer' => theme_image(array('path' => drupal_get_path('module', 'culturefeed_mailing') . '/theme/img/spacer.gif', 'attributes' => array('style' => 'LINE-HEIGHT: 1px; FONT-SIZE: 1px;', 'width' => '1', 'height' => '10'))),
+        'image' => theme('image_style', array(
+          'style_name' => 'thumbnail',
+          'path' => $image['#items'][0]['uri'],
+          'attributes' => array(
+            'style' => 'border: none; margin:0 !important; height:100px; width: 100px;',
+          ),
+          'alt' => $node->title,
+        )),
+        'spacer' => theme_image(array(
+          'path' => drupal_get_path('module', 'culturefeed_mailing') . '/theme/img/spacer.gif',
+          'attributes' => array(
+            'style' => 'LINE-HEIGHT: 1px; FONT-SIZE: 1px;',
+            'width' => '1',
+            'height' => '10',
+          ),
+        )),
       );
 
       foreach ($region['#items'] as $region_block) {
@@ -1473,5 +1616,3 @@ function culturefeed_mailing_page_mailing_content() {
   return $output;
 
 }
-
-

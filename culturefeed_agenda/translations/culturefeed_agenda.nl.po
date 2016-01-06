@@ -299,6 +299,10 @@ msgstr "Alle data"
 msgid "Where"
 msgstr "Waar"
 
+#: theme/culturefeed-actor.tpl.php
+msgid "Opening hours"
+msgstr "Openingsuren"
+
 #: includes/blocks.inc:199
 msgid "Use my current location"
 msgstr "Gebruik mijn huidige locatie"

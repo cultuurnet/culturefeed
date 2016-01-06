@@ -92,11 +92,6 @@ function culturefeed_uitpas_block_save($delta = '', $edit = array()) {
       culturefeed_uitpas_recent_actions_settings_save($edit);
       break;
 
-    case 'uitpas_user_register':
-      module_load_include('inc', 'culturefeed_uitpas', 'includes/user_register');
-      culturefeed_uitpas_user_register_settings_save($edit);
-      break;
-
   }
 
 }
@@ -160,7 +155,7 @@ function culturefeed_uitpas_block_view($delta = '') {
 
       if ($content) {
 
-        $block['subject'] = t('Already own an UiTPAS ?');
+        $block['subject'] = t('Already own an UiTPAS?');
         $block['content'] = $content;
 
       }

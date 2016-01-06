@@ -191,8 +191,12 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
       $facets = $query['facet'];
       if ($query['facet']['type'][0] == 'actor') {
-        unset($facets['type']);
-        unset($facets['category_flandersregion_id']);
+        unset($facets['type']);      
+        if (isset($query['facet']['category_flandersregion_id'])) {
+          if (count($query['facet']['category_flandersregion_id']) <= 1) {
+            unset($facets['category_flandersregion_id']);
+          }
+        }
       }
 
       // If type=actor is the only parameter with flandersregion, set noindex to false.
@@ -208,7 +212,12 @@ function culturefeed_search_ui_set_noindex_metatag() {
       $facets = $query['facet'];
       unset($facets['category_actortype_id']);
       unset($facets['type']);
-      unset($facets['category_flandersregion_id']);
+      
+      if (isset($query['facet']['category_flandersregion_id'])) {
+        if (count($query['facet']['category_flandersregion_id']) <= 1) {
+          unset($facets['category_flandersregion_id']);
+        }
+      }
 
       unset($query['location']);
       unset($query['regId']);
@@ -225,18 +234,32 @@ function culturefeed_search_ui_set_noindex_metatag() {
     // No index is FALSE, if user is filtering on event type.
     elseif (isset($query['facet']['category_eventtype_id'])) {
 
-      $facets = $query['facet'];
-      unset($facets['category_eventtype_id']);
-      unset($facets['category_theme_id']);
-      unset($facets['category_flandersregion_id']);
+      if (count($query['facet']['category_eventtype_id']) == 1) {
 
-      unset($query['location']);
-      unset($query['regId']);
-      unset($query['facet']);
+        $facets = $query['facet'];
+        unset($facets['category_eventtype_id']);
+      
+        if (isset($query['facet']['category_theme_id'])) {
+          if (count($query['facet']['category_theme_id']) <= 1) {
+            unset($facets['category_theme_id']);
+          }
+        }
+      
+        if (isset($query['facet']['category_flandersregion_id'])) {
+          if (count($query['facet']['category_flandersregion_id']) <= 1) {
+            unset($facets['category_flandersregion_id']);
+          }
+        }
+  
+        unset($query['location']);
+        unset($query['regId']);
+        unset($query['facet']);
+  
+        // If theme_id, flandersregion and/or regId was the only extra facet / parameters, set noindex to false.
+        if (count($facets) == 0 && count($query) == 0) {
+          $noindex = FALSE;
+        }
 
-      // If theme_id, flandersregion and/or regId was the only extra facet / parameters, set noindex to false.
-      if (count($facets) == 0 && count($query) == 0) {
-        $noindex = FALSE;
       }
 
     }
@@ -244,17 +267,26 @@ function culturefeed_search_ui_set_noindex_metatag() {
     // No index is FALSE, if user is filtering on umv category and/or region.
     elseif (isset($query['facet']['category_umv_id'])) {
 
-      $facets = $query['facet'];
-      unset($facets['category_umv_id']);
-      unset($facets['category_flandersregion_id']);
+      if (count($query['facet']['category_umv_id']) == 1) {
 
-      unset($query['location']);
-      unset($query['regId']);
-      unset($query['facet']);
+        $facets = $query['facet'];
+        unset($facets['category_umv_id']);
+      
+        if (isset($query['facet']['category_flandersregion_id'])) {
+          if (count($query['facet']['category_flandersregion_id']) <= 1) {
+            unset($facets['category_flandersregion_id']);
+          }
+        }
+  
+        unset($query['location']);
+        unset($query['regId']);
+        unset($query['facet']);
+  
+        // If flandersregion or regId was the only extra facet / parameters, set noindex to false.
+        if (count($facets) == 0 && count($query) == 0) {
+          $noindex = FALSE;
+        }
 
-      // If flandersregion or regId was the only extra facet / parameters, set noindex to false.
-      if (count($facets) == 0 && count($query) == 0) {
-        $noindex = FALSE;
       }
 
     }
@@ -262,13 +294,17 @@ function culturefeed_search_ui_set_noindex_metatag() {
     // No index is FALSE, if user is filtering on flandersregion Id.
     elseif (isset($query['facet']['category_flandersregion_id'])) {
 
-      $facets = $query['facet'];
-      unset($facets['category_flandersregion_id']);
-      unset($query['facet']);
+      if(count($query['facet']['category_flandersregion_id']) == 1) {
 
-      // If flandersregion Id was the only filter set noindex to false.
-      if (count($facets) == 0 && count($query) == 0) {
-        $noindex = FALSE;
+        $facets = $query['facet'];
+        unset($facets['category_flandersregion_id']);
+        unset($query['facet']);
+  
+        // If flandersregion Id was the only filter set noindex to false.
+        if (count($facets) == 0 && count($query) == 0) {
+          $noindex = FALSE;
+        }
+
       }
 
     }
@@ -766,4 +802,54 @@ function culturefeed_search_ui_get_user_location_cookie() {
 
   return new stdClass();
 
+}
+
+/**
+ * Sanitize the user input of a search field.
+ */
+function _culturefeed_search_ui_sanitize_query_term($term) {
+  // Replace special characters with normal ones.
+  $term = culturefeed_search_transliterate($term);
+
+  // Replace AND to a space.
+  $term = str_replace(' AND ', ' ', $term);
+
+  $query_parts = explode(' OR ', $term);
+  array_walk($query_parts, function(&$search_string) {
+
+    // Strip of words between quotes. The spaces don't need to be replaced to AND for them.
+    preg_match_all('/".*?"/', $search_string, $matches);
+    foreach ($matches[0] as $match) {
+      $search_string = str_replace($match, '', $search_string);
+    }
+
+    $search_string = str_replace('  ', ' ', $search_string);
+
+    // Put words with a special character between quotes.
+    $words = explode(' ', trim($search_string));
+    $parts = array();
+    $special_characters = '-!?';
+    foreach ($words as $word) {
+      if (strpbrk($word, $special_characters)) {
+        $word = '"' . $word . '"';
+      }
+      $parts[] = $word;
+    }
+
+    // Replace spaces between multiple search words by 'AND'.
+    $search_string = implode(' AND ', $parts);
+
+    // Add back the words between quotes.
+    if (!empty($matches[0])) {
+      if (empty($search_string)) {
+        $search_string .= implode(' AND ', $matches[0]);
+      }
+      else {
+        $search_string .= ' AND ' . implode(' AND ', $matches[0]);
+      }
+    }
+
+  });
+
+  return implode(' OR ', $query_parts);
 }

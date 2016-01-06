@@ -84,7 +84,7 @@ msgid "Recent actions"
 msgstr ""
 
 #: culturefeed_uitpas.blocks.inc:163
-msgid "Already own an UiTPAS ?"
+msgid "Already own an UiTPAS?"
 msgstr ""
 
 #: culturefeed_uitpas.menu.inc:39 culturefeed_uitpas.profile.inc:23 includes/profile_details.inc:55
@@ -104,7 +104,7 @@ msgid "My advantages"
 msgstr ""
 
 #: culturefeed_uitpas.profile.inc:21 includes/profile_actions.inc:83 includes/profile_details.inc:50
-msgid "User history"
+msgid "Points history"
 msgstr ""
 
 #: culturefeed_uitpas.profile.inc:27 includes/profile_details.inc:60 includes/profile_notifications.inc:248
@@ -492,7 +492,7 @@ msgid "Welcome advantages"
 msgstr ""
 
 #: theme/theme.inc:101;136;260;302;345
-msgid "Valid till"
+msgid "Availability"
 msgstr ""
 
 #: theme/theme.inc:102;137;261;303;346
@@ -504,7 +504,7 @@ msgid "Counters"
 msgstr ""
 
 #: theme/theme.inc:117;156;284;326;365
-msgid "end of stock"
+msgid "Until end of stock"
 msgstr ""
 
 #: theme/theme.inc:127;166

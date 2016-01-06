@@ -51,7 +51,7 @@ function culturefeed_calendar_page_settings() {
 function culturefeed_calendar_save_cookie_form($form, &$form_state) {
   $form['save_cookie'] = array(
     '#type' => 'submit',
-    '#value' => t('Save'),
+    '#value' => t('Login'),
     '#submit' => array('culturefeed_calendar_save_cookie_form_submit'),
   );
 
@@ -105,9 +105,12 @@ function culturefeed_calendar_add_cookie_to_calendar() {
     // Only create activities that don't already exist.
     if (!in_array($cookie_activity->nodeId, $calendar_ids)) {
       $activity = new CultureFeed_Activity();
-      // Add planned activity's' date.
       if (isset($cookie_activity->value)) {
         $activity->value = $cookie_activity->value;
+      }
+      // Add planned activity's' date.
+      if (isset($cookie_activity->calendarDate)) {
+        $activity->calendarDate = $cookie_activity->calendarDate;
       }
       $activity->type = $cookie_activity->type;
       $activity->contentType = 'event';
@@ -127,12 +130,48 @@ function culturefeed_calendar_add_cookie_to_calendar() {
   // Delete the cookie.
   user_cookie_delete('calendar');
 
-  // Add a timeout of 5 second, this gives index the time to place the new activity into the search index.
-  sleep(5);
+  // Add a timeout of 2 second, this gives index the time to place the new activity into the search index.
+  // sleep(2);
+
+  drupal_set_message(t('The items are saved to your calendar.'), 'status');
 
   // Proceed to the calendar.
   drupal_goto('culturefeed/calendar');
+
 }
+
+/**
+ * Page callback to like items
+ */
+function culturefeed_calendar_like(CultuurNet\Search\ActivityStatsExtendedEntity $event, $request_type = 'ajax') {
+
+    $params = _culturefeed_calendar_get_event_params($event);
+    $params['title'] = t('Add !title to your calendar', array('!title' => $params['node_title']));
+    $params['button_text'] = t('Add');
+    $params['use_ajax'] = $request_type == 'ajax';
+
+    culturefeed_calendar_add_activity($params['node_id'], $params['node_title']);
+
+    if ($request_type == 'ajax') {
+
+      // No form should be shown, redirect to the detailpage.
+      $commands = array();
+
+      if (isset($_GET['destination'])) {
+        $url = url($_GET['destination']);
+      }
+      else {
+        $url = culturefeed_search_detail_url('event', $event->getId(), $event->getTitle(culturefeed_get_preferred_language()));
+      }
+      $commands[] = culturefeed_ajax_command_goto($url);
+
+
+      ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+      exit;
+
+    }
+}
+
 
 /**
  * Page callback to add items to the calendar.
@@ -158,7 +197,7 @@ function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExt
       }
 
       culturefeed_calendar_add_activity($params['node_id'], $params['node_title'], $date);
-      drupal_set_message(t('The event has been added to your calendar.'));
+      //drupal_set_message(t('The event has been added to your calendar.'));
     }
     catch (Exception $e) {
       drupal_set_message(t('There was an error while adding to your calendar'), 'error');
@@ -205,7 +244,7 @@ function culturefeed_calendar_edit_calendar_event($activity, $request_type = 'aj
   $event = culturefeed_agenda_event_load($activity->nodeId);
 
   $params = _culturefeed_calendar_get_event_params($event);
-  $params['title'] = t('Reschedule !title in your calendar', array('!title' => $params['node_title']));
+  $params['title'] = t('When do you want to go?');
   $params['button_text'] = t('Update event');
   $params['use_ajax'] = $request_type == 'ajax';
   $params['activity'] = $activity;
@@ -244,7 +283,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
   drupal_set_title($params['title']);
 
   // Only show possible dates for periods where calendar summary is available
-  $possible_dates = '';
+  /*$possible_dates = '';
   if (($params['type'] == 'period') && $params['calendar_summary']) {
     $info = '<label>' . t('Possible dates') . ':' . '</label><p>' . $params['calendar_summary'] . '</p>';
   }
@@ -252,30 +291,32 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
   $form['info'] = array(
     '#type' => 'markup',
     '#markup' => $possible_dates,
-  );
+  );*/
 
   if (($params['type'] == 'period') || ($params['type'] == 'permanent')) {
+    // periode of permanent
+    $help = "";
+    if($params['type'] == 'period')
+    {
+      // Don't add if date is in the past.
+      $timestamp = strtotime($params['date_from']);
+      if ($timestamp < $_SERVER['REQUEST_TIME']) {
+        $start_date = format_date($_SERVER['REQUEST_TIME'], 'custom', 'Y-m-d');
+      }
+      else {
+        $start_date = $params['date_from'];
+      }
+
+      $help = t('Choose a date between ') . " " . format_date(strtotime($start_date), 'custom', 'd/m/Y') . " ". t('and') . " " . format_date(strtotime($params['date_to']), 'custom', 'd/m/Y') . ".";
+    }
+
     $form['date'] = array(
-      '#title' => t('When do you want to go?'),
+      '#title' => $help,
       '#type' => 'date_popup',
       '#date_format' => 'd-m-Y',
       '#date_year_range' => '-0:+1',
       '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d H:i') : '',
     );
-
-    if (!$edit) {
-      $form['no_date'] = array(
-        '#type' => 'submit',
-        '#value' => t("I don't know yet"),
-        '#name' => 'no_idea_yet',
-        '#submit' => array($submit_function),
-        '#validate' => array('culturefeed_calendar_form_validate'),
-        '#attributes' => array(
-          'class' => array('btn', 'btn-link')
-        ),
-      );
-    }
-
   }
   // timestamps.
   else {
@@ -296,14 +337,14 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
         $starthour = format_date($timestamp, 'custom', 'H:i');
         if (!empty($date['end'])) {
           $endhour = format_date(strtotime($date['date'] . ' ' . $date['end']), 'custom', 'H:i');
-          $dates[$date['date'] . ' ' . $starthour] = t('!date from !starthour to !endhour', array('!date' => $date['date'], '!starthour' => $starthour, '!endhour' => $endhour));
+          $dates[$date['date'] . ' ' . $starthour] = t('!date from !starthour to !endhour', array('!date' => format_date(strtotime($date['date']), 'custom', 'd/m/Y'), '!starthour' => $starthour, '!endhour' => $endhour));
         }
         else {
-          $dates[$date['date']  . ' ' .  $starthour] = t('!date from !starthour', array('!date' => $date['date'], '!starthour' => $starthour));
+          $dates[$date['date']  . ' ' .  $starthour] = t('!date from !starthour', array('!date' => format_date(strtotime($date['date']), 'custom', 'd/m/Y'), '!starthour' => $starthour));
         }
       }
       else {
-        $dates[$date['date']] = t('!date', array('!date' => $date['date']));
+        $dates[$date['date']] = t('!date', array('!date' => format_date(strtotime($date['date']), 'custom', 'd/m/Y')));
       }
 
     }
@@ -312,7 +353,29 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       '#title' => t('When do you want to go?'),
       '#type' => 'radios',
       '#options' => $dates,
-      '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d') : '',
+      '#default_value' => $edit ? format_date($selected_date, 'custom', 'd/m/Y') : '',
+    );
+  }
+
+  // Removed actions ($form['actions']['submit']) because that didn't work, we have to investigate
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => $params['button_text'],
+    '#name' => 'add',
+    '#submit' => array($submit_function),
+    '#validate' => array('culturefeed_calendar_form_validate'),
+  );
+
+  if (!$edit) {
+    $form['no_date'] = array(
+      '#type' => 'submit',
+      '#value' => t("I don't know yet"),
+      '#name' => 'no_idea_yet',
+      '#submit' => array($submit_function),
+      '#validate' => array('culturefeed_calendar_form_validate'),
+      '#attributes' => array(
+        'class' => array('btn', 'btn-link')
+      ),
     );
   }
 
@@ -326,13 +389,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
     '#type' => 'actions',
   );
 
-  $form['actions']['submit'] = array(
-    '#type' => 'submit',
-    '#value' => $params['button_text'],
-    '#name' => 'add',
-    '#submit' => array($submit_function),
-    '#validate' => array('culturefeed_calendar_form_validate'),
-  );
+
 
   $form['actions']['cancel'] = array(
     '#type' => 'submit',
@@ -343,7 +400,8 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
   );
 
   if ($params['use_ajax']) {
-    $form['actions']['submit']['#ajax'] = array(
+    // Removed actions ($form['actions']['submit']['#ajax']) because that didn't work, we have to investigate
+    $form['submit']['#ajax'] = array(
       'callback' => 'culturefeed_calendar_form_ajax',
       'wrapper' => 'calendar-form',
     );
@@ -446,7 +504,7 @@ function culturefeed_calendar_add_to_calendar_form_submit($form, &$form_state) {
 
   try {
     culturefeed_calendar_add_activity($node_id, $node_title, $date);
-    drupal_set_message(t('The event has been added to your calendar.'));
+    //drupal_set_message(t('The event has been added to your calendar.'));
   }
   catch (Exception $e) {
     drupal_set_message(t('There was an error while adding to your calendar'), 'error');
@@ -474,17 +532,15 @@ function culturefeed_calendar_edit_calendar_event_form_submit($form, &$form_stat
 
       DrupalCultureFeed::deleteActivity($activity->id);
 
-      $selection = new stdClass();
-      $selection->calendar_date = strtotime($date);
-
+      $activity->value = '';
+      $activity->calendarDate = gmdate('c', strtotime($date));
       $new_activity = $activity;
-      $new_activity->value = json_encode($selection);
       $new_activity->type = CultureFeed_Activity::TYPE_IK_GA;
 
       DrupalCultureFeed::createActivity($new_activity);
 
-      // Add a timeout of 5 second, this gives index the time to place the new activity into the search index.
-      sleep(5);
+      // Add a timeout of 2 second, this gives index the time to place the new activity into the search index.
+      // sleep(2);
 
     }
     catch (Exception $e) {
@@ -660,20 +716,39 @@ function _culturefeed_calendar_get_event_params($event) {
     $params['date_to'] = $calendar->current()->getDateTo();
     $params['type'] = 'period';
     $params['week_scheme'] = $calendar->current()->getWeekScheme();
+
+    // if date-to = today, pass modal-form and direct
+    if($calendar->current()->getDateTo() == date('Y-m-d',$_SERVER['REQUEST_TIME']))
+    {
+      $params['dates'][]['date'] = $params['date_to'];
+      $params['get_form'] = FALSE;
+    }
+
   }
   elseif ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
     $i = 0;
     $dates = array();
     while ($calendar->valid()) {
-      $dates[$i]['date'] = $calendar->current()->getDate();
-      $dates[$i]['start'] = $calendar->current()->getStartTime();
-      $dates[$i]['end'] = $calendar->current()->getEndTime();
+      $endtime = $calendar->current()->getEndTime();
+      if($endtime == null);
+      {
+        $endtime = "23:59:59";
+      }
+      if(DateTime::createFromFormat('Y-m-d H:i:s', $calendar->current()->getDate() . " " . $endtime)->getTimestamp() >  $_SERVER['REQUEST_TIME'])
+      {
+        $dates[$i]['date'] = $calendar->current()->getDate();
+        $dates[$i]['start'] = $calendar->current()->getStartTime();
+        $dates[$i]['end'] = $calendar->current()->getEndTime();
+      }
       $calendar->next();
       $i++;
     }
 
     if (count($dates) == 1) {
+      /* don't show a modal */
       $params['get_form'] = FALSE;
+      /* reindex dates */
+      $dates = array_values($dates);
       $params['dates'] = $dates;
       return $params;
     }
@@ -703,6 +778,8 @@ function _culturefeed_calendar_get_nav_months() {
       'full_month' => format_date($time, 'custom', 'F'),
       'month' => format_date($time, 'custom', 'M'),
       'year' => format_date($time, 'custom', 'Y'),
+      'first_day' => format_date($time, 'custom', '1/m/Y'),
+      'last_day' => format_date($time, 'custom', 't/m/Y'),
     );
     $months[] = $item;
 
@@ -724,13 +801,7 @@ function culturefeed_calendar_settings_form($form, &$form_state) {
     return $form;
   }
 
-  $form['privacy_share'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Privacy & share'),
-    '#tree' => TRUE,
-  );
-
-  $form['privacy_share']['visibility'] = array(
+  $form['visibility'] = array(
     '#type' => 'radios',
     '#title' => t('Who can see your calendar'),
     '#default_value' => !empty($cf_user->privacyConfig->calendarId) ? $cf_user->privacyConfig->calendarId : CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC,
@@ -747,9 +818,14 @@ function culturefeed_calendar_settings_form($form, &$form_state) {
     '#submit' => array('culturefeed_calendar_settings_form_submit'),
   );
 
+  $form['actions']['cancel'] = array(
+    '#markup' => l(t('Cancel'), 'culturefeed/calendar', array('attributes' => array('class' => array('btn', 'btn-link'))))
+  );
+
   return $form;
 
 }
+
 
 /**
  * Submit handler for the calendar settings form.
@@ -759,7 +835,7 @@ function culturefeed_calendar_settings_form_submit($form, &$form_state) {
     $cf_user = DrupalCultureFeed::getLoggedInUser();
 
     // Update the user privacy.
-    $cf_user->privacyConfig->calendarId = $form_state['values']['privacy_share']['visibility'];
+    $cf_user->privacyConfig->calendarId = $form_state['values']['visibility'];
     DrupalCultureFeed::updateUserPrivacy($cf_user->id, $cf_user->privacyConfig);
 
     // If the privacy is set to not published, unset the calenderId.
@@ -772,6 +848,8 @@ function culturefeed_calendar_settings_form_submit($form, &$form_state) {
     DrupalCultureFeed::updateUser($cf_user, array('calendarId'));
 
     drupal_set_message(t('Changes succesfully saved.'));
+
+    $form_state['redirect'] = culturefeed_calendar_get_url();
 
   }
   catch (Exception $ex) {

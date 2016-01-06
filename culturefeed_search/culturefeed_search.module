@@ -193,6 +193,7 @@ function culturefeed_search_get_search_url_query($search_query) {
   }
 
   $query = array();
+  $locations = array();
   foreach (explode('&', $search_query) as $key => $value) {
 
     $param = explode('=', $value);
@@ -205,6 +206,7 @@ function culturefeed_search_get_search_url_query($search_query) {
       if ($param[1] == '*:*') {
         continue;
       }
+      $param[1] = str_replace('%22', '"', $param[1]);
       $query['search'] = $param[1];
     }
     // Param datetype
@@ -236,6 +238,7 @@ function culturefeed_search_get_search_url_query($search_query) {
       }
 
       $conditions = explode(' OR ', $param[1]);
+      $previous_field = '';
       foreach ($conditions as $condition) {
 
         // Also check for every part of the condition.
@@ -247,23 +250,50 @@ function culturefeed_search_get_search_url_query($search_query) {
         // Add a limit because timestamps also contains ':' 
         $search_on = explode(':', $condition, 2);
 
-        $facet_field = $search_on[0];
+        if (count($search_on) == 2) {
+          $facet_field = $search_on[0];
+          $facet_value = $search_on[1];
+        }
+        elseif (count($search_on) == 1) {
+          $facet_field = $previous_field;
+          $facet_value = $search_on[0];
+        }
+        else {
+          $facet_field = '';
+          $facet_value = '';
+        }
+
         $facet_field = str_replace(array('(', ')', '"'), '', $facet_field);
 
-        $facet_value = isset($search_on[1]) ? $search_on[1] : '';
+        $inverse = FALSE;
+        if (strpos($facet_field, '!') === 0) {
+          $inverse = TRUE;
+          $facet_field = substr($facet_field, 1);
+          $facet_value = substr($facet_value, 1);
+        }
         $facet_value = str_replace(array('(', ')', '"'), '', $facet_value);
+        $previous_field = $facet_field;
 
         // Check what type of filter it is.
         switch ($facet_field) {
 
           // Agefrom facet.
           case 'agefrom':
-            $query['min_age'] = culturefeed_search_get_agefrom_value($facet_value);
+
+            // Multiple min ages: turn min_age into an array.
+            if (isset($query['min_age'])) {
+              $query['min_age'] = array($query['min_age']);
+              $query['min_age'][] = culturefeed_search_get_agefrom_value($facet_value);
+            }
+            else {
+              $query['min_age'] = culturefeed_search_get_agefrom_value($facet_value);
+            }
             break;
 
           // Filtering on an actor.
           case 'actor':
             $query['actor'] = $facet_value;
+            break;
 
           // Filtering on location.
           case 'category_flandersregion_name':
@@ -273,7 +303,7 @@ function culturefeed_search_get_search_url_query($search_query) {
 
           // Filter location category facility Id.
           case 'location_category_facility_id':
-            $query['facet']['location_category_facility_id'][0] = $facet_value;
+            $query['facet']['location_category_facility_id'][] = $facet_value;
             break;
             
           // Daterage  
@@ -294,36 +324,32 @@ function culturefeed_search_get_search_url_query($search_query) {
           case 'category_id':
           case 'type':
 
+            if ($inverse) {
+              $facet_value = '!' . $facet_value;
+            }
             $values = explode(',', $facet_value);
 
             // Region facets are location searches.
             if (substr($facet_value, 0, 4) == 'reg.') {
-
-              $term = culturefeed_search_get_term_by_id($facet_value, LANGUAGE_NONE);
-              $term_parts = explode(' ', $term->name);
-
-              // If first part is numeric: do location search.
-              if (is_numeric($term_parts[0])) {
-                $query['regId'] = $facet_value;
-                $query['location'] = culturefeed_search_get_term_translation($facet_value);
-              }
-              // Otherwise set flandersregion facet active.
-              else {
-                $query['facet']['flandersregion'][0] = $facet_value;
-              }
+              $locations[] = $facet_value;
             }
             else {
-              if (!isset($query['facet'][$search_on[0]])) {
-                $query['facet'][$search_on[0]] = array();
+              if (!isset($query['facet'][$facet_field])) {
+                $query['facet'][$facet_field] = array();
               }
-              $query['facet'][$search_on[0]] = array_merge($query['facet'][$search_on[0]], $values);
+              $query['facet'][$facet_field] = array_merge($query['facet'][$facet_field], $values);
             }
 
+            // Don't take event and production as facet.
             if (isset($query['facet']['type'])) {
               foreach ($query['facet']['type'] as $key => $content_type) {
                 if (in_array($content_type, array('production', 'event'))) {
                   unset($query['facet']['type'][$key]);
                 }
+              }
+
+              if (empty($query['facet']['type'])) {
+                unset($query['facet']['type']);
               }
 
             }
@@ -347,14 +373,55 @@ function culturefeed_search_get_search_url_query($search_query) {
 
   // Get the correct categorie facets.
   if (isset($query['facet']['category_id'])) {
-    $terms = db_select('culturefeed_search_terms', 't')
-      ->condition('tid', $query['facet']['category_id'])
-      ->condition('language', LANGUAGE_NONE)
-      ->fields('t', array('tid', 'did'))->execute();
+    $inverse = array();
+    $terms = array();
+    foreach($query['facet']['category_id'] as $key => $cat_id){
+      if(strpos($cat_id,'!') === 0) {
+        $inverse[$key] = $cat_id;
+        $cat_id = substr($cat_id,1);
+      }
+      $terms[] = db_select('culturefeed_search_terms', 't')
+        ->condition('tid', $cat_id)
+        ->condition('language', LANGUAGE_NONE)
+        ->fields('t', array('tid', 'did'))->execute();
+    }
 
-    foreach ($terms as $term) {
-      $query['facet']['category_' . $term->did . '_id'][] = $term->tid;
-      unset($query['facet']['category_id']);
+    foreach ($terms as $key => $term) {
+      foreach ($term as $t) {
+        if (!isset($inverse[$key])){
+          $query['facet']['category_' . $t->did . '_id'][] = $t->tid;
+        }
+        else {
+          $query['facet']['category_' . $t->did . '_id'][] = $inverse[$key];
+        }
+        unset($query['facet']['category_id'][$key]);
+      }
+    }
+
+    unset($query['facet']['category_id']);
+
+  }
+
+  // Check what location search should activate.
+  $total_locations = count($locations);
+  if ($total_locations > 1) {
+    foreach ($locations as $location) {
+      $query['facet']['category_flandersregion_id'][] = $location;
+    }
+  }
+  elseif ($total_locations == 1) {
+
+    $term = culturefeed_search_get_term_translation($locations[0], LANGUAGE_NONE);
+    $term_parts = explode(' ', $term);
+
+    // If first part is numeric: do location search.
+    if (is_numeric($term_parts[0])) {
+      $query['regId'] = $locations[0];
+      $query['location'] = $term;
+    }
+    // Otherwise set flandersregion facet active.
+    else {
+      $query['facet']['category_flandersregion_id'][] = $locations[0];
     }
 
   }

@@ -24,6 +24,9 @@ function culturefeed_search_views_data() {
     'filter' => array(
       'handler' => 'views_handler_filter_culturefeed_search_q',
     ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_culturefeed_search_q',
+    ),
   );
 
   // Filter on group.
@@ -340,6 +343,22 @@ function culturefeed_search_views_data() {
 			'handler' => 'views_handler_sort_culturefeed_search_weight'
 		),
 	);
+
+  $data['cdb_items']['permanent'] = array(
+    'title' => t('Permanent'),
+    'help' => t('Sort on permanent status.'),
+    'sort' => array(
+      'handler' => 'views_handler_sort_culturefeed_search_permanent'
+    ),
+  );
+
+  $data['cdb_items']['availableto'] = array(
+    'title' => t('Available to'),
+    'help' => t('Sort on availableto.'),
+    'sort' => array(
+      'handler' => 'views_handler_sort_culturefeed_search_availableto'
+    ),
+  );
 
   return $data;
 

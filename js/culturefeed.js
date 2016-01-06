@@ -74,6 +74,12 @@ if (Drupal.ajax) {
    * Command to reload current page.
    */
   Drupal.ajax.prototype.commands.culturefeedGoto = function (ajax, response, status) {
+
+    if (ajax.progress.element) {
+      $(ajax.element).addClass('progress-disabled').attr('disabled', 'disabled');
+      $(ajax.element).after(ajax.progress.element);
+    }
+
     window.location.href = response.url;
   }
 

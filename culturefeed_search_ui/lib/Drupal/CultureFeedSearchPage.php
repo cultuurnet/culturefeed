@@ -218,37 +218,7 @@ class CultureFeedSearchPage {
    */
   public function addQueryTerm($term) {
 
-    // Replace special characters with normal ones.
-    $term = culturefeed_search_transliterate($term);
-
-    // Replace AND to a space.
-    $term = str_replace(' AND ', ' ', $term);
-
-    $query_parts = explode(' OR ', $term);
-    array_walk($query_parts, function(&$part) {
-
-      // Strip of words between quotes. The spaces don't need to be replaced to AND for them.
-      preg_match_all('/".*?"/', $part, $matches);
-      foreach ($matches[0] as $match) {
-        $part = str_replace($match, '', $part);
-      }
-
-      // Replace spaces between multiple search words by 'AND'.
-      $part = str_replace(' ',' AND ', trim($part));
-
-      // Add back the words between quotes.
-      if (!empty($matches[0])) {
-        if (empty($part)) {
-          $part .= implode(' AND ', $matches[0]);
-        }
-        else {
-          $part .= ' AND ' . implode(' AND ', $matches[0]);
-        }
-      }
-
-    });
-
-    $this->query[] = implode(' OR ', $query_parts);
+    $this->query[] = _culturefeed_search_ui_sanitize_query_term($term);
 
     return $this->query;
   }
@@ -470,8 +440,6 @@ class CultureFeedSearchPage {
       if (!isset($params['distance'])) {
 
         $regFilter = array();
-        $params['regId'] = $params['facet']['category_flandersregion_id'][0];
-
         if (!empty($params['wregIds'])) {
           $regFilter[] = array_shift($params['wregIds']);
 
@@ -482,7 +450,7 @@ class CultureFeedSearchPage {
         }
 
         if (empty($_GET['only-wregs'])) {
-          $regFilter[] = $params['regId'];
+          $regFilter = array_merge($regFilter, $params['facet']['category_flandersregion_id']);
         }
 
         $regFilterQuery = '(';
@@ -536,7 +504,8 @@ class CultureFeedSearchPage {
           $facetFilterQuery = new Parameter\DateTypeQuery(implode(' OR ', $facetFilter));
         }
         elseif ($facetFieldName == 'location_category_facility_id') {
-          $facetFilterQuery = new Parameter\FilterQuery('location_category_facility_id:(' . implode(' OR ', $facetFilter) . ')');
+          $operator = drupal_strtoupper(variable_get('culturefeed_multiple_categories_operator', 'and'));
+          $facetFilterQuery = new Parameter\FilterQuery('location_category_facility_id:(' . implode(' ' . $operator . ' ', $facetFilter) . ')');
         }
         else {
 
@@ -550,7 +519,15 @@ class CultureFeedSearchPage {
           array_walk($facetFilter, function (&$item) {
             $item = '"' . str_replace('"', '\"', $item) . '"';
           });
-          $facetFilterQuery = new Parameter\FilterQuery('category_id:(' . implode(' OR ', $facetFilter) . ')');
+
+          $operator = drupal_strtoupper(variable_get('culturefeed_multiple_categories_operator', 'and'));
+
+          // @todo clean up this code. This is still buggy.
+          if(!empty($facetFilter)) {
+            $facetFilterQuery = new Parameter\FilterQuery('category_id:(' .
+              implode(' ' . $operator . ' ', $facetFilter) . ')');
+          }
+
         }
 
         $this->parameters[] = $facetFilterQuery;

@@ -51,6 +51,7 @@
     else {
       // No cookie => show all add to calendars.
       $(".btn-add-calendar").show();
+      $(".btn-like-calendar").show();
     }
   }
 
@@ -59,8 +60,7 @@
    */
   Drupal.CultureFeed.Calendar.showTotalAdded = function() {
 
-    var $calendarItem = $('#block-culturefeed-ui-profile-box').find('.activities');
-    $calendarItem.hide();
+    var $calendarItem = $('.calendar-popover-link');
 
     // Get cookie calendar information.
     if (Drupal.CultureFeed.Calendar.cookieJson !== null) {
@@ -72,9 +72,14 @@
       });
 
       // set the label and value if needed.
+      // show popover by triggering click
+      // not trigger on calendar-page!
       if (total > 0) {
-        $("span.unread-activities").text(total);
-        $calendarItem.show();
+        if (document.location.href.search("/culturefeed/calendar")==-1){
+          $calendarItem.show();
+          $('.calendar-popover-link').trigger('click');
+        }
+
       }
     }
   }

@@ -11,11 +11,15 @@
 function culturefeed_uitpas_registration_confirmation_get() {
 
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
+  
+  // User is registered so we clear cache
+  cache_clear_all('culturefeed:uitpas:passholder:' . $uitpas_user->user->id, 'cache_culturefeed');
+  cache_clear_all('culturefeed:uitpas:passholders:' . $uitpas_user->user->mbox, 'cache_culturefeed');
 
   return array(
     'intro' => array(
       '#type' => 'markup',
-      '#markup' => variable_get('culturefeed_uitpas_registration_confirmation_intro', ''),
+      '#markup' => t('You can now manage your points balance and personal promotions'),
     ),
     'form' => drupal_get_form('culturefeed_uitpas_registration_confirmation_form', $uitpas_user->user, $uitpas_user->cf),
   );
@@ -40,7 +44,7 @@ function culturefeed_uitpas_registration_confirmation_form($form, &$form_state, 
 
   $form['publish_actions'] = array(
     '#type' => 'checkbox',
-    '#title' => variable_get('culturefeed_uitpas_registration_confirmation_actions_label', t('Make my UiTPAS actions available for others')),
+    '#title' => t('Make my UiTPAS actions available for others'),
     '#default_value' => 1,
   );
 
@@ -51,7 +55,7 @@ function culturefeed_uitpas_registration_confirmation_form($form, &$form_state, 
     ),
   );
 
-  $form['#suffix'] = l(t('Click here to continue to the homepage'), '<front>');
+  $form['#suffix'] = l(t('Complete your profile'), 'culturefeed/profile/edit');
 
   return $form;
 
@@ -76,7 +80,7 @@ function culturefeed_uitpas_registration_confirmation_form_submit(&$form, &$form
 
     // Form.
     drupal_set_message(t('Your changes have been saved.'));
-    $form_state['redirect'] = '<front>';
+    $form_state['redirect'] = 'culturefeed/profile/edit';
 
   }
   catch (Exception $e) {
@@ -89,46 +93,8 @@ function culturefeed_uitpas_registration_confirmation_form_submit(&$form, &$form
 }
 
 /**
- * Returns form elements for registration confirmation settings.
- */
-function culturefeed_uitpas_registration_confirmation_settings_get(&$form) {
-
-  $form['registration_confirmation'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('UiTPAS registration confirmation settings'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  $form['registration_confirmation']['culturefeed_uitpas_registration_confirmation_title'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Page title'),
-    '#default_value' => variable_get('culturefeed_uitpas_registration_confirmation_title', 'You are now registered on UiTPAS'),
-  );
-  $form['registration_confirmation']['culturefeed_uitpas_registration_confirmation_intro'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Intro text'),
-    '#default_value' => variable_get('culturefeed_uitpas_registration_confirmation_intro'),
-  );
-  $form['registration_confirmation']['culturefeed_uitpas_registration_confirmation_actions_label'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Actions label'),
-    '#default_value' => variable_get('culturefeed_uitpas_registration_confirmation_actions_label', t('Make my UiTPAS actions available for others')),
-  );
-
-}
-
-/**
- * Saves settings for registration confirmation.
- * 
- * Not needed for the moment as settings are saved via the 
- * system_settings_form on admin/config/culturefeed/uitpas.
- */
-function culturefeed_uitpas_registration_confirmation_settings_save($values) {
-}
-
-/**
  * Title callback for the registration confirmation page.
  */
 function culturefeed_uitpas_registration_confirmation_title() {
-  return variable_get('culturefeed_uitpas_registration_confirmation_title', 'You are now registered on UiTPAS');
+  return t('Your UiTPAS is registered');
 }

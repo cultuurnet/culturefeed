@@ -1,0 +1,29 @@
+
+.region-content ul.culturefeed-profile-menu {
+  margin: 0 0 20px 0;
+  padding: 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.region-content ul.culturefeed-profile-menu li {
+  float: left;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  width: 40%;
+}
+
+.region-content ul.culturefeed-profile-menu li.first {
+  text-align: left;
+  width: 30%;
+}
+
+.region-content ul.culturefeed-profile-menu li.last {
+  text-align: right;
+  width: 30%;
+}
+
+.region-content ul.culturefeed-profile-menu li.active {
+  border-bottom: 1px solid #ccc;
+}

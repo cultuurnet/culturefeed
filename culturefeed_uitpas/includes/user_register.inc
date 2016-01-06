@@ -10,48 +10,83 @@
  */
 function culturefeed_uitpas_user_register_get() {
 
-  $uitpas_user = culturefeed_uitpas_get_uitpas_user();
-  if (!user_is_logged_in() || !$uitpas_user->passholder) {
-
+  if (culturefeed_uitpas_is_passholder()) {
+    drupal_goto('culturefeed/profile/uitpas');
+  }
+  else {
+    $uitpas_user = culturefeed_uitpas_get_uitpas_user();
     return drupal_get_form('culturefeed_uitpas_user_register_form', $uitpas_user);
-
   }
 
 }
 
 /**
  * Form constructor for the UiTPAS user register form.
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form_state.
+ * @param object $uitpas_user
+ *   The UiTPAS user helper object.
+ *
+ * @return array
+ *   The form.
  */
-function culturefeed_uitpas_user_register_form($form, $form_state, $uitpas_user) {
+function culturefeed_uitpas_user_register_form(array $form, array $form_state, $uitpas_user) {
+
+  if ($uitpas_user->user->givenName && $uitpas_user->user->familyName) {
+    $username_to_use = $uitpas_user->user->givenName . ' ' . $uitpas_user->user->familyName;
+  }
+  else {
+    $username_to_use = $uitpas_user->user->nick;
+  }
 
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/user_register');
 
-  $form['prefix']['#markup'] = variable_get('culturefeed_uitpas_user_register_intro_text', t('Register here, so you can follow your UiTPAS advantages and points balance online.'));
+  $prefix = '<h2>' . t('Register your UiTPAS') . '</h2>';
+  $prefix .= t('Register here, so you can follow your UiTPAS advantages and points balance online.');
+
+  $form['prefix']['#markup'] = $prefix;
   $form['link'] = array(
     '#type' => 'value',
   );
+  $form['username'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Username'),
+    '#value' => $username_to_use,
+    '#disabled' => TRUE,
+  );
   $form['uitpasnumber'] = array(
     '#type' => 'textfield',
-    '#title' => variable_get('culturefeed_uitpas_user_register_number_label', t('UiTPAS number')),
+    '#title' => t('UiTPAS number'),
     '#required' => TRUE,
   );
+
+  $now = time();
   $form['dob'] = array(
     '#type' => 'date',
     '#title' => t('Date of birth'),
     '#after_build' => array('culturefeed_uitpas_user_register_form_process_year'),
+    '#default_value' => array(
+      'year' => date('Y', (isset($uitpas_user->user->dob)) ? $uitpas_user->user->dob : $now),
+      'month' => date('n', (isset($uitpas_user->user->dob)) ? $uitpas_user->user->dob : $now),
+      'day' => date('j', (isset($uitpas_user->user->dob)) ? $uitpas_user->user->dob : $now),
+    ),
     '#required' => TRUE,
   );
   $form['actions'] = array(
+    '#type' => 'actions',
     'submit' => array(
       '#type' => 'submit',
-      '#value' => variable_get('culturefeed_uitpas_user_register_submit_value', t('Continue')),
+      '#value' => t('Register UiTPAS'),
     ),
   );
 
   if ($_GET['q'] != 'register_uitpas' && !$uitpas_user->user) {
 
     $args = array('@url' => url('culturefeed/oauth/connect'));
-    $form['suffix']['#markup'] = '<p>' . format_string(variable_get('culturefeed_uitpas_user_register_apply_text', t('Already registered?  <a href="@url">Apply here</a>.')), $args) . '</p>';
+    $form['suffix']['#markup'] = '<p>' . format_string(t('Already registered?  <a href="@url">Apply here</a>.'), $args) . '</p>';
 
   }
 
@@ -166,53 +201,5 @@ function culturefeed_uitpas_user_register_form_process_year($element) {
   // 1900 is hardcoded in inludes/form.inc
   $element['year']['#options'] = array_slice($element['year']['#options'], 0, $year - 1900 + 1, TRUE);
   return $element;
-
-}
-
-/**
- * Returns form elements for user register settings.
- */
-function culturefeed_uitpas_user_register_settings_get(&$form, $include_title = FALSE) {
-
-  if ($include_title) {
-    $form['culturefeed_uitpas_user_register_confirmation_title'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Title for the registration page'),
-      '#default_value' => variable_get('culturefeed_uitpas_user_register_confirmation_title', t('Already own an UiTPAS?'))
-    );
-  }
-
-  $form['culturefeed_uitpas_user_register_intro_text'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Intro text'),
-    '#default_value' => variable_get('culturefeed_uitpas_user_register_intro_text', t('Register here, so you can follow your UiTPAS advantages and points balance online.')),
-  );
-  $form['culturefeed_uitpas_user_register_number_label'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Label for UiTPAS number field'),
-    '#default_value' => variable_get('culturefeed_uitpas_user_register_number_label', t('UiTPAS number')),
-  );
-  $form['culturefeed_uitpas_user_register_submit_value'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Value for the submit button'),
-    '#default_value' => variable_get('culturefeed_uitpas_user_register_submit_value', t('Continue')),
-  );
-  $form['culturefeed_uitpas_user_register_apply_text'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Apply text'),
-    '#default_value' => variable_get('culturefeed_uitpas_user_register_apply_text', t('Already registered?  <a href="@url">Apply here</a>.')),
-  );
-
-}
-
-/**
- * Saves settings for user register.
- */
-function culturefeed_uitpas_user_register_settings_save($values) {
-
-  variable_set('culturefeed_uitpas_user_register_intro_text', $values['culturefeed_uitpas_user_register_intro_text']);
-  variable_set('culturefeed_uitpas_user_register_number_label', $values['culturefeed_uitpas_user_register_number_label']);
-  variable_set('culturefeed_uitpas_user_register_submit_value', $values['culturefeed_uitpas_user_register_submit_value']);
-  variable_set('culturefeed_uitpas_user_register_apply_text', $values['culturefeed_uitpas_user_register_apply_text']);
 
 }
