@@ -151,6 +151,18 @@ class CultureFeedActivityConfigBase {
       case CultureFeed_Activity::TYPE_ROUTE:
         $config = new CultureFeedActivityConfigRoute();
         break;
+        
+      case CultureFeed_Activity::TYPE_CONNECT_CHANNEL:
+        $config = new CultureFeedActivityConfigConnectChannel();
+        break;
+        
+      case CultureFeed_Activity::TYPE_CASHIN:
+        $config = new CultureFeedActivityConfigCashin();
+        break;
+        
+      case CultureFeed_Activity::TYPE_UITPAS:
+        $config = new CultureFeedActivityConfigCheckin();
+        break;
 
       default:
         return NULL;
