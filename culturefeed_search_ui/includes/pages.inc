@@ -109,15 +109,15 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
     foreach ($page->getSearchResult()->getItems() as $item) {
       $object['cdbid'] = $item->getEntity()->getCdbId();
       $details = $item->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-      $object['title'] = $details->getTitle();
+      $object['title'] = $details->getTitle(); 
       $object['created'] = $item->getEntity()->getCreationDate();
-      if (method_exists($item->getEntity()->getLocation()->getAddress()->getPhysicalAddress(), 'getCity')) {
+      if ($item->getType() == 'event' && method_exists($item->getEntity()->getLocation()->getAddress()->getPhysicalAddress(), 'getCity')) {
         $object['city'] = $item->getEntity()->getLocation()->getAddress()->getPhysicalAddress()->getCity();
       }
       else {
         $object['city'] = '';
       }
-      if (method_exists($item->getEntity(), 'getCalendar')) {
+      if ($item->getType() == 'event' && method_exists($item->getEntity(), 'getCalendar')) {
         $calendar = $item->getEntity()->getCalendar();
         $calendar_class = get_class($calendar);
         $txt_formatter = culturefeed_agenda_get_plain_text_calendar_formatter();
