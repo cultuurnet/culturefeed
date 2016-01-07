@@ -182,6 +182,8 @@ function culturefeed_social_page_activities($type = NULL) {
 
   // Add the Facebook privacy toggle.
   $facebook_privacy_toggle = NULL;
+
+  /* TEMP DISABLED FOR UIV-1619
   $facebook = _culturefeed_ui_facebook_privacy_toggle();
   if ($facebook) {
     $item_list = array(
@@ -197,6 +199,7 @@ function culturefeed_social_page_activities($type = NULL) {
       '#markup' => drupal_render($item_list),
     );
   }
+  */
 
   $build['filter'] = drupal_get_form('culturefeed_social_user_activity_filter_form', $type);
   $build['facebook_privacy_toggle'] = $facebook_privacy_toggle;
