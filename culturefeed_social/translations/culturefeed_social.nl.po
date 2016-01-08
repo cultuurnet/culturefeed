@@ -9,8 +9,11 @@
 #  includes/blocks.inc: n/a
 #  includes/admin.inc: n/a
 #  lib/Drupal/CultureFeedActivityConfigBase.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigCashin.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigCheckin.php: n/a
 #  lib/Drupal/CultureFeedActivityConfigComment.php: n/a
 #  theme/culturefeed-social-comment-list.tpl.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigConnectChannel.php: n/a
 #  lib/Drupal/CultureFeedActivityConfigDetail.php: n/a
 #  lib/Drupal/CultureFeedActivityConfigView.php: n/a
 #  lib/Drupal/CultureFeedActivityConfigFacebook.php: n/a
@@ -41,8 +44,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-12-15 21:28+0100\n"
-"PO-Revision-Date: 2015-12-15 21:34+0100\n"
+"POT-Creation-Date: 2016-01-07 23:58+0100\n"
+"PO-Revision-Date: 2016-01-08 00:25+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -377,6 +380,30 @@ msgstr "Geen activiteiten gevonden."
 msgid "logged in"
 msgstr "aangemeld"
 
+#: lib/Drupal/CultureFeedActivityConfigCashin.php:15
+msgid "cashin"
+msgstr "voordeel omgeruild"
+
+#: lib/Drupal/CultureFeedActivityConfigCashin.php:16
+msgid "cashed in"
+msgstr "voordeel omgeruild"
+
+#: lib/Drupal/CultureFeedActivityConfigCashin.php:17
+msgid "Cashed in"
+msgstr "Voordeel omgeruild"
+
+#: lib/Drupal/CultureFeedActivityConfigCheckin.php:15
+msgid "checkin"
+msgstr "punt gespaard"
+
+#: lib/Drupal/CultureFeedActivityConfigCheckin.php:16
+msgid "checked in"
+msgstr "punt gespaard"
+
+#: lib/Drupal/CultureFeedActivityConfigCheckin.php:17
+msgid "Check in"
+msgstr "Punt gespaard"
+
 #: lib/Drupal/CultureFeedActivityConfigComment.php:22
 msgid "Reply by"
 msgstr "Geplaatst door"
@@ -421,6 +448,18 @@ msgstr "Reageer als"
 #: lib/Drupal/CultureFeedActivityConfigComment.php:37
 msgid "Posted a comment on"
 msgstr "Heeft een reactie gepost op"
+
+#: lib/Drupal/CultureFeedActivityConfigConnectChannel.php:15
+msgid "channel"
+msgstr "kanaal"
+
+#: lib/Drupal/CultureFeedActivityConfigConnectChannel.php:16
+msgid "connected channel"
+msgstr "kanaal gekoppeld"
+
+#: lib/Drupal/CultureFeedActivityConfigConnectChannel.php:17
+msgid "Channel connected"
+msgstr "Kanaal gekoppeld"
 
 #: lib/Drupal/CultureFeedActivityConfigDetail.php:21
 #: lib/Drupal/CultureFeedActivityConfigView.php:22

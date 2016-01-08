@@ -13,7 +13,7 @@ class CultureFeedActivityConfigCashin extends CultureFeedActivityConfigBase {
     $this->allowedTypes = array();
 
     $this->action = t('cashin');
-    $this->viewPrefix = t('cash in');
+    $this->viewPrefix = t('cashed in');
     $this->label = t('Cashed in');
 
   }
