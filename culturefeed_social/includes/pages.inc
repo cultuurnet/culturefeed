@@ -161,15 +161,13 @@ function culturefeed_social_page_activities($type = NULL) {
 
     $wrapper = '
       <div id="delete-wrapper-' . $activity->id . '" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>';
+    $action = '<div class="action-label">' . $type_text . '</div><div class="action-object">' . $data . '</div>';
     $rows[] = array(
       'id' => 'activity-' . $activity->id,
       'data' => array(
-        $data,
-        $type_text,
-        t('@time_ago ago <br />on @created_via', array(
-          '@time_ago' => format_interval(REQUEST_TIME - $activity->creationDate, 1),
-          '@created_via' => $activity->createdVia,
-        )),
+        date('j/m/Y', $activity->creationDate),
+        $action,
+        $activity->createdVia,
         drupal_render($privacy),
         drupal_render($delete) . $wrapper,
       ),
@@ -178,7 +176,7 @@ function culturefeed_social_page_activities($type = NULL) {
 
   $activities = array(
     '#theme' => 'table',
-    '#header' => array(t('Page'), t('Action'), t('Time and publication channel'), t('Status'), ''),
+    '#header' => array(t('Date'), t('Action'), t('Where'), t('Status'), ''),
     '#rows' => $rows,
     '#empty' => t('You didn\'t perform any actions yet.'),
     '#attributes' => array(
