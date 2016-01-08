@@ -150,8 +150,14 @@ function culturefeed_social_page_activities($type = NULL) {
     // Add the activity type
     $type_text = isset($types[$activity->type]) ? $types[$activity->type]->label : '';
 
+    // Add the activity nodeTitle
     $url = culturefeed_social_activity_object_path($activity->contentType, $activity->nodeId, $activity->nodeTitle);
-    $data = l($activity->nodeTitle, $url);
+    if ($url) {
+      $data = l($activity->nodeTitle, $url);
+    }
+    else {
+      $data = $activity->nodeTitle;
+    }
 
     $wrapper = '
       <div id="delete-wrapper-' . $activity->id . '" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>';
