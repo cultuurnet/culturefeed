@@ -690,6 +690,15 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
     }
     variable_set('culturefeed_search_filter_options_2', $options);
   }
+  if (isset($edit['culturefeed-search-filter-options-3'])) {
+    $options = array();
+    foreach ($edit['culturefeed-search-filter-options-3'] as $option) {
+      if (!empty($option['title']) && !empty($option['query-string']) && !empty($option['api-filter-query'])) {
+        $options[] = $option;
+      }
+    }
+    variable_set('culturefeed_search_filter_options_3', $options);
+  }
 
   // Save enabled facet options.
   if (isset($edit['culturefeed-facet-enabled-options'])) {

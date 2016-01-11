@@ -749,6 +749,12 @@ function culturefeed_search_ui_default_filter_options() {
       'query-string' => 'voor-kinderen',
       'api-filter-query' => '(agefrom:[* TO 12] OR keywords:"ook voor kinderen")'
     ),
+    array(
+      'exposed' => TRUE,
+      'title' => 'For UiTPAS and Paspartoe',
+      'query-string' => 'uitpas',
+      'api-filter-query' => '(keywords:uitpas* OR Paspartoe)'
+    ),
   );
 }
 
