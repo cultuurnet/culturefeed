@@ -802,6 +802,10 @@ function culturefeed_search_ui_block_filter_form2($form, $form_state, $filter_op
   return culturefeed_search_ui_block_filter_form($form, $form_state, $filter_options);
 }
 
+function culturefeed_search_ui_block_filter_form3($form, $form_state, $filter_options) {
+  return culturefeed_search_ui_block_filter_form($form, $form_state, $filter_options);
+}
+
 /**
  * Submit the filter form.
  */
@@ -826,6 +830,14 @@ function culturefeed_search_ui_block_filter_form_submit($form, &$form_state) {
  * @see culturefeed_search_ui_block_filter_form_submit().
  */
 function culturefeed_search_ui_block_filter_form2_submit($form, &$form_state) {
+  culturefeed_search_ui_block_filter_form_submit($form, $form_state);
+}
+
+/**
+ * Alias for the submit handler of culturefeed_search_ui_block_filter_form().
+ * @see culturefeed_search_ui_block_filter_form_submit().
+ */
+function culturefeed_search_ui_block_filter_form3_submit($form, &$form_state) {
   culturefeed_search_ui_block_filter_form_submit($form, $form_state);
 }
 

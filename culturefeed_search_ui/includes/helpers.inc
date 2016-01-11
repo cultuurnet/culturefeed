@@ -746,14 +746,29 @@ function culturefeed_search_ui_default_filter_options() {
     array(
       'exposed' => TRUE,
       'title' => 'For toddlers',
-      'query-string' => 'for-toddlers',
-      'api-filter-query' => 'agefrom:(3 OR 4 OR 5)'
+      'query-string' => 'voor-kinderen',
+      'api-filter-query' => '(agefrom:[* TO 12] OR keywords:"ook voor kinderen")'
+    ),
+  );
+}
+
+/**
+ * Return the default options for the filter form 2.
+ */
+function culturefeed_search_ui_default_filter_options_2() {
+
+  return array(
+    array(
+      'exposed' => TRUE,
+      'title' => 'Hide long-running events',
+      'query-string' => 'no-periods',
+      'api-filter-query' => 'periods:false'
     ),
     array(
       'exposed' => TRUE,
-      'title' => 'Geschikt voor kinderen',
-      'query-string' => 'voor-kinderen',
-      'api-filter-query' => '(agefrom:[* TO 12] OR keywords:"ook voor kinderen")'
+      'title' => 'Hide permanent events',
+      'query-string' => 'no-permanent',
+      'api-filter-query' => 'permanent:false'
     ),
   );
 }
