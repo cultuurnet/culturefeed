@@ -313,7 +313,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
     $form['date'] = array(
       '#title' => $help,
       '#type' => 'date_popup',
-      '#date_format' => 'd-m-Y',
+      '#date_format' => 'd/m/Y',
       '#date_year_range' => '-0:+1',
       '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d H:i') : '',
     );
@@ -470,7 +470,7 @@ function culturefeed_calendar_form_validate(&$form, &$form_state) {
     }
     // Check if the chosen date is between the start and end date of the event.
     elseif (($date < $date_from) || ($date > $date_to)) {
-      form_set_error('date', t('Enter a date between ') . date('d-m-Y', $date_from) . t(' and ') . date('d-m-Y', $date_to) . '.');
+      form_set_error('date', t('Enter a date between ') . date('d/m/Y', $date_from) . t(' and ') . date('d/m/Y', $date_to) . '.');
       $form_state['params']['validation_error'] = TRUE;
     }
     // Check if the event is opened on the chosen day.
