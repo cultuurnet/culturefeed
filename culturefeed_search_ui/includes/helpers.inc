@@ -777,7 +777,8 @@ function culturefeed_search_ui_default_holidays_options() {
         'year' => '2016',
         'month' => '2',
         'day' => '14'
-      )
+      ),
+      'api-filter-query' => 'startdate:[2016-02-06T00:00:00Z TO 2016-02-14T23:59:59Z]'
     ),
     array(
       'exposed' => TRUE,
@@ -792,7 +793,8 @@ function culturefeed_search_ui_default_holidays_options() {
         'year' => '2016',
         'month' => '4',
         'day' => '10'
-      )
+      ),
+      'api-filter-query' => 'startdate:[2016-03-26T00:00:00Z TO 2016-04-10T23:59:59Z]'
     ),
     array(
       'exposed' => TRUE,
@@ -807,7 +809,8 @@ function culturefeed_search_ui_default_holidays_options() {
         'year' => '2016',
         'month' => '8',
         'day' => '31'
-      )
+      ),
+      'api-filter-query' => 'startdate:[2016-07-01T00:00:00Z TO 2016-08-31T23:59:59Z]'
     ),
     array(
       'exposed' => TRUE,
@@ -822,7 +825,8 @@ function culturefeed_search_ui_default_holidays_options() {
         'year' => '2016',
         'month' => '11',
         'day' => '6'
-      )
+      ),
+      'api-filter-query' => 'startdate:[2016-10-29T00:00:00Z TO 2016-11-06T23:59:59Z]'
     ),
     array(
       'exposed' => TRUE,
@@ -837,7 +841,8 @@ function culturefeed_search_ui_default_holidays_options() {
         'year' => '2017',
         'month' => '1',
         'day' => '8'
-      )
+      ),
+      'api-filter-query' => 'startdate:[2016-12-24T00:00:00Z TO 2017-01-08T23:59:59Z]'
     ),
   );
 }

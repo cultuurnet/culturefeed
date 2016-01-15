@@ -570,13 +570,13 @@ function culturefeed_search_ui_preprocess_culturefeed_search_block_filter_links(
   $path = !empty($variables['path']) ? $variables['path'] : current_path();
 
   foreach ($variables['filter_options'] as $filter_option) {
-    $items[] = array(
-      'data' => theme('culturefeed_search_block_filter_links_item', array(
-        'filter_option' => $filter_option,
-        'query' => $variables['query'],
-        'path' => $path
-      )),
-    );
+      $items[] = array(
+        'data' => theme('culturefeed_search_block_filter_links_item', array(
+          'filter_option' => $filter_option,
+          'query' => $variables['query'],
+          'path' => $path
+        )),
+      );
 
   }
 
@@ -594,6 +594,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_block_filter_links_
   $path = !empty($variables['path']) ? $variables['path'] : current_path();
 
   $item_active = isset($active_query[$filter_option['query-string']]) ? TRUE: FALSE;
+
   $query_string = $filter_option['query-string'];
 
   // Add/remove the filter options from the active query.
@@ -605,7 +606,14 @@ function culturefeed_search_ui_preprocess_culturefeed_search_block_filter_links_
   }
 
   $variables['url'] = url($path, array('query' => $active_query));
-  $variables['label'] = $filter_option['title'];
+
+  if (array_key_exists('holiday', $filter_option)) {
+    $variables['label'] = $filter_option['holiday'];
+  }
+  else {
+    $variables['label'] = $filter_option['title'];
+  }
+
   $variables['active'] = $item_active;
 
 }
