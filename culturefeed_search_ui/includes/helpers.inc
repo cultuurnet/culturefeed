@@ -723,6 +723,90 @@ function culturefeed_search_ui_default_filter_options() {
 }
 
 /**
+ * Return the default options for the holiday facet block.
+ */
+function culturefeed_search_ui_default_holidays_options() {
+
+  return array(
+    array(
+      'exposed' => TRUE,
+      'holiday' => 'Krokusvakantie 2016',
+      'query-string' => 'krokusvakantie',
+      'start-date' => array(
+        'year' => '2016',
+        'month' => '2',
+        'day' => '6'
+      ),
+      'end-date' => array(
+        'year' => '2016',
+        'month' => '2',
+        'day' => '14'
+      )
+    ),
+    array(
+      'exposed' => TRUE,
+      'holiday' => 'Paasvakantie 2016',
+      'query-string' => 'paasvakantie',
+      'start-date' => array(
+        'year' => '2016',
+        'month' => '3',
+        'day' => '26'
+      ),
+      'end-date' => array(
+        'year' => '2016',
+        'month' => '4',
+        'day' => '10'
+      )
+    ),
+    array(
+      'exposed' => TRUE,
+      'holiday' => 'Zomervakantie 2016',
+      'query-string' => 'zomervakantie',
+      'start-date' => array(
+        'year' => '2016',
+        'month' => '7',
+        'day' => '1'
+      ),
+      'end-date' => array(
+        'year' => '2016',
+        'month' => '8',
+        'day' => '31'
+      )
+    ),
+    array(
+      'exposed' => TRUE,
+      'holiday' => 'Herfstvakantie 2016',
+      'query-string' => 'herfstvakantie',
+      'start-date' => array(
+        'year' => '2016',
+        'month' => '10',
+        'day' => '29'
+      ),
+      'end-date' => array(
+        'year' => '2016',
+        'month' => '11',
+        'day' => '6'
+      )
+    ),
+    array(
+      'exposed' => TRUE,
+      'holiday' => 'Kerstvakantie 2016',
+      'query-string' => 'kerstvakantie',
+      'start-date' => array(
+        'year' => '2016',
+        'month' => '12',
+        'day' => '24'
+      ),
+      'end-date' => array(
+        'year' => '2017',
+        'month' => '1',
+        'day' => '8'
+      )
+    ),
+  );
+}
+
+/**
  * Get the sort options of a culturefeed search page.
  */
 function culturefeed_search_ui_get_sort_options_for_page($search_page) {

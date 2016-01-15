@@ -417,7 +417,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
     }
 
   }
-  
+
   if (isset($query['distance'])) {
     // We have to unset distance when region of level 1, 2 and 3 is used (distance only works with level 4)
     $regions_query = db_select('culturefeed_search_terms', 'cst');
@@ -430,9 +430,9 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
     $db_or->isNull('cst.p3');
     $regions_query->condition($db_or);
     $result = $regions_query->execute();
-    if ($result->rowCount() > 0) {    
+    if ($result->rowCount() > 0) {
       unset($query['distance']);
-    }   
+    }
   }
 
 
@@ -642,15 +642,29 @@ function theme_culturefeed_search_ui_admin_filter_form_options($variables) {
     $rows[] = $row;
   }
 
-  $table_variables = array(
-    'header' => array(
-      t('Exposed'),
-      t('Human name'),
-      t('Querystring for drupal url'),
-      t('Filterquery for API')
-    ),
-    'rows' => $rows,
-  );
+  if ($container['#id'] == 'edit-culturefeed-search-holidays-options') {
+    $table_variables = array(
+      'header' => array(
+        t('Exposed'),
+        t('Human name'),
+        t('Querystring for drupal url'),
+        t('Start date'),
+        t('End date')
+      ),
+      'rows' => $rows,
+    );
+  }
+  else {
+    $table_variables = array(
+      'header' => array(
+        t('Exposed'),
+        t('Human name'),
+        t('Querystring for drupal url'),
+        t('Filterquery for API')
+      ),
+      'rows' => $rows,
+    );
+  }
 
   return theme('table', $table_variables);
 }
