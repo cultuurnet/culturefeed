@@ -828,7 +828,7 @@ function _culturefeed_search_ui_sanitize_query_term($term) {
     // Put words with a special character between quotes.
     $words = explode(' ', trim($search_string));
     $parts = array();
-    $special_characters = '-!?';
+    $special_characters = '-!?&';
     foreach ($words as $word) {
       if (strpbrk($word, $special_characters)) {
         $word = '"' . $word . '"';
