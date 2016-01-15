@@ -664,14 +664,14 @@ function culturefeed_search_ui_block_configure($delta) {
       $form[$config_label][$i]['start-date'] = array(
         '#title' => t('Start date'),
         '#type' => 'date_popup',
-        '#date_format' => 'd-m-Y',
+        '#date_format' => 'Y-m-d',
         '#default_value' => isset($options[$i]['start-date']) ? $options[$i]['start-date'] : '',
         '#maxlength' => 255
       );
       $form[$config_label][$i]['end-date'] = array(
         '#title' => t('End date'),
         '#type' => 'date_popup',
-        '#date_format' => 'd-m-Y',
+        '#date_format' => 'Y-m-d',
         '#default_value' => isset($options[$i]['end-date']) ? $options[$i]['end-date'] : '',
         '#maxlength' => 255
       );
@@ -734,13 +734,15 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
     }
     variable_set('culturefeed_search_filter_options_2', $options);
   }
-  if (isset($edit['culturefeed-search-facet-holidays'])) {
+  if (isset($edit['culturefeed-search-holidays-options'])) {
     $options = array();
-    foreach ($edit['culturefeed-search-facet-holidays'] as $option) {
+    foreach ($edit['culturefeed-search-holidays-options'] as $option) {
       if (!empty($option['holiday']) && !empty($option['query-string']) && !empty($option['start-date']) && !empty($option['end-date'])) {
+        $option['api-filter-query'] = 'startdate:[' . $option['start-date'] . 'T00:00:00Z TO ' . $option['end-date'] . 'T23:59:59Z]';
         $options[] = $option;
       }
     }
+    variable_set('culturefeed_search_holidays_options', $options);
   }
 
   // Save enabled facet options.
@@ -833,10 +835,18 @@ function culturefeed_search_ui_block_view($delta) {
       break;
 
     case 'facet-holidays':
+      // Don't show block if there are no search results.
+      $search_result = culturefeed_get_search_result();
+      if (!$search_result instanceof \Cultuurnet\Search\SearchResult || $search_result->getTotalCount() == 0) {
+        return;
+      }
+
       $filter_options = variable_get('culturefeed_search_holidays_options', culturefeed_search_ui_default_holidays_options());
-      $filter_options = array_filter($filter_options, function($option) {
-        return !isset($option['exposed']) || !empty($option['exposes']);
-      });
+      foreach($filter_options as $key => $option) {
+        if (!$option['exposed']) {
+          unset($filter_options[$key]);
+        }
+      }
       if (!empty($filter_options)) {
         $block['subject'] = t('Holidays');
         $block['content'] = culturefeed_search_ui_block_holidays_facet($filter_options);
@@ -900,12 +910,17 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
       'filter-options' => 'culturefeed_search_filter_options_2',
     ),
   );
+
   foreach ($filter_blocks as $delta => $variables) {
     culturefeed_search_ui_page_add_query_filters($culturefeedSearchPage,
       variable_get($variables['filter-options'], culturefeed_search_ui_default_filter_options()),
       variable_get($variables['operator'], 'and')
     );
   }
+
+  culturefeed_search_ui_page_add_query_filters($culturefeedSearchPage,
+    variable_get('culturefeed_search_holidays_options', culturefeed_search_ui_default_holidays_options())
+    );
 
   // If group = event_production exclude productions (already included in group)
   if ($culturefeedSearchPage->getGroup() == 'event_production') {
