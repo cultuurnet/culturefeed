@@ -741,6 +741,23 @@ function culturefeed_search_ui_search_parent_region_suggestion_block() {
 }
 
 /**
+ * Block callback to show the holidays facet.
+ */
+function culturefeed_search_ui_block_holidays_facet($filter_options) {
+  $searches = culturefeed_get_searchable_types();
+  $path = isset($searches['path']) ? $searches['path'] : NULL;
+  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
+
+  return  theme('culturefeed_search_block_filter_links',
+    array(
+      'filter_options' => $filter_options,
+      'query' => $query,
+      'path' => $path
+    )
+  );
+}
+
+/**
  * Show the filter form for the search ui.
  */
 function culturefeed_search_ui_block_filter_block($filter_options, $display_type, $form_id = '') {

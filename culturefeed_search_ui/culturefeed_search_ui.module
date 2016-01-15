@@ -416,6 +416,11 @@ function culturefeed_search_ui_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
+  $blocks['facet-holidays'] = array(
+    'info' => t('Culturefeed search: facet holidays'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
   // Facet blocks.
   $domains = db_query('SELECT did, label FROM {culturefeed_search_domains}');
   foreach ($domains as $domain) {
@@ -436,7 +441,7 @@ function culturefeed_search_ui_block_configure($delta) {
   $form = array();
 
   $delta_parts = explode('-', $delta);
-  if ($delta != 'facet-datetype' && isset($delta_parts[0]) && $delta_parts[0] == 'facet') {
+  if ($delta != 'facet-datetype' && $delta != 'facet-holidays' && isset($delta_parts[0]) && $delta_parts[0] == 'facet') {
     $form['sort'] = array(
       '#type' => 'select',
       '#title' => t('Sort facet on'),
@@ -622,6 +627,56 @@ function culturefeed_search_ui_block_configure($delta) {
     }
 
   }
+  else if ($delta == 'facet-holidays') {
+    $options = variable_get('culturefeed_search_holidays_options', culturefeed_search_ui_default_holidays_options());
+    $config_label = 'culturefeed-search-holidays-options';
+
+    $form[$config_label] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Possible holidays'),
+      '#theme' => 'culturefeed_search_ui_admin_filter_form_options',
+      '#description' => t('<p>
+        Define the different holidays you want. Holidays that are not exposed are not shown.<br />Example:<ul>
+        <li>Human name: Paasvakantie 2016</li>
+        <li>Query string: paasvakantie</li>
+        <li>Start date: 26/03/2016</li>
+        <li>End date: 10/04/2016</li>
+      </p>'),
+      '#tree' => TRUE,
+    );
+
+    for ($i = 0; $i < 8; $i++) {
+      $form[$config_label][$i]['exposed'] = array(
+        '#title' => t('Exposed'),
+        '#type' => 'checkbox',
+        '#default_value' => isset($options[$i]['exposed']) ? $options[$i]['exposed'] : TRUE
+      );
+      $form[$config_label][$i]['holiday'] = array(
+        '#title' => t('Holiday'),
+        '#type' => 'textfield',
+        '#default_value' => isset($options[$i]['holiday']) ? $options[$i]['holiday'] : ''
+      );
+      $form[$config_label][$i]['query-string'] = array(
+        '#title' => t('Querystring for url'),
+        '#type' => 'textfield',
+        '#default_value' => isset($options[$i]['query-string']) ? $options[$i]['query-string'] : ''
+      );
+      $form[$config_label][$i]['start-date'] = array(
+        '#title' => t('Start date'),
+        '#type' => 'date_popup',
+        '#date_format' => 'd-m-Y',
+        '#default_value' => isset($options[$i]['start-date']) ? $options[$i]['start-date'] : '',
+        '#maxlength' => 255
+      );
+      $form[$config_label][$i]['end-date'] = array(
+        '#title' => t('End date'),
+        '#type' => 'date_popup',
+        '#date_format' => 'd-m-Y',
+        '#default_value' => isset($options[$i]['end-date']) ? $options[$i]['end-date'] : '',
+        '#maxlength' => 255
+      );
+    }
+  }
 
   return $form;
 }
@@ -678,6 +733,14 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
       }
     }
     variable_set('culturefeed_search_filter_options_2', $options);
+  }
+  if (isset($edit['culturefeed-search-facet-holidays'])) {
+    $options = array();
+    foreach ($edit['culturefeed-search-facet-holidays'] as $option) {
+      if (!empty($option['holiday']) && !empty($option['query-string']) && !empty($option['start-date']) && !empty($option['end-date'])) {
+        $options[] = $option;
+      }
+    }
   }
 
   // Save enabled facet options.
@@ -766,6 +829,17 @@ function culturefeed_search_ui_block_view($delta) {
       if (!empty($filter_options)) {
         $form_id = $delta == 'filter-form-2' ? '2' : '';
         $block['content'] = culturefeed_search_ui_block_filter_block($filter_options, $display_type, $form_id);
+      }
+      break;
+
+    case 'facet-holidays':
+      $filter_options = variable_get('culturefeed_search_holidays_options', culturefeed_search_ui_default_holidays_options());
+      $filter_options = array_filter($filter_options, function($option) {
+        return !isset($option['exposed']) || !empty($option['exposes']);
+      });
+      if (!empty($filter_options)) {
+        $block['subject'] = t('Holidays');
+        $block['content'] = culturefeed_search_ui_block_holidays_facet($filter_options);
       }
       break;
 
