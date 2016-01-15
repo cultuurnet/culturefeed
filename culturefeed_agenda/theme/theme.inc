@@ -1232,16 +1232,23 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
   $og_tags['og:site_name'] = variable_get('site_name', '');
   $og_tags['og:url'] = url($variables['url'], array('absolute' => TRUE));
   $og_tags['og:description'] = implode(' - ', $description_parts);
-  if ($variables['main_picture']) {
-    $colonpos = strpos($variables['main_picture'], ':');
-    $path = ($colonpos == FALSE) ? 'http:' : '' ;
-    $path .= str_replace(' ', '%20', $variables['main_picture']);
-    $og_tags['og:image'] = $path . '?width=200&height=200&crop=auto&scale=both';
+  if ($variables['main_picture']) {   
+    $image = str_replace(' ', '%20', $variables['main_picture']);
+    $colonpos = strpos($image, ':');
+    if ($colonpos) {
+      $image = substr($image, $colonpos + 1);
+    }
+    $image_path = 'http:' . $image;
+    $image_secure_path = 'https:' . $image;
+    $og_tags['og:image'] = $image_path . '?width=200&height=200&crop=auto&scale=both';
+    $og_tags['og:image:secure_url'] = $image_secure_path . '?width=200&height=200&crop=auto&scale=both';
   }
   else {
     $path = drupal_get_path('module', 'culturefeed_agenda');
     $og_tags['og:image'] = url($path . '/images/no-thumbnail.png', array('absolute' => TRUE));
   }
+  $og_tags['og:image:width'] = '200';
+  $og_tags['og:image:height'] = '200';
 
   foreach ($og_tags as $property => $content) {
     drupal_add_html_head(array(
