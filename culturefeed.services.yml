@@ -31,7 +31,7 @@ services:
     factory_method: createAuthenticated
   culturefeed.authentication:
     class: Drupal\culturefeed\Authentication
-    arguments: ['@culturefeed.factory', '@url_generator', '@culturefeed.user_map', '@entity.manager', '@entity.query']
+    arguments: ['@culturefeed.factory', '@url_generator.non_bubbling', '@culturefeed.user_map', '@entity.manager', '@entity.query']
   culturefeed.user_factory:
     class: Drupal\culturefeed\UserFactory
     arguments: ['@culturefeed.factory.authenticated', '@current_user', '@culturefeed.user_map']

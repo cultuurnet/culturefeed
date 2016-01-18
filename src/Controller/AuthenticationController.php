@@ -8,9 +8,9 @@
 namespace Drupal\culturefeed\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Routing\TrustedRedirectResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\culturefeed\AuthenticationInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -62,7 +62,7 @@ class AuthenticationController extends ControllerBase {
     if ($auth_url == '<front>') {
       $auth_url = $this->getUrlGenerator()->generateFromRoute('<front>');
     }
-    return new RedirectResponse($auth_url, 302);
+    return new TrustedRedirectResponse($auth_url, 302);
 
   }
 
