@@ -179,7 +179,7 @@ function culturefeed_calendar_like(CultuurNet\Search\ActivityStatsExtendedEntity
 function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExtendedEntity $event, $request_type = 'ajax') {
 
   $params = _culturefeed_calendar_get_event_params($event);
-  $params['title'] = t('Add !title to your calendar', array('!title' => $params['node_title']));
+  $params['title'] = t('When do you want to go?');
   $params['button_text'] = t('Add');
   $params['use_ajax'] = $request_type == 'ajax';
 
