@@ -208,11 +208,13 @@ function culturefeed_calendar_culturefeed_ui_profile_menu() {
 function culturefeed_calendar_culturefeed_ui_profile_box_dropdown_items() {
   $items = array();
 
-  $items['calendar'] = array(
-    'data' => l(t('My calendar'), 'culturefeed/calendar'),
-    'class' => 'calendar',
-    'weight' => -16,
-  );
+  if(culturefeed_calendar_enabled()):
+    $items['calendar'] = array(
+      'data' => l(t('My calendar'), 'culturefeed/calendar'),
+      'class' => 'calendar',
+      'weight' => -16,
+    );
+  endif;
 
   return $items;
 }
