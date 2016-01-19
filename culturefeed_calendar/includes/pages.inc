@@ -131,7 +131,7 @@ function culturefeed_calendar_add_cookie_to_calendar() {
   user_cookie_delete('calendar');
 
   // Add a timeout of 2 second, this gives index the time to place the new activity into the search index.
-  // sleep(2);
+  sleep(2);
 
   drupal_set_message(t('The items are saved to your calendar.'), 'status');
 
@@ -540,7 +540,7 @@ function culturefeed_calendar_edit_calendar_event_form_submit($form, &$form_stat
       DrupalCultureFeed::createActivity($new_activity);
 
       // Add a timeout of 2 second, this gives index the time to place the new activity into the search index.
-      // sleep(2);
+      sleep(2);
 
     }
     catch (Exception $e) {
