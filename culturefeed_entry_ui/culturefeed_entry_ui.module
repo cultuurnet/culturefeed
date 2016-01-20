@@ -9,7 +9,7 @@ define('CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_KIJKEN_EN_LUISTEREN', '0.100.0.0.0
 define('CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_DOEN', '0.100.1.0.0');
 define('CULTUREFEED_ENTRY_UI_EVENTTYPE_CAT_ID_BEZOEKEN', '0.100.2.0.0');
 // Default API location. Can be overriden in settings form.
-define('CULTUREFEED_ENTRY_API_LOCATION', 'http://acc.uitid.be/uitid/rest/searchv2/');
+define('CULTUREFEED_ENTRY_API_LOCATION', 'http://acc.uitid.be/uitid/rest/');
 define('CULTUREFEED_ENTRY_UI_SYNC_MAX_PASSES_DEFAULT', 20);
 define('CULTUREFEED_ENTRY_UI_SYNC_MAX_DURATION_DEFAULT', 120);
 
