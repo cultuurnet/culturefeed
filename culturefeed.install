@@ -75,6 +75,7 @@ function culturefeed_schema() {
  * Implements hook_install().
  */
 function culturefeed_install() {
+  variable_set('culturefeed_entry_api_path', 'entry/test.rest.uitdatabank.be/api/v3/');
   variable_set('culturefeed_cdb_version', '3.3');
 }
 
