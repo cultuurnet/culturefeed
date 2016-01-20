@@ -72,6 +72,13 @@ function culturefeed_schema() {
 }
 
 /**
+ * Implements hook_install().
+ */
+function culturefeed_install() {
+  variable_set('culturefeed_cdb_version', '3.3');
+}
+
+/**
  * Implements hook_uninstall().
  */
 function culturefeed_uninstall() {
