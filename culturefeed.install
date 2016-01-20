@@ -72,6 +72,14 @@ function culturefeed_schema() {
 }
 
 /**
+ * Implements hook_install().
+ */
+function culturefeed_install() {
+  variable_set('culturefeed_entry_api_path', 'entry/test.rest.uitdatabank.be/api/v3/');
+  variable_set('culturefeed_cdb_version', '3.3');
+}
+
+/**
  * Implements hook_uninstall().
  */
 function culturefeed_uninstall() {
@@ -294,4 +302,12 @@ function culturefeed_update_7001() {
     $schema = culturefeed_schema();
     db_create_table('cache_culturefeed', $schema['cache_culturefeed']);
   }
+}
+
+/**
+ * Add value to new variable for entry api location.
+ */
+function cuturefeed_update_7002() {
+  $api_location = variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION);
+  variable_set('culturefeed_entry_api_location', $api_location);
 }
