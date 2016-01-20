@@ -12,6 +12,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
 
   $advantage = $vars['advantage'];
 
+  // Ensure images are protocol-relative
+  if (isset($advantage->pictures)) {
+    foreach ($advantage->pictures as &$picture) {
+      $picture = str_replace('http://', '//', $picture);
+    }
+  }
+
   // Image.
   $vars['image'] = '';
   $vars['image2'] = '';
@@ -421,6 +428,13 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   $promotion = $vars['promotion'];
+
+  // Ensure images are protocol-relative
+  if (isset($promotion->pictures)) {
+    foreach ($promotion->pictures as &$picture) {
+      $picture = str_replace('http://', '//', $picture);
+    }
+  }
 
   // Image.
   $vars['image'] = '';
