@@ -130,23 +130,5 @@ function culturefeed_entry_settings_form() {
     '#options' => array_combine($cdb_xml_versions, $cdb_xml_versions),
   );
 
-  $form['culturefeed_entry_api_application_key'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Application key'),
-    '#description' => t('Your CultureFeed Entry Application key.'),
-    '#default_value' => variable_get('culturefeed_entry_api_application_key', ''),
-    '#size' => 40,
-    '#maxlength' => 40,
-  );
-
-  $form['culturefeed_entry_api_shared_secret'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Shared secret'),
-    '#description' => t('Your CultureFeed Entry Shared Secret.'),
-    '#default_value' => variable_get('culturefeed_entry_api_shared_secret', ''),
-    '#size' => 40,
-    '#maxlength' => 40,
-  );
-
   return system_settings_form($form);
 }
