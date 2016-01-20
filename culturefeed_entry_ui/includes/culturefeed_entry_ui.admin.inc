@@ -121,14 +121,5 @@ function culturefeed_entry_settings_form() {
     '#default_value' => variable_get('culturefeed_entry_api_path', CULTUREFEED_ENTRY_API_PATH),
   );
 
-  $cdb_xml_versions = culturefeed_cdb_xml_versions();
-  $form['culturefeed_entry_cdb_version'] = array(
-    '#default_value' => variable_get('culturefeed_entry_cdb_version', CULTUREFEED_ENTRY_CDB_DEFAULT_VERSION),
-    '#description' => t('The culturefeed cdb schema version used by the entry API.'),
-    '#title' => t('Cdb schema version'),
-    '#type' => 'select',
-    '#options' => array_combine($cdb_xml_versions, $cdb_xml_versions),
-  );
-
   return system_settings_form($form);
 }
