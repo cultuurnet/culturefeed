@@ -319,7 +319,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
     );
   }
   // timestamps.
-  else {
+  elseif ($params['type'] == 'timestamps') {
     foreach ($params['dates'] as $key => $date) {
 
       $full_date = $date['date'];
@@ -693,7 +693,8 @@ function _culturefeed_calendar_get_event_params($event) {
   $entity = $event->getEntity();
   $node_id = $entity->getCdbId();
 
-  $event_detail = $entity->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+  $event_detail = $entity->getDetails()
+    ->getDetailByLanguage(culturefeed_search_get_preferred_language());
   $calendar_summary = check_plain($event_detail->getCalendarSummary());
 
   $calendar = $entity->getCalendar();
@@ -707,6 +708,7 @@ function _culturefeed_calendar_get_event_params($event) {
   $params['node_title'] = $title;
   $params['calendar_summary'] = $calendar_summary;
   $params['get_form'] = TRUE;
+  $params['type'] = '';
 
   if ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_Permanent') {
     $params['type'] = 'permanent';
@@ -718,24 +720,25 @@ function _culturefeed_calendar_get_event_params($event) {
     $params['week_scheme'] = $calendar->current()->getWeekScheme();
 
     // if date-to = today, pass modal-form and direct
-    if($calendar->current()->getDateTo() == date('Y-m-d',$_SERVER['REQUEST_TIME']))
-    {
+    if ($calendar->current()->getDateTo() == date('Y-m-d', $_SERVER['REQUEST_TIME'])) {
       $params['dates'][]['date'] = $params['date_to'];
       $params['get_form'] = FALSE;
     }
 
   }
   elseif ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
+
+    $params['type'] = 'timestamps';
+    $params['dates'] = array();
+
     $i = 0;
     $dates = array();
     while ($calendar->valid()) {
       $endtime = $calendar->current()->getEndTime();
-      if($endtime == null);
-      {
+      if ($endtime == NULL) {
         $endtime = "23:59:59";
       }
-      if(DateTime::createFromFormat('Y-m-d H:i:s', $calendar->current()->getDate() . " " . $endtime)->getTimestamp() >  $_SERVER['REQUEST_TIME'])
-      {
+      if (DateTime::createFromFormat('Y-m-d H:i:s', $calendar->current()->getDate() . " " . $endtime)->getTimestamp() > $_SERVER['REQUEST_TIME']) {
         $dates[$i]['date'] = $calendar->current()->getDate();
         $dates[$i]['start'] = $calendar->current()->getStartTime();
         $dates[$i]['end'] = $calendar->current()->getEndTime();
