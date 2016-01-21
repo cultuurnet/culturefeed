@@ -8,6 +8,7 @@
 namespace Drupal\culturefeed\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\Core\Routing\TrustedRedirectResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\culturefeed\AuthenticationInterface;
@@ -52,7 +53,7 @@ class AuthenticationController extends ControllerBase {
    * @param Request $request
    *   The request.
 
-   * @return RedirectResponse
+   * @return TrustedRedirectResponse
    *   A redirect.
    */
   public function connect(Request $request, $type = \CultureFeed::AUTHORIZE_TYPE_REGULAR) {
