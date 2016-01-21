@@ -101,3 +101,25 @@ function culturefeed_entry_ui_settings_form($form, &$form_state) {
   return system_settings_form($form);
 
 }
+
+/**
+ * Callback for the CultureFeed Entry settings form.
+ */
+function culturefeed_entry_settings_form() {
+
+  $form['culturefeed_entry_api_location'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Entry API location'),
+    '#description' => t('The URL where the CultureFeed Entry API resides. End with a slash. Example: http://acc.uitid.be/uitid/rest/searchv2/ (acceptance) or http://www.uitid.be/uitid/rest/searchv2/ (production)'),
+    '#default_value' => variable_get('culturefeed_entry_api_location', CULTUREFEED_ENTRY_API_LOCATION),
+  );
+
+  $form['culturefeed_entry_api_path'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Entry API path'),
+    '#description' => t('The path where the CultureFeed Entry API resides. End with a slash. Example: entry/test.rest.uitdatabank.be/api/v2/'),
+    '#default_value' => variable_get('culturefeed_entry_api_path', CULTUREFEED_ENTRY_API_PATH),
+  );
+
+  return system_settings_form($form);
+}
