@@ -12,9 +12,11 @@
 function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) {
 
 
+  $loggedin_cf_uid = DrupalCultureFeed::getLoggedInUserId();
+
   // Check if we need to show the calendar for the logged in user or for another user.
   try {
-    if (isset($variables['user_id'])) {
+    if (isset($variables['user_id']) && $loggedin_cf_uid !== $variables['user_id']) {
       $my_calendar = FALSE;
       $cf_user = DrupalCultureFeed::getUser($variables['user_id']);
     }
@@ -36,7 +38,6 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
     $variables['deny_access'] = FALSE;
   }
 
-  $authenticated = DrupalCultureFeed::isCultureFeedUser();
   $variables['sidebar'] = 'empty';
 
   // Top nav with month names.
@@ -70,13 +71,13 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
         array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_IK_GA], 'month_names' => $months, 'my_calendar' => $my_calendar));
     }
     // Print the save cookie button.
-    if (!$authenticated && !empty($activities->objects) && $my_calendar) {
+    if (!$loggedin_cf_uid && !empty($activities->objects) && $my_calendar) {
       $save_cookie_button_form = drupal_get_form('culturefeed_calendar_save_cookie_form');
       $variables['save_cookie_button'] = drupal_render($save_cookie_button_form);
     }
   }
 
-  if ($authenticated || (!$authenticated && !$my_calendar)) {
+  if ($loggedin_cf_uid || (!$loggedin_cf_uid && !$my_calendar)) {
     // Set username.
     if (empty($cf_user->givenName)) {
       $name = $cf_user->nick;
@@ -87,7 +88,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
     $variables['user_name'] = $name;
   }
 
-  if ($authenticated && $my_calendar) {
+  if ($loggedin_cf_uid && $my_calendar) {
     $variables['share_calendar_path'] = 'culturefeed/calendar/share';
     $variables['calendar_settings_path'] = 'culturefeed/calendar/settings';
 
