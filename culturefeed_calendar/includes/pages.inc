@@ -46,101 +46,6 @@ function culturefeed_calendar_page_settings() {
 }
 
 /**
- * Form to add a button to save the cookie events to the calendar.
- */
-function culturefeed_calendar_save_cookie_form($form, &$form_state) {
-  $form['save_cookie'] = array(
-    '#type' => 'submit',
-    '#value' => t('Login'),
-    '#submit' => array('culturefeed_calendar_save_cookie_form_submit'),
-  );
-
-  return $form;
-}
-
-/**
- * Submit the save cookie form.
- */
-function culturefeed_calendar_save_cookie_form_submit($form, &$form_state) {
-  //Go to the login screen to let the user login.
-  $url = 'culturefeed/oauth/connect';
-  $options = array(
-    'query' => array(
-      'destination' => 'culturefeed/calendar/add-cookie-to-calendar',
-    ),
-  );
-  drupal_goto($url, $options);
-}
-
-/**
- * Page callback to move the events from the cookie to the calendar.
- */
-function culturefeed_calendar_add_cookie_to_calendar() {
-  $user_id = DrupalCultureFeed::getLoggedInUserId();
-  // Stop if we don't have a user id.
-  if (empty($user_id)) {
-    return;
-  }
-
-  //Get activities from cookie
-  $cookie_activities = array();
-  if (isset($_COOKIE['Drupal_visitor_calendar'])) {
-    $cookie_activities = json_decode($_COOKIE['Drupal_visitor_calendar']);
-    if (!is_array($cookie_activities)) {
-      $cookie_activities = array();
-    }
-  }
-
-  // Get activities from calendar.
-  $calendar_ids = array();
-  $calendar_activities = culturefeed_calendar_get_user_activities();
-  foreach ($calendar_activities->objects as $calendar_activity) {
-    $calendar_ids[] = $calendar_activity->nodeId;
-  }
-
-  // Create a culturefeed activity (CultureFeed_Activity()) for each cookie activity (stdClass).
-  $added = 0;
-  $skipped = 0;
-  foreach ($cookie_activities as $key => $cookie_activity) {
-    // Only create activities that don't already exist.
-    if (!in_array($cookie_activity->nodeId, $calendar_ids)) {
-      $activity = new CultureFeed_Activity();
-      if (isset($cookie_activity->value)) {
-        $activity->value = $cookie_activity->value;
-      }
-      // Add planned activity's' date.
-      if (isset($cookie_activity->calendarDate)) {
-        $activity->calendarDate = $cookie_activity->calendarDate;
-      }
-      $activity->type = $cookie_activity->type;
-      $activity->contentType = 'event';
-      $activity->nodeId = $cookie_activity->nodeId;
-      $activity->nodeTitle = culturefeed_search_item_load($activity->nodeId, 'event')->getTitle(culturefeed_search_get_preferred_language());
-      $activity->userId = $user_id;
-
-      DrupalCultureFeed::createActivity($activity);
-
-      $added++;
-    }
-    else {
-      $skipped++;
-    }
-  }
-
-  // Delete the cookie.
-  user_cookie_delete('calendar');
-
-  // Add a timeout of 2 second, this gives index the time to place the new activity into the search index.
-  // sleep(2);
-
-  drupal_set_message(t('The items are saved to your calendar.'), 'status');
-
-  // Proceed to the calendar.
-  drupal_goto('culturefeed/calendar');
-
-}
-
-/**
  * Page callback to like items
  */
 function culturefeed_calendar_like(CultuurNet\Search\ActivityStatsExtendedEntity $event, $request_type = 'ajax') {
@@ -273,7 +178,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
 
   // Activity is passed when editing.
   if (!empty($params['activity'])) {
-    $selected_date = culturefeed_calendar_get_selected_date($params['activity']);
+    $selected_date = strtotime(culturefeed_calendar_get_selected_date($params['activity']));
     $edit = !empty($selected_date) ? TRUE : FALSE;
   }
   else {
