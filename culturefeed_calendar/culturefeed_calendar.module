@@ -85,12 +85,6 @@ function culturefeed_calendar_menu() {
     'file' => 'includes/pages.inc',
     'type' => MENU_CALLBACK,
   );
-  $items['culturefeed/calendar/add-cookie-to-calendar'] = array(
-    'title' => t('Add cookie events to calendar'),
-    'page callback' => 'culturefeed_calendar_add_cookie_to_calendar',
-    'access arguments' => array('access content'),
-    'file' => 'includes/pages.inc',
-  );
 
   return $items;
 }
@@ -185,6 +179,75 @@ function culturefeed_calendar_theme() {
   );
 
   return $items;
+
+}
+
+/**
+ * Implements hook_user_login().
+ */
+function culturefeed_calendar_user_login(&$edit, $account) {
+
+  $user_id = DrupalCultureFeed::getLoggedInUserId();
+  // Stop if we don't have a user id.
+  if (empty($user_id)) {
+    return;
+  }
+
+  //Get activities from cookie
+  $cookie_activities = array();
+  if (isset($_COOKIE['Drupal_visitor_calendar'])) {
+    $cookie_activities = json_decode($_COOKIE['Drupal_visitor_calendar']);
+    if (!is_array($cookie_activities)) {
+      return;
+    }
+  }
+  else {
+    return;
+  }
+
+  // Get activities from calendar.
+  $calendar_ids = array();
+  $calendar_activities = culturefeed_calendar_get_user_activities();
+  foreach ($calendar_activities->objects as $calendar_activity) {
+    $calendar_ids[] = $calendar_activity->nodeId;
+  }
+
+  // Create a culturefeed activity (CultureFeed_Activity()) for each cookie activity (stdClass).
+  $added = 0;
+  foreach ($cookie_activities as $key => $cookie_activity) {
+    // Only create activities that don't already exist.
+    if (!in_array($cookie_activity->nodeId, $calendar_ids)) {
+      $activity = new CultureFeed_Activity();
+      if (isset($cookie_activity->value)) {
+        $activity->value = $cookie_activity->value;
+      }
+      // Add planned activity's' date.
+      if (isset($cookie_activity->calendarDate)) {
+        $activity->calendarDate = $cookie_activity->calendarDate;
+      }
+      $activity->type = $cookie_activity->type;
+      $activity->contentType = 'event';
+      $activity->nodeId = $cookie_activity->nodeId;
+      $activity->nodeTitle = culturefeed_search_item_load($activity->nodeId, 'event')->getTitle(culturefeed_search_get_preferred_language());
+      $activity->userId = $user_id;
+
+      DrupalCultureFeed::createActivity($activity);
+
+      $added++;
+    }
+  }
+
+  // Delete the cookie.
+  user_cookie_delete('calendar');
+
+  // Add a timeout of 2 second, this gives index the time to place the new activity into the search index.
+  // sleep(2);
+
+  if ($added > 0) {
+    sleep(2);
+    drupal_set_message(t('The items are saved to your calendar.'), 'status');
+  }
+
 
 }
 

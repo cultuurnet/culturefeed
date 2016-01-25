@@ -105,11 +105,11 @@ function culturefeed_calendar_get_anonymous_user_activities($use_search) {
   if (isset($_COOKIE['Drupal_visitor_calendar'])) {
 
     $calendar = json_decode($_COOKIE['Drupal_visitor_calendar']);
-    
+
     // Parse calendarDate back to time
     $calendar_to_time = array();
     foreach ($calendar as $calendar_item) {
-      $calendar_item->calendarDate = strtotime($calendar_item->calendarDate);
+      $calendar_item->calendarDate = strtotime(culturefeed_calendar_get_selected_date($calendar_item));
       $calendar_to_time[] = $calendar_item;
     }
     $calendar = $calendar_to_time;
@@ -370,9 +370,7 @@ function culturefeed_calendar_update_calendar_event_cookie($activity, $date) {
 
     $calendar = json_decode($_COOKIE['Drupal_visitor_calendar']);
     if (is_array($calendar) && isset($calendar[$activity->id])) {
-      $selection = new stdClass();
-      $selection->calendar_date = strtotime($date);
-      $calendar[$activity->id]->value = json_encode($selection);
+      $calendar[$activity->id]->calendarDate = gmdate('c', strtotime($date));;
       $calendar[$activity->id]->type = CultureFeed_Activity::TYPE_IK_GA;
     }
     else {
