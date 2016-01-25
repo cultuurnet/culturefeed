@@ -179,7 +179,7 @@ function culturefeed_calendar_like(CultuurNet\Search\ActivityStatsExtendedEntity
 function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExtendedEntity $event, $request_type = 'ajax') {
 
   $params = _culturefeed_calendar_get_event_params($event);
-  $params['title'] = t('Add !title to your calendar', array('!title' => $params['node_title']));
+  $params['title'] = t('When do you want to go?');
   $params['button_text'] = t('Add');
   $params['use_ajax'] = $request_type == 'ajax';
 
@@ -303,20 +303,23 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       if ($timestamp < $_SERVER['REQUEST_TIME']) {
         $start_date = format_date($_SERVER['REQUEST_TIME'], 'custom', 'Y-m-d');
       }
+      else {
+        $start_date = $params['date_from'];
+      }
 
-      $help = t('Choose a date between ') . " " . $start_date . " ". t('and') . " " . $params['date_to'] . ".";
+      $help = t('Choose a date between ') . " " . format_date(strtotime($start_date), 'custom', 'd/m/Y') . " ". t('and') . " " . format_date(strtotime($params['date_to']), 'custom', 'd/m/Y') . ".";
     }
 
     $form['date'] = array(
       '#title' => $help,
       '#type' => 'date_popup',
-      '#date_format' => 'd-m-Y',
+      '#date_format' => 'd/m/Y',
       '#date_year_range' => '-0:+1',
       '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d H:i') : '',
     );
   }
   // timestamps.
-  else {
+  elseif ($params['type'] == 'timestamps') {
     foreach ($params['dates'] as $key => $date) {
 
       $full_date = $date['date'];
@@ -334,14 +337,14 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
         $starthour = format_date($timestamp, 'custom', 'H:i');
         if (!empty($date['end'])) {
           $endhour = format_date(strtotime($date['date'] . ' ' . $date['end']), 'custom', 'H:i');
-          $dates[$date['date'] . ' ' . $starthour] = t('!date from !starthour to !endhour', array('!date' => $date['date'], '!starthour' => $starthour, '!endhour' => $endhour));
+          $dates[$date['date'] . ' ' . $starthour] = t('!date from !starthour to !endhour', array('!date' => format_date(strtotime($date['date']), 'custom', 'd/m/Y'), '!starthour' => $starthour, '!endhour' => $endhour));
         }
         else {
-          $dates[$date['date']  . ' ' .  $starthour] = t('!date from !starthour', array('!date' => $date['date'], '!starthour' => $starthour));
+          $dates[$date['date']  . ' ' .  $starthour] = t('!date from !starthour', array('!date' => format_date(strtotime($date['date']), 'custom', 'd/m/Y'), '!starthour' => $starthour));
         }
       }
       else {
-        $dates[$date['date']] = t('!date', array('!date' => $date['date']));
+        $dates[$date['date']] = t('!date', array('!date' => format_date(strtotime($date['date']), 'custom', 'd/m/Y')));
       }
 
     }
@@ -350,7 +353,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       '#title' => t('When do you want to go?'),
       '#type' => 'radios',
       '#options' => $dates,
-      '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d') : '',
+      '#default_value' => $edit ? format_date($selected_date, 'custom', 'd/m/Y') : '',
     );
   }
 
@@ -467,7 +470,7 @@ function culturefeed_calendar_form_validate(&$form, &$form_state) {
     }
     // Check if the chosen date is between the start and end date of the event.
     elseif (($date < $date_from) || ($date > $date_to)) {
-      form_set_error('date', t('Enter a date between ') . date('d-m-Y', $date_from) . t(' and ') . date('d-m-Y', $date_to) . '.');
+      form_set_error('date', t('Enter a date between ') . date('d/m/Y', $date_from) . t(' and ') . date('d/m/Y', $date_to) . '.');
       $form_state['params']['validation_error'] = TRUE;
     }
     // Check if the event is opened on the chosen day.
@@ -690,7 +693,8 @@ function _culturefeed_calendar_get_event_params($event) {
   $entity = $event->getEntity();
   $node_id = $entity->getCdbId();
 
-  $event_detail = $entity->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+  $event_detail = $entity->getDetails()
+    ->getDetailByLanguage(culturefeed_search_get_preferred_language());
   $calendar_summary = check_plain($event_detail->getCalendarSummary());
 
   $calendar = $entity->getCalendar();
@@ -704,6 +708,7 @@ function _culturefeed_calendar_get_event_params($event) {
   $params['node_title'] = $title;
   $params['calendar_summary'] = $calendar_summary;
   $params['get_form'] = TRUE;
+  $params['type'] = '';
 
   if ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_Permanent') {
     $params['type'] = 'permanent';
@@ -715,24 +720,25 @@ function _culturefeed_calendar_get_event_params($event) {
     $params['week_scheme'] = $calendar->current()->getWeekScheme();
 
     // if date-to = today, pass modal-form and direct
-    if($calendar->current()->getDateTo() == date('Y-m-d',$_SERVER['REQUEST_TIME']))
-    {
+    if ($calendar->current()->getDateTo() == date('Y-m-d', $_SERVER['REQUEST_TIME'])) {
       $params['dates'][]['date'] = $params['date_to'];
       $params['get_form'] = FALSE;
     }
 
   }
   elseif ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
+
+    $params['type'] = 'timestamps';
+    $params['dates'] = array();
+
     $i = 0;
     $dates = array();
     while ($calendar->valid()) {
       $endtime = $calendar->current()->getEndTime();
-      if($endtime == null);
-      {
+      if ($endtime == NULL) {
         $endtime = "23:59:59";
       }
-      if(DateTime::createFromFormat('Y-m-d H:i:s', $calendar->current()->getDate() . " " . $endtime)->getTimestamp() >  $_SERVER['REQUEST_TIME'])
-      {
+      if (DateTime::createFromFormat('Y-m-d H:i:s', $calendar->current()->getDate() . " " . $endtime)->getTimestamp() > $_SERVER['REQUEST_TIME']) {
         $dates[$i]['date'] = $calendar->current()->getDate();
         $dates[$i]['start'] = $calendar->current()->getStartTime();
         $dates[$i]['end'] = $calendar->current()->getEndTime();

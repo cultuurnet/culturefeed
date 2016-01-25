@@ -12,6 +12,8 @@ function culturefeed_uitpas_register_where_get() {
 
   $card_system_id = isset($_GET['region']) ? $_GET['region'] : 'all';
   $kansenstatuut = isset($_GET['kansenstatuut']) && $_GET['kansenstatuut'];
+  
+  $card_systems = culturefeed_uitpas_get_card_systems();
 
   $pos = array();
   $pos_max = variable_get('culturefeed_uitpas_register_where_pos_max', 10);
@@ -31,6 +33,13 @@ function culturefeed_uitpas_register_where_get() {
 
     if ($card_system_id != 'all') {
       $query->cardSystemId = $card_system_id;
+    }
+    elseif ($card_systems) {
+      $card_systems_ids = array();
+      foreach ($card_systems as $card_system) {
+        $card_systems_ids[] = $card_system->id;
+      }
+      $query->cardSystemId = $card_systems_ids;
     }
     $query->groupName = array(
       CultureFeed_Uitpas_Counter_Query_SearchCounterOptions::GROUP_AUTHORIZED,

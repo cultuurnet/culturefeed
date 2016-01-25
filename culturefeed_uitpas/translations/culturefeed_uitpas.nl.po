@@ -275,7 +275,7 @@ msgstr "Toon alle welkomstvoordelen"
 
 #: includes/advantages.inc:133 theme/theme.inc:130
 msgid "Found %count advantages"
-msgstr "%count voordelen gevonden"
+msgstr "%count welkomstvoordelen gevonden"
 
 #: includes/advantages.inc:134
 msgid "Show all"
@@ -393,8 +393,8 @@ msgid ""
 "\">online account</a> and  will be used for all communication regarding "
 "@site-name and @card-name."
 msgstr ""
-"Dit e-mailadres wordt ook gebruikt voor je <a href=\"@edit-account"
-"\">logingegevens</a> en wordt gebruikt voor alle communicatie aangaande "
+"Dit e-mailadres wordt gebruikt voor je <a href=\"@edit-account"
+"\">logingegevens</a> en voor alle communicatie aangaande "
 "@site-name en @card-name."
 
 #: includes/profile_details.inc:128
@@ -475,7 +475,7 @@ msgid ""
 "personal promotions and points balance."
 msgstr ""
 "of <a href=\"@login\">meld je aan</a> en activeer je UiTPAS om je "
-"persoonlijke voordelen en puntensaldo te bekijken."
+"puntensaldo en de voordelen waar jij recht op hebt te bekijken."
 
 #: includes/promotions.inc:166;180 includes/promotions_highlight.inc:63
 #: theme/theme.inc:565
@@ -668,8 +668,8 @@ msgid "Get an UiTPAS"
 msgstr "Haal je UiTPAS"
 
 #: theme/culturefeed-uitpas-promotion.tpl.php:32
-msgid "Valid till"
-msgstr "Geldig tot"
+msgid "Availability"
+msgstr "Geldigheidsperiode"
 
 #: theme/culturefeed-uitpas-promotion.tpl.php:37
 msgid "Still available"
@@ -684,8 +684,8 @@ msgid "From !date"
 msgstr "Van !date"
 
 #: theme/theme.inc:56;474
-msgid "valid until !date"
-msgstr "geldig tot !date"
+msgid "until !date"
+msgstr "tot !date"
 
 #: theme/theme.inc:68;492
 msgid "At"
@@ -815,8 +815,8 @@ msgid "!points points"
 msgstr "!points punten"
 
 #: theme/theme.inc:478
-msgid "Valid until !date"
-msgstr "Geldig tot !date"
+msgid "Until !date"
+msgstr "Tot !date"
 
 #: theme/theme.inc:481;771;774;879
 msgid "Until end of stock"
@@ -863,7 +863,7 @@ msgid "This is a welcome advantage"
 msgstr "Dit is een welkomstvoordeel"
 
 #: theme/theme.inc:868
-msgid "not any longer in stock"
+msgid "Out of stock"
 msgstr "Niet meer op voorraad"
 
 #: theme/theme.inc:872

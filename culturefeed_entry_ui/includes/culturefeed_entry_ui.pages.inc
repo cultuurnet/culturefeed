@@ -1825,16 +1825,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
     $file->setFilename($drupal_file->filename);
 
     $detail->getMedia()->add($file);
-    // Remove old image
-    // Bug on UDB ... will be fixed soon
-    if (isset($values['photo']['current_file_hlink'])) {
-      try {
-        Drupalculturefeed_EntryApi::removeLinkFromEvent($event, $values['photo']['current_file_hlink']);
-
-      } catch (Exception $e) {
-        watchdog_exception('culturefeed_entry_ui', $e);
-      }
-    }
   }
 
   // Media links

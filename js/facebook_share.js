@@ -24,7 +24,7 @@
 })(jQuery);
 
   window.fbAsyncInit = function() {
-    console.log('timeout finished');
+    //console.log('timeout finished');
     FB.init({
       appId: Drupal.settings.culturefeed.fbAppId,
       xfbml: true,

@@ -9,8 +9,11 @@
 #  includes/blocks.inc: n/a
 #  includes/admin.inc: n/a
 #  lib/Drupal/CultureFeedActivityConfigBase.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigCashin.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigCheckin.php: n/a
 #  lib/Drupal/CultureFeedActivityConfigComment.php: n/a
 #  theme/culturefeed-social-comment-list.tpl.php: n/a
+#  lib/Drupal/CultureFeedActivityConfigConnectChannel.php: n/a
 #  lib/Drupal/CultureFeedActivityConfigDetail.php: n/a
 #  lib/Drupal/CultureFeedActivityConfigView.php: n/a
 #  lib/Drupal/CultureFeedActivityConfigFacebook.php: n/a
@@ -41,8 +44,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-12-15 21:28+0100\n"
-"PO-Revision-Date: 2015-12-15 21:34+0100\n"
+"POT-Creation-Date: 2016-01-12 09:31+0100\n"
+"PO-Revision-Date: 2016-01-12 09:33+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -164,7 +167,7 @@ msgstr "Geef aan waarom dit volgens jou een ongepaste reactie is"
 msgid "Send message as"
 msgstr "Verzend bericht als"
 
-#: culturefeed_social.module:910 includes/pages.inc:273
+#: culturefeed_social.module:910 includes/pages.inc:280
 msgid "Cancel"
 msgstr "Annuleren"
 
@@ -301,81 +304,101 @@ msgstr "Geen activiteiten gevonden"
 msgid "Remove activity"
 msgstr "Verwijder actie"
 
-#: includes/pages.inc:143;429
+#: includes/pages.inc:143;436
 msgid "Private"
 msgstr "Privé"
 
-#: includes/pages.inc:143;429
+#: includes/pages.inc:143;436
 msgid "Public"
 msgstr "Publiek"
 
-#: includes/pages.inc:145;431
+#: includes/pages.inc:145;438
 msgid "Make public"
 msgstr "Maak publiek"
 
-#: includes/pages.inc:145;431
+#: includes/pages.inc:145;438
 msgid "Make private"
 msgstr "Maak onzichtbaar"
 
-#: includes/pages.inc:163
-msgid "@time_ago ago <br />on @created_via"
-msgstr "@time_ago geleden <br />op @created_via"
+#: includes/pages.inc:179
+msgid "Date"
+msgstr "Datum"
 
-#: includes/pages.inc:175
-msgid "Page"
-msgstr "Pagina"
-
-#: includes/pages.inc:175
+#: includes/pages.inc:179
 msgid "Action"
 msgstr "Actie"
 
-#: includes/pages.inc:175
-msgid "Time and publication channel"
-msgstr "Tijdstip en publicatiekanaal"
+#: includes/pages.inc:179
+msgid "Where"
+msgstr "Waar"
 
-#: includes/pages.inc:175
+#: includes/pages.inc:179
 msgid "Status"
 msgstr "Status"
 
-#: includes/pages.inc:177
+#: includes/pages.inc:181
 msgid "You didn't perform any actions yet."
 msgstr "Je hebt nog geen acties uitgevoerd"
 
-#: includes/pages.inc:250;253;267
+#: includes/pages.inc:257;260;274
 msgid "Remove"
 msgstr "Verwijderen"
 
-#: includes/pages.inc:253
+#: includes/pages.inc:260
 msgid "Remove action"
 msgstr "Actie verwijderen"
 
-#: includes/pages.inc:262
+#: includes/pages.inc:269
 msgid "Are you sure you want to delete your @action permanently"
 msgstr "Ben je zeker dat je jouw @action definitief wil verwijderen"
 
-#: includes/pages.inc:262
+#: includes/pages.inc:269
 msgid "Are you sure you want to delete this action permanently"
 msgstr "Ben je zeker dat je deze actie definitief wil verwijderen"
 
-#: includes/pages.inc:326;365;467
+#: includes/pages.inc:333;372;474
 msgid "An unexpected error has occurred."
 msgstr "Er is iets foutgelopen."
 
-#: includes/pages.inc:397;403
+#: includes/pages.inc:404;410
 msgid "You will no longer receive updates of new comments"
 msgstr "Je ontvangt geen updates meer van nieuwe reacties"
 
-#: includes/pages.inc:565
+#: includes/pages.inc:572
 msgid "Action could not be undone."
 msgstr "Actie kon niet ongedaan gemaakt worden."
 
-#: includes/pages.inc:696
+#: includes/pages.inc:703
 msgid "No activities found."
 msgstr "Geen activiteiten gevonden."
 
 #: lib/Drupal/CultureFeedActivityConfigBase.php:43
 msgid "logged in"
 msgstr "aangemeld"
+
+#: lib/Drupal/CultureFeedActivityConfigCashin.php:15
+msgid "cashin"
+msgstr "voordeel omgeruild"
+
+#: lib/Drupal/CultureFeedActivityConfigCashin.php:16
+msgid "cashed in"
+msgstr "voordeel omgeruild"
+
+#: lib/Drupal/CultureFeedActivityConfigCashin.php:17
+msgid "Cashed in"
+msgstr "Voordeel omgeruild"
+
+#: lib/Drupal/CultureFeedActivityConfigCheckin.php:15
+msgid "checkin"
+msgstr "punt gespaard"
+
+#: lib/Drupal/CultureFeedActivityConfigCheckin.php:16
+msgid "checked in"
+msgstr "punt gespaard"
+
+#: lib/Drupal/CultureFeedActivityConfigCheckin.php:17
+msgid "Check in"
+msgstr "Punt gespaard"
 
 #: lib/Drupal/CultureFeedActivityConfigComment.php:22
 msgid "Reply by"
@@ -422,6 +445,18 @@ msgstr "Reageer als"
 msgid "Posted a comment on"
 msgstr "Heeft een reactie gepost op"
 
+#: lib/Drupal/CultureFeedActivityConfigConnectChannel.php:15
+msgid "channel"
+msgstr "kanaal"
+
+#: lib/Drupal/CultureFeedActivityConfigConnectChannel.php:16
+msgid "connected channel"
+msgstr "kanaal gekoppeld"
+
+#: lib/Drupal/CultureFeedActivityConfigConnectChannel.php:17
+msgid "Channel connected"
+msgstr "Kanaal gekoppeld"
+
 #: lib/Drupal/CultureFeedActivityConfigDetail.php:21
 #: lib/Drupal/CultureFeedActivityConfigView.php:22
 msgid "Viewed by"
@@ -430,7 +465,7 @@ msgstr "Bekeken door"
 #: lib/Drupal/CultureFeedActivityConfigDetail.php:22
 #: lib/Drupal/CultureFeedActivityConfigFacebook.php:26
 #: lib/Drupal/CultureFeedActivityConfigMail.php:22
-#: lib/Drupal/CultureFeedActivityConfigNewEvent.php:15
+#: lib/Drupal/CultureFeedActivityConfigNewEvent.php:16
 #: lib/Drupal/CultureFeedActivityConfigPrint.php:24
 #: lib/Drupal/CultureFeedActivityConfigRecommend.php:31
 #: lib/Drupal/CultureFeedActivityConfigReview.php:18
@@ -631,9 +666,17 @@ msgstr "heeft meer info bekeken over"
 msgid "More info requested"
 msgstr "Meer info bekeken"
 
-#: lib/Drupal/CultureFeedActivityConfigNewEvent.php:16
+#: lib/Drupal/CultureFeedActivityConfigNewEvent.php:15
+msgid "new event"
+msgstr "event aangemaakt"
+
+#: lib/Drupal/CultureFeedActivityConfigNewEvent.php:17
 msgid "added"
 msgstr "toegevoegd"
+
+#: lib/Drupal/CultureFeedActivityConfigNewEvent.php:18
+msgid "Event created"
+msgstr "Event aangemaakt"
 
 #: lib/Drupal/CultureFeedActivityConfigNews.php:17
 msgid "news"

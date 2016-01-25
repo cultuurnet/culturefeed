@@ -12,10 +12,10 @@ class DrupalCultureFeed_EntryApi extends DrupalCultureFeedBase {
 
   public static function getInstance($token, $secret, $application_key = NULL, $shared_secret = NULL) {
 
-    $endpoint = variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION);
+    $endpoint = variable_get('culturefeed_entry_api_location', CULTUREFEED_ENTRY_API_LOCATION);
     $endpoint .= variable_get('culturefeed_entry_api_path', CULTUREFEED_ENTRY_API_PATH);
 
-    $cdb_xml_version = variable_get('culturefeed_cdb_version', CULTUREFEED_CDB_DEFAULT_VERSION);;
+    $cdb_xml_version = variable_get('culturefeed_cdb_version', CULTUREFEED_CDB_DEFAULT_VERSION);
 
     $oauth_client = self::getOAuthClient($endpoint, $token, $secret, $application_key, $shared_secret);
 

@@ -206,6 +206,7 @@ function culturefeed_search_get_search_url_query($search_query) {
       if ($param[1] == '*:*') {
         continue;
       }
+      $param[1] = str_replace('%22', '"', $param[1]);
       $query['search'] = $param[1];
     }
     // Param datetype
@@ -268,7 +269,6 @@ function culturefeed_search_get_search_url_query($search_query) {
         if (strpos($facet_field, '!') === 0) {
           $inverse = TRUE;
           $facet_field = substr($facet_field, 1);
-          $facet_value = substr($facet_value, 1);
         }
         $facet_value = str_replace(array('(', ')', '"'), '', $facet_value);
         $previous_field = $facet_field;
@@ -342,7 +342,7 @@ function culturefeed_search_get_search_url_query($search_query) {
             // Don't take event and production as facet.
             if (isset($query['facet']['type'])) {
               foreach ($query['facet']['type'] as $key => $content_type) {
-                if (in_array($content_type, array('production', 'event'))) {
+                if (in_array($content_type, array('production', 'event', '!production', '!event'))) {
                   unset($query['facet']['type'][$key]);
                 }
               }

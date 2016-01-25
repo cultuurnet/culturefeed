@@ -105,6 +105,15 @@ function culturefeed_calendar_get_anonymous_user_activities($use_search) {
   if (isset($_COOKIE['Drupal_visitor_calendar'])) {
 
     $calendar = json_decode($_COOKIE['Drupal_visitor_calendar']);
+    
+    // Parse calendarDate back to time
+    $calendar_to_time = array();
+    foreach ($calendar as $calendar_item) {
+      $calendar_item->calendarDate = strtotime($calendar_item->calendarDate);
+      $calendar_to_time[] = $calendar_item;
+    }
+    $calendar = $calendar_to_time;
+    
     // Check if cookie is valid.
     if (is_array($calendar)) {
 
@@ -176,7 +185,7 @@ function culturefeed_calendar_render_calendar_buttons($item) {
 
   $authenticated = DrupalCultureFeed::isCultureFeedUser();
   $id = $item->getId();
-  $actions = array('view', 'add', 'like');
+  $actions = array('view', 'like', 'add');
   $buttons = array();
   $button = array();
 
@@ -272,7 +281,7 @@ function culturefeed_calendar_render_calendar_buttons($item) {
 /**
  * Helper function to add an activity to the calendar.
  */
-function culturefeed_calendar_add_activity($node_id, $node_title, $date) {
+function culturefeed_calendar_add_activity($node_id, $node_title, $date = '') {
 
   $authenticated = DrupalCultureFeed::isCultureFeedUser();
 
@@ -502,9 +511,10 @@ function culturefeed_calendar_filter_duplicate_activities($activities) {
  * Helper function to read cookie betaCalendar (in progress)
  */
 function culturefeed_calendar_enabled() {
+
   return true;
-  /*
-  if($_COOKIE['betaCalendar']=="true") {
+
+  /*if(isset($_COOKIE['betaCalendar']) && $_COOKIE['betaCalendar'] == 'true') {
     return true;
   }
   else {

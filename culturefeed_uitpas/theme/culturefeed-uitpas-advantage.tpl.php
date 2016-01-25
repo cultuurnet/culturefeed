@@ -27,12 +27,12 @@
     <?php endif; ?>
 
     <?php if ($period): ?>
-    <dt><?php print t('Valid till'); ?></dt>
+    <dt><?php print t('Availability'); ?></dt>
     <dd class="period"><?php print $period; ?></dd>
     <?php endif; ?>
 
     <?php if ($available): ?>
-    <dt><?php print t('Still available'); ?></dt>
+    <dt><?php print t('Only available for'); ?></dt>
     <dd class="available"><?php print $available; ?></dd>
     <?php endif; ?>
 
