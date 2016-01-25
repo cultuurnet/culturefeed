@@ -71,9 +71,8 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
         array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_IK_GA], 'month_names' => $months, 'my_calendar' => $my_calendar));
     }
     // Print the save cookie button.
-    if (!$loggedin_cf_uid && !empty($activities->objects) && $my_calendar) {
-      $save_cookie_button_form = drupal_get_form('culturefeed_calendar_save_cookie_form');
-      $variables['save_cookie_button'] = drupal_render($save_cookie_button_form);
+    if (!$authenticated && !empty($activities->objects) && $my_calendar) {
+      $variables['login_url'] = url('culturefeed/oauth/connect', array('query' => drupal_get_destination()));
     }
   }
 
@@ -295,7 +294,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button_hover(&$var
   $variables['url'] = 'culturefeed/oauth/connect';
   $variables['options'] = array(
     'query' => array(
-      'destination' => 'culturefeed/calendar/add-cookie-to-calendar',
+      'destination' => 'culturefeed/calendar',
     ),
   );
 }
