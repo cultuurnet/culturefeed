@@ -71,7 +71,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
         array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_IK_GA], 'month_names' => $months, 'my_calendar' => $my_calendar));
     }
     // Print the save cookie button.
-    if (!$authenticated && !empty($activities->objects) && $my_calendar) {
+    if (!$loggedin_cf_uid && !empty($activities->objects) && $my_calendar) {
       $variables['login_url'] = url('culturefeed/oauth/connect', array('query' => drupal_get_destination()));
     }
   }
