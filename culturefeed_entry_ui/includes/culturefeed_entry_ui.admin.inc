@@ -110,7 +110,7 @@ function culturefeed_entry_settings_form() {
   $form['culturefeed_entry_api_location'] = array(
     '#type' => 'textfield',
     '#title' => t('Entry API location'),
-    '#description' => t('The URL where the CultureFeed Entry API resides. End with a slash. Example: http://acc.uitid.be/uitid/rest/searchv2/ (acceptance) or http://www.uitid.be/uitid/rest/searchv2/ (production)'),
+    '#description' => t('The URL where the CultureFeed Entry API resides. End with a slash. Example: http://acc.uitid.be/uitid/rest/ (acceptance) or http://www.uitid.be/uitid/rest/ (production)'),
     '#default_value' => variable_get('culturefeed_entry_api_location', CULTUREFEED_ENTRY_API_LOCATION),
   );
 
