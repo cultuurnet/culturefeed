@@ -72,6 +72,7 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
     '#title' => t('Locations'),
     '#value_callback' => 'culturefeed_uitpas_locations_value_callback',
     '#default_value' => implode("\r\n", $locations),
+    '#description' => t('These locations will only be used when only 1 card system is enabled'),
   );
 
   // Profile promotions.
