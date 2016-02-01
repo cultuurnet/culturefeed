@@ -53,6 +53,22 @@ function culturefeed_uitpas_get_card_systems() {
 
 }
 
+/**
+ * Check if site supports multiple cardsystems.
+ *
+ * @return bool
+ *   Boolean.
+ */
+function culturefeed_uitpas_multiple_cardsystems() {
+
+  $card_systems = culturefeed_uitpas_get_card_systems();
+
+  if (count($card_systems) > 1) {
+    return TRUE;
+  }
+
+}
+
 
 /**
  * Returns a Culturefeed uitpas event object.
