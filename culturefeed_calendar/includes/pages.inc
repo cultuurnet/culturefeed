@@ -219,7 +219,10 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       '#title' => $help,
       '#type' => 'date_popup',
       '#date_format' => 'd/m/Y',
-      '#date_year_range' => '-0:+1',
+      '#datepicker_options' => array(
+        'minDate' => format_date(strtotime($start_date), 'custom', 'd/m/Y'),
+        'maxDate' => format_date(strtotime($params['date_to']), 'custom', 'd/m/Y'),
+      ),
       '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d H:i') : '',
     );
   }
