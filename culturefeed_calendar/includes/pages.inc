@@ -220,7 +220,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       '#type' => 'date_popup',
       '#date_format' => 'd/m/Y',
       '#date_year_range' => '-0:+1',
-      '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d H:i') : '',
+      '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d H:i') : $start_date,
     );
   }
   // timestamps.
