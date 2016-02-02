@@ -187,6 +187,12 @@ function culturefeed_uitpas_theme() {
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
     ),
     'culturefeed_uitpas_register_cta' => array(
+      'variables' => array(
+        'intro' => NULL,
+        'register_link' => NULL,
+        'get_title' => NULL,
+        'get_link' => NULL,
+      ),
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
       'template' => 'culturefeed-uitpas-register-cta',
     ),
@@ -279,4 +285,14 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_filter_labels(&$variab
     $variables['element']['#children'] .= $rendered_child;
   }
   $variables['#attributes'] = $attributes;
+}
+
+/**
+ * Implements hook_preprocess_culturefeed_uitpas_register_cta().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_register_cta(&$vars) {
+  $vars['intro'] = t('Register here, so you can follow your UiTPAS advantages and points balance online.');
+  $vars['register_link'] = l(t('Register your UiTPAS'), 'culturefeed/oauth/connect', array('query' => array('destination' => 'register_uitpas')));
+  $vars['get_title'] = t('No UiTPAS yet?');
+  $vars['get_link'] = l(t('Get an UiTPAS'), 'register_where');
 }

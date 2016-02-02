@@ -893,13 +893,3 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_table(&$var
     drupal_add_css(drupal_get_path('module', 'culturefeed_uitpas') . '/css/promotions.css');
   }
 }
-
-/**
- * Implements hook_preprocess_culturefeed_uitpas_register_cta().
- */
-function culturefeed_uitpas_preprocess_culturefeed_uitpas_register_cta(&$vars) {
-  $vars['intro'] = t('Register here, so you can follow your UiTPAS advantages and points balance online.');
-  $vars['register_link'] = l(t('Register your UiTPAS'), 'culturefeed/oauth/connect', array('query' => array('destination' => 'register_uitpas')));
-  $vars['get_title'] = t('No UiTPAS yet?');
-  $vars['get_link'] = l(t('Get an UiTPAS'), 'register_where');
-}
