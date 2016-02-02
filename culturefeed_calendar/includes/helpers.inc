@@ -203,6 +203,7 @@ function culturefeed_calendar_render_calendar_buttons($item) {
   }
 
   $event_is_passed = FALSE;
+  $event_is_started = FALSE;
 
   if ($item->getType() == 'event') {
     $event = $item->getEntity();
@@ -213,17 +214,21 @@ function culturefeed_calendar_render_calendar_buttons($item) {
       if ($calendar instanceof CultureFeed_Cdb_Data_Calendar_TimestampList || $calendar instanceof CultureFeed_Cdb_Data_Calendar_PeriodList) {
 
         // Check if 1 of the items is still in the future.
-        $event_is_passed = TRUE;
+        $event_is_started = $event_is_passed = TRUE;
         foreach ($calendar as $calendar_item) {
 
-          if (  $calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period
-                && DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() >= $objDateTime->getTimestamp() ) {
-            $event_is_passed = FALSE;
-            break;
+          if (  $calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period) {
+            if( DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() >= $objDateTime->getTimestamp() ) {
+              $event_is_passed = FALSE;
+            }
+            if ( DateTime::createFromFormat('Y-m-d', $calendar_item->getDateFrom())->getTimestamp() > $objDateTime->getTimestamp() ) {
+              $event_is_started = FALSE;
+            }
           }
           elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp)
           {
             $endtime = "23:59:59";
+            $starttime = "00:00:00";
 
             if($calendar_item->getEndTime()) {
               if($calendar_item->getEndTime() !== "00:00:00") {
@@ -231,9 +236,15 @@ function culturefeed_calendar_render_calendar_buttons($item) {
               }
             }
 
+            if($calendar_item->getStartTime()) {
+              $starttime = $calendar_item->getStartTime();
+            }
+
             if(DateTime::createFromFormat('Y-m-d H:i:s', $calendar_item->getDate() . " " . $endtime)->getTimestamp()  >= $objDateTime->getTimestamp()) {
               $event_is_passed = FALSE;
-              break;
+            }
+            if(DateTime::createFromFormat('Y-m-d H:i:s', $calendar_item->getDate() . " " . $starttime)->getTimestamp()  > $objDateTime->getTimestamp()) {
+              $event_is_started = FALSE;
             }
           }
         }
@@ -241,8 +252,8 @@ function culturefeed_calendar_render_calendar_buttons($item) {
     }
   }
 
-  // When event is passed, show only a message aside.
-  if ($event_is_passed) {
+  // When event is passed or started, show only a message aside.
+  if ($event_is_passed || $event_is_started) {
     $locations = array('aside');
   }
   else {
@@ -264,14 +275,14 @@ function culturefeed_calendar_render_calendar_buttons($item) {
 
       foreach($actions as $action) {
         $button['action'] = $action;
-        $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated, 'closed' => $event_is_passed));
+        $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated, 'started' => $event_is_started, 'closed' => $event_is_passed));
       }
     }
     // Show all buttons for anonymous users. JS will show the correct one.
     else {
       foreach ($actions as $action) {
         $button['action'] = $action;
-        $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated, 'closed' => $event_is_passed));
+        $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated, 'started' => $event_is_started, 'closed' => $event_is_passed));
       }
     }
   }
