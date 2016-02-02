@@ -185,7 +185,11 @@ function culturefeed_uitpas_theme() {
       'render element' => 'element',
       'template' => 'culturefeed-uitpas-filter-labels',
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
-    )
+    ),
+    'culturefeed_uitpas_register_cta' => array(
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'template' => 'culturefeed-uitpas-register-cta',
+    ),
   );
 }
 
