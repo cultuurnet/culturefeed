@@ -154,19 +154,31 @@ function culturefeed_calendar_edit_calendar_event($activity, $request_type = 'aj
   $params['use_ajax'] = $request_type == 'ajax';
   $params['activity'] = $activity;
 
-  $form = drupal_get_form('culturefeed_calendar_form', $params);
+  if ($params['get_form']) {
+    $form = drupal_get_form('culturefeed_calendar_form', $params);
 
-  // Always show the form/modal when editing events, no need to check on $params['show_form'].
-  if ($request_type == 'ajax') {
-    $commands = array();
-    $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
-    print ajax_render($commands);
-    exit;
+    // Always show the form/modal when editing events, no need to check on $params['show_form'].
+    if ($request_type == 'ajax') {
+      $commands = array();
+      $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
+      print ajax_render($commands);
+      exit;
+    }
+    else {
+      return $form;
+    }
   }
   else {
-    return $form;
-  }
 
+    if (!empty($params['dates'][0]['date'])) {
+      $date = $params['dates'][0]['date'];
+      if (!empty($params['dates'][0]['start'])) {
+        $date .= ' ' . $params['dates'][0]['start'];
+      }
+    }
+
+    culturefeed_calendar_update_calendar_event($activity, $date);
+  }
 }
 
 /**
@@ -433,41 +445,7 @@ function culturefeed_calendar_edit_calendar_event_form_submit($form, &$form_stat
   $activity = $form_state['params']['activity'];
   $date = $form_state['values']['date'];
 
-  // Not numeric id = activity on service.
-  $success = TRUE;
-  if (!is_numeric($activity->id) != 0) {
-    try {
-
-      DrupalCultureFeed::deleteActivity($activity->id);
-
-      $activity->value = '';
-      $activity->calendarDate = gmdate('c', strtotime($date));
-      $new_activity = $activity;
-      $new_activity->type = CultureFeed_Activity::TYPE_IK_GA;
-
-      DrupalCultureFeed::createActivity($new_activity);
-
-      // Add a timeout of 2 second, this gives index the time to place the new activity into the search index.
-      // sleep(2);
-
-    }
-    catch (Exception $e) {
-      $success = FALSE;
-      watchdog_exception('culturefeed_calendar', $e);
-    }
-  }
-  // No uuid = anonymous user. Update in cookie.
-  else {
-    $success = culturefeed_calendar_update_calendar_event_cookie($activity, $date);
-  }
-
-  if ($success) {
-    drupal_set_message(t('Your calendar event was updated.'));
-  }
-  else {
-    drupal_set_message(t('An error occured while saving your calendar'), 'error');
-  }
-
+  culturefeed_calendar_update_calendar_event($activity, $date);
 }
 
 /**
