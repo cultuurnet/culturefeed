@@ -223,7 +223,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
         'minDate' => format_date(strtotime($start_date), 'custom', 'd/m/Y'),
         'maxDate' => format_date(strtotime($params['date_to']), 'custom', 'd/m/Y'),
       ),
-      '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d H:i') : '',
+      '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d H:i') : $start_date,
     );
   }
   // timestamps.
