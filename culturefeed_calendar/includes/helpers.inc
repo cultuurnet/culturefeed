@@ -550,3 +550,138 @@ function culturefeed_calendar_activity_is_finished($activity) {
   return FALSE;
 
 }
+
+/**
+ * Helper function to check if an activity is already started.
+ */
+function culturefeed_calendar_event_is_started($item) {
+
+  $event_is_started = TRUE;
+
+  if ($item->getType() == 'event') {
+    $event = $item->getEntity();
+    if ($event instanceof CultureFeed_Cdb_Item_Event) {
+      $objDateTime = new DateTime('NOW');
+      $calendar = $event->getCalendar();
+
+      if ($calendar instanceof CultureFeed_Cdb_Data_Calendar_TimestampList || $calendar instanceof CultureFeed_Cdb_Data_Calendar_PeriodList) {
+
+        // Check if 1 of the items is still in the future.
+        foreach ($calendar as $calendar_item) {
+
+          if ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period) {
+            if (DateTime::createFromFormat('Y-m-d', $calendar_item->getDateFrom())
+                ->getTimestamp() > $objDateTime->getTimestamp()
+            ) {
+              $event_is_started = FALSE;
+            }
+          }
+          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp) {
+            $starttime = "00:00:00";
+
+            if ($calendar_item->getStartTime()) {
+              $starttime = $calendar_item->getStartTime();
+            }
+
+            if (DateTime::createFromFormat('Y-m-d H:i:s', $calendar_item->getDate() . " " . $starttime)
+                ->getTimestamp() > $objDateTime->getTimestamp()
+            ) {
+              $event_is_started = FALSE;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return $event_is_started;
+}
+
+/**
+ * Helper function to check if an event is already finished.
+ */
+function culturefeed_calendar_event_is_finished($item) {
+
+  $event_is_passed = TRUE;
+
+  if ($item->getType() == 'event') {
+    $event = $item->getEntity();
+    if ($event instanceof CultureFeed_Cdb_Item_Event) {
+      $objDateTime = new DateTime('NOW');
+      $calendar = $event->getCalendar();
+
+      if ($calendar instanceof CultureFeed_Cdb_Data_Calendar_TimestampList || $calendar instanceof CultureFeed_Cdb_Data_Calendar_PeriodList) {
+
+        // Check if 1 of the items is still in the future.
+        foreach ($calendar as $calendar_item) {
+
+          if (  $calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period) {
+            if( DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() >= $objDateTime->getTimestamp() ) {
+              $event_is_passed = FALSE;
+            }
+          }
+          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp)
+          {
+            $endtime = "23:59:59";
+
+            if($calendar_item->getEndTime()) {
+              if($calendar_item->getEndTime() !== "00:00:00") {
+                $endtime = $calendar_item->getEndTime();
+              }
+            }
+
+            if(DateTime::createFromFormat('Y-m-d H:i:s', $calendar_item->getDate() . " " . $endtime)->getTimestamp()  >= $objDateTime->getTimestamp()) {
+              $event_is_passed = FALSE;
+            }
+
+          }
+        }
+      }
+    }
+  }
+
+  return $event_is_passed;
+}
+
+/**
+ * Helper function to update a calendar event.
+ * @param $activity
+ * @param $date
+ */
+function culturefeed_calendar_update_calendar_event($activity, $date) {
+  // Not numeric id = activity on service.
+  $success = TRUE;
+  if (!is_numeric($activity->id) != 0) {
+    try {
+
+      DrupalCultureFeed::deleteActivity($activity->id);
+
+      $activity->value = '';
+      $activity->calendarDate = gmdate('c', strtotime($date));
+      $new_activity = $activity;
+      $new_activity->type = CultureFeed_Activity::TYPE_IK_GA;
+
+      DrupalCultureFeed::createActivity($new_activity);
+
+      // Add a timeout of 2 second, this gives index the time to place the new activity into the search index.
+      // sleep(2);
+
+    }
+    catch (Exception $e) {
+      $success = FALSE;
+      watchdog_exception('culturefeed_calendar', $e);
+    }
+  }
+  // No uuid = anonymous user. Update in cookie.
+  else {
+    $success = culturefeed_calendar_update_calendar_event_cookie($activity, $date);
+  }
+
+  if ($success) {
+    drupal_set_message(t('Your calendar event was updated.'));
+  }
+  else {
+    drupal_set_message(t('An error occured while saving your calendar'), 'error');
+  }
+}
+
