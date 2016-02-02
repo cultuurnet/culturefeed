@@ -62,6 +62,15 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
   if (!empty($activities_by_type)) {
     // Print the 'LIKED' activities.
     if (isset($activities_by_type[CultureFeed_Activity::TYPE_LIKE]) && $my_calendar) {
+
+      //Remove activities that are already started.
+      foreach ($activities_by_type[CultureFeed_Activity::TYPE_LIKE] as $key => $activity_liked) {
+        $event = culturefeed_agenda_event_load($activity_liked->nodeId);
+        if (culturefeed_calendar_event_is_started($event)) {
+          unset($activities_by_type[CultureFeed_Activity::TYPE_LIKE][$key]);
+        }
+      }
+
       $variables['not_yet_planned'] = theme('culturefeed_calendar_activities_liked',
         array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_LIKE]));
     }

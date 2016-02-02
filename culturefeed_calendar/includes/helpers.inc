@@ -202,47 +202,11 @@ function culturefeed_calendar_render_calendar_buttons($item) {
     }
   }
 
-  $event_is_passed = FALSE;
+  $event_is_passed = culturefeed_calendar_event_is_finished($item);
+  $event_is_started = culturefeed_calendar_event_is_started($item);
 
-  if ($item->getType() == 'event') {
-    $event = $item->getEntity();
-    if ($event instanceof CultureFeed_Cdb_Item_Event) {
-      $objDateTime = new DateTime('NOW');
-      $calendar = $event->getCalendar();
-
-      if ($calendar instanceof CultureFeed_Cdb_Data_Calendar_TimestampList || $calendar instanceof CultureFeed_Cdb_Data_Calendar_PeriodList) {
-
-        // Check if 1 of the items is still in the future.
-        $event_is_passed = TRUE;
-        foreach ($calendar as $calendar_item) {
-
-          if (  $calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period
-                && DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() >= $objDateTime->getTimestamp() ) {
-            $event_is_passed = FALSE;
-            break;
-          }
-          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp)
-          {
-            $endtime = "23:59:59";
-
-            if($calendar_item->getEndTime()) {
-              if($calendar_item->getEndTime() !== "00:00:00") {
-                $endtime = $calendar_item->getEndTime();
-              }
-            }
-
-            if(DateTime::createFromFormat('Y-m-d H:i:s', $calendar_item->getDate() . " " . $endtime)->getTimestamp()  >= $objDateTime->getTimestamp()) {
-              $event_is_passed = FALSE;
-              break;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  // When event is passed, show only a message aside.
-  if ($event_is_passed) {
+  // When event is passed or started, show only a message aside.
+  if ($event_is_passed || $event_is_started) {
     $locations = array('aside');
   }
   else {
@@ -264,14 +228,14 @@ function culturefeed_calendar_render_calendar_buttons($item) {
 
       foreach($actions as $action) {
         $button['action'] = $action;
-        $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated, 'closed' => $event_is_passed));
+        $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated, 'started' => $event_is_started, 'closed' => $event_is_passed));
       }
     }
     // Show all buttons for anonymous users. JS will show the correct one.
     else {
       foreach ($actions as $action) {
         $button['action'] = $action;
-        $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated, 'closed' => $event_is_passed));
+        $buttons[$location][$action] = theme('culturefeed_calendar_button', array('button' => $button, 'authenticated' => $authenticated, 'started' => $event_is_started, 'closed' => $event_is_passed));
       }
     }
   }
@@ -528,7 +492,7 @@ function culturefeed_calendar_get_url() {
   return $base_url . '/culturefeed/calendar';
 }
 
-/*
+/**
  * Helper function to check if an activity is finished (date not between now and now + 11 months)
  */
 function culturefeed_calendar_activity_is_finished($activity) {
@@ -549,4 +513,96 @@ function culturefeed_calendar_activity_is_finished($activity) {
 
   return FALSE;
 
+}
+
+/**
+ * Helper function to check if an activity is already started.
+ */
+function culturefeed_calendar_event_is_started($item) {
+
+  $event_is_started = TRUE;
+
+  if ($item->getType() == 'event') {
+    $event = $item->getEntity();
+    if ($event instanceof CultureFeed_Cdb_Item_Event) {
+      $objDateTime = new DateTime('NOW');
+      $calendar = $event->getCalendar();
+
+      if ($calendar instanceof CultureFeed_Cdb_Data_Calendar_TimestampList || $calendar instanceof CultureFeed_Cdb_Data_Calendar_PeriodList) {
+
+        // Check if 1 of the items is still in the future.
+        foreach ($calendar as $calendar_item) {
+
+          if ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period) {
+            if (DateTime::createFromFormat('Y-m-d', $calendar_item->getDateFrom())
+                ->getTimestamp() > $objDateTime->getTimestamp()
+            ) {
+              $event_is_started = FALSE;
+            }
+          }
+          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp) {
+            $starttime = "00:00:00";
+
+            if ($calendar_item->getStartTime()) {
+              $starttime = $calendar_item->getStartTime();
+            }
+
+            if (DateTime::createFromFormat('Y-m-d H:i:s', $calendar_item->getDate() . " " . $starttime)
+                ->getTimestamp() > $objDateTime->getTimestamp()
+            ) {
+              $event_is_started = FALSE;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return $event_is_started;
+}
+
+/**
+ * Helper function to check if an event is already finished.
+ */
+function culturefeed_calendar_event_is_finished($item) {
+
+  $event_is_passed = TRUE;
+
+  if ($item->getType() == 'event') {
+    $event = $item->getEntity();
+    if ($event instanceof CultureFeed_Cdb_Item_Event) {
+      $objDateTime = new DateTime('NOW');
+      $calendar = $event->getCalendar();
+
+      if ($calendar instanceof CultureFeed_Cdb_Data_Calendar_TimestampList || $calendar instanceof CultureFeed_Cdb_Data_Calendar_PeriodList) {
+
+        // Check if 1 of the items is still in the future.
+        foreach ($calendar as $calendar_item) {
+
+          if (  $calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period) {
+            if( DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp() >= $objDateTime->getTimestamp() ) {
+              $event_is_passed = FALSE;
+            }
+          }
+          elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp)
+          {
+            $endtime = "23:59:59";
+
+            if($calendar_item->getEndTime()) {
+              if($calendar_item->getEndTime() !== "00:00:00") {
+                $endtime = $calendar_item->getEndTime();
+              }
+            }
+
+            if(DateTime::createFromFormat('Y-m-d H:i:s', $calendar_item->getDate() . " " . $endtime)->getTimestamp()  >= $objDateTime->getTimestamp()) {
+              $event_is_passed = FALSE;
+            }
+
+          }
+        }
+      }
+    }
+  }
+
+  return $event_is_passed;
 }
