@@ -59,11 +59,6 @@ function culturefeed_uitpas_block_configure($delta = '') {
       culturefeed_uitpas_recent_actions_settings_get($form);
       break;
 
-    case 'uitpas_user_register':
-      module_load_include('inc', 'culturefeed_uitpas', 'includes/user_register');
-      culturefeed_uitpas_user_register_settings_get($form);
-      break;
-
   }
 
   return $form;
