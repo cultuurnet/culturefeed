@@ -534,7 +534,7 @@ function culturefeed_calendar_event_is_started($item) {
         foreach ($calendar as $calendar_item) {
 
           if ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period) {
-            if (DateTime::createFromFormat('Y-m-d', $calendar_item->getDateFrom())
+            if (DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())
                 ->getTimestamp() > $objDateTime->getTimestamp()
             ) {
               $event_is_started = FALSE;
@@ -554,6 +554,9 @@ function culturefeed_calendar_event_is_started($item) {
             }
           }
         }
+      }
+      elseif ($calendar instanceof CultureFeed_Cdb_Data_Calendar_Permanent) {
+        $event_is_started = FALSE;
       }
     }
   }
@@ -600,6 +603,9 @@ function culturefeed_calendar_event_is_finished($item) {
 
           }
         }
+      }
+      elseif ($calendar instanceof CultureFeed_Cdb_Data_Calendar_Permanent) {
+        $event_is_passed = FALSE;
       }
     }
   }
