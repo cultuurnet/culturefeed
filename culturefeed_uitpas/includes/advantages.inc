@@ -78,6 +78,26 @@ function culturefeed_uitpas_advantages_settings_get(&$form) {
  */
 function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
 
+  // If advantages aren't shown above promotions, fall back to links to toggle between both
+  if (variable_get('culturefeed_uitpas_show_advantages_above_promotions') == FALSE) {
+    $form['advantages_link'] = array(
+      '#attributes' => array(
+        'id' => 'promotions_link'
+      ),
+      '#links' => array(
+        'promotions' => array(
+          'href' => 'promotions',
+          'title' => t('Promotions'),
+        ),
+        'advantages' => array(
+          'href' => 'advantages',
+          'title' => t('Welcome Advantages'),
+        ),
+      ),
+      '#theme' => 'links',
+    );
+  }
+
   $card_systems = culturefeed_uitpas_get_card_systems();
   $multiple_card_systems = culturefeed_uitpas_multiple_cardsystems();
 

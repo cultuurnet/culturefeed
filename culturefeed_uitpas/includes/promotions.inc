@@ -109,6 +109,26 @@ function culturefeed_uitpas_promotions_settings_get(&$form) {
  */
 function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
 
+  // If advantages aren't shown above promotions, fall back to links to toggle between both
+  if (variable_get('culturefeed_uitpas_show_advantages_above_promotions') == FALSE) {
+    $form['promotions_link'] = array(
+      '#attributes' => array(
+        'id' => 'promotions_link'
+      ),
+      '#links' => array(
+        'promotions' => array(
+          'href' => 'promotions',
+          'title' => t('Promotions'),
+        ),
+        'advantages' => array(
+          'href' => 'advantages',
+          'title' => t('Welcome Advantages'),
+        ),
+      ),
+      '#theme' => 'links',
+    );
+  }
+
   $card_systems = culturefeed_uitpas_get_card_systems();
   $multiple_card_systems = culturefeed_uitpas_multiple_cardsystems();
 
@@ -125,6 +145,9 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
   if (variable_get('culturefeed_uitpas_show_advantages_above_promotions', TRUE)) {
     module_load_include('inc', 'culturefeed_uitpas', 'includes/advantages');
     $advantages = culturefeed_uitpas_advantages_get($filter);
+  }
+  else {
+  
   }
 
   $id = drupal_html_id('promotions-filter-sort');
