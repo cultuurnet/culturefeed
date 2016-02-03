@@ -157,7 +157,6 @@ function culturefeed_calendar_edit_calendar_event($activity, $request_type = 'aj
   if ($params['get_form']) {
     $form = drupal_get_form('culturefeed_calendar_form', $params);
 
-    // Always show the form/modal when editing events, no need to check on $params['show_form'].
     if ($request_type == 'ajax') {
       $commands = array();
       $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
@@ -178,6 +177,7 @@ function culturefeed_calendar_edit_calendar_event($activity, $request_type = 'aj
     }
 
     culturefeed_calendar_update_calendar_event($activity, $date);
+    drupal_goto(url(culturefeed_calendar_get_url()));
   }
 }
 
