@@ -146,9 +146,6 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
     module_load_include('inc', 'culturefeed_uitpas', 'includes/advantages');
     $advantages = culturefeed_uitpas_advantages_get($filter);
   }
-  else {
-  
-  }
 
   $id = drupal_html_id('promotions-filter-sort');
 
