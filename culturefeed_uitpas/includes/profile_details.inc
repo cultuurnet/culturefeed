@@ -38,8 +38,17 @@ function culturefeed_uitpas_profile_details_form($form, &$form_state) {
       '#type' => 'textfield',
     );
 
+    // Set date of birth in right timezone
+    $default_value = '';
+    if (!empty($passholder->dateOfBirth)) {
+      $dob = new DateTime();
+      $time_zone = new DateTimeZone('Europe/Brussels');
+      $dob->setTimestamp($passholder->dateOfBirth);
+      $dob->setTimezone($time_zone);
+      $default_value = $dob->format('d/m/Y');
+    }
     $form['dob'] = array(
-      '#default_value' => date('j/m/Y', $passholder->dateOfBirth),
+      '#default_value' => $default_value,
       '#disabled' => TRUE,
       '#title' =>  t('Date of birth'),
       '#type' => 'textfield',

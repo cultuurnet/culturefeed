@@ -73,16 +73,27 @@ function culturefeed_uitpas_user_register_form(array $form, array $form_state, $
     '#title' => t('UiTPAS number'),
     '#required' => TRUE,
   );
+  
+  // Set date of birth in right timezone
+  if (!empty($uitpas_user->user->dob)) {
+    $dob = new DateTime();
+    $time_zone = new DateTimeZone('Europe/Brussels');
+    $dob->setTimestamp($uitpas_user->user->dob);
+    $dob->setTimezone($time_zone);
+    $default_year = $dob->format('Y');
+    $default_month = $dob->format('n');
+    $default_day = $dob->format('j');
+  }
 
   $now = time();
   $form['dob'] = array(
     '#type' => 'date',
     '#title' => t('Date of birth'),
     '#after_build' => array('culturefeed_uitpas_user_register_form_process_year'),
-    '#default_value' => array(
-      'year' => date('Y', (isset($uitpas_user->user->dob)) ? $uitpas_user->user->dob : $now),
-      'month' => date('n', (isset($uitpas_user->user->dob)) ? $uitpas_user->user->dob : $now),
-      'day' => date('j', (isset($uitpas_user->user->dob)) ? $uitpas_user->user->dob : $now),
+    '#default_value' => array(           
+      'year' => isset($default_year) ? $default_year : date('Y', $now),
+      'month' => isset($default_month) ? $default_month : date('n', $now),
+      'day' => isset($default_day) ? $default_day : date('j', $now),
     ),
     '#required' => TRUE,
   );
