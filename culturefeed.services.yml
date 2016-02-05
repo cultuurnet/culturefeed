@@ -44,6 +44,12 @@ services:
   culturefeed.uitpas:
     class: CultureFeed_Uitpas
     factory_service: culturefeed:uitpas
+  culturefeed.token_credentials:
+    class: CultuurNet\Auth\TokenCredentials
+    factory: culturefeed.token_credentials.factory:get
+  culturefeed.token_credentials.factory:
+    class: Drupal\culturefeed\TokenCredentialsFactory
+    arguments: ['@culturefeed.user_credentials']
 
   access_check.culturefeed.current_user:
     class: Drupal\culturefeed\Access\UserAccess
