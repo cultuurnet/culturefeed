@@ -211,6 +211,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#title' => t('Filter query'),
     '#description' => t('Please use SOLR filter query (fq). You can use advanced combinations with AND, OR, double quotes (exact match), and wildcards (*)'),
     '#type' => 'textfield',
+    '#maxlength' => 1000,
   );
 
   $element['wrapper']['query_string'] = array(
@@ -219,6 +220,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#title' => t('Query string'),
     '#description' => t('Free text search, used for the SOLR query (q) parameter'),
     '#type' => 'textfield',
+    '#maxlength' => 1000,
   );
 
   $element['wrapper']['rows'] = array(
