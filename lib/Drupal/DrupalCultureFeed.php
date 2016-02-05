@@ -235,26 +235,6 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
     return self::getLoggedInUserInstance()->cashInPromotion($userId, $promotionId, $promotionCount);
   }
 
-  public static function getTemplate($id) {
-    return self::getLoggedInUserInstance()->getTemplate($id);
-  }
-
-  public static function createTemplate(CultureFeed_Template $template) {
-    return self::getLoggedInUserInstance()->createTemplate($template);
-  }
-
-  public static function updateTemplate(CultureFeed_Template $template, $fields = array()) {
-    self::getLoggedInUserInstance()->updateTemplate($template, $fields);
-  }
-
-  public static function getTemplateList() {
-    return self::getLoggedInUserInstance()->getTemplateList();
-  }
-
-  public static function deleteTemplate($id) {
-    self::getLoggedInUserInstance()->deleteTemplate($id);
-  }
-
   public static function getServiceConsumer($consumerKey) {
     return self::getLoggedInUserInstance()->getServiceConsumer($consumerKey);
   }
@@ -285,14 +265,6 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
 
   public static function getMailingList(CultureFeed_SearchMailingsQuery $query) {
     return self::getLoggedInUserInstance()->getMailingList($query);
-  }
-
-  public static function sendTestMailing($user_id, $mailing_id) {
-    self::getLoggedInUserInstance()->sendTestMailing($user_id, $mailing_id);
-  }
-
-  public static function sendMailing($id) {
-    self::getLoggedInUserInstance()->sendMailing($id);
   }
 
   public static function searchMailings(CultureFeed_SearchMailingsQuery $query) {

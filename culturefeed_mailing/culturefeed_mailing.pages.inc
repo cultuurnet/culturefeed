@@ -470,7 +470,7 @@ function culturefeed_mailing_lists_form($form, &$form_state, $list = NULL) {
     );
   }
 
-  $templates = DrupalCultureFeed::getTemplateList();
+  $templates = DrupalCultureFeed_Mailing::getTemplateList();
   $template_options = array();
   $template_options[0] = t('- Select -');
   if (!empty($templates)) {
@@ -570,7 +570,7 @@ function culturefeed_mailing_lists_form_submit($form, &$form_state) {
  */
 function culturefeed_mailing_test_list($list) {
   try {
-    DrupalCultureFeed::sendTestMailing(DrupalCultureFeed::getLoggedInUserId(), $list->id);
+    DrupalCultureFeed_Mailing::sendTestMailing(DrupalCultureFeed::getLoggedInUserId(), $list->id);
     $user = DrupalCultureFeed::getLoggedInUser();
     drupal_set_message(t('A test mail was sent to !user_mail', array('!user_mail' => $user->mbox)));
     $commands = array();
@@ -615,7 +615,7 @@ function culturefeed_mailing_send_list_form($form, &$form_state, $list) {
  */
 function culturefeed_mailing_send_list_form_submit($form, &$form_state) {
   try {
-    DrupalCultureFeed::sendMailing($form_state['values']['id']);
+    DrupalCultureFeed_Mailing::sendMailing($form_state['values']['id']);
     drupal_set_message(t('This mailing is active and will be send on scheduled time'));
   }
   catch (Exception $e) {
@@ -688,7 +688,7 @@ function culturefeed_template_list_overview() {
   $rows = array();
 
   try {
-    $templates = DrupalCultureFeed::getTemplateList()->objects;
+    $templates = DrupalCultureFeed_Mailing::getTemplateList()->objects;
 
     $options = array();
 
@@ -764,7 +764,7 @@ function culturefeed_templates_delete_form($form, &$form_state, $template) {
 function culturefeed_templates_delete_form_submit($form, &$form_state) {
 
   try {
-    DrupalCultureFeed::deleteTemplate($form_state['values']['template_id']);
+    DrupalCultureFeed_Mailing::deleteTemplate($form_state['values']['template_id']);
     if (isset($_GET['destination'])) {
       $form_state['redirect'] = $_GET['destination'];
     }
@@ -1329,7 +1329,7 @@ function culturefeed_templates_form_submit($form, &$form_state) {
   // Check if mailing is new or update existing.
   if ($form_state['values']['id']) {
     try {
-      $template = DrupalCultureFeed::getTemplate($form_state['values']['id']);
+      $template = DrupalCultureFeed_Mailing::getTemplate($form_state['values']['id']);
       if (!empty($form_state['values']['channel'])) {
         $template->consumerKey = $form_state['values']['channel'];
       }
@@ -1450,7 +1450,7 @@ function culturefeed_templates_form_submit($form, &$form_state) {
           $template->startMinute = $form_state['values']['monthly_minutes'];
           break;
       }
-      DrupalCultureFeed::createTemplate($template);
+      DrupalCultureFeed_Mailing::createTemplate($template);
       drupal_set_message(t('New template "!template_name" created', array('!template_name' => $template->name)));
     }
     catch (Exception $e) {
