@@ -18,7 +18,6 @@
 #  includes/advantages.inc: n/a
 #  includes/promotions.inc: n/a
 #  includes/user_register.inc: n/a
-#  theme/culturefeed-uitpas-profile-section-register.tpl.php: n/a
 #  culturefeed_uitpas.variable.inc: n/a
 #  culturefeed_uitpas.info: n/a
 #  ctools/plugins/views_wizard/culturefeed_uitpas_views_wizard_promotions.inc: n/a
@@ -42,8 +41,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2016-02-08 16:04+0100\n"
-"PO-Revision-Date: 2016-02-08 16:14+0100\n"
+"POT-Creation-Date: 2016-02-08 16:23+0100\n"
+"PO-Revision-Date: 2016-02-08 16:25+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -154,7 +153,7 @@ msgstr "Toon op mijn profielpagina wanneer ik ergens een punt gespaard heb"
 msgid "Confirm"
 msgstr "Bevestigen"
 
-#: culturefeed_uitpas.helpers.inc:140
+#: culturefeed_uitpas.helpers.inc:143
 msgid "Other regions"
 msgstr "Andere regio's"
 
@@ -192,41 +191,55 @@ msgstr "Puntensaldo"
 msgid "Advantages"
 msgstr "Voordelen"
 
-#: culturefeed_uitpas.theme.inc:94 includes/advantages.inc:90
+#: culturefeed_uitpas.theme.inc:99 includes/advantages.inc:90
 #: includes/promotions.inc:121
 msgid "Promotions"
 msgstr "Voordelen"
 
-#: culturefeed_uitpas.theme.inc:236
+#: culturefeed_uitpas.theme.inc:241
 msgid "Opportunities tariff with @system: !tariff"
 msgstr "Kansentarief voor @system: !tariff"
 
-#: culturefeed_uitpas.theme.inc:240
+#: culturefeed_uitpas.theme.inc:245
 msgid "Opportunities tariff for pass holders from another region: !tariff"
 msgstr ""
 "Kansentarief voor UiTPAS gebruikers uit een andere stad of gemeente: !tariff"
 
-#: culturefeed_uitpas.theme.inc:294 includes/user_register.inc:59
+#: culturefeed_uitpas.theme.inc:299;312 includes/user_register.inc:59
 msgid ""
 "Register here, so you can follow your UiTPAS advantages and points balance "
 "online."
 msgstr ""
 "Activeer je UiTPAS en raadpleeg je puntensaldo en persoonlijke voordelen."
 
-#: culturefeed_uitpas.theme.inc:295 culturefeed_uitpas.module:99
+#: culturefeed_uitpas.theme.inc:300;313 culturefeed_uitpas.module:99
 #: includes/user_register.inc:58
-#: theme/culturefeed-uitpas-profile-section-register.tpl.php:24
 msgid "Register your UiTPAS"
 msgstr "Activeer je UiTPAS"
 
-#: culturefeed_uitpas.theme.inc:296
+#: culturefeed_uitpas.theme.inc:301;317
 msgid "No UiTPAS yet?"
 msgstr "Heb je nog geen UiTPAS?"
 
-#: culturefeed_uitpas.theme.inc:297
-#: theme/culturefeed-uitpas-profile-section-register.tpl.php:36
+#: culturefeed_uitpas.theme.inc:302;319
 msgid "Get an UiTPAS"
 msgstr "Haal je UiTPAS"
+
+#: culturefeed_uitpas.theme.inc:311
+msgid "You did not register your UiTPAS yet."
+msgstr "Je hebt je UiTPAS nog niet geactiveerd."
+
+#: culturefeed_uitpas.theme.inc:318
+msgid ""
+"Holders of an UiTPAS can earn points by participating in leisure activities "
+"and exchange them for"
+msgstr ""
+"UiTPAS-houders sparen punten door deel te nemen aan vrijetijdsactiviteiten "
+"en kunnen deze inwisselen voor"
+
+#: culturefeed_uitpas.theme.inc:318
+msgid "nice benefits"
+msgstr "leuke voordelen"
 
 #: culturefeed_uitpas.variable.inc:15
 msgid "Culturefeed uitpas: profile notifications: intro"
@@ -306,7 +319,7 @@ msgid "Filter by"
 msgstr "Filter op"
 
 #: includes/advantages.inc:149 includes/profile_advantages.inc:144
-#: includes/profile_promotions.inc:152 includes/promotions.inc:185
+#: includes/profile_promotions.inc:160 includes/promotions.inc:185
 msgid "All card systems"
 msgstr "Alle kaartsystemen"
 
@@ -361,7 +374,7 @@ msgstr "Mijn UiTPAS welkomstvoordelen instellingen"
 msgid "My Promotions"
 msgstr "Mijn voordelen"
 
-#: includes/profile_advantages.inc:142 includes/profile_promotions.inc:150
+#: includes/profile_advantages.inc:142 includes/profile_promotions.inc:158
 msgid "Filter"
 msgstr "Filter"
 
@@ -663,38 +676,6 @@ msgstr "Voorwaarden"
 #: theme/culturefeed-uitpas-promotion.tpl.php:55
 msgid "How to exchange"
 msgstr "Hoe omruilen"
-
-#: theme/culturefeed-uitpas-profile-section-register.tpl.php:12
-msgid "You did not register your UiTPAS yet."
-msgstr "Je hebt je UiTPAS nog niet geactiveerd."
-
-#: theme/culturefeed-uitpas-profile-section-register.tpl.php:14
-msgid "Register and..."
-msgstr "Activeer je pas en ..."
-
-#: theme/culturefeed-uitpas-profile-section-register.tpl.php:17
-msgid "consult your benefits"
-msgstr "raadpleeg je voordelen"
-
-#: theme/culturefeed-uitpas-profile-section-register.tpl.php:18
-msgid "check points balance"
-msgstr "check je puntensaldo"
-
-#: theme/culturefeed-uitpas-profile-section-register.tpl.php:19
-msgid "access your information"
-msgstr "bekijk al je gegevens"
-
-#: theme/culturefeed-uitpas-profile-section-register.tpl.php:31
-msgid ""
-"Holders of an UiTPAS can earn points by participating in leisure activities "
-"and exchange them for "
-msgstr ""
-"UiTPAS-houders sparen punten door deel te nemen aan vrijetijdsactiviteiten "
-"en kunnen deze inwisselen voor"
-
-#: theme/culturefeed-uitpas-profile-section-register.tpl.php:31
-msgid "nice benefits"
-msgstr "leuke voordelen"
 
 #: theme/culturefeed-uitpas-promotion.tpl.php:35 theme/theme.inc:862
 msgid "Out of stock"
