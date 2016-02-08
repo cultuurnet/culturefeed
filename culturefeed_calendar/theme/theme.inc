@@ -131,12 +131,10 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
     'calendar-button',
     'calendar-button-' . $variables['button']['location'],
   );
-  $variables['finished'] = FALSE;
+  $variables['finished'] = $variables['status'] == CULTUREFEED_CALENDAR_EVENT_FINISHED;
+  $variables['started'] = $variables['status'] == CULTUREFEED_CALENDAR_EVENT_STARTED;
 
-  if ($variables['closed']) {
-    $variables['finished'] = TRUE;
-  }
-  elseif ($variables['button']['action'] == 'view') {
+  if (!$variables['finished'] && $variables['button']['action'] == 'view') {
 
     $variables['classes_array'][] = 'btn-view-calendar';
 

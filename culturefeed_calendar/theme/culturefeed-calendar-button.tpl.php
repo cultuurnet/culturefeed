@@ -7,7 +7,7 @@
 ?>
 
 <div class="<?php print $classes; ?>" data-eventid="<?php print $event_id; ?>">
-  <?php if (!$finished && $started) : ?>
+  <?php if ($started) : ?>
     <?php print t('This event is already started'); ?>
   <?php elseif($finished) : ?>
     <?php print t('This event is already finished'); ?>
