@@ -534,19 +534,17 @@ function culturefeed_calendar_get_event_status($item) {
 
           if ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Period) {
 
-            // Is event started?
-            if ($objDateTime->getTimestamp() > DateTime::createFromFormat('Y-m-d', $calendar_item->getDateFrom())->getTimestamp()) {
-
-              // Check if event is still busy or not.
-              if ($objDateTime->getTimestamp() <= DateTime::createFromFormat('Y-m-d', $calendar_item->getDateTo())->getTimestamp()) {
-                $event_status = CULTUREFEED_CALENDAR_EVENT_STARTED;
-              }
-
+            $dateToStart = DateTime::createFromFormat('Y-m-d H:i:s', $calendar_item->getDateTo() . ' 00:00:00');
+            $dateToEnd = DateTime::createFromFormat('Y-m-d H:i:s', $calendar_item->getDateTo() . ' 23:59:59');
+            // End date is in the future, so plannable
+            if ($objDateTime->getTimestamp() < $dateToStart->getTimestamp()) {
+              $event_status = CULTUREFEED_CALENDAR_EVENT_PLANNABLE;
             }
-            else {
-              // We had a plannable match, return the result.
-              return CULTUREFEED_CALENDAR_EVENT_PLANNABLE;
+            // End date is busy so event started.
+            elseif ($objDateTime->getTimestamp() >= $dateToStart->getTimestamp() && $objDateTime->getTimestamp() <= $dateToEnd->getTimestamp()) {
+              $event_status = CULTUREFEED_CALENDAR_EVENT_STARTED;
             }
+
           }
           elseif ($calendar_item instanceof CultureFeed_Cdb_Data_Calendar_Timestamp) {
 
