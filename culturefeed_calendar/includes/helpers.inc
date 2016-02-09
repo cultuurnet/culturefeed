@@ -550,3 +550,46 @@ function culturefeed_calendar_activity_is_finished($activity) {
   return FALSE;
 
 }
+
+/**
+ * Helper function to update a calendar event.
+ * @param $activity
+ * @param $date
+ */
+function culturefeed_calendar_update_calendar_event($activity, $date) {
+  // Not numeric id = activity on service.
+  $success = TRUE;
+  if (!is_numeric($activity->id) != 0) {
+    try {
+
+      DrupalCultureFeed::deleteActivity($activity->id);
+
+      $activity->value = '';
+      $activity->calendarDate = gmdate('c', strtotime($date));
+      $new_activity = $activity;
+      $new_activity->type = CultureFeed_Activity::TYPE_IK_GA;
+
+      DrupalCultureFeed::createActivity($new_activity);
+
+      // Add a timeout of 2 second, this gives index the time to place the new activity into the search index.
+      // sleep(2);
+
+    }
+    catch (Exception $e) {
+      $success = FALSE;
+      watchdog_exception('culturefeed_calendar', $e);
+    }
+  }
+  // No uuid = anonymous user. Update in cookie.
+  else {
+    $success = culturefeed_calendar_update_calendar_event_cookie($activity, $date);
+  }
+
+  if ($success) {
+    drupal_set_message(t('Your calendar event was updated.'));
+  }
+  else {
+    drupal_set_message(t('An error occured while saving your calendar'), 'error');
+  }
+}
+
