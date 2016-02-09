@@ -538,7 +538,7 @@ function culturefeed_calendar_get_event_status($item) {
             $dateToEnd = DateTime::createFromFormat('Y-m-d H:i:s', $calendar_item->getDateTo() . ' 23:59:59');
             // End date is in the future, so plannable
             if ($objDateTime->getTimestamp() < $dateToStart->getTimestamp()) {
-              $event_status = CULTUREFEED_CALENDAR_EVENT_PLANNABLE;
+              return CULTUREFEED_CALENDAR_EVENT_PLANNABLE;
             }
             // End date is busy so event started.
             elseif ($objDateTime->getTimestamp() >= $dateToStart->getTimestamp() && $objDateTime->getTimestamp() <= $dateToEnd->getTimestamp()) {

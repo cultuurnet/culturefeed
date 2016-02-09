@@ -66,7 +66,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
       //Remove activities that are already started.
       foreach ($activities_by_type[CultureFeed_Activity::TYPE_LIKE] as $key => $activity_liked) {
         $event = culturefeed_agenda_event_load($activity_liked->nodeId);
-        if (culturefeed_calendar_event_is_started($event)) {
+        if (culturefeed_calendar_get_event_status($event) !== CULTUREFEED_CALENDAR_EVENT_PLANNABLE) {
           unset($activities_by_type[CultureFeed_Activity::TYPE_LIKE][$key]);
         }
       }
