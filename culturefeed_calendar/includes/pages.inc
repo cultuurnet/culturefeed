@@ -177,7 +177,16 @@ function culturefeed_calendar_edit_calendar_event($activity, $request_type = 'aj
     }
 
     culturefeed_calendar_update_calendar_event($activity, $date);
-    drupal_goto(url(culturefeed_calendar_get_url()));
+
+    if ($request_type == 'ajax') {
+      $commands = array();
+      $commands[] = culturefeed_ajax_command_goto(url(culturefeed_calendar_get_url()));
+      ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+      exit;
+    }
+    else {
+      drupal_goto(url(culturefeed_calendar_get_url()));
+    }
   }
 }
 
