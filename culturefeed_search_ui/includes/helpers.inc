@@ -728,55 +728,79 @@ function culturefeed_get_search_result() {
 /**
  * Return the default options for the filter form.
  */
-function culturefeed_search_ui_default_filter_options() {
+function culturefeed_search_ui_default_filter_options($filter_form_number) {
 
-  return array(
-    array(
-      'exposed' => TRUE,
-      'title' => 'Free only',
-      'query-string' => 'free-only',
-      'api-filter-query' => 'price:0'
+  $defaults = array(
+    1 => array(
+      array(
+        'exposed' => TRUE,
+        'title' => 'Free only',
+        'query-string' => 'free-only',
+        'api-filter-query' => 'price:0'
+      ),
+      array(
+        'exposed' => TRUE,
+        'title' => 'No courses and workshops',
+        'query-string' => 'no-courses-workshops',
+        'api-filter-query' => '!category_id:0.3.1.0.0'
+      ),
+      array(
+        'exposed' => TRUE,
+        'title' => 'For toddlers',
+        'query-string' => 'voor-kinderen',
+        'api-filter-query' => '(agefrom:[* TO 12] OR keywords:"ook voor kinderen")'
+      ),
+      array(
+        'exposed' => TRUE,
+        'title' => 'For UiTPAS and Paspartoe',
+        'query-string' => 'uitpas',
+        'api-filter-query' => '(keywords:uitpas* OR Paspartoe)'
+      ),
     ),
-    array(
-      'exposed' => TRUE,
-      'title' => 'No courses and workshops',
-      'query-string' => 'no-courses-workshops',
-      'api-filter-query' => '!category_id:0.3.1.0.0'
+    2 => array(
+      array(
+        'exposed' => TRUE,
+        'title' => 'Hide long-running events',
+        'query-string' => 'no-periods',
+        'api-filter-query' => 'periods:false'
+      ),
+      array(
+        'exposed' => TRUE,
+        'title' => 'Hide permanent events',
+        'query-string' => 'no-permanent',
+        'api-filter-query' => 'permanent:false'
+      ),
     ),
-    array(
-      'exposed' => TRUE,
-      'title' => 'For toddlers',
-      'query-string' => 'voor-kinderen',
-      'api-filter-query' => '(agefrom:[* TO 12] OR keywords:"ook voor kinderen")'
-    ),
-    array(
-      'exposed' => TRUE,
-      'title' => 'For UiTPAS and Paspartoe',
-      'query-string' => 'uitpas',
-      'api-filter-query' => '(keywords:uitpas* OR Paspartoe)'
+    3 => array(
+      array(
+        'exposed' => TRUE,
+        'title' => 'Free only',
+        'query-string' => 'free-only',
+        'api-filter-query' => 'price:0'
+      ),
+      array(
+        'exposed' => TRUE,
+        'title' => 'No courses and workshops',
+        'query-string' => 'no-courses-workshops',
+        'api-filter-query' => '!category_id:0.3.1.0.0'
+      ),
+      array(
+        'exposed' => TRUE,
+        'title' => 'For toddlers',
+        'query-string' => 'voor-kinderen',
+        'api-filter-query' => '(agefrom:[* TO 12] OR keywords:"ook voor kinderen")'
+      ),
+      array(
+        'exposed' => TRUE,
+        'title' => 'For UiTPAS and Paspartoe',
+        'query-string' => 'uitpas',
+        'api-filter-query' => '(keywords:uitpas* OR Paspartoe)'
+      ),
     ),
   );
-}
 
-/**
- * Return the default options for the filter form 2.
- */
-function culturefeed_search_ui_default_filter_options_2() {
+  return isset($defaults[$filter_form_number]) ? $defaults[$filter_form_number] : array();
 
-  return array(
-    array(
-      'exposed' => TRUE,
-      'title' => 'Hide long-running events',
-      'query-string' => 'no-periods',
-      'api-filter-query' => 'periods:false'
-    ),
-    array(
-      'exposed' => TRUE,
-      'title' => 'Hide permanent events',
-      'query-string' => 'no-permanent',
-      'api-filter-query' => 'permanent:false'
-    ),
-  );
 }
 
 /**

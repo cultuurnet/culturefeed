@@ -743,11 +743,11 @@ function culturefeed_search_ui_search_parent_region_suggestion_block() {
 /**
  * Show the filter form for the search ui.
  */
-function culturefeed_search_ui_block_filter_block($filter_options, $display_type, $form_id = '') {
+function culturefeed_search_ui_block_filter_block($filter_options, $display_type, $filter_form_number) {
 
   if ($display_type == 'checkboxes') {
     // Show filters as checkboxes with submit button.
-    return drupal_get_form('culturefeed_search_ui_block_filter_form' . $form_id, $filter_options);
+    return drupal_get_form('culturefeed_search_ui_block_filter_form_' . $filter_form_number, $filter_options);
   }
   elseif ($display_type == 'links') {
     // Show filters as links.
@@ -764,81 +764,6 @@ function culturefeed_search_ui_block_filter_block($filter_options, $display_type
      );
   }
 
-}
-
-/**
- * Form to filter search queries by webmaster driven settings.
- * @param type $form
- * @param type $form_state
- * @param type $filter_options
- * @return string
- */
-function culturefeed_search_ui_block_filter_form($form, $form_state, $filter_options) {
-
-  $form = array();
-  $form['filter-options'] = array();
-
-  foreach ($filter_options as $option) {
-    $form['filter-options'][$option['query-string']] = array(
-      '#type' => 'checkbox',
-      '#title' => t($option['title']),
-      '#default_value' => !empty($_GET[$option['query-string']])
-    );
-  }
-
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Filter')
-  );
-
-  return $form;
-}
-
-/**
- * Form alias with unique form_id for culturefeed_search_ui_block_filter_form().
- * @see culturefeed_search_ui_block_filter_form().
- */
-function culturefeed_search_ui_block_filter_form2($form, $form_state, $filter_options) {
-  return culturefeed_search_ui_block_filter_form($form, $form_state, $filter_options);
-}
-
-function culturefeed_search_ui_block_filter_form3($form, $form_state, $filter_options) {
-  return culturefeed_search_ui_block_filter_form($form, $form_state, $filter_options);
-}
-
-/**
- * Submit the filter form.
- */
-function culturefeed_search_ui_block_filter_form_submit($form, &$form_state) {
-
-  $query = drupal_get_query_parameters(NULL, array('q', 'page'));
-
-  foreach ($form['filter-options'] as $key => $option) {
-    unset($query[$key]);
-    if (!empty($form_state['values'][$key])) {
-      $query[$key] = TRUE;
-    }
-  }
-
-  $form_state['redirect'] = array(
-    $_GET['q'],
-    array('query' => $query)
-  );
-}
-/**
- * Alias for the submit handler of culturefeed_search_ui_block_filter_form().
- * @see culturefeed_search_ui_block_filter_form_submit().
- */
-function culturefeed_search_ui_block_filter_form2_submit($form, &$form_state) {
-  culturefeed_search_ui_block_filter_form_submit($form, $form_state);
-}
-
-/**
- * Alias for the submit handler of culturefeed_search_ui_block_filter_form().
- * @see culturefeed_search_ui_block_filter_form_submit().
- */
-function culturefeed_search_ui_block_filter_form3_submit($form, &$form_state) {
-  culturefeed_search_ui_block_filter_form_submit($form, $form_state);
 }
 
 /**

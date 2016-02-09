@@ -47,11 +47,22 @@ function culturefeed_saved_searches_get_cta_query() {
     $option_active = FALSE;
 
     // Check if a custom filter option is active.
-    $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
-    foreach ($filter_options as $option) {
-      if (isset($_GET[$option['query-string']])) {
-        $option_active = TRUE;
+    for ($i = 1; $i <= CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS; $i++) {
+
+      if ($i == 1) {
+        $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options($i));
       }
+      else {
+        $filter_options = variable_get('culturefeed_search_filter_options_' . $i, culturefeed_search_ui_default_filter_options($i));
+      }
+
+      foreach ($filter_options as $option) {
+        if (isset($_GET[$option['query-string']])) {
+          $option_active = TRUE;
+          break 2;
+        }
+      }
+
     }
 
     // Check if we are searching.
