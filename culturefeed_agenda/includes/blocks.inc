@@ -99,7 +99,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
   $form = array();
 
   // Always submit to front, so that searches on a 404 would work.
-  // $form['#action'] = url('<front>');
+  $form['#action'] = url('<front>');
 
   // Category search.
   if (isset($active_fields['types'])) {
