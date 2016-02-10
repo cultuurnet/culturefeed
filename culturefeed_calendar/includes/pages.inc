@@ -198,11 +198,12 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
     '#markup' => $possible_dates,
   );*/
 
+  // periode of permanent
   if (($params['type'] == 'period') || ($params['type'] == 'permanent')) {
-    // periode of permanent
+
     $help = "";
-    if($params['type'] == 'period')
-    {
+    
+    if ($params['type'] == 'period') {
       // Don't add if date is in the past.
       $timestamp = strtotime($params['date_from']);
       if ($timestamp < $_SERVER['REQUEST_TIME']) {
@@ -213,6 +214,9 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       }
 
       $help = t('Choose a date between ') . " " . format_date(strtotime($start_date), 'custom', 'd/m/Y') . " ". t('and') . " " . format_date(strtotime($params['date_to']), 'custom', 'd/m/Y') . ".";
+    }
+    elseif ($params['type'] == 'permanent') {
+      $start_date = format_date($_SERVER['REQUEST_TIME'], 'custom', 'Y-m-d');
     }
 
     $form['date'] = array(
