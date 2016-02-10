@@ -364,12 +364,11 @@ function culturefeed_calendar_form_validate(&$form, &$form_state) {
   }
 
   if ($form_state['params']['type'] == 'period' && !empty($form_state['values']['date'])) {
-
     $date = strtotime($form_state['values']['date']);
     $date_from = strtotime($form_state['params']['date_from']);
     $date_to = strtotime($form_state['params']['date_to']);
 
-    if ($date <= $_SERVER['REQUEST_TIME']) {
+    if ($date < strtotime(format_date($_SERVER['REQUEST_TIME'], 'custom', 'Y-m-d'))) {
       form_set_error('date', t('You selected a date in the past. Please select a date in the future.'));
       $form_state['params']['validation_error'] = TRUE;
     }
