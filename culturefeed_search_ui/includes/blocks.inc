@@ -41,6 +41,11 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
     '#value' => t('Search'),
   );
 
+  $form['searching'] = array(
+    '#type' => 'hidden',
+    '#value' => TRUE,
+  );
+
   $form_state['searchable_types'] = $searchable_types;
 
   global $user;
