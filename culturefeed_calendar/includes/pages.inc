@@ -630,7 +630,7 @@ function _culturefeed_calendar_get_event_params($event) {
     $dates = array();
     while ($calendar->valid()) {
       $endtime = $calendar->current()->getEndTime();
-      if ($endtime == NULL) {
+      if ($endtime == NULL || $endtime == "00:00:00") {
         $endtime = "23:59:59";
       }
       if (DateTime::createFromFormat('Y-m-d H:i:s', $calendar->current()->getDate() . " " . $endtime)->getTimestamp() > $_SERVER['REQUEST_TIME']) {
