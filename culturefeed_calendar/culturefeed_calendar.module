@@ -6,6 +6,10 @@
 
 require_once 'includes/helpers.inc';
 
+define('CULTUREFEED_CALENDAR_EVENT_STARTED', 'started');
+define('CULTUREFEED_CALENDAR_EVENT_FINISHED', 'finished');
+define('CULTUREFEED_CALENDAR_EVENT_PLANNABLE', 'plannable');
+
 /**
  * Implements hook_init().
  */
@@ -102,6 +106,11 @@ function culturefeed_calendar_theme() {
     'path' => $path,
     'file' => 'theme.inc',
     'template' => 'culturefeed-calendar-button',
+    'variables' => array(
+      'button' => array(),
+      'authenticated' => FALSE,
+      'status' => CULTUREFEED_CALENDAR_EVENT_PLANNABLE,
+    ),
   );
   $items['culturefeed_calendar_profile_box_item'] = array(
     'variables' => array(),
