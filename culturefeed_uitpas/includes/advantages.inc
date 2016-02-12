@@ -78,14 +78,38 @@ function culturefeed_uitpas_advantages_settings_get(&$form) {
  */
 function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
 
-  $card_systems = culturefeed_uitpas_get_card_systems();
-  $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : (isset($_GET['filter']) ? $_GET['filter'] : NULL);
-  $advantages = culturefeed_uitpas_advantages_get($filter);
-
-  $options = array();
-  foreach ($card_systems as $system) {
-    $options[$system->id] = $system->name;
+  // If advantages aren't shown above promotions, fall back to links to toggle between both
+  if (variable_get('culturefeed_uitpas_show_advantages_above_promotions') == FALSE) {
+    $form['advantages_link'] = array(
+      '#attributes' => array(
+        'id' => 'promotions_link'
+      ),
+      '#links' => array(
+        'promotions' => array(
+          'href' => 'promotions',
+          'title' => t('Promotions'),
+        ),
+        'advantages' => array(
+          'href' => 'advantages',
+          'title' => t('Welcome Advantages'),
+        ),
+      ),
+      '#theme' => 'links',
+    );
   }
+
+  $card_systems = culturefeed_uitpas_get_card_systems();
+  $multiple_card_systems = culturefeed_uitpas_multiple_cardsystems();
+
+  if ($multiple_card_systems) {
+    $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : (isset($_GET['filter']) ? $_GET['filter'] : NULL);
+  }
+  // If only one cardsystem is enabled, use default filter option
+  else {
+    $filter = $card_systems[0]->id;
+  }
+
+  $advantages = culturefeed_uitpas_advantages_get($filter);
 
   $id = drupal_html_id('advantages-filter-sort');
 
@@ -111,36 +135,44 @@ function culturefeed_uitpas_advantages_filter_sort($form, $form_state) {
     $form['advantages']['intro']['#markup'] = '<div class="intro intro-advantages">' . $advantages_intro . '</div>';
   }
 
-  $form['advantages']['filter'] = array(
-    '#type' => 'radios',
-    '#title' => t('Filter by'),
-    '#default_value' => isset($filter) ? $filter : 0,
-    '#empty_option' => t('All card systems'),
-    '#options' => $options,
-    '#theme' => 'culturefeed_uitpas_filter_labels',
-    '#ajax' => array(
-      'event' => 'change',
-      'wrapper' => $id,
-      'callback' => 'culturefeed_uitpas_advantages_ajax_callback',
-    ),
-  );
+  if ($multiple_card_systems) {
+  
+    $options = array();
+    foreach ($card_systems as $system) {
+      $options[$system->id] = $system->name;
+    }
 
-  if(isset($filter)) {
-    $filter_reset_link = "<hr>" . l(t('Show all advantages'), 'advantages', array('attributes' => array('class' => array('reset-filter'))));
+    $form['advantages']['filter'] = array(
+      '#type' => 'radios',
+      '#title' => t('Filter by'),
+      '#default_value' => isset($filter) ? $filter : 0,
+      '#empty_option' => t('All card systems'),
+      '#options' => $options,
+      '#theme' => 'culturefeed_uitpas_filter_labels',
+      '#ajax' => array(
+        'event' => 'change',
+        'wrapper' => $id,
+        'callback' => 'culturefeed_uitpas_advantages_ajax_callback',
+      ),
+    );
+  
+    if (isset($filter)) {
+      $filter_reset_link = '<hr>' . l(t('Show all advantages'), 'advantages', array('attributes' => array('class' => array('reset-filter'))));
+    }
+    else {
+      $filter_reset_link = '';
+    }
+  
+    $form['advantages']['filter']['#prefix'] = '<div class="form-group">';
+    $form['advantages']['filter']['#suffix'] = $filter_reset_link . '</div>';
   }
-  else {
-    $filter_reset_link = '';
-  }
-
-  $form['advantages']['filter']['#prefix'] = '<div class="form-group">';
-  $form['advantages']['filter']['#suffix'] = $filter_reset_link . '</div>';
 
   $total = $advantages['#advantages_total'];
   $title = t('Found %count advantages', array('%count' => $total));  
   $filter_reset_link = l('&times;', 'advantages', array('attributes' => array('class' => array('reset-filter-inline')), 'html' => TRUE));  
   $all_promotions_link = l(t('Show all promotions'), 'promotions', array('attributes' => array('class' => array('all-promotions-link'))));
 
-  if ($filter) {
+  if ($filter && $multiple_card_systems) {
     $form['advantages']['title']['#markup'] = '<h2 class="results-title">' . $title . ' <small>' . $options[$filter] . ' ' . $filter_reset_link . '</small></h2>';
   }
   else {
