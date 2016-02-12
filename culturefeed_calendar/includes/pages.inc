@@ -413,7 +413,7 @@ function culturefeed_calendar_form_validate(&$form, &$form_state) {
 
       if (!$day_allowed) {
         $form_state['params']['validation_error'] = TRUE;
-        form_set_error('date', t('The event is closed on ') . t($day) . '. Please chose another day.');
+        form_set_error('date', t('The event is closed on ') . t($day) . '. ' . t('Please choose another day') . '.');
       }
     }
   }
