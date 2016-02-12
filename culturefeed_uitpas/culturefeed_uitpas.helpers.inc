@@ -34,20 +34,38 @@ function culturefeed_uitpas_cardsystem_name(CultureFeed_Uitpas_CardSystem $cards
 function culturefeed_uitpas_get_card_systems() {
 
   $cf = DrupalCultureFeed::getConsumerInstance();
+  $default_card_system = variable_get('culturefeed_uitpas_cardsystem_id');
   $active_card_systems = $cf->uitpas()->getCardSystems('permanent');
   $selected_card_systems = array_filter(array_values(variable_get('culturefeed_uitpas_cardsystem_ids', array())));
   $card_systems = array();
 
   foreach ($active_card_systems as $card_system) {
-    if (
-      count($selected_card_systems) && in_array($card_system->id, $selected_card_systems) ||
-      !count($selected_card_systems)
-    ) {
+    if (count($selected_card_systems) && in_array($card_system->id, $selected_card_systems)) {
+      $card_systems[] = $card_system;
+    }
+    // if no card system is selected, we use default card system
+    else if ($card_system->id == $default_card_system) {    
       $card_systems[] = $card_system;
     }
   }
 
   return $card_systems;
+
+}
+
+/**
+ * Check if site supports multiple cardsystems.
+ *
+ * @return bool
+ *   Boolean.
+ */
+function culturefeed_uitpas_multiple_cardsystems() {
+
+  $card_systems = culturefeed_uitpas_get_card_systems();
+
+  if (count($card_systems) > 1) {
+    return TRUE;
+  }
 
 }
 
