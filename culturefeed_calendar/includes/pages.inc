@@ -219,11 +219,12 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
     '#markup' => $possible_dates,
   );*/
 
+  // periode of permanent
   if (($params['type'] == 'period') || ($params['type'] == 'permanent')) {
-    // periode of permanent
+
     $help = "";
-    if($params['type'] == 'period')
-    {
+    
+    if ($params['type'] == 'period') {
       // Don't add if date is in the past.
       $timestamp = strtotime($params['date_from']);
       if ($timestamp < $_SERVER['REQUEST_TIME']) {
@@ -235,6 +236,9 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
 
       $help = t('Choose a date between ') . " " . format_date(strtotime($start_date), 'custom', 'd/m/Y') . " ". t('and') . " " . format_date(strtotime($params['date_to']), 'custom', 'd/m/Y') . ".";
     }
+    elseif ($params['type'] == 'permanent') {
+      $start_date = format_date($_SERVER['REQUEST_TIME'], 'custom', 'Y-m-d');
+    }
 
     $form['date'] = array(
       '#title' => $help,
@@ -244,7 +248,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
         'minDate' => format_date(strtotime($start_date), 'custom', 'd/m/Y'),
         'maxDate' => format_date(strtotime($params['date_to']), 'custom', 'd/m/Y'),
       ),
-      '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d H:i') : '',
+      '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d H:i') : $start_date,
     );
   }
   // timestamps.
@@ -388,12 +392,11 @@ function culturefeed_calendar_form_validate(&$form, &$form_state) {
   }
 
   if ($form_state['params']['type'] == 'period' && !empty($form_state['values']['date'])) {
-
     $date = strtotime($form_state['values']['date']);
     $date_from = strtotime($form_state['params']['date_from']);
     $date_to = strtotime($form_state['params']['date_to']);
 
-    if ($date <= $_SERVER['REQUEST_TIME']) {
+    if ($date < strtotime(format_date($_SERVER['REQUEST_TIME'], 'custom', 'Y-m-d'))) {
       form_set_error('date', t('You selected a date in the past. Please select a date in the future.'));
       $form_state['params']['validation_error'] = TRUE;
     }
@@ -410,7 +413,7 @@ function culturefeed_calendar_form_validate(&$form, &$form_state) {
 
       if (!$day_allowed) {
         $form_state['params']['validation_error'] = TRUE;
-        form_set_error('date', t('The event is closed on ') . t($day) . '. Please chose another day.');
+        form_set_error('date', t('The event is closed on ') . t($day) . '. ' . t('Please choose another day') . '.');
       }
     }
   }
@@ -630,7 +633,7 @@ function _culturefeed_calendar_get_event_params($event) {
     $dates = array();
     while ($calendar->valid()) {
       $endtime = $calendar->current()->getEndTime();
-      if ($endtime == NULL) {
+      if ($endtime == NULL || $endtime == "00:00:00") {
         $endtime = "23:59:59";
       }
       if (DateTime::createFromFormat('Y-m-d H:i:s', $calendar->current()->getDate() . " " . $endtime)->getTimestamp() > $_SERVER['REQUEST_TIME']) {
