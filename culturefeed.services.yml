@@ -4,8 +4,7 @@ services:
     arguments: ['culturefeed']
   culturefeed:
     class: CultureFeed
-    factory_service: culturefeed.factory
-    factory_method: createAuthenticated
+    factory: culturefeed.factory:createAuthenticated
   culturefeed.oauth_client:
     class: Drupal\culturefeed\OAuthClientFactory
     arguments: ['@config.factory']
@@ -20,36 +19,37 @@ services:
     arguments: ['@config.factory', '@current_user', '@culturefeed.user_map', '@entity.manager', '@entity.query', '@logger.channel.culturefeed']
   culturefeed.user_credentials:
     class: Drupal\culturefeed\UserCredentials
-    factory_service: culturefeed.user_credentials.factory
-    factory_method: get
+    factory: culturefeed.user_credentials.factory:get
   culturefeed.factory:
     class: Drupal\culturefeed\CultureFeedFactory
     arguments: ['@culturefeed.oauth_client', '@culturefeed.user_credentials', '@logger.channel.culturefeed']
   culturefeed.factory.authenticated:
     class: Drupal\culturefeed\CultureFeedFactory
-    factory_service: culturefeed.factory
-    factory_method: createAuthenticated
+    factory: culturefeed.factory:createAuthenticated
   culturefeed.authentication:
     class: Drupal\culturefeed\Authentication
-    arguments: ['@culturefeed.factory', '@url_generator', '@culturefeed.user_map', '@entity.manager', '@entity.query']
+    arguments: ['@culturefeed.factory', '@url_generator.non_bubbling', '@culturefeed.user_map', '@entity.manager', '@entity.query']
   culturefeed.user_factory:
     class: Drupal\culturefeed\UserFactory
     arguments: ['@culturefeed.factory.authenticated', '@current_user', '@culturefeed.user_map']
   culturefeed.current_user:
     class: CultureFeed_User
-    factory_service: culturefeed.user_factory
-    factory_method: get
+    factory: culturefeed.user_factory:get
   culturefeed.consumer_credentials.factory:
     class: Drupal\culturefeed\ConsumerCredentialsFactory
     arguments: ['@config.factory', '@logger.channel.culturefeed']
   culturefeed.consumer_credentials:
     class: CultuurNet\Auth\ConsumerCredentials
-    factory_service: culturefeed.consumer_credentials.factory
-    factory_method: get
+    factory: culturefeed.consumer_credentials.factory:get
   culturefeed.uitpas:
     class: CultureFeed_Uitpas
-    factory_service: culturefeed
-    factory_method: uitpas
+    factory_service: culturefeed:uitpas
+  culturefeed.token_credentials:
+    class: CultuurNet\Auth\TokenCredentials
+    factory: culturefeed.token_credentials.factory:get
+  culturefeed.token_credentials.factory:
+    class: Drupal\culturefeed\TokenCredentialsFactory
+    arguments: ['@culturefeed.user_credentials']
 
   access_check.culturefeed.current_user:
     class: Drupal\culturefeed\Access\UserAccess
