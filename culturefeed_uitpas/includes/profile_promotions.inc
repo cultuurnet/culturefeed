@@ -136,8 +136,11 @@ function culturefeed_uitpas_profile_promotions_filter_sort($form, $form_state) {
     '#theme' => 'links',
   );
 
+  // We can show promotions in other regions than owning card system.
+  $other_regions = TRUE;
+
   // Get the card systems for the passholder.
-  $options = culturefeed_uitpas_get_user_card_systems_as_options();
+  $options = culturefeed_uitpas_get_user_card_systems_as_options($other_regions);
 
   $id = drupal_html_id('profile-promotions-filter-sort');
   $form['profile_promotions']['#prefix'] = '<div class="filters filters-regions" id="' . $id . '">';
@@ -145,18 +148,20 @@ function culturefeed_uitpas_profile_promotions_filter_sort($form, $form_state) {
 
   $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : (isset($_GET['filter']) ? $_GET['filter'] : NULL);
 
-  $form['profile_promotions']['filter'] = array(
-    '#type' => 'radios',
-    '#title' => t('Filter'),
-    '#default_value' => $filter,
-    '#empty_option' => t('All card systems'),
-    '#options' => $options,
-    '#ajax' => array(
-      'event' => 'change',
-      'wrapper' => $id,
-      'callback' => 'culturefeed_uitpas_profile_promotions_ajax_callback',
-    ),
-  );
+  if (count($options) > 1) {
+    $form['profile_promotions']['filter'] = array(
+      '#type' => 'radios',
+      '#title' => t('Distributed by'),
+      '#default_value' => $filter,
+      '#empty_option' => t('All card systems'),
+      '#options' => $options,
+      '#ajax' => array(
+        'event' => 'change',
+        'wrapper' => $id,
+        'callback' => 'culturefeed_uitpas_profile_promotions_ajax_callback',
+      ),
+    );
+  }
 
   $results = culturefeed_uitpas_profile_promotions_get($filter);
   $form['profile_promotions']['result'] = array(

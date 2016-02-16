@@ -193,7 +193,7 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
     );
 
     if (isset($filter)) {
-      $filter_reset_link = '<hr>' . l(t('Show all promotions'), 'promotions', array('attributes' => array('class' => array('reset-filter'))));
+      $filter_reset_link = '<div class="filter-reset-link">' . l(t('Show all promotions'), 'promotions', array('attributes' => array('class' => array('reset-filter')))) . '</div>';
     }
     else {
       $filter_reset_link = '';
@@ -211,10 +211,10 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
   $title = t('Found %count promotions', array('%count' => $total));
   $filter_reset_link = l('&times;', 'promotions', array('attributes' => array('class' => array('reset-filter-inline')), 'html' => TRUE));
   if ($filter && $multiple_card_systems) {
-    $form['promotions']['title']['#markup'] = '<h2 class="results-title">' . $title . ' <small>' . $options[$filter] . ' ' . $filter_reset_link . '</small></h2>';
+    $form['promotions']['title']['#markup'] = '<h3 class="results-title">' . $title . ' <small>' . $options[$filter] . ' ' . $filter_reset_link . '</small></h3>';
   }
   else {
-    $form['promotions']['title']['#markup'] = '<h2 class="results-title">' . $title . '</h2>';
+    $form['promotions']['title']['#markup'] = '<h3 class="results-title">' . $title . '</h3>';
   }
 
   // Only show the advantages if the settings allow it.
