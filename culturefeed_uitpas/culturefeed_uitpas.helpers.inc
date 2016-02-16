@@ -130,14 +130,18 @@ function culturefeed_uitpas_get_user_card_systems_as_options($other_regions = TR
     $options[$card_system->id] = $card_system->name;
   }
 
-  // Get the remaining card systems.
-  $card_systems = culturefeed_uitpas_get_card_systems();
-  array_walk($card_systems, function (&$card_system) {
-    /* @var CultureFeed_Uitpas_Cardsystem $card_system */
-    $card_system = $card_system->id;
-  });
-  $card_systems = array_diff($card_systems, array_keys($options));
-  $options['other-card-systems+' . implode('+', $card_systems)] = t('Other regions');
+  $multiple_card_systems = culturefeed_uitpas_multiple_cardsystems();
+
+  // If multiple cards systems are enabled, get the remaining card systems.
+  if ($multiple_card_systems && $other_regions) {
+    $card_systems = culturefeed_uitpas_get_card_systems();
+    array_walk($card_systems, function (&$card_system) {
+      /* @var CultureFeed_Uitpas_Cardsystem $card_system */
+      $card_system = $card_system->id;
+    });
+    $card_systems = array_diff($card_systems, array_keys($options));
+    $options['other-card-systems+' . implode('+', $card_systems)] = t('Other regions');
+  }
 
   return $options;
 
