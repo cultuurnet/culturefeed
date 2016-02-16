@@ -118,7 +118,7 @@ function culturefeed_uitpas_get_uitpas_event($item) {
  * @return array
  *   The options.
  */
-function culturefeed_uitpas_get_user_card_systems_as_options() {
+function culturefeed_uitpas_get_user_card_systems_as_options($other_regions = TRUE) {
 
   // Get the card systems for the passholder.
   $options = array();
