@@ -140,18 +140,20 @@ function culturefeed_uitpas_profile_advantages_filter_sort($form, $form_state) {
 
   $filter = isset($form_state['values']['filter']) ? $form_state['values']['filter'] : (isset($_GET['filter']) ? $_GET['filter'] : NULL);
 
-  $form['profile_advantages']['filter'] = array(
-    '#type' => 'radios',
-    '#title' => t('Filter'),
-    '#default_value' => $filter,
-    '#empty_option' => t('All card systems'),
-    '#options' => $options,
-    '#ajax' => array(
-      'event' => 'change',
-      'wrapper' => $id,
-      'callback' => 'culturefeed_uitpas_profile_advantages_ajax_callback',
-    ),
-  );
+  if (count($options) > 1) {
+    $form['profile_advantages']['filter'] = array(
+      '#type' => 'radios',
+      '#title' => t('Distributed by'),
+      '#default_value' => $filter,
+      '#empty_option' => t('All card systems'),
+      '#options' => $options,
+      '#ajax' => array(
+        'event' => 'change',
+        'wrapper' => $id,
+        'callback' => 'culturefeed_uitpas_profile_advantages_ajax_callback',
+      ),
+    );
+  }
 
   $results = culturefeed_uitpas_profile_advantages_get($filter);
   $form['profile_advantages']['result'] = array(
