@@ -176,6 +176,11 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     }
   }
 
+  // Vliegtypes of this item (plain text and links).
+  $vliegtypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_UMV, $cdb_item);
+  if (!empty($vliegtypes['text'])) {
+    $variables['forkids'] = TRUE;
+  }
 
   if ($detail) {
 
