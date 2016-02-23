@@ -1382,7 +1382,7 @@ function culturefeed_templates_form_submit($form, &$form_state) {
           $template->startMinute = $form_state['values']['monthly_minutes'];
           break;
       }
-      $return = DrupalCultureFeed::updateTemplate($template);
+      $return = DrupalCultureFeed_Mailing::updateTemplate($template);
       drupal_set_message(t('Template "!template_name" updated', array('!template_name' => $template->name)));
     }
     catch (Exception $e) {
