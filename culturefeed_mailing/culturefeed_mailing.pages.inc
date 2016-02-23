@@ -693,7 +693,6 @@ function culturefeed_template_list_overview() {
     $options = array();
 
     foreach ($templates as $template) {
-      $consumer = DrupalCultureFeed::getServiceConsumer($template->consumerKey);
 
       $edit = array(
         '#type' => 'link',
@@ -716,7 +715,6 @@ function culturefeed_template_list_overview() {
         'data' => array(
           $template->name,
           $template->subject,
-          $consumer->name,
           drupal_render($item_list),
         ),
       );
@@ -731,7 +729,7 @@ function culturefeed_template_list_overview() {
 
   return array(
     '#theme' => 'table',
-    '#header' => array(t('Name'), t('Subject'), t('Channel'), t('Actions')),
+    '#header' => array(t('Name'), t('Subject'), t('Actions')),
     '#rows' => $rows,
     '#empty' => t('No mailinglists yet'),
   );
