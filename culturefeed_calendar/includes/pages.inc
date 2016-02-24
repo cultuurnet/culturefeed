@@ -395,14 +395,22 @@ function culturefeed_calendar_form_validate(&$form, &$form_state) {
     $date = strtotime($form_state['values']['date']);
     $date_from = strtotime($form_state['params']['date_from']);
     $date_to = strtotime($form_state['params']['date_to']);
+    $today = mktime(0, 0, 0);
 
-    if ($date < strtotime(format_date($_SERVER['REQUEST_TIME'], 'custom', 'Y-m-d'))) {
+    if ($date < $today) {
       form_set_error('date', t('You selected a date in the past. Please select a date in the future.'));
       $form_state['params']['validation_error'] = TRUE;
     }
     // Check if the chosen date is between the start and end date of the event.
     elseif (($date < $date_from) || ($date > $date_to)) {
-      form_set_error('date', t('Enter a date between ') . date('d/m/Y', $date_from) . t(' and ') . date('d/m/Y', $date_to) . '.');
+      if ($date_from < $today) {
+        $date_start = $_SERVER['REQUEST_TIME'];
+      }
+      else {
+        $date_start = $date_from;
+      }
+
+      form_set_error('date', t('Enter a date between ') . date('d/m/Y', $date_start) . t(' and ') . date('d/m/Y', $date_to) . '.');
       $form_state['params']['validation_error'] = TRUE;
     }
     // Check if the event is opened on the chosen day.
