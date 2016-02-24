@@ -78,105 +78,117 @@ function culturefeed_mailing_subscribe_form() {
 
   $form = array();
 
-  // Set defaults for the email field.
-  if ($account) {
-    $email = (!empty($_GET['email'])) ? $_GET['email'] : ($account ? $account->mbox : '');
-    $disabled = TRUE;
-    $description = '<span>' . t('Change your email address <a href="!url">here</a>.', array('!url' => url('culturefeed/account/edit'))) . '</span>';
+  $user_already_subscribed = _culturefeed_mailing_check_user_subscription($account->id, variable_get('culturefeed_mailing_list'));
+  if ($user_already_subscribed) {
+
+    $form['already_subscribed'] = array(
+      '#theme' => 'culturefeed_mailing_content_block_already_subscribed',
+      '#title' => NULL,
+      '#message' => NULL,
+    );
   }
   else {
-    $email = (!empty($_GET['email'])) ? $_GET['email'] : '';
-    $disabled = FALSE;
-    $description = '';
-  }
-  $form['mail'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Email address'),
-    '#required' => TRUE,
-    '#size' => 40,
-    '#maxlength' => 255,
-    '#default_value' => $email,
-    '#weight' => -10,
-    '#disabled' => $disabled,
-    '#description' => $description,
-  );
 
-  $show_zip = variable_get('culturefeed_mailing_block_show_zip', 0);
+    // Set defaults for the email field.
+    if ($account) {
+      $email = (!empty($_GET['email'])) ? $_GET['email'] : ($account ? $account->mbox : '');
+      $disabled = TRUE;
+      $description = '<span>' . t('Change your email address <a href="!url">here</a>.', array('!url' => url('culturefeed/account/edit'))) . '</span>';
+    }
+    else {
+      $email = (!empty($_GET['email'])) ? $_GET['email'] : '';
+      $disabled = FALSE;
+      $description = '';
+    }
+    $form['mail'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Email address'),
+      '#required' => TRUE,
+      '#size' => 40,
+      '#maxlength' => 255,
+      '#default_value' => $email,
+      '#weight' => -10,
+      '#disabled' => $disabled,
+      '#description' => $description,
+    );
 
-  $postal = '';
-  if (!empty($_GET['zip'])) {
-    $postal = $_GET['zip'];
-  }
-  elseif ($account) {
-    $postal = $account->zip;
-  }
+    $show_zip = variable_get('culturefeed_mailing_block_show_zip', 0);
 
-  $form['zip'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Zipcode'),
-    '#required' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
-    '#size' => 40,
-    '#maxlength' => 255,
-    '#default_value' => $postal,
-    '#weight' => -9,
-    '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED || (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip),
-    '#attributes' => array(
-      'class' => array('zip-field'),
-    ),
-  );
+    $postal = '';
+    if (!empty($_GET['zip'])) {
+      $postal = $_GET['zip'];
+    }
+    elseif ($account) {
+      $postal = $account->zip;
+    }
 
-  $form['firstname'] = array(
-    '#type' => 'textfield',
-    '#title' => t('First name'),
-    '#required' => TRUE,
-    '#size' => 40,
-    '#maxlength' => 255,
-    '#default_value' => ($account ? $account->givenName : ''),
-    '#weight' => -8,
-    '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
-  );
+    $form['zip'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Zipcode'),
+      '#required' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
+      '#size' => 40,
+      '#maxlength' => 255,
+      '#default_value' => $postal,
+      '#weight' => -9,
+      '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED || (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip),
+      '#attributes' => array(
+        'class' => array('zip-field'),
+      ),
+    );
 
-  $form['lastname'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Family name'),
-    '#required' => TRUE,
-    '#size' => 40,
-    '#maxlength' => 255,
-    '#default_value' => ($account && isset($account->familyName) ? $account->familyName : ''),
-    '#weight' => -7,
-    '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
-  );
-
-  if (variable_get('culturefeed_mailing_list_optional', '')) {
-    $form['optional_mailing'] = array(
-      '#type' => 'checkbox',
-      '#title' => variable_get('culturefeed_mailing_optional_description', ''),
+    $form['firstname'] = array(
+      '#type' => 'textfield',
+      '#title' => t('First name'),
+      '#required' => TRUE,
+      '#size' => 40,
+      '#maxlength' => 255,
+      '#default_value' => ($account ? $account->givenName : ''),
+      '#weight' => -8,
       '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
     );
-  }
 
-  $form['privacy'] = array(
-    '#type' => 'markup',
-    '#value' => '<div id="privacy">' . l(t('Privacy statement'), 'privacyverklaring') . '</div>',
-    '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
-  );
-
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Subscribe'),
-    '#weight' => 10,
-  );
-
-  if (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip && empty($postal)) {
-    // Attach jquery.cookie library.
-    $form['#attached']['library'][] = array('system', 'jquery.cookie');
-
-    // Attach scripts.
-    $form['#attached']['js'][] = array(
-      'data' => drupal_get_path('module', 'culturefeed_mailing') . '/js/culturefeed_mailing.js',
-      'type' => 'file',
-      'weight' => 0,
+    $form['lastname'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Family name'),
+      '#required' => TRUE,
+      '#size' => 40,
+      '#maxlength' => 255,
+      '#default_value' => ($account && isset($account->familyName) ? $account->familyName : ''),
+      '#weight' => -7,
+      '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
     );
+
+    if (variable_get('culturefeed_mailing_list_optional', '')) {
+      $form['optional_mailing'] = array(
+        '#type' => 'checkbox',
+        '#title' => variable_get('culturefeed_mailing_optional_description', ''),
+        '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
+      );
+    }
+
+    $form['privacy'] = array(
+      '#type' => 'markup',
+      '#value' => '<div id="privacy">' . l(t('Privacy statement'), 'privacyverklaring') . '</div>',
+      '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
+    );
+
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Subscribe'),
+      '#weight' => 10,
+    );
+
+    if (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip && empty($postal)) {
+      // Attach jquery.cookie library.
+      $form['#attached']['library'][] = array('system', 'jquery.cookie');
+
+      // Attach scripts.
+      $form['#attached']['js'][] = array(
+        'data' => drupal_get_path('module', 'culturefeed_mailing') . '/js/culturefeed_mailing.js',
+        'type' => 'file',
+        'weight' => 0,
+      );
+    }
   }
 
   return $form;
