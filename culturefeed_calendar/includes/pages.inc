@@ -748,9 +748,12 @@ function culturefeed_calendar_settings_form_submit($form, &$form_state) {
     }
     DrupalCultureFeed::updateUser($cf_user, array('calendarId'));
 
-    drupal_set_message(t('Changes succesfully saved.'));
-
-    $form_state['redirect'] = culturefeed_calendar_get_url();
+    if ($cf_user->privacyConfig->calendarId == CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC) {
+      drupal_set_message(t('Changes succesfully saved.') . ' ' . l(t('Go to your calendar'), culturefeed_calendar_get_url()) .  ' ' . t('or') . ' ' . l(t('share it with your friends'), 'culturefeed/calendar/share') . '.');
+    }
+    else {
+      drupal_set_message(t('Changes succesfully saved.') . ' ' . l(t('Go to your calendar'), culturefeed_calendar_get_url()));
+    }
 
   }
   catch (Exception $ex) {
