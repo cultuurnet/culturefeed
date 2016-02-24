@@ -222,8 +222,8 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
   // periode of permanent
   if (($params['type'] == 'period') || ($params['type'] == 'permanent')) {
 
-    $help = "";
-    
+    $help = t('Choose a date');
+
     if ($params['type'] == 'period') {
       // Don't add if date is in the past.
       $timestamp = strtotime($params['date_from']);
