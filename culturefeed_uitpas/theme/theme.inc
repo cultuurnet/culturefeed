@@ -65,7 +65,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
   else {
     $period = t('Until end of stock');
   }
-  $vars['period'] = $period;  
+  $vars['period'] = $period;
 
   // Provider.
   $vars['provider'] = '';
@@ -533,17 +533,37 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_highlight(&
 
   foreach ($promotions as $promotion) {
 
+    if (isset($promotion->pictures[0])) {
+      $thumbnail = theme('image', array('path' => $promotion->pictures[0] . '?width=400&height=300&crop=auto', 'attributes' => array()));
+    }
+    else {
+      $thumbnail = theme('image', array('path' => drupal_get_path('module', 'culturefeed_uitpas') . '/images/default.png', 'attributes' => array()));
+    }
+
     $singular = '@count point';
     $plural = '@count points';
-    $rows[] = array(
-      array(
+    $points = array(
         'data' => format_plural($promotion->points, $singular, $plural),
         'class' => array('points'),
-      ),
-      l($promotion->title, 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id),
+      );
+    $url = 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id;
+    $title = l($promotion->title, $url);
 
+    $rows[] = array(
+      $points,
+      $title,
     );
+
+    $items[] = array(
+      'thumbnail' => $thumbnail,
+      'points' => $points['data'],
+      'title' => $title,
+      'url' => $url
+    );
+
   }
+
+  $vars['items'] = $items;
 
   $table = array(
     'header' => array(),
