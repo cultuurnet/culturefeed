@@ -20,8 +20,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2016-02-12 13:48+0100\n"
-"PO-Revision-Date: 2016-02-12 13:50+0100\n"
+"POT-Creation-Date: 2016-03-02 13:43+0100\n"
+"PO-Revision-Date: 2016-03-02 14:18+0100\n"
 "Last-Translator: Luk Dens <luk.dens@cultuurnet.be>\n"
 "Language-Team: Dutch <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -99,13 +99,17 @@ msgstr "Toevoegen"
 msgid "When do you want to go?"
 msgstr "Wanneer wil je gaan?"
 
-#: includes/pages.inc:108;442
+#: includes/pages.inc:108;450
 msgid "There was an error while adding to your calendar"
 msgstr "Fout bij het toevoegen aan je kalender"
 
 #: includes/pages.inc:153
 msgid "Update event"
 msgstr "Bewaren"
+
+#: includes/pages.inc:225
+msgid "Choose a date"
+msgstr "Kies een datum"
 
 #: includes/pages.inc:237
 msgid "Choose a date between "
@@ -131,77 +135,89 @@ msgstr "!date"
 msgid "I don't know yet"
 msgstr "Ik weet het nog niet"
 
-#: includes/pages.inc:329;521;723
+#: includes/pages.inc:329;529;731
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: includes/pages.inc:400
+#: includes/pages.inc:401
 msgid "You selected a date in the past. Please select a date in the future."
 msgstr ""
 "Je koos een datum in het verleden. Gelieve een datum in de toekomst te "
 "selecteren."
 
-#: includes/pages.inc:405
+#: includes/pages.inc:413
 msgid "Enter a date between "
-msgstr "Kies een datum "
+msgstr "Kies een datum tussen"
 
-#: includes/pages.inc:405
+#: includes/pages.inc:413
 msgid " and "
 msgstr " en "
 
-#: includes/pages.inc:416
+#: includes/pages.inc:424
 msgid "The event is closed on "
 msgstr "Dit event is gesloten op "
 
-#: includes/pages.inc:416
+#: includes/pages.inc:424
 msgid "Please choose another day"
 msgstr "Gelieve een andere dag te kiezen"
 
-#: includes/pages.inc:470
+#: includes/pages.inc:478
 msgid "Remove event"
 msgstr "Verwijder event"
 
-#: includes/pages.inc:498
+#: includes/pages.inc:506
 msgid "Are you sure you want to remove '!title' from your calender?"
 msgstr "Ben je zeker dat je '!title' wil verwijderen uit je kalender?"
 
-#: includes/pages.inc:507 theme/theme.inc:251;290
+#: includes/pages.inc:515 theme/theme.inc:251;290
 msgid "Remove"
 msgstr "Verwijderen"
 
-#: includes/pages.inc:575
+#: includes/pages.inc:583
 msgid "Your calendar event was deleted."
 msgstr "Dit evenement is verwijderd."
 
-#: includes/pages.inc:578
+#: includes/pages.inc:586
 msgid "An error occured while deleting the event from your calendar"
 msgstr "Fout bij het verwijderen uit je kalender."
 
-#: includes/pages.inc:701
+#: includes/pages.inc:709
 msgid "There was an error while loading the user information"
 msgstr "Fout bij het laden van de gebruikersgegevens"
 
-#: includes/pages.inc:707
+#: includes/pages.inc:715
 msgid "Who can see your calendar"
 msgstr "Wie kan je UiTkalender zien?"
 
-#: includes/pages.inc:710
+#: includes/pages.inc:718
 msgid "Only me"
 msgstr "Alleen ik"
 
-#: includes/pages.inc:711
+#: includes/pages.inc:719
 msgid "Everyone"
 msgstr "Iedereen"
 
-#: includes/pages.inc:717
+#: includes/pages.inc:725
 msgid "Save"
 msgstr "Opslaan"
 
-#: includes/pages.inc:751
+#: includes/pages.inc:760;763
 msgid "Changes succesfully saved."
 msgstr "Jouw wijzigingen werden bewaard."
 
-#: includes/pages.inc:757
+#: includes/pages.inc:760;763 theme/theme.inc:198
+msgid "Go to your calendar"
+msgstr "Ga naar kalender"
+
+#: includes/pages.inc:760
+msgid "or"
+msgstr "of"
+
+#: includes/pages.inc:760
+msgid "share it with your friends"
+msgstr "deel hem met je vrienden"
+
+#: includes/pages.inc:768
 msgid "There was an error while saving the form"
 msgstr "Fout bij het verzenden van dit formulier"
 
@@ -339,10 +355,6 @@ msgstr "Gaat"
 #: theme/theme.inc:179;182
 msgid "Interested"
 msgstr "Geïnteresseerd"
-
-#: theme/theme.inc:198
-msgid "Go to your calendar"
-msgstr "Ga naar kalender"
 
 #: theme/theme.inc:201
 msgid "unsaved events: <span class=\"unread-activities\">0</small>"
