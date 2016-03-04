@@ -235,6 +235,10 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       }
 
       $help = t('Choose a date between ') . " " . format_date(strtotime($start_date), 'custom', 'd/m/Y') . " ". t('and') . " " . format_date(strtotime($params['date_to']), 'custom', 'd/m/Y') . ".";
+
+      if($params['when_lg'] !== '') {
+        $help .= " " . $params['when_lg'] ;
+      }
     }
     elseif ($params['type'] == 'permanent') {
       $start_date = format_date($_SERVER['REQUEST_TIME'], 'custom', 'Y-m-d');
@@ -625,6 +629,14 @@ function _culturefeed_calendar_get_event_params($event) {
     $params['date_to'] = $calendar->current()->getDateTo();
     $params['type'] = 'period';
     $params['week_scheme'] = $calendar->current()->getWeekScheme();
+    // Format Calendar details to readable & themable HTML.
+    $html_formatter = culturefeed_agenda_get_html_calendar_formatter();
+    $variables['when_lg'] = '';
+    try {
+      $params['when_lg'] = $html_formatter->format($calendar, 'lg');
+    }
+    catch (Exception $e) {
+    }
 
     // if date-to = today, pass modal-form and direct
     if ($calendar->current()->getDateTo() == date('Y-m-d', $_SERVER['REQUEST_TIME'])) {
