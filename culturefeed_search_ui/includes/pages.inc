@@ -18,11 +18,11 @@ use \Guzzle\Http\Exception;
  */
 function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_type = 'nojs') {
 
-  // If a search form was submitted, immediately return to avoid unnecessary calls to search api.
-  if (!empty($_POST['searching'])) {
+  // The first search page callback is a dummy callback to redirect to the
+  // real search page.
+  if ($name == "submitted") {
     return "";
   }
-
   $ajax = $request_type == 'ajax';
   $rss = $request_type == 'rss';
 

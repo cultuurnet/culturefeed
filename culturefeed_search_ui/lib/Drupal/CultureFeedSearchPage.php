@@ -333,12 +333,6 @@ class CultureFeedSearchPage {
     if (empty($this->facetComponent)) {
       $this->facetComponent = new FacetComponent();
 
-      // If a search form was submitted, immediately return to avoid unnecessary calls to search api.
-      if (!empty($_POST['searching'])) {
-        $this->result = new \CultuurNet\Search\SearchResult();
-        return;
-      }
-
       // Retrieve search parameters and add some defaults.
       $params = drupal_get_query_parameters();
       $params += array(
