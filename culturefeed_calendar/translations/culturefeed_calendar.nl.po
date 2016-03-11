@@ -109,7 +109,7 @@ msgstr "Bewaren"
 
 #: includes/pages.inc:225
 msgid "Choose a date"
-msgstr "Datum"
+msgstr "Kies een datum"
 
 #: includes/pages.inc:237
 msgid "Choose a date between "
@@ -145,7 +145,7 @@ msgstr "Je koos een datum in het verleden. Gelieve een datum in de toekomst te s
 
 #: includes/pages.inc:417
 msgid "Enter a date between "
-msgstr "Kies een datum "
+msgstr "Kies een datum tussen"
 
 #: includes/pages.inc:417
 msgid " and "
@@ -297,7 +297,7 @@ msgstr "Terug naar kalender"
 
 #: theme/culturefeed-calendar-share-page.tpl.php:11
 msgid "Share your calendar with your friends"
-msgstr "Deel je UiTkalender delen met je vrienden"
+msgstr "Deel je UiTkalender met je vrienden"
 
 #: theme/culturefeed-calendar-share-page.tpl.php:12
 msgid "You can share this link with your friends"
