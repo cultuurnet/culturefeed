@@ -30,6 +30,14 @@ function culturefeed_calendar_menu() {
 
   $items = array();
 
+  $items['admin/config/culturefeed/calendar'] = array(
+    'title' => 'CultureFeed Calendar',
+    'description' => 'Change CultureFeed Calendar Settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_calendar_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'includes/admin.inc',
+  );
   $items['culturefeed/calendar'] = array(
     'page callback' => 'culturefeed_calendar_page_my_activities',
     'access arguments' => array('access content'),
