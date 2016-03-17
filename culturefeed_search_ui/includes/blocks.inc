@@ -41,6 +41,11 @@ function culturefeed_search_ui_search_block_form($form, & $form_state) {
     '#value' => t('Search'),
   );
 
+  $form['searching'] = array(
+    '#type' => 'hidden',
+    '#value' => TRUE,
+  );
+
   $form_state['searchable_types'] = $searchable_types;
 
   global $user;
@@ -304,7 +309,7 @@ function culturefeed_search_ui_block_city_facet() {
   }
 
   $noresults = FALSE;
-  if ($culturefeedSearchResult->getTotalCount() == 0) {
+  if (!isset($_POST['searching']) && $culturefeedSearchResult->getTotalCount() == 0) {
     $noresults = TRUE;
     // Hide location selector for empty results only when no location was set.
     if (empty($location)) {
@@ -385,6 +390,11 @@ function culturefeed_search_ui_city_facet_form() {
       'class' => array('city-facet', 'form-autocomplete'),
       'placeholder' => t('Zipcode or city')
     ),
+  );
+
+  $form['searching'] = array(
+    '#type' => 'hidden',
+    '#value' => TRUE,
   );
 
   $form['submit'] = array(
@@ -610,6 +620,11 @@ function culturefeed_search_ui_city_only_facet_form() {
     '#title_display' => 'invisible',
     '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
     '#attributes' => array('placeholder' => t('Zipcode or city')),
+  );
+
+  $form['searching'] = array(
+    '#type' => 'hidden',
+    '#value' => TRUE,
   );
 
   $form['submit'] = array(
@@ -907,6 +922,11 @@ function culturefeed_search_ui_block_location_search_form($form, $form_state) {
     '#title' => t('Where'),
     '#title_display' => 'invisible',
     '#attributes' => array('class' => array('location-search', 'jquery-ui-autocomplete'), 'placeholder' => t('Zipcode or city')),
+  );
+
+  $form['searching'] = array(
+    '#type' => 'hidden',
+    '#value' => TRUE,
   );
 
   $form['submit'] = array(
