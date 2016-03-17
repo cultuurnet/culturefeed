@@ -798,7 +798,7 @@ function culturefeed_agenda_get_category_list_of_item($category_type, $cdb_item)
   foreach ($categories as $category) {
 
     // Don't add 'Thema onbepaald' and 'Type onbepaald'
-    if ($category->getId() != '1.58.0.0.0' || $category->getId() != '0.51.0.0.0') {
+    if ($category->getId() != '1.58.0.0.0' && $category->getId() != '0.51.0.0.0') {
       $options = array(
         'query' => array(
           'facet' => array(
