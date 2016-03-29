@@ -5,8 +5,9 @@
  * Contains culturefeed_content.module.
  */
 
-define('CULTUREFEED_CONTENT_DEFAULT_ROWS', 50);
+define('CULTUREFEED_CONTENT_DEFAULT_ROWS', 10);
 define('CULTUREFEED_CONTENT_DEFAULT_SORT', 'date');
+define('CULTUREFEED_CONTENT_DEFAULT_TITLE', t('Our selection'));
 
 /**
  * Implements hook_field_create_instance().
@@ -19,6 +20,7 @@ function culturefeed_content_field_create_instance($instance) {
       array(
         'rows' => CULTUREFEED_CONTENT_DEFAULT_ROWS,
         'sort' => CULTUREFEED_CONTENT_DEFAULT_SORT,
+        'title' => CULTUREFEED_CONTENT_DEFAULT_TITLE,
       ),
     );
     field_update_instance($instance);
@@ -34,10 +36,13 @@ function culturefeed_content_field_culturefeed_content_validate($element, &$form
   $parents[] = 'wrapper';
   $values = drupal_array_get_nested_value($form_state['values'], $parents);
   $items = array(
-    'filter_query' => $values['filter_query'],
+    'title' => $values['title'],
     'query_string' => $values['query_string'],
-    'rows' => ($values['rows']) ? $values['rows'] : CULTUREFEED_CONTENT_DEFAULT_ROWS,
+    'filter_query' => $values['filter_query'],
+    'rows' => ($values['rows'] || $values['rows'] == 0) ? $values['rows'] : CULTUREFEED_CONTENT_DEFAULT_ROWS,
     'sort' => $values['sort'],
+    'show_more_link' => $values['show_more_link'],
+    'more_link' => $values['more_link'],
   );
   form_set_value($element, $items, $form_state);
 
@@ -69,10 +74,13 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
 
       foreach ($items as $delta => $item) {
 
-        $filter_query = $item['filter_query'];
+        $title = $item['title'];
         $query_string = $item['query_string'];
+        $filter_query = $item['filter_query'];
         $sort = isset($item['sort']) ? $item['sort'] : CULTUREFEED_CONTENT_DEFAULT_SORT;
         $rows = isset($item['rows']) ? $item['rows'] : CULTUREFEED_CONTENT_DEFAULT_ROWS;
+        $show_more_link = $item['show_more_link'];
+        $more_link = $item['more_link'];
 
         if (empty($query_string)) {
           $query_string = '*:*';
@@ -116,6 +124,10 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
         $build = array();
 
         if ($result->getTotalCount() > 0) {
+          $build[] = array(
+            '#theme' => 'culturefeed_content_title',
+            '#title' => $title
+          );
 
           foreach ($search_results as $search_result) {
             $build[] = array(
@@ -134,6 +146,8 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
               $build[] = array(
                 '#theme' => 'culturefeed_content_all_results_link',
                 '#query' => culturefeed_search_get_search_url_query($query),
+                '#show_more_link' => $show_more_link,
+                '#more_link' => $more_link
               );
 
             }
@@ -156,7 +170,6 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
       break;
 
   }
-
   return $element;
 
 }
@@ -194,23 +207,25 @@ function culturefeed_content_field_is_empty($item, $field) {
  * Implements hook_field_widget_form().
  */
 function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
-
-  $filter_query = isset($items[$delta]['filter_query']) ? $items[$delta]['filter_query'] : '';
+  $title = isset($items[$delta]['title']) ? $items[$delta]['title'] : '';
   $query_string = isset($items[$delta]['query_string']) ? $items[$delta]['query_string'] : '';
+  $filter_query = isset($items[$delta]['filter_query']) ? $items[$delta]['filter_query'] : '';
   $rows = isset($items[$delta]['rows']) ? $items[$delta]['rows'] : '';
   $sort = isset($items[$delta]['sort']) ? $items[$delta]['sort'] : '';
+  $show_more_link = isset($items[$delta]['show_more_link']) ? $items[$delta]['show_more_link'] : '';
+  $more_link = isset($items[$delta]['more_link']) ? $items[$delta]['more_link'] : '';
 
   $element['wrapper'] = array(
     '#title' => t('CultureFeed content'),
     '#type' => 'fieldset',
   );
 
-  $element['wrapper']['filter_query'] = array(
-    '#default_value' => $filter_query,
+  $element['wrapper']['title'] = array(
+    '#default_value' => $title,
     '#required' => $element['#required'],
-    '#title' => t('Filter query'),
-    '#description' => t('Please use SOLR filter query (fq). You can use advanced combinations with AND, OR, double quotes (exact match), and wildcards (*)'),
+    '#title' => t('Title'),
     '#type' => 'textfield',
+    '#maxlength' => 255,
   );
 
   $element['wrapper']['query_string'] = array(
@@ -219,13 +234,23 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#title' => t('Query string'),
     '#description' => t('Free text search, used for the SOLR query (q) parameter'),
     '#type' => 'textfield',
+    '#maxlength' => 1000,
+  );
+
+  $element['wrapper']['filter_query'] = array(
+    '#default_value' => $filter_query,
+    '#required' => $element['#required'],
+    '#title' => t('Filter query'),
+    '#description' => t('Please use SOLR filter query (fq). You can use advanced combinations with AND, OR, double quotes (exact match), and wildcards (*)'),
+    '#type' => 'textfield',
+    '#maxlength' => 1000,
   );
 
   $element['wrapper']['rows'] = array(
     '#default_value' => $rows,
     '#required' => $element['#required'],
     '#title' => t('Rows'),
-    '#description' => t('Number of results to show, defaults on "50"'),
+    '#description' => t('Number of results to show, defaults on "10"'),
     '#type' => 'textfield',
   );
 
@@ -249,6 +274,27 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#required' => $element['#required'],
     '#title' => t('Sort'),
     '#type' => 'radios',
+  );
+
+  $element['wrapper']['show_more_link'] = array(
+    '#default_value' => $show_more_link,
+    '#title' => t('Show more link'),
+    '#type' => 'checkbox',
+    '#description' => t('An automatic more link will be provided when this is checked.
+      Important: does not support all filter query parameters.'),
+  );
+
+  $element['wrapper']['more_link'] = array(
+    '#default_value' => $more_link,
+    '#title' => t('More link'),
+    '#description' => t('You can provide a custom link in this field.'),
+    '#type' => 'textfield',
+    '#maxlength' => 1000,
+    '#states' => array(
+      'visible' => array(
+        ':input[name="field_zoekopdracht_cf[und][0][wrapper][show_more_link]"]' => array('checked' => FALSE),
+      ),
+    ),
   );
 
   $element['#element_validate'] = array('culturefeed_content_field_culturefeed_content_validate');
@@ -292,8 +338,15 @@ function culturefeed_content_theme() {
         'link_text' => t('Show all events'),
         'query' => '',
         'classes' => array(),
+        'show_more_link' => 1,
+        'more_link' => ''
       ),
     ),
+    'culturefeed_content_title' => array(
+      'variables' => array(
+        'title' => ''
+      ),
+    )
   );
 
 }
@@ -308,20 +361,35 @@ function culturefeed_content_theme() {
  *   The HTML.
  */
 function theme_culturefeed_content_all_results_link(array $variables) {
-
-  $build[] = array(
-    '#markup' => l(
-      $variables['link_text'],
-      'agenda/search',
-      array(
-        'html' => TRUE,
-        'attributes' => array(
-          'class' => $variables['classes'],
-        ),
-        'query' => $variables['query'],
-      )
-    ),
-  );
+  if($variables['show_more_link']) {
+    $build[] = array(
+      '#markup' => l(
+        $variables['link_text'],
+        'agenda/search',
+        array(
+          'html' => TRUE,
+          'attributes' => array(
+            'class' => $variables['classes'],
+          ),
+          'query' => $variables['query'],
+        )
+      ),
+    );
+  }
+  else {
+    $build[] = array(
+      '#markup' => l(
+        $variables['link_text'],
+        $variables['more_link'],
+        array(
+          'html' => TRUE,
+          'attributes' => array(
+            'class' => $variables['classes'],
+          )
+        )
+      ),
+    );
+  }
 
   return drupal_render($build);
 
@@ -350,4 +418,27 @@ function theme_culturefeed_content_empty_text(array $variables) {
 
   return drupal_render($build);
 
+}
+
+/**
+ * Returns HTML for the title.
+ *
+ * @param array $variables
+ *   The variables.
+ *
+ * @return string
+ *   The HTML.
+ */
+function theme_culturefeed_content_title(array $variables) {
+  if(empty($variables['title'])) {
+    $build = array(
+      '#markup' => t('Our selection')
+    );
+  }
+  else {
+    $build = array(
+      '#markup' => $variables['title']
+    );
+  }
+  return drupal_render($build);
 }
