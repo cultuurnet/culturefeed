@@ -231,7 +231,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $element['wrapper']['query_string'] = array(
     '#default_value' => $query_string,
     '#required' => $element['#required'],
-    '#title' => t('Query string'),
+    '#title' => t('Query'),
     '#description' => t('Free text search, used for the SOLR query (q) parameter'),
     '#type' => 'textfield',
     '#maxlength' => 1000,
@@ -250,7 +250,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#default_value' => $rows,
     '#required' => $element['#required'],
     '#title' => t('Rows'),
-    '#description' => t('Number of results to show, defaults on "10"'),
+    '#description' => t('Number of results to show, defaults to "10"'),
     '#type' => 'textfield',
   );
 
@@ -287,7 +287,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $element['wrapper']['more_link'] = array(
     '#default_value' => $more_link,
     '#title' => t('More link'),
-    '#description' => t('You can provide a custom link in this field.'),
+    '#description' => t('You can provide a custom URL in this field.'),
     '#type' => 'textfield',
     '#maxlength' => 1000,
     '#states' => array(
@@ -361,7 +361,7 @@ function culturefeed_content_theme() {
  *   The HTML.
  */
 function theme_culturefeed_content_all_results_link(array $variables) {
-  if($variables['show_more_link']) {
+  if ($variables['show_more_link']) {
     $build[] = array(
       '#markup' => l(
         $variables['link_text'],
@@ -430,7 +430,7 @@ function theme_culturefeed_content_empty_text(array $variables) {
  *   The HTML.
  */
 function theme_culturefeed_content_title(array $variables) {
-  if(empty($variables['title'])) {
+  if (empty($variables['title'])) {
     $build = array(
       '#markup' => t('Our selection')
     );
