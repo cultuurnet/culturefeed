@@ -331,20 +331,22 @@ function culturefeed_content_theme() {
     'culturefeed_content_empty_text' => array(
       'variables' => array(
         'empty_text' => t('No results found.'),
+        'classes' => array('alert', 'alert-info'),
       ),
     ),
     'culturefeed_content_all_results_link' => array(
       'variables' => array(
         'link_text' => t('Show all events'),
         'query' => '',
-        'classes' => array(),
+        'classes' => array('cf-content-all-results-link'),
         'show_more_link' => 1,
         'more_link' => ''
       ),
     ),
     'culturefeed_content_title' => array(
       'variables' => array(
-        'title' => ''
+        'title' => '',
+        'classes' => array('cf-content-title'),
       ),
     )
   );
@@ -409,7 +411,7 @@ function theme_culturefeed_content_empty_text(array $variables) {
   $build = array(
     '#type' => 'container',
     '#attributes' => array(
-      'class' => array('alert', 'alert-info'),
+      'class' => $variables['classes'],
     ),
     'empty_text' => array(
       '#markup' => $variables['empty_text'],
@@ -430,15 +432,21 @@ function theme_culturefeed_content_empty_text(array $variables) {
  *   The HTML.
  */
 function theme_culturefeed_content_title(array $variables) {
+
   if (empty($variables['title'])) {
-    $build = array(
-      '#markup' => t('Our selection')
-    );
+    $variables['title'] = t('Our selection');
   }
-  else {
-    $build = array(
-      '#markup' => $variables['title']
-    );
-  }
+
+  $build = array(
+    '#type' => 'container',
+    '#attributes' => array(
+      'class' => $variables['classes'],
+    ),
+    'title' => array(
+      '#markup' => $variables['title'],
+    ),
+  );
+
+
   return drupal_render($build);
 }
