@@ -66,7 +66,7 @@ function culturefeed_content_get_culturefeed_content_fields() {
 /**
  * Add title, show_more_link and more link fields to field data and revision tables.
  */
-function culturefeed_content_update_7100() {
+function culturefeed_content_update_7001() {
   $fields = culturefeed_content_get_culturefeed_content_fields();
 
   foreach ($fields as $field) {
