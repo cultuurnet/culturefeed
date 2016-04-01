@@ -292,7 +292,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#maxlength' => 1000,
     '#states' => array(
       'visible' => array(
-        ':input[name="field_zoekopdracht_cf[und][0][wrapper][show_more_link]"]' => array('checked' => FALSE),
+        ':input[name*="show_more_link"]' => array('checked' => FALSE),
       ),
     ),
   );
