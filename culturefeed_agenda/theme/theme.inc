@@ -334,6 +334,8 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
   $variables['cdbid'] = $cdb_item->getCdbid();
 
+  $variables['created_by'] = $cdb_item->getCreatedBy();
+
   // Social stats.
   $variables['recommend_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_RECOMMEND);
   $variables['comment_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_COMMENT);
