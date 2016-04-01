@@ -949,6 +949,10 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
   $active_page = culturefeed_get_searchable_type_by_path();
   $sorting_options = culturefeed_search_ui_get_sort_options_for_page($active_page);
 
+  if (arg(2) == 'nojs') {
+    culturefeed_search_set_noindex_metatag();
+  }
+
   if (!isset($_GET['sort']) && arg(2) != 'rss') {
 
     if (isset($sorting_options['default']) && isset($sorting_options[$sorting_options['default']])) {
