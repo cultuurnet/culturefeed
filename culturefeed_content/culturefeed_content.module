@@ -378,6 +378,9 @@ function theme_culturefeed_content_all_results_link(array $variables) {
       ),
     );
   }
+  else if (!$variables['show_more_link'] && empty($variables['more_link'])) {
+    $build[] = array();
+  }
   else {
     $build[] = array(
       '#markup' => l(
