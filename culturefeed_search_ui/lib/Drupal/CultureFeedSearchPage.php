@@ -689,7 +689,7 @@ class CultureFeedSearchPage {
             '#attributes' => array(
               'class' => array('btn btn-primary btn-block btn-large'),
               'rel' => array('nofollow')
-          ),
+            ),
           );
         }
 
