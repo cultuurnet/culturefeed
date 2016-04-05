@@ -64,14 +64,15 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
 
     }
     
-    // Add rss to head
-    drupal_add_html_head_link(array(
-      'rel' => 'alternate',
-      'type' => 'application/rss+xml',
-      'title' => end($active_trail)['title'],
-      'href' => url(current_path() . '/rss', array('absolute' => TRUE, 'query' => drupal_get_query_parameters(NULL, array('q', 'page')))),
-    ));
-
+    // Add rss to head if we're on a valid search path
+    if (current_path() == 'agenda/search') {
+      drupal_add_html_head_link(array(
+        'rel' => 'alternate',
+        'type' => 'application/rss+xml',
+        'title' => end($active_trail)['title'],
+        'href' => url(current_path() . '/rss', array('absolute' => TRUE, 'query' => drupal_get_query_parameters(NULL, array('q', 'page')))),
+      ));
+    }
   }
   catch (Exception\ClientErrorResponseException $e) {
     watchdog_exception('culturefeed_search_ui', $e);
