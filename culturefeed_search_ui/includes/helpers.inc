@@ -191,7 +191,7 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
       $facets = $query['facet'];
       if ($query['facet']['type'][0] == 'actor') {
-        unset($facets['type']);      
+        unset($facets['type']);
         if (isset($query['facet']['category_flandersregion_id'])) {
           if (count($query['facet']['category_flandersregion_id']) <= 1) {
             unset($facets['category_flandersregion_id']);
@@ -212,7 +212,7 @@ function culturefeed_search_ui_set_noindex_metatag() {
       $facets = $query['facet'];
       unset($facets['category_actortype_id']);
       unset($facets['type']);
-      
+
       if (isset($query['facet']['category_flandersregion_id'])) {
         if (count($query['facet']['category_flandersregion_id']) <= 1) {
           unset($facets['category_flandersregion_id']);
@@ -238,23 +238,23 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
         $facets = $query['facet'];
         unset($facets['category_eventtype_id']);
-      
+
         if (isset($query['facet']['category_theme_id'])) {
           if (count($query['facet']['category_theme_id']) <= 1) {
             unset($facets['category_theme_id']);
           }
         }
-      
+
         if (isset($query['facet']['category_flandersregion_id'])) {
           if (count($query['facet']['category_flandersregion_id']) <= 1) {
             unset($facets['category_flandersregion_id']);
           }
         }
-  
+
         unset($query['location']);
         unset($query['regId']);
         unset($query['facet']);
-  
+
         // If theme_id, flandersregion and/or regId was the only extra facet / parameters, set noindex to false.
         if (count($facets) == 0 && count($query) == 0) {
           $noindex = FALSE;
@@ -271,17 +271,17 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
         $facets = $query['facet'];
         unset($facets['category_umv_id']);
-      
+
         if (isset($query['facet']['category_flandersregion_id'])) {
           if (count($query['facet']['category_flandersregion_id']) <= 1) {
             unset($facets['category_flandersregion_id']);
           }
         }
-  
+
         unset($query['location']);
         unset($query['regId']);
         unset($query['facet']);
-  
+
         // If flandersregion or regId was the only extra facet / parameters, set noindex to false.
         if (count($facets) == 0 && count($query) == 0) {
           $noindex = FALSE;
@@ -299,7 +299,7 @@ function culturefeed_search_ui_set_noindex_metatag() {
         $facets = $query['facet'];
         unset($facets['category_flandersregion_id']);
         unset($query['facet']);
-  
+
         // If flandersregion Id was the only filter set noindex to false.
         if (count($facets) == 0 && count($query) == 0) {
           $noindex = FALSE;
@@ -801,6 +801,95 @@ function culturefeed_search_ui_default_filter_options($filter_form_number) {
 
   return isset($defaults[$filter_form_number]) ? $defaults[$filter_form_number] : array();
 
+}
+
+/**
+ * Return the default options for the holiday facet block.
+ */
+function culturefeed_search_ui_default_holidays_options() {
+
+  return array(
+    array(
+      'exposed' => TRUE,
+      'holiday' => 'Krokusvakantie 2016',
+      'query-string' => 'krokusvakantie',
+      'start-date' => array(
+        'year' => '2016',
+        'month' => '2',
+        'day' => '6'
+      ),
+      'end-date' => array(
+        'year' => '2016',
+        'month' => '2',
+        'day' => '14'
+      ),
+      'api-filter-query' => 'startdate:[2016-02-06T00:00:00Z TO 2016-02-14T23:59:59Z]'
+    ),
+    array(
+      'exposed' => TRUE,
+      'holiday' => 'Paasvakantie 2016',
+      'query-string' => 'paasvakantie',
+      'start-date' => array(
+        'year' => '2016',
+        'month' => '3',
+        'day' => '26'
+      ),
+      'end-date' => array(
+        'year' => '2016',
+        'month' => '4',
+        'day' => '10'
+      ),
+      'api-filter-query' => 'startdate:[2016-03-26T00:00:00Z TO 2016-04-10T23:59:59Z]'
+    ),
+    array(
+      'exposed' => TRUE,
+      'holiday' => 'Zomervakantie 2016',
+      'query-string' => 'zomervakantie',
+      'start-date' => array(
+        'year' => '2016',
+        'month' => '7',
+        'day' => '1'
+      ),
+      'end-date' => array(
+        'year' => '2016',
+        'month' => '8',
+        'day' => '31'
+      ),
+      'api-filter-query' => 'startdate:[2016-07-01T00:00:00Z TO 2016-08-31T23:59:59Z]'
+    ),
+    array(
+      'exposed' => TRUE,
+      'holiday' => 'Herfstvakantie 2016',
+      'query-string' => 'herfstvakantie',
+      'start-date' => array(
+        'year' => '2016',
+        'month' => '10',
+        'day' => '29'
+      ),
+      'end-date' => array(
+        'year' => '2016',
+        'month' => '11',
+        'day' => '6'
+      ),
+      'api-filter-query' => 'startdate:[2016-10-29T00:00:00Z TO 2016-11-06T23:59:59Z]'
+    ),
+    array(
+      'exposed' => TRUE,
+      'holiday' => 'Kerstvakantie 2016',
+      'query-string' => 'kerstvakantie',
+      'start-date' => array(
+        'year' => '2016',
+        'month' => '12',
+        'day' => '24'
+      ),
+      'end-date' => array(
+        'year' => '2017',
+        'month' => '1',
+        'day' => '8'
+      ),
+      'api-filter-query' => 'startdate:[2016-12-24T00:00:00Z TO 2017-01-08T23:59:59Z]'
+    ),
+  );
 }
 
 /**
