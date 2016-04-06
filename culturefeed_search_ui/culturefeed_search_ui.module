@@ -423,6 +423,11 @@ function culturefeed_search_ui_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
+  $blocks['facet-holidays'] = array(
+    'info' => t('Culturefeed search: facet holidays'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
   // Facet blocks.
   $domains = db_query('SELECT did, label FROM {culturefeed_search_domains}');
   foreach ($domains as $domain) {
@@ -739,6 +744,16 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
     }
     variable_set('culturefeed_search_holidays_options', $options);
   }
+  if (isset($edit['culturefeed-search-holidays-options'])) {
+    $options = array();
+    foreach ($edit['culturefeed-search-holidays-options'] as $option) {
+      if (!empty($option['holiday']) && !empty($option['query-string']) && !empty($option['start-date']) && !empty($option['end-date'])) {
+        $option['api-filter-query'] = 'startdate:[' . $option['start-date'] . 'T00:00:00Z TO ' . $option['end-date'] . 'T23:59:59Z]';
+        $options[] = $option;
+      }
+    }
+    variable_set('culturefeed_search_holidays_options', $options);
+  }
 
   // Save enabled facet options.
   if (isset($edit['culturefeed-facet-enabled-options'])) {
@@ -832,6 +847,25 @@ function culturefeed_search_ui_block_view($delta) {
       });
       if (!empty($filter_options)) {
         $block['content'] = culturefeed_search_ui_block_filter_block($filter_options, $display_type, $filter_form_number);
+      }
+      break;
+
+    case 'facet-holidays':
+      // Don't show block if there are no search results.
+      $search_result = culturefeed_get_search_result();
+      if (!$search_result instanceof \Cultuurnet\Search\SearchResult || $search_result->getTotalCount() == 0) {
+        return;
+      }
+
+      $filter_options = variable_get('culturefeed_search_holidays_options', culturefeed_search_ui_default_holidays_options());
+      foreach($filter_options as $key => $option) {
+        if (!$option['exposed']) {
+          unset($filter_options[$key]);
+        }
+      }
+      if (!empty($filter_options)) {
+        $block['subject'] = t('Holidays');
+        $block['content'] = culturefeed_search_ui_block_holidays_facet($filter_options);
       }
       break;
 
@@ -956,6 +990,10 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
   // Add the sorting. When rss is requested we always use creationdate
   $active_page = culturefeed_get_searchable_type_by_path();
   $sorting_options = culturefeed_search_ui_get_sort_options_for_page($active_page);
+
+  if (arg(2) == 'nojs') {
+    culturefeed_search_set_noindex_metatag();
+  }
 
   if (!isset($_GET['sort']) && arg(2) != 'rss') {
 
