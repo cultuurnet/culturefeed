@@ -162,6 +162,7 @@ function _culturefeed_search_ui_get_nested_facet_links($facet_items, $facet_key,
         'query' => $query,
         'path' => $link_path,
         'active' => $facet_item_active,
+        'active_subitem' => $has_active_subitem,
       )),
     );
 
