@@ -540,10 +540,13 @@ function culturefeed_search_ui_preprocess_culturefeed_search_sort_links(&$variab
     }
 
     $query['sort'] = $option['value'];
-    $attributes = array();
+    $attributes = array(
+      'rel' => 'nofollow',
+    );
 
     if ($option['value'] == $current_sort) {
       $attributes = array(
+        'rel' => 'nofollow',
         'class' => array('active'),
       );
     }
