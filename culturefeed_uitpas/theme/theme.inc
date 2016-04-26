@@ -25,10 +25,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
   $vars['images_list'] = '';
   $images = array();
   if (isset($advantage->pictures[0])) {
-    $vars['image'] = theme_image(array('path' => $advantage->pictures[0], 'attributes' => array()));
+    $vars['image'] = theme_image(array('path' => $advantage->pictures[0], 'alt' => $advantage->title, 'title' => $advantage->title, 'attributes' => array()));
     foreach ($advantage->pictures as $key => $picture) {
       $images[] = l(
-        theme('image', array('path' => $advantage->pictures[$key] . '?maxwidth=300&max-height=300', 'attributes' => array())),
+        theme('image', array('path' => $advantage->pictures[$key] . '?maxwidth=300&max-height=300', 'alt' => $advantage->title, 'title' => $advantage->title, 'attributes' => array())),
         $advantage->pictures[$key],
         array('html' => TRUE)
       );
@@ -36,7 +36,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
     $vars['images_list'] = theme('item_list', array('items' => $images));
   }
   if (isset($advantage->pictures[1])) {
-    $vars['image2'] = theme_image(array('path' => $advantage->pictures[1], 'attributes' => array()));
+    $vars['image2'] = theme_image(array('path' => $advantage->pictures[1], 'alt' => $advantage->title, 'title' => $advantage->title, 'attributes' => array()));
   }
 
   // Get the counters information.
@@ -442,10 +442,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   $vars['images_list'] = '';
   $images = array();
   if (isset($promotion->pictures[0])) {
-    $vars['image'] = theme('image', array('path' => $promotion->pictures[0] . '?maxwidth=300&max-height=300', 'attributes' => array()));
+    $vars['image'] = theme('image', array('path' => $promotion->pictures[0] . '?maxwidth=300&max-height=300', 'alt' => $promotion->title, 'title' => $promotion->title, 'attributes' => array()));
     foreach ($promotion->pictures as $key => $picture) {
       $images[] = l(
-        theme('image', array('path' => $promotion->pictures[$key] . '?maxwidth=300&max-height=300', 'attributes' => array())),
+        theme('image', array('path' => $promotion->pictures[$key] . '?maxwidth=300&max-height=300', 'alt' => $promotion->title, 'title' => $promotion->title, 'attributes' => array())),
         $promotion->pictures[$key],
         array('html' => TRUE)
       );
@@ -453,7 +453,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
     $vars['images_list'] = theme('item_list', array('items' => $images));
   }
   if (isset($promotion->pictures[1])) {
-    $vars['image2'] = theme_image(array('path' => $promotion->pictures[1] . '?maxwidth=300&max-height=300', 'attributes' => array()));
+    $vars['image2'] = theme_image(array('path' => $promotion->pictures[1] . '?maxwidth=300&max-height=300', 'alt' => $promotion->title, 'title' => $promotion->title, 'attributes' => array()));
   }
 
   // Points.
@@ -534,10 +534,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_highlight(&
   foreach ($promotions as $promotion) {
 
     if (isset($promotion->pictures[0])) {
-      $thumbnail = theme('image', array('path' => $promotion->pictures[0] . '?width=400&height=300&crop=auto', 'attributes' => array()));
+      $thumbnail = theme('image', array('path' => $promotion->pictures[0] . '?width=400&height=300&crop=auto', 'alt' => $promotion->title, 'title' => $promotion->title, 'attributes' => array()));
     }
     else {
-      $thumbnail = theme('image', array('path' => drupal_get_path('module', 'culturefeed_uitpas') . '/images/default.png', 'attributes' => array()));
+      $thumbnail = theme('image', array('path' => drupal_get_path('module', 'culturefeed_uitpas') . '/images/default.png', 'alt' => $promotion->title, 'title' => $promotion->title, 'attributes' => array()));
     }
 
     $singular = '@count point';
@@ -750,6 +750,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_table(&$var
           'path' => $advantage->pictures[0],
           'maxwidth' => 100,
           'maxheight' => 100,
+          'alt' => $advantage->title,
+          'title' => $advantage->title,
           'attributes' => array(),
         ));
       }
@@ -758,6 +760,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_table(&$var
           'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/images/default.png',
           'width' => 100,
           'height' => 100,
+          'alt' => $advantage->title,
+          'title' => $advantage->title,
         ));
       }
       $item['image'] = l($image, $advantage_path, array('html' => TRUE));
@@ -848,6 +852,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_table(&$var
           'path' => $promotion->pictures[0],
           'maxwidth' => 100,
           'maxheight' => 100,
+          'alt' => $promotion->title,
+          'title' => $promotion->title,
           'attributes' => array(),
         ));
       }
@@ -856,6 +862,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_table(&$var
           'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/images/default.png',
           'width' => 100,
           'height' => 100,
+          'alt' => $promotion->title,
+          'title' => $promotion->title,
         ));
       }
       $item['image'] = l($image, $promotion_path, array('html' => TRUE));
