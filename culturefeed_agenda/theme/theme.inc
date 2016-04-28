@@ -334,7 +334,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
   $variables['cdbid'] = $cdb_item->getCdbid();
 
-  $variables['created_by'] = $cdb_item->getCreatedBy();
+  if (method_exists($cdb_item, 'getCreatedBy')) { // TODO: add method for productions (UIV-1761)
+    $variables['created_by'] = $cdb_item->getCreatedBy();
+  }
 
   // Social stats.
   $variables['recommend_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_RECOMMEND);
