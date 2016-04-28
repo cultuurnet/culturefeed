@@ -88,6 +88,7 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
 
         $parameters = array();
         if ($query_string) {
+          $query_string = _culturefeed_search_ui_sanitize_query_term($query_string);
           $parameters[] = new \CultuurNet\Search\Parameter\Query($query_string);
         }
         if ($filter_query) {
