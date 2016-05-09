@@ -27,6 +27,19 @@ function culturefeed_agenda_admin_settings_form() {
     '#description' => t('Check this checkbox if you want to have culturefeed_social links in the template variables.'),
   );
 
+  $form['gmap'] = array(
+    '#type' => 'fieldset',
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#title' => t('GMAP settings'),
+  );
+
+  $form['gmap']['culturefeed_agenda_max_items_per_map'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Maximum number of items on the map'),
+    '#default_value' => variable_get('culturefeed_agenda_max_items_per_map', 700),
+  );
+
   $form = system_settings_form($form);
   $form['#submit'] = array('culturefeed_agenda_admin_settings_form_submit');
 
