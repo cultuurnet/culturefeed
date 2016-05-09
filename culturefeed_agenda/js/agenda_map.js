@@ -4,9 +4,9 @@
     Drupal.CultureFeed.Agenda = {};
 
   /**
-   * Initialize the omd map.
+   * Initialize the Culturefeed Agenda map.
    */
-  Drupal.CultureFeed.Agenda.initializeAgendaMap = function(myOptions) {
+  Drupal.CultureFeed.Agenda.initializeSearchMap = function(myOptions) {
 
     var markers = myOptions.markers;
     if (markers.length == 0) {
@@ -16,7 +16,7 @@
     var infoWindow = new google.maps.InfoWindow({});
 
     // Start map.
-    Drupal.CultureFeed.Agenda.agendaMap = new google.maps.Map(document.getElementById("agenda-search-map"), myOptions);
+    Drupal.CultureFeed.Agenda.searchMap = new google.maps.Map(document.getElementById("agenda-search-map"), myOptions);
     var bounds = new google.maps.LatLngBounds();
 
     // Add markers and click events.
@@ -28,7 +28,7 @@
       bounds.extend(latLong);
       var marker = new google.maps.Marker({
         position: latLong,
-        map: Drupal.OmdSearch.omdMap,
+        map: Drupal.CultureFeed.Agenda.searchMap,
         title: point.title,
         html: point.html
       });
@@ -36,7 +36,7 @@
       if (point.html) {
         google.maps.event.addListener(marker, 'click', function() {
           infoWindow.setContent(this.html);
-          infoWindow.open(Drupal.CultureFeed.Agenda.agendaMap, this);
+          infoWindow.open(Drupal.CultureFeed.Agenda.searchMap, this);
         });
       }
 
@@ -44,18 +44,18 @@
     }
 
     // Zoom to current location or to fit current markers.
-    if (Drupal.settings.omd.onDetail) {
-      Drupal.CultureFeed.Agenda.agendaMap.setCenter(latLong);
-      Drupal.CultureFeed.Agenda.agendaMap.setZoom(12);
+    if (Drupal.settings.culturefeed_agenda_map.onDetail) {
+      Drupal.CultureFeed.Agenda.searchMap.setCenter(latLong);
+      Drupal.CultureFeed.Agenda.searchMap.setZoom(12);
     }
-    else if (Drupal.settings.omd.doGeolocate) {
+    else if (Drupal.settings.culturefeed_agenda_map.doGeolocate) {
       Drupal.CultureFeed.Agenda.geolocate();
     }
     else {
-      Drupal.CultureFeed.Agenda.agendaMap.setCenter(bounds.getCenter());
-      Drupal.CultureFeed.Agenda.agendaMap.fitBounds(bounds);
+      Drupal.CultureFeed.Agenda.searchMap.setCenter(bounds.getCenter());
+      Drupal.CultureFeed.Agenda.searchMap.fitBounds(bounds);
       //remove one zoom level to ensure no marker is on the edge.
-      Drupal.CultureFeed.Agenda.agendaMap.setZoom(Drupal.CultureFeed.Agenda.agendaMap.getZoom()-1);
+      Drupal.CultureFeed.Agenda.searchMap.setZoom(Drupal.CultureFeed.Agenda.searchMap.getZoom()-1);
     }
 
     // Cluster the search page.
@@ -70,14 +70,14 @@
         textSize: 12
       }];
 
-      var markerCluster = new MarkerClusterer(Drupal.CultureFeed.Agenda.agendaMap, map_markers, {
+      var markerCluster = new MarkerClusterer(Drupal.CultureFeed.Agenda.searchMap, map_markers, {
         styles: cluster_styles
       });
     }
 
     // Check for auto-print.
     if (Drupal.settings.culturefeed_agenda_map.printonLoad) {
-      google.maps.event.addListener(Drupal.CultureFeed.Agenda.agendaMap, 'tilesloaded', function() {
+      google.maps.event.addListener(Drupal.CultureFeed.Agenda.searchMap, 'tilesloaded', function() {
 
         // Start print after 5 seconds, this to make sure all markers are shown.
         setTimeout(function() {
@@ -108,8 +108,8 @@
 
           // Zoom in to current position.
           var center = new google.maps.LatLng(response[0].geometry.location.lat(), response[0].geometry.location.lng());
-          Drupal.CultureFeed.Agenda.agendaMap.setCenter(center);
-          Drupal.CultureFeed.Agenda.agendaMap.setZoom(10);
+          Drupal.CultureFeed.Agenda.searchMap.setCenter(center);
+          Drupal.CultureFeed.Agenda.searchMap.setZoom(10);
 
         });
 

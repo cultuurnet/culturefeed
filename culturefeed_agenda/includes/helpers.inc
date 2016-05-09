@@ -860,15 +860,15 @@ function culturefeed_agenda_gmap_add_js($settings = array()) {
 
     // Include JS files
     drupal_add_js(CULTUREFEED_GOOGLE_MAPS_JS_API, 'external');
-    drupal_add_js(drupal_get_path('module', 'culturefeeed_agenda') . '/js/markercluster.js', 'file');
-    drupal_add_js(drupal_get_path('module', 'culturefeeed_agenda') . '/js/agenda_map.js', 'file');
+    drupal_add_js(drupal_get_path('module', 'culturefeed_agenda') . '/js/markercluster.js', 'file');
+    drupal_add_js(drupal_get_path('module', 'culturefeed_agenda') . '/js/agenda_map.js', 'file');
 
     // Set JS setting
     $on_search = $_GET['q'] == 'agenda/search';
     $search_params = drupal_get_query_parameters(NULL, array('page', 'q'));
     drupal_add_js(
       array(
-        'culturefeed_agenda_search_map' => array(
+        'culturefeed_agenda_map' => array(
           //'cluster' => url(drupal_get_path('module', 'culturefeed_agenda') . '/images/map-icon-cluster.png'),
           'onSearch' => $on_search,
           'doGeolocate' => $on_search && empty($search_params),
@@ -897,7 +897,7 @@ function culturefeed_agenda_get_locations_by_list_search() {
 
   try {
     $service = culturefeed_get_search_service();
-    $results = $service->searchAsList($parameters);
+    $results = $service->search($parameters);
   }
   catch (Exception $e) {
     watchdog_exception('Culturefeed Agenda', $e);
@@ -906,7 +906,7 @@ function culturefeed_agenda_get_locations_by_list_search() {
 
   // Loop over the search result items
   $locations = array();
-  foreach ($results as $item) {
+  foreach ($results->getItems() as $item) {
 
     if ($item['latlng'] == ';' || empty($item['location'])) {
       continue;
