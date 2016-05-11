@@ -869,7 +869,7 @@ function culturefeed_agenda_gmap_add_js($settings = array()) {
     drupal_add_js(
       array(
         'culturefeed_agenda_map' => array(
-          //'cluster' => url(drupal_get_path('module', 'culturefeed_agenda') . '/images/map-icon-cluster.png'),
+          'cluster' => url(drupal_get_path('module', 'culturefeed_agenda') . '/images/cluster.png'),
           'onSearch' => $on_search,
           'doGeolocate' => $on_search && empty($search_params),
         ),

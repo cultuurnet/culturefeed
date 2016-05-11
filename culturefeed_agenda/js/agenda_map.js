@@ -7,7 +7,6 @@
    * Initialize the Culturefeed Agenda map.
    */
   Drupal.CultureFeed.Agenda.initializeSearchMap = function(myOptions) {
-
     var markers = myOptions.markers;
     if (markers.length == 0) {
       return;
@@ -86,7 +85,7 @@
       });
     }
 
-  }
+  };
 
   /**
    * Geolocate current position.
@@ -118,6 +117,29 @@
 
     }
 
-  }
+  };
+
+  /**
+   * Behavior that loads the map via AJAX
+  */
+  Drupal.behaviors.loadMap = {
+    attach: function(context, settings) {
+
+      // Settings defined = we are on the search page.
+      if (settings.culturefeed_agenda_map !== undefined && settings.culturefeed_agenda_map.markers !== undefined ) {
+
+        // Initialize first on default position.
+        var myOptions = {
+          center: new google.maps.LatLng(51.146437, 3.720736),
+          zoom: 8,
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          markers: Drupal.settings.culturefeed_agenda_map.markers
+        };
+        Drupal.CultureFeed.Agenda.initializeSearchMap(myOptions);
+
+      }
+
+    }
+  };
 
 })(jQuery);
