@@ -9,6 +9,8 @@ use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\culturefeed\UserFactoryInterface;
 use Drupal\culturefeed\UserMapInterface;
+use Drupal\culturefeed_jwt\JwtTokenProvider;
+use Symfony\Component\HttpFoundation\RequestStack;
 use ValueObjects\String\String as StringLiteral;
 
 /**
@@ -40,11 +42,25 @@ class UserFactory implements UserFactoryInterface {
   protected $jwtDecoderService;
 
   /**
+   * The jwt token provider.
+   *
+   * @var \Drupal\culturefeed_jwt\JwtTokenProvider
+   */
+  protected $jwtTokenProvider;
+
+  /**
    * The query factory.
    *
    * @var \Drupal\Core\Entity\Query\QueryFactory
    */
   protected $queryFactory;
+
+  /**
+   * The request stack.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
 
   /**
    * The user map.
@@ -66,13 +82,19 @@ class UserFactory implements UserFactoryInterface {
    *   The query factory.
    * @param \CultuurNet\UDB3\Jwt\JwtDecoderServiceInterface $jwt_decoder_service
    *   The jwt decoder service.
+   * @param \Drupal\culturefeed_jwt\JwtTokenProvider $jwt_token_provider
+   *   The jwt token provider.
+   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
+   *   The request stack.
    */
   public function __construct(
       AccountInterface $account,
       UserMapInterface $user_map,
       EntityTypeManagerInterface $entity_type_manager,
       QueryFactory $query_factory,
-      JwtDecoderServiceInterface $jwt_decoder_service
+      JwtDecoderServiceInterface $jwt_decoder_service,
+      JwtTokenProvider $jwt_token_provider,
+      RequestStack $request_stack
   ) {
 
     $this->account = $account;
@@ -80,6 +102,8 @@ class UserFactory implements UserFactoryInterface {
     $this->entityStorage = $entity_type_manager->getStorage('culturefeed_jwt_token');
     $this->queryFactory = $query_factory;
     $this->jwtDecoderService = $jwt_decoder_service;
+    $this->jwtTokenProvider = $jwt_token_provider;
+    $this->requestStack = $request_stack;
 
   }
 
@@ -90,18 +114,32 @@ class UserFactory implements UserFactoryInterface {
 
     $cf_user = new \CultureFeed_User();
 
-    try {
+    // First check for a token in the request (authorization header).
+    $request = $this->requestStack->getCurrentRequest();
+    $token = $this->jwtTokenProvider->getFromRequest($request);
+    if ($token) {
+      $token_string = $token->getCredentials();
+    }
+
+    // Check if we have a stored token.
+    if (empty($token_string)) {
 
       $uitid = $this->userMap->getCultureFeedId($this->account->id());
-
-      $query = $this->queryFactory->get('culturefeed_jwt_token')->condition('uitid', $uitid);
+      $query = $this->queryFactory->get('culturefeed_jwt_token')
+        ->condition('uitid', $uitid);
       $result = $query->execute();
 
       if (count($result)) {
-
         /* @var \Drupal\culturefeed_jwt\Entity\JwtTokenEntity $entity */
         $entity = $this->entityStorage->load(key($result));
         $token_string = $entity->get('token')->value;
+      }
+
+    }
+
+    if (!empty($token_string)) {
+
+      try {
 
         $jwt = $this->jwtDecoderService->parse(new StringLiteral($token_string));
         $token = new JwtUserToken($jwt);
@@ -111,13 +149,11 @@ class UserFactory implements UserFactoryInterface {
         $cf_user->nick = $credentials->getClaim('nick');
         $cf_user->mbox = $credentials->getClaim('email');
 
-        return $cf_user;
-
+      }
+      catch (\Exception $e) {
+        watchdog_exception('culturefeed_jwt', $e);
       }
 
-    }
-    catch (\Exception $e) {
-      return $cf_user;
     }
 
     return $cf_user;

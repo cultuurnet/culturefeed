@@ -26,7 +26,7 @@ services:
     arguments: ['@culturefeed_jwt.decoder_service', '@culturefeed_jwt.authentication_provider']
   culturefeed_jwt.user_factory:
     class: Drupal\culturefeed_jwt\Factory\UserFactory
-    arguments: ['@current_user', '@culturefeed.user_map', '@entity_type.manager', '@entity.query', '@culturefeed_jwt.decoder_service']
+    arguments: ['@current_user', '@culturefeed.user_map', '@entity_type.manager', '@entity.query', '@culturefeed_jwt.decoder_service', '@culturefeed_jwt.token_provider', '@request_stack']
   culturefeed_jwt.validation_data:
     class: Lcobucci\JWT\ValidationData
     factory: culturefeed_jwt.validation_data.factory:get
