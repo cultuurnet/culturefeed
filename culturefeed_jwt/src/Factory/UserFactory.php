@@ -39,7 +39,7 @@ class UserFactory implements UserFactoryInterface {
   /**
    * Constructs a CultureFeed user object.
    *
-   * @param \Drupal\culturefeed_jwt\Factory\JwtStorageTokenFactory $jwt_storage_token_factory
+   * @param \Drupal\culturefeed_jwt\Factory\JwtTokenFactoryInterface $jwt_token_factory
    *   The jwt storage token factory.
    * @param \CultuurNet\UDB3\Jwt\JwtDecoderServiceInterface $jwt_decoder_service
    *   The jwt decoder service.
@@ -47,12 +47,12 @@ class UserFactory implements UserFactoryInterface {
    *   The jwt authentication provider.
    */
   public function __construct(
-      JwtStorageTokenFactory $jwt_storage_token_factory,
+      JwtTokenFactoryInterface $jwt_token_factory,
       JwtDecoderServiceInterface $jwt_decoder_service,
       JwtAuthenticationProvider $jwt_authentication_provider
   ) {
 
-    $this->jwtStorageTokenFactory = $jwt_storage_token_factory;
+    $this->jwtStorageTokenFactory = $jwt_token_factory;
     $this->jwtDecoderService = $jwt_decoder_service;
     $this->jwtAuthenticationProvider = $jwt_authentication_provider;
 

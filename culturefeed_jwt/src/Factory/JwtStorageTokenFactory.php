@@ -12,7 +12,7 @@ use Drupal\culturefeed\UserMapInterface;
  *
  * @package Drupal\culturefeed_jwt\Factory
  */
-class JwtStorageTokenFactory {
+class JwtStorageTokenFactory implements JwtTokenFactoryInterface {
 
   /**
    * The account.

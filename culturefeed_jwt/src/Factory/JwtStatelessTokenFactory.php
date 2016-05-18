@@ -15,7 +15,7 @@ use ValueObjects\String\String as StringLiteral;
  *
  * @package Drupal\culturefeed_jwt\Factory
  */
-class JwtStatelessTokenFactory {
+class JwtStatelessTokenFactory implements JwtTokenFactoryInterface {
 
   /**
    * The authentication provider.
