@@ -118,7 +118,7 @@ class UserFactory implements UserFactoryInterface {
     $request = $this->requestStack->getCurrentRequest();
     $token = $this->jwtTokenProvider->getFromRequest($request);
     if ($token) {
-      $token_string = $token->getCredentials();
+      $token_string = (string) $token->getCredentials();
     }
 
     // Check if we have a stored token.
