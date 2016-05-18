@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @file
+ * Contains culturefeed_jwt.module.
+ */
+
+/**
+ * Implements hook_user_logout().
+ */
+function culturefeed_jwt_user_logout($account) {
+  setcookie('token', '', time() - 24 * 60 * 60, '/');
+}

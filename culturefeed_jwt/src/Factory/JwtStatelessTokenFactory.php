@@ -1,20 +1,21 @@
 <?php
 
-namespace Drupal\culturefeed_jwt;
+namespace Drupal\culturefeed_jwt\Factory;
 
 use CultuurNet\SymfonySecurityJwt\Authentication\JwtAuthenticationProvider;
 use CultuurNet\SymfonySecurityJwt\Authentication\JwtUserToken;
 use CultuurNet\UDB3\Jwt\JwtDecoderServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use ValueObjects\String\String as StringLiteral;
 
 /**
- * Class JwtTokenProvider.
+ * Class JwtStatelessTokenFactory.
  *
- * @package Drupal\culturefeed_jwt
+ * @package Drupal\culturefeed_jwt\Factory
  */
-class JwtTokenProvider {
+class JwtStatelessTokenFactory {
 
   /**
    * The authentication provider.
@@ -31,47 +32,50 @@ class JwtTokenProvider {
   protected $decoderService;
 
   /**
-   * JwtTokenProvider constructor.
+   * The request stack.
    *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
+
+  /**
+   * JwtStatelessTokenFactory constructor.
+   *
+   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
+   *   The request stack.
    * @param \CultuurNet\UDB3\Jwt\JwtDecoderServiceInterface $decoder_service
    *   The decoder service.
    * @param \CultuurNet\SymfonySecurityJwt\Authentication\JwtAuthenticationProvider $authentication_provider
    *   The authentication provider.
    */
   public function __construct(
+      RequestStack $request_stack,
       JwtDecoderServiceInterface $decoder_service,
       JwtAuthenticationProvider $authentication_provider
   ) {
+    $this->requestStack = $request_stack;
     $this->decoderService = $decoder_service;
     $this->authenticationProvider = $authentication_provider;
   }
 
   /**
-   * Get the token from the request.
+   * Get the token.
    *
-   * @param \Symfony\Component\HttpFoundation\Request $request
-   *   The request.
-   *
-   * @return null|\CultuurNet\SymfonySecurityJwt\Authentication\JwtUserToken
-   *   The user token.
+   * @return string
+   *   The token.
    */
-  public function getFromRequest(Request $request) {
+  public function get() {
 
-    // First try to get the token string from an authorization header.
-    // Second check query parameters.
+    $request = $this->requestStack->getCurrentRequest();
     $token_string = $this->getTokenStringFromHeader($request);
-    if (empty($token_string)) {
-      $query = $request->query;
-      $token_string = $query->get('jwt');
-    }
 
     if (!empty($token_string)) {
 
       $jwt = $this->decoderService->parse(new StringLiteral($token_string));
       $token = new JwtUserToken($jwt);
       try {
-        $authenticated_token = $this->authenticationProvider->authenticate($token);
-        return $authenticated_token;
+        $this->authenticationProvider->authenticate($token);
+        return $token_string;
       }
       catch (AuthenticationException $e) {
         watchdog_exception('culturefeed_jwt', $e);
@@ -79,7 +83,7 @@ class JwtTokenProvider {
 
     }
 
-    return NULL;
+    return '';
 
   }
 

@@ -2,11 +2,15 @@
 
 namespace Drupal\culturefeed_jwt;
 
+use CultuurNet\SymfonySecurityJwt\Authentication\JwtAuthenticationProvider;
+use CultuurNet\SymfonySecurityJwt\Authentication\JwtUserToken;
+use CultuurNet\UDB3\Jwt\JwtDecoderServiceInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\culturefeed\UserMapInterface;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
+use ValueObjects\String\String as StringLiteral;
 
 /**
  * Class Authentication.
@@ -14,6 +18,20 @@ use Symfony\Component\HttpFoundation\Request;
  * @package Drupal\culturefeed_jwt
  */
 class Authentication implements AuthenticationInterface {
+
+  /**
+   * The authentication provider.
+   *
+   * @var \CultuurNet\SymfonySecurityJwt\Authentication\JwtAuthenticationProvider
+   */
+  protected $authenticationProvider;
+
+  /**
+   * The decoder service.
+   *
+   * @var \CultuurNet\UDB3\Jwt\JwtDecoderServiceInterface
+   */
+  protected $decoderService;
 
   /**
    * The entity type manager.
@@ -30,13 +48,6 @@ class Authentication implements AuthenticationInterface {
   protected $entityQuery;
 
   /**
-   * The token provider.
-   *
-   * @var \Drupal\culturefeed_jwt\JwtTokenProvider
-   */
-  protected $tokenProvider;
-
-  /**
    * The user map.
    *
    * @var \Drupal\culturefeed\UserMapInterface
@@ -46,8 +57,10 @@ class Authentication implements AuthenticationInterface {
   /**
    * Authentication constructor.
    *
-   * @param \Drupal\culturefeed_jwt\JwtTokenProvider $token_provider
-   *   The token provider.
+   * @param \CultuurNet\UDB3\Jwt\JwtDecoderServiceInterface $decoder_service
+   *   The decoder service.
+   * @param \CultuurNet\SymfonySecurityJwt\Authentication\JwtAuthenticationProvider $authentication_provider
+   *   The authentication provider.
    * @param \Drupal\culturefeed\UserMapInterface $user_map
    *   The user map.
    * @param EntityTypeManagerInterface $entity_type_manager
@@ -56,13 +69,15 @@ class Authentication implements AuthenticationInterface {
    *   The query factory.
    */
   public function __construct(
-      JwtTokenProvider $token_provider,
+      JwtDecoderServiceInterface $decoder_service,
+      JwtAuthenticationProvider $authentication_provider,
       UserMapInterface $user_map,
       EntityTypeManagerInterface $entity_type_manager,
       QueryFactory $entity_query
   ) {
 
-    $this->tokenProvider = $token_provider;
+    $this->decoderService = $decoder_service;
+    $this->authenticationProvider = $authentication_provider;
     $this->userMap = $user_map;
     $this->entityTypeManager = $entity_type_manager;
     $this->entityQuery = $entity_query;
@@ -76,8 +91,13 @@ class Authentication implements AuthenticationInterface {
 
     try {
 
-      $jwt = $this->tokenProvider->getFromRequest($request);
-      $credentials = $jwt->getCredentials();
+      $query = $request->query;
+      $token_string = $query->get('jwt');
+      $jwt = $this->decoderService->parse(new StringLiteral($token_string));
+      $token = new JwtUserToken($jwt);
+      $this->authenticationProvider->authenticate($token);
+      $credentials = $token->getCredentials();
+      setcookie('token', json_encode($token_string), NULL, '/');
 
       $cf_user = new \CultureFeed_User();
       $cf_user->id = $credentials->getClaim('uid');
@@ -104,7 +124,7 @@ class Authentication implements AuthenticationInterface {
 
     $storage->create(array(
       'uitid' => $cf_user->id,
-      'token' => (string) $credentials,
+      'token' => $token_string,
     ))->save();
 
     if ($account) {

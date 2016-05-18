@@ -1,5 +1,18 @@
 services:
 
+  culturefeed_jwt.access_check:
+    class: Drupal\culturefeed_jwt\Access\StatelessAccess
+    arguments: ['@culturefeed_jwt.stateless_token.factory']
+    tags:
+      - { name: access_check, applies_to: _culturefeed_jwt_stateless_access }
+  culturefeed_jwt.authentication:
+    class: Drupal\culturefeed_jwt\Authentication
+    arguments:
+      - '@culturefeed_jwt.decoder_service'
+      - '@culturefeed_jwt.authentication_provider'
+      - '@culturefeed.user_map'
+      - '@entity_type.manager'
+      - '@entity.query'
   culturefeed_jwt.authentication_provider:
     class: CultuurNet\SymfonySecurityJwt\Authentication\JwtAuthenticationProvider
     arguments: ['@culturefeed_jwt.decoder_service']
@@ -15,29 +28,25 @@ services:
   culturefeed_jwt.public_key.factory:
     class: Drupal\culturefeed_jwt\Factory\JwtPublicKeyFactory
     arguments: ['@config.factory']
-  culturefeed_jwt.token:
-    class: CultuurNet\SymfonySecurityJwt\Authentication\JwtUserToken
-    factory: culturefeed_jwt.token.factory:get
-  culturefeed_jwt.token.factory:
-    class: Drupal\culturefeed_jwt\Factory\JwtTokenFactory
-    arguments: ['@entity.query', '@current_user']
-  culturefeed_jwt.token_provider:
-    class: Drupal\culturefeed_jwt\JwtTokenProvider
-    arguments: ['@culturefeed_jwt.decoder_service', '@culturefeed_jwt.authentication_provider']
+  culturefeed_jwt.route_subscriber:
+    class: Drupal\culturefeed_jwt\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
+  culturefeed_jwt.stateless_token.factory:
+    class: Drupal\culturefeed_jwt\Factory\JwtStatelessTokenFactory
+    arguments: ['@request_stack', '@culturefeed_jwt.decoder_service', '@culturefeed_jwt.authentication_provider']
+  culturefeed_jwt.storage_token.factory:
+    class: Drupal\culturefeed_jwt\Factory\JwtStorageTokenFactory
+    arguments: ['@current_user', '@culturefeed.user_map', '@entity.query', '@entity_type.manager']
   culturefeed_jwt.user_factory:
     class: Drupal\culturefeed_jwt\Factory\UserFactory
-    arguments: ['@current_user', '@culturefeed.user_map', '@entity_type.manager', '@entity.query', '@culturefeed_jwt.decoder_service', '@culturefeed_jwt.token_provider', '@request_stack']
+    arguments:
+      - '@culturefeed_jwt.storage_token.factory'
+      - '@culturefeed_jwt.decoder_service'
+      - '@culturefeed_jwt.authentication_provider'
   culturefeed_jwt.validation_data:
     class: Lcobucci\JWT\ValidationData
     factory: culturefeed_jwt.validation_data.factory:get
   culturefeed_jwt.validation_data.factory:
     class: Drupal\culturefeed_jwt\Factory\JwtValidationDataFactory
     arguments: ['@config.factory']
-
-  culturefeed_jwt.authentication:
-    class: Drupal\culturefeed_jwt\Authentication
-    arguments: ['@culturefeed_jwt.token_provider', '@culturefeed.user_map', '@entity_type.manager', '@entity.query']
-  culturefeed_jwt.subscriber:
-    class: Drupal\culturefeed_jwt\Routing\RouteSubscriber
-    tags:
-      - { name: event_subscriber }
