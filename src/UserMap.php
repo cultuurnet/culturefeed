@@ -72,10 +72,10 @@ class UserMap implements UserMapInterface {
   /**
    * {@inheritdoc}
    */
-  public function get(CultureFeed_User $user, array $token) {
+  public function get(CultureFeed_User $user) {
 
     // Check if the user is already known in our system.
-    $query = $this->entityQuery->get('culturefeed_user')->condition('uitid', $token['userId']);
+    $query = $this->entityQuery->get('culturefeed_user')->condition('uitid', $user->id);
     $result = $query->execute();
     $uid = reset($result);
 

@@ -19,14 +19,11 @@ interface UserMapInterface {
    *
    * @param CultureFeed_User $user
    *   A Culturefeed user.
-   * @param array $token
-   *   An associative array containing the token, secret and callback confirmed
-   *   status.
    *
    * @return mixed $user
    *   A user object.
    */
-  public function get(CultureFeed_User $user, array $token);
+  public function get(CultureFeed_User $user);
 
   /**
    * Returns the culturefeed user id.
