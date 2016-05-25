@@ -162,12 +162,16 @@ class Authentication implements AuthenticationInterface {
 
     $uitid_credentials = $this->uitidCredentialsFetcher->getAccessTokenFromJwt($jwt);
 
-    $storage->create(array(
-      'uitid' => $cf_user->id,
-      'token' => $uitid_credentials->getToken(),
-      'secret' => $uitid_credentials->getTokenSecret(),
-      'application_key' => $this->consumerCredentials->getKey(),
-    ))->save();
+    if ($uitid_credentials) {
+
+      $storage->create(array(
+        'uitid' => $cf_user->id,
+        'token' => $uitid_credentials->getToken(),
+        'secret' => $uitid_credentials->getTokenSecret(),
+        'application_key' => $this->consumerCredentials->getKey(),
+      ))->save();
+
+    }
 
     if ($account) {
       user_login_finalize($account);
