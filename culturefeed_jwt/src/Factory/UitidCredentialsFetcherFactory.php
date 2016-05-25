@@ -6,6 +6,11 @@ use CultuurNet\Auth\ConsumerCredentials;
 use CultuurNet\UitidCredentials\UitidCredentialsFetcher;
 use Drupal\Core\Config\ConfigFactoryInterface;
 
+/**
+ * Class UitidCredentialsFetcherFactory.
+ *
+ * @package Drupal\culturefeed_jwt\Factory
+ */
 class UitidCredentialsFetcherFactory {
 
   /**
@@ -27,7 +32,7 @@ class UitidCredentialsFetcherFactory {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config
    *   The config factory.
-   * @param \CultuurNet\Auth\ConsumerCredentials
+   * @param \CultuurNet\Auth\ConsumerCredentials $consumer_credentials
    *   The consumer credentials.
    */
   public function __construct(ConfigFactoryInterface $config, ConsumerCredentials $consumer_credentials) {
