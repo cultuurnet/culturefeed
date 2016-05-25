@@ -13,6 +13,8 @@ services:
       - '@culturefeed.user_map'
       - '@entity_type.manager'
       - '@entity.query'
+      - '@culturefeed.consumer_credentials'
+      - '@culturefeed_jwt.oauth_fetcher'
   culturefeed_jwt.authentication_provider:
     class: CultuurNet\SymfonySecurityJwt\Authentication\JwtAuthenticationProvider
     arguments: ['@culturefeed_jwt.decoder_service']
@@ -22,6 +24,12 @@ services:
   culturefeed_jwt.decoder_service.factory:
     class: Drupal\culturefeed_jwt\Factory\JwtDecoderServiceFactory
     arguments: ['@culturefeed_jwt.validation_data', '@culturefeed_jwt.public_key']
+  culturefeed_jwt.oauth_fetcher:
+    class: CultuurNet\UitidCredentials\UitidCredentialsFetcher
+    factory: culturefeed_jwt.oauth_fetcher.factory:get
+  culturefeed_jwt.oauth_fetcher.factory:
+    class: Drupal\culturefeed_jwt\Factory\UitidCredentialsFetcherFactory
+    arguments: ['@config.factory', '@culturefeed.consumer_credentials']
   culturefeed_jwt.public_key:
     class: Lcobucci\JWT\Signer\Key
     factory: culturefeed_jwt.public_key.factory:get

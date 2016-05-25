@@ -2,9 +2,11 @@
 
 namespace Drupal\culturefeed_jwt;
 
+use CultuurNet\Auth\ConsumerCredentials;
 use CultuurNet\SymfonySecurityJwt\Authentication\JwtAuthenticationProvider;
 use CultuurNet\SymfonySecurityJwt\Authentication\JwtUserToken;
 use CultuurNet\UDB3\Jwt\JwtDecoderServiceInterface;
+use CultuurNet\UitidCredentials\UitidCredentialsFetcher;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\culturefeed\UserMapInterface;
@@ -25,6 +27,13 @@ class Authentication implements AuthenticationInterface {
    * @var \CultuurNet\SymfonySecurityJwt\Authentication\JwtAuthenticationProvider
    */
   protected $authenticationProvider;
+
+  /**
+   * The consumer credentials.
+   *
+   * @var \CultuurNet\Auth\ConsumerCredentials
+   */
+  protected $consumerCredentials;
 
   /**
    * The decoder service.
@@ -48,6 +57,13 @@ class Authentication implements AuthenticationInterface {
   protected $entityQuery;
 
   /**
+   * The uitid credentials fetcher.
+   *
+   * @var \CultuurNet\UitidCredentials\UitidCredentialsFetcher
+   */
+  protected $uitidCredentialsFetcher;
+
+  /**
    * The user map.
    *
    * @var \Drupal\culturefeed\UserMapInterface
@@ -67,13 +83,19 @@ class Authentication implements AuthenticationInterface {
    *   The entity type manger.
    * @param QueryFactory $entity_query
    *   The query factory.
+   * @param \CultuurNet\Auth\ConsumerCredentials $consumer_credentials
+   *   The consumer credentials.
+   * @param \CultuurNet\UitidCredentials\UitidCredentialsFetcher $uitid_credentials_fetcher
+   *   The uitid credentials fetcher.
    */
   public function __construct(
       JwtDecoderServiceInterface $decoder_service,
       JwtAuthenticationProvider $authentication_provider,
       UserMapInterface $user_map,
       EntityTypeManagerInterface $entity_type_manager,
-      QueryFactory $entity_query
+      QueryFactory $entity_query,
+      ConsumerCredentials $consumer_credentials,
+      UitidCredentialsFetcher $uitid_credentials_fetcher
   ) {
 
     $this->decoderService = $decoder_service;
@@ -81,6 +103,8 @@ class Authentication implements AuthenticationInterface {
     $this->userMap = $user_map;
     $this->entityTypeManager = $entity_type_manager;
     $this->entityQuery = $entity_query;
+    $this->consumerCredentials = $consumer_credentials;
+    $this->uitidCredentialsFetcher = $uitid_credentials_fetcher;
 
   }
 
@@ -115,6 +139,7 @@ class Authentication implements AuthenticationInterface {
 
     $account = $this->userMap->get($cf_user);
 
+    // Store the jwt token.
     $storage = $this->entityTypeManager->getStorage('culturefeed_jwt_token');
 
     $query = $this->entityQuery->get('culturefeed_jwt_token')->condition('uitid', $cf_user->id);
@@ -126,6 +151,27 @@ class Authentication implements AuthenticationInterface {
       'uitid' => $cf_user->id,
       'token' => $token_string,
     ))->save();
+
+    // Store the oauth token.
+    $storage = $this->entityTypeManager->getStorage('culturefeed_token');
+
+    $query = $this->entityQuery->get('culturefeed_token')->condition('uitid', $cf_user->id);
+    $result = $query->execute();
+    $entities = $storage->loadMultiple(array_keys($result));
+    $storage->delete($entities);
+
+    $uitid_credentials = $this->uitidCredentialsFetcher->getAccessTokenFromJwt($jwt);
+
+    if ($uitid_credentials) {
+
+      $storage->create(array(
+        'uitid' => $cf_user->id,
+        'token' => $uitid_credentials->getToken(),
+        'secret' => $uitid_credentials->getTokenSecret(),
+        'application_key' => $this->consumerCredentials->getKey(),
+      ))->save();
+
+    }
 
     if ($account) {
       user_login_finalize($account);
