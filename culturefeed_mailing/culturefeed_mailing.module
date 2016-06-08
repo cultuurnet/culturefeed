@@ -488,6 +488,9 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
     $form['inschrijven'] = array(
       '#type' => 'submit',
       '#value' => t('Subscribe'),
+      '#attributes' => array(
+        'class' => array('btn-primary'),
+      ),
     );
 
   }
