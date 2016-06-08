@@ -327,6 +327,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
           'query' => $query,
           'path' => $path,
           'active' => $sub_item_active,
+          'active_subitem' => $has_active_subitem,
         ));
 
       }
@@ -350,6 +351,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
       'query' => $query,
       'path' => $path,
       'active' => $item_active,
+      'active_subitem' => $has_active_subitem,
     ));
 
     // Add it to the list.
