@@ -158,7 +158,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
 
       var inputs = $(this.input).closest('form').find(':input:visible');
       var index = inputs.index($(this.input));
-      inputs.eq(index + 1).focus();
+      //inputs.eq(index + 1).focus();
 
     }
 
