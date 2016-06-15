@@ -17,9 +17,8 @@
         $('#activities-table').hide();
         $(this).after(Drupal.CulturefeedSearch.Activities.throbber);
         $(this).parents('form').submit();
-
       });
-      $('#edit-submit').hide();
+      $('#culturefeed-social-user-activity-filter-form #edit-submit').hide();
     }
   };
 
