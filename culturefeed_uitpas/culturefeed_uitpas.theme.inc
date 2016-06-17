@@ -237,7 +237,10 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
       }
 
     }
-    dpm($prices);
+
+    foreach ($prices as $key => $price) {
+      $prices[$key] = str_replace('.', ',', $price);
+    }
 
     if (count($prices)) {
       $vars['price'] = '<p>' . implode('</p><p>', array_unique($prices)) . '</p>';

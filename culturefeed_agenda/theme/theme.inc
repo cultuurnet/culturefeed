@@ -192,6 +192,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
     if ($detail->getPrice()) {
       $variables['price'] = $detail->getPrice()->getValue() > 0 ? '&euro; ' . $detail->getPrice()->getValue() : t('free');
+      $variables['price'] = str_replace('.', ',', $variables['price']);
       $variables['price_description'] = $detail->getPrice()->getDescription();
     }
 
@@ -493,7 +494,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       }
     }
   }
-  
+
   // Enhance event-details with UiTPAS-information if culturefeed_uitpas is enabled
   if (module_exists('culturefeed_uitpas')) {
     $uitpas_event = culturefeed_uitpas_get_uitpas_event($item);
