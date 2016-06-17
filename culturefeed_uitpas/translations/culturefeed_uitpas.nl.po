@@ -181,13 +181,13 @@ msgid "Promotions"
 msgstr "Voordelen"
 
 #: culturefeed_uitpas.theme.inc:226
-msgid "Opportunities tariff with @system: !tariff"
-msgstr "Kansentarief voor @system: !tariff"
+msgid "Opportunities tariff with @system: &euro; !tariff"
+msgstr "Kansentarief voor @system: &euro; !tariff"
 
 #: culturefeed_uitpas.theme.inc:230
-msgid "Opportunities tariff for pass holders from another region: !tariff"
+msgid "Opportunities tariff for pass holders from another region: &euro; !tariff"
 msgstr ""
-"Kansentarief voor UiTPAS gebruikers uit een andere stad of gemeente: !tariff"
+"Kansentarief voor UiTPAS gebruikers uit een andere stad of gemeente: &euro; !tariff"
 
 #: culturefeed_uitpas.variable.inc:15
 msgid "Culturefeed uitpas: profile notifications: intro"
