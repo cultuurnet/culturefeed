@@ -107,11 +107,6 @@ class CultureFeedSearchPage {
   protected $facetComponent;
 
   /**
-   * Stores the exception that occurred when searching.
-   */
-  protected $exception;
-
-  /**
    * Gets the default sortkey.
    * @return String $sortKey
    */
