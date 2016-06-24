@@ -869,25 +869,6 @@ function culturefeed_search_ui_block_view($delta) {
       }
       break;
 
-    case 'facet-holidays':
-      // Don't show block if there are no search results.
-      $search_result = culturefeed_get_search_result();
-      if (!$search_result instanceof \Cultuurnet\Search\SearchResult || $search_result->getTotalCount() == 0) {
-        return;
-      }
-
-      $filter_options = variable_get('culturefeed_search_holidays_options', culturefeed_search_ui_default_holidays_options());
-      foreach($filter_options as $key => $option) {
-        if (!$option['exposed']) {
-          unset($filter_options[$key]);
-        }
-      }
-      if (!empty($filter_options)) {
-        $block['subject'] = t('Holidays');
-        $block['content'] = culturefeed_search_ui_block_holidays_facet($filter_options);
-      }
-      break;
-
     case 'location-search':
       $block = culturefeed_search_ui_block_location_search();
     break;
