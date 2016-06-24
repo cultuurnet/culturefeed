@@ -241,11 +241,11 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
           if ($condition->definition == $condition::DEFINITION_KANSARM && $key->tariff > 0) {
 
             if ($condition->value == $condition::VALUE_MY_CARDSYSTEM) {
-              $prices[] = t('Opportunities tariff with @system: !tariff', array('@system' => culturefeed_uitpas_cardsystem_name($card_system), '!tariff' => $key->tariff));
+              $prices[] = t('Opportunities tariff with @system: &euro; !tariff', array('@system' => culturefeed_uitpas_cardsystem_name($card_system), '!tariff' => $key->tariff));
             }
 
             if ($condition->value == $condition::VALUE_AT_LEAST_ONE_CARDSYSTEM) {
-              $prices[] = t('Opportunities tariff for pass holders from another region: !tariff', array('!tariff' => $key->tariff));
+              $prices[] = t('Opportunities tariff for pass holders from another region: &euro; !tariff', array('!tariff' => $key->tariff));
             }
 
           }
@@ -254,6 +254,10 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
 
       }
 
+    }
+
+    foreach ($prices as $key => $price) {
+      $prices[$key] = str_replace('.', ',', $price);
     }
 
     if (count($prices)) {
