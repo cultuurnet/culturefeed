@@ -374,7 +374,7 @@ function theme_culturefeed_userpoints_ui_points_earned_message($variables) {
     return;
   }
 
-  $message = '<p>' . t('Congratulations! you collected') . ' <strong>' . $points_message . '</strong> ' . t('with your @action and have now', array('@action' => strtolower($config->action))) . ' <strong>' . $total_points_message . '</strong></p>';
+  $message = '<p>' . t('Congratulations! you collected') . ' <strong>' . $points_message . '</strong> ' . t('and have now') . ' <strong>' . $total_points_message . '</strong></p>';
 
   return $message;
 
