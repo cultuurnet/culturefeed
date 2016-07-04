@@ -169,6 +169,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $enabled_facilities = variable_get('culturefeed_facet_enabled_options', NULL);
   $variables['facilities'] = array();
   if(!empty($facilities)) {
+  if(!empty($facilities) && !empty($enabled_facilities['facility'])) {
     foreach($facilities['id'] as $key => $facility) {
       if(in_array($facility,$enabled_facilities['facility'])) {
         $variables['facilities'][] = $facilities['text'][$key];
