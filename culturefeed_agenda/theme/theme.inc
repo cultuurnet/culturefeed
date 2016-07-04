@@ -168,7 +168,6 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $cdb_item);
   $enabled_facilities = variable_get('culturefeed_facet_enabled_options', NULL);
   $variables['facilities'] = array();
-  if(!empty($facilities)) {
   if(!empty($facilities) && !empty($enabled_facilities['facility'])) {
     foreach($facilities['id'] as $key => $facility) {
       if(in_array($facility,$enabled_facilities['facility'])) {
@@ -1243,7 +1242,7 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
   $og_tags['og:site_name'] = variable_get('site_name', '');
   $og_tags['og:url'] = url($variables['url'], array('absolute' => TRUE));
   $og_tags['og:description'] = implode(' - ', $description_parts);
-  if ($variables['main_picture']) {   
+  if ($variables['main_picture']) {
     $image = str_replace(' ', '%20', $variables['main_picture']);
     $colonpos = strpos($image, ':');
     if ($colonpos) {
