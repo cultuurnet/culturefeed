@@ -40,6 +40,12 @@ function culturefeed_agenda_admin_settings_form() {
     '#default_value' => variable_get('culturefeed_agenda_max_items_per_map', 700),
   );
 
+  $form['gmap']['culturefeed_agenda_google_maps_api_key'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Google Maps API key'),
+    '#default_value' => variable_get('culturefeed_agenda_google_maps_api_key', ''),
+  );
+
   $form = system_settings_form($form);
   $form['#submit'] = array('culturefeed_agenda_admin_settings_form_submit');
 
