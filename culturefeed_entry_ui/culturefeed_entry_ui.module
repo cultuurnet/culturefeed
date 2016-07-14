@@ -131,7 +131,7 @@ function culturefeed_entry_ui_menu() {
     'access arguments' => array('administer site configuration'),
     'file' => 'includes/culturefeed_entry_ui.admin.inc',
   );
-  
+
   $items['admin/config/culturefeed/entry'] = array(
     'title' => 'CultureFeed Entry',
     'description' => 'Change CultureFeed Entry API settings like API Application key, location, ...',
@@ -195,12 +195,9 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
   }
 
   $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
-  if ($culturefeed_user && user_access('edit culturefeed events')) {
-    $ubd_permission = Drupalculturefeed_EntryApi::checkPermission($culturefeed_user->id, $culturefeed_user->mbox, array('ids' => $event->getId()));
-  }
-  
+
   // Add tab for editing the event.
-  if (user_access('edit culturefeed events') && ($event->getEntity()->getCreatedBy() == $culturefeed_user->mbox || (isset($ubd_permission) && $ubd_permission[$event->getId()] == 'true'))) {
+  if (user_access('edit culturefeed events') && ($event->getEntity()->getCreatedBy() == $culturefeed_user->mbox)) {
 
     $link = array(
       'href' => $path . '/edit',
@@ -310,34 +307,34 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
     case 'opening_times_add_more':
       $form_state['#opening_times_needed'] = count(element_children($form['basic']['when']['period_or_permanent']['opening_times']['monday'])) + 1;
       break;
-    
+
     case 'ld_add_more':
       $form_state['#ld_needed'] = TRUE;
       break;
-    
+
     case 'price_add_more':
       $form_state['#price_needed'] = TRUE;
       break;
-    
+
     case 'actor_add_more':
       $form_state['#actor_needed'] = TRUE;
       if (isset($form_state['input']['organiser']['actor']['organiser_actor_label']) && $form_state['input']['organiser']['actor']['organiser_actor_label']) {
         $form_state['#actor_label'] = $form_state['input']['organiser']['actor']['organiser_actor_label'];
       }
       break;
-      
+
     case 'performers_add_more':
       $form_state['#performers_needed'] = count(element_children($form['extra']['performers']['wrapper']));
       break;
-    
+
     case 'contacts_add_more':
       $form_state['#contacts_needed'] = count(element_children($form['extra']['contacts']['wrapper']));
       break;
-      
+
     case 'languages_add_more':
       $form_state['#languages_needed'] = count(element_children($form['extra']['language']['wrapper']));
       break;
-      
+
   }
 
   $form_state['rebuild'] = TRUE;
