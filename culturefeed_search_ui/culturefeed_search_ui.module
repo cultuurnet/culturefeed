@@ -16,7 +16,7 @@ define("CULTUREFEED_SEARCH_UI_PAGER_ITEMS_PER_PAGE", 10);
 
 define('CULTUREFEED_SEARCH_SORT_ALPHABETICALLY', 'alphabetically');
 define('CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS', 'total_results');
-define('CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS', 3);
+define('CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS', 4);
 
 use CultuurNet\Search\Parameter;
 
@@ -827,6 +827,7 @@ function culturefeed_search_ui_block_view($delta) {
     case 'filter-form':
     case 'filter-form-2':
     case 'filter-form-3':
+    case 'filter-form-4':
       // Don't show block if there are no search results.
       $search_result = culturefeed_get_search_result();
       if (!$search_result instanceof \Cultuurnet\Search\SearchResult || $search_result->getTotalCount() == 0) {
