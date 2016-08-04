@@ -330,3 +330,24 @@ function culturefeed_prepare_curl_upload_from_file($file) {
 
   return $file_upload;
 }
+
+/**
+ * Implements hook_culturefeed_user_delete().
+ *
+ * @param $cf_uid The culturefeed userid
+ */
+function culturefeed_culturefeed_user_delete($cf_uid) {
+  // Delete the drupal user
+  $uid = db_query("SELECT uid FROM {culturefeed_user} WHERE cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchField();
+  if ($uid) {
+    user_delete($uid);
+
+    // Logout
+    global $user;
+    if ($user->uid == $uid) {
+      module_load_include('inc', 'user', 'user.pages');
+      user_logout();
+    }
+  }
+}
+

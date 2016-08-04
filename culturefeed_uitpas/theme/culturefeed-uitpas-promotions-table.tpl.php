@@ -1,9 +1,9 @@
 <section class="overview overview-promotions">
   <?php foreach($items as $item): ?>
-  <article class="<?php print implode(' ', $item['classes']); ?> clearfix">
+  <article class="article <?php print implode(' ', $item['classes']); ?> clearfix">
 
     <?php print $item['overlay_link']; ?>
-    <main>
+    <div class="article--main">
       <figure>
         <?php print $item['image']; ?>
       </figure>
@@ -15,14 +15,14 @@
         <?php endforeach; ?>
       </ul>
       <span class="availability"><?php print $item['availability']; ?></span>
-    </main> <!--/ end .main -->
+    </div> <!--/ end .main -->
 
-    <aside class="points <?php print $item['points']['classes']; ?>">
+    <div class="points <?php print $item['points']['classes']; ?>">
       <span class="points-value points-value__brand"><?php print $item['points']['value']; ?></span>
       <?php if ($item['points']['remark']): ?>
       <span class="points-remark"><?php print $item['points']['remark']; ?></span>
       <?php endif; ?>
-    </aside> <!--/ end aside -->
+    </div> <!--/ end aside -->
 
   </article> <!--/ end article -->
   <?php endforeach; ?>

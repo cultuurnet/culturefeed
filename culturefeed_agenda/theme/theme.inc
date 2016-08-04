@@ -168,7 +168,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $cdb_item);
   $enabled_facilities = variable_get('culturefeed_facet_enabled_options', NULL);
   $variables['facilities'] = array();
-  if(!empty($facilities)) {
+  if(!empty($facilities) && !empty($enabled_facilities['facility'])) {
     foreach($facilities['id'] as $key => $facility) {
       if(in_array($facility,$enabled_facilities['facility'])) {
         $variables['facilities'][] = $facilities['text'][$key];
@@ -176,6 +176,11 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     }
   }
 
+  // Vliegtypes of this item (plain text and links).
+  $vliegtypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_UMV, $cdb_item);
+  if (!empty($vliegtypes['text'])) {
+    $variables['forkids'] = TRUE;
+  }
 
   if ($detail) {
 
@@ -192,6 +197,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
     if ($detail->getPrice()) {
       $variables['price'] = $detail->getPrice()->getValue() > 0 ? '&euro; ' . $detail->getPrice()->getValue() : t('free');
+      $variables['price'] = str_replace('.', ',', $variables['price']);
       $variables['price_description'] = $detail->getPrice()->getDescription();
     }
 
@@ -328,6 +334,10 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   }
 
   $variables['cdbid'] = $cdb_item->getCdbid();
+
+  if (method_exists($cdb_item, 'getCreatedBy')) { // TODO: add method for productions (UIV-1761)
+    $variables['created_by'] = $cdb_item->getCreatedBy();
+  }
 
   // Social stats.
   $variables['recommend_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_RECOMMEND);
@@ -493,7 +503,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       }
     }
   }
-  
+
   // Enhance event-details with UiTPAS-information if culturefeed_uitpas is enabled
   if (module_exists('culturefeed_uitpas')) {
     $uitpas_event = culturefeed_uitpas_get_uitpas_event($item);
@@ -1232,7 +1242,7 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
   $og_tags['og:site_name'] = variable_get('site_name', '');
   $og_tags['og:url'] = url($variables['url'], array('absolute' => TRUE));
   $og_tags['og:description'] = implode(' - ', $description_parts);
-  if ($variables['main_picture']) {   
+  if ($variables['main_picture']) {
     $image = str_replace(' ', '%20', $variables['main_picture']);
     $colonpos = strpos($image, ':');
     if ($colonpos) {

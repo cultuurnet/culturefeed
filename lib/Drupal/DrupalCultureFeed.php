@@ -33,6 +33,9 @@ class DrupalCultureFeed extends DrupalCultureFeedBase {
 
   public static function deleteUser($id) {
     self::getLoggedInUserInstance()->deleteUser($id);
+
+    // Let other modules hook onto the user delete.
+    module_invoke_all('culturefeed_user_delete', $id);
   }
 
   public static function getUser($id, $private = FALSE) {

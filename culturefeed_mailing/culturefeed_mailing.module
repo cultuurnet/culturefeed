@@ -443,7 +443,7 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
 
     $form['mail'] = array(
       '#type' => 'textfield',
-      '#title' => variable_get('culturefeed_mailing_block_description', ''),
+      '#title' => t('Email'),
       '#description' => $description,
       '#size' => 40,
       '#maxlength' => 255,

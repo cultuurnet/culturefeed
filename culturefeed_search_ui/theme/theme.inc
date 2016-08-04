@@ -15,8 +15,12 @@ function culturefeed_search_ui_preprocess_culturefeed_search_page(&$vars) {
 
   $vars['results_found'] = $vars['searchresult']->getTotalCount();
 
-  $vars['rss_url'] = url(current_path() . '/rss', array('absolute' => TRUE, 'query' => drupal_get_query_parameters(NULL, array('q', 'page'))));
-  $vars['rss_title'] = t('Subscribe to an RSS feed with recently added items for this search');
+  // Only provide RSS feed when we're on a valid path
+  if (current_path() == 'agenda/search') {
+    $vars['rss_url'] = url(current_path() . '/rss', array('absolute' => TRUE, 'query' => drupal_get_query_parameters(NULL, array('q', 'page'))));
+    $vars['rss_title'] = t('Subscribe to an RSS feed with recently added items for this search');
+    $vars['rss_link'] = l('RSS', $vars['rss_url'], array('attributes' => array('rel' => 'nofollow')));
+  }
 
 }
 
@@ -158,6 +162,7 @@ function _culturefeed_search_ui_get_nested_facet_links($facet_items, $facet_key,
         'query' => $query,
         'path' => $link_path,
         'active' => $facet_item_active,
+        'active_subitem' => $has_active_subitem,
       )),
     );
 
@@ -322,6 +327,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
           'query' => $query,
           'path' => $path,
           'active' => $sub_item_active,
+          'active_subitem' => $has_active_subitem,
         ));
 
       }
@@ -345,6 +351,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet(&$variables) 
       'query' => $query,
       'path' => $path,
       'active' => $item_active,
+      'active_subitem' => $has_active_subitem,
     ));
 
     // Add it to the list.
@@ -440,7 +447,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
     }
 
   }
-  
+
   if (isset($query['distance'])) {
     // We have to unset distance when region of level 1, 2 and 3 is used (distance only works with level 4)
     $regions_query = db_select('culturefeed_search_terms', 'cst');
@@ -453,9 +460,9 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
     $db_or->isNull('cst.p3');
     $regions_query->condition($db_or);
     $result = $regions_query->execute();
-    if ($result->rowCount() > 0) {    
+    if ($result->rowCount() > 0) {
       unset($query['distance']);
-    }   
+    }
   }
 
   // Handle multiple select/unselect for 'agefrom' facet items.
@@ -536,10 +543,13 @@ function culturefeed_search_ui_preprocess_culturefeed_search_sort_links(&$variab
     }
 
     $query['sort'] = $option['value'];
-    $attributes = array();
+    $attributes = array(
+      'rel' => 'nofollow',
+    );
 
     if ($option['value'] == $current_sort) {
       $attributes = array(
+        'rel' => 'nofollow',
         'class' => array('active'),
       );
     }
@@ -570,13 +580,13 @@ function culturefeed_search_ui_preprocess_culturefeed_search_block_filter_links(
   $path = !empty($variables['path']) ? $variables['path'] : current_path();
 
   foreach ($variables['filter_options'] as $filter_option) {
-    $items[] = array(
-      'data' => theme('culturefeed_search_block_filter_links_item', array(
-        'filter_option' => $filter_option,
-        'query' => $variables['query'],
-        'path' => $path
-      )),
-    );
+      $items[] = array(
+        'data' => theme('culturefeed_search_block_filter_links_item', array(
+          'filter_option' => $filter_option,
+          'query' => $variables['query'],
+          'path' => $path
+        )),
+      );
 
   }
 
@@ -594,6 +604,7 @@ function culturefeed_search_ui_preprocess_culturefeed_search_block_filter_links_
   $path = !empty($variables['path']) ? $variables['path'] : current_path();
 
   $item_active = isset($active_query[$filter_option['query-string']]) ? TRUE: FALSE;
+
   $query_string = $filter_option['query-string'];
 
   // Add/remove the filter options from the active query.
@@ -605,7 +616,14 @@ function culturefeed_search_ui_preprocess_culturefeed_search_block_filter_links_
   }
 
   $variables['url'] = url($path, array('query' => $active_query));
-  $variables['label'] = $filter_option['title'];
+
+  if (array_key_exists('holiday', $filter_option)) {
+    $variables['label'] = $filter_option['holiday'];
+  }
+  else {
+    $variables['label'] = $filter_option['title'];
+  }
+
   $variables['active'] = $item_active;
 
 }
@@ -667,15 +685,29 @@ function theme_culturefeed_search_ui_admin_filter_form_options($variables) {
     $rows[] = $row;
   }
 
-  $table_variables = array(
-    'header' => array(
-      t('Exposed'),
-      t('Human name'),
-      t('Querystring for drupal url'),
-      t('Filterquery for API')
-    ),
-    'rows' => $rows,
-  );
+  if ($container['#id'] == 'edit-culturefeed-search-holidays-options') {
+    $table_variables = array(
+      'header' => array(
+        t('Exposed'),
+        t('Human name'),
+        t('Querystring for drupal url'),
+        t('Start date'),
+        t('End date')
+      ),
+      'rows' => $rows,
+    );
+  }
+  else {
+    $table_variables = array(
+      'header' => array(
+        t('Exposed'),
+        t('Human name'),
+        t('Querystring for drupal url'),
+        t('Filterquery for API')
+      ),
+      'rows' => $rows,
+    );
+  }
 
   return theme('table', $table_variables);
 }
