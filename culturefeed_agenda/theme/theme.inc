@@ -265,10 +265,10 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
     $photos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
     foreach ($photos as $photo) {
-      $pictures[] = $photo->getHLink();
+      $pictures[] = culturefeed_get_relative_image($photo->getHLink());
       $copyrights[] = $photo->getCopyright();
       if ($photo->isMain()) {
-        $main_picture = $photo->getHLink();
+        $main_picture = culturefeed_get_relative_image($photo->getHLink());
         $main_picture_cr = $photo->getCopyright();
       }
     }
@@ -276,9 +276,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     // Support for mediatype imageweb
     $images = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB);
     foreach ($images as $image) {
-      $pictures[] = $image->getHLink();
+      $pictures[] = culturefeed_get_relative_image($image->getHLink());
       if ($image->isMain() && empty($main_picture)) {
-        $main_picture = $image->getHLink();
+        $main_picture = culturefeed_get_relative_image($image->getHLink());
         $main_picture_cr = $image->getCopyright();
       }
     }
@@ -290,9 +290,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       if (!empty($detail_nl)) {
         $photos = $detail_nl->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
         foreach ($photos as $photo) {
-          $pictures[] = $photo->getHLink();
+          $pictures[] = culturefeed_get_relative_image($photo->getHLink());
           if ($photo->isMain()) {
-            $main_picture = $photo->getHLink();
+            $main_picture = culturefeed_get_relative_image($photo->getHLink());
             $main_picture_cr = $photo->getCopyright();
           }
         }
@@ -302,7 +302,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         foreach ($images as $image) {
           $pictures[] = $image->getHLink();
           if ($image->isMain() && empty($main_picture)) {
-            $main_picture = $image->getHLink();
+            $main_picture = culturefeed_get_relative_image($image->getHLink());
             $main_picture_cr = $photo->getCopyright();
           }
         }

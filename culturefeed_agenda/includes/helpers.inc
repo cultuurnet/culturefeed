@@ -847,3 +847,16 @@ function culturefeed_agenda_get_plain_text_calendar_formatter() {
 function culturefeed_agenda_social_links_preprocessing_enabled() {
   return variable_get('culturefeed_agenda_enable_activity_links_preprocessing', TRUE) && module_exists('culturefeed_social');
 }
+
+/**
+ * Returns a protocol relative URL
+ */
+function culturefeed_get_relative_image($image_path) {
+  if(substr($image_path,0,7) === "http://") {
+    return '//' . substr($image_path, 7);
+  }
+  elseif(substr($image_path,0,8) === "https://") {
+    return '//' . substr($image_path, 8);
+  }
+  return $image_path;
+}
