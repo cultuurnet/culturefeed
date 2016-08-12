@@ -577,3 +577,58 @@ function culturefeed_agenda_block_event_types() {
   return;
 
 }
+
+/**
+ * Block to render GMAP for the Search results page
+ * @return array|void
+ */
+function culturefeed_agenda_search_map() {
+  global $language;
+  $block = array();
+
+  // Get search results
+  $culturefeedSearchResult = culturefeed_get_search_result();
+  if (!$culturefeedSearchResult instanceof \Cultuurnet\Search\SearchResult) {
+    return;
+  }
+
+  if ($culturefeedSearchResult->getTotalCount() == 0) {
+    return;
+  }
+
+  /*if ($culturefeedSearchResult->getTotalCount() > variable_get('culturefeed_search_ui_pager_items_per_page', 10)) {
+    $locations = culturefeed_agenda_get_locations_by_list_search();
+  }
+  else {*/
+    $locations = culturefeed_agenda_get_locations_by_search_result();
+  //}
+
+  $markers = array();
+  foreach ($locations as $location) {
+    $markers[] = array(
+      'title' => $location['title'],
+      'latitude' => $location['latitude'],
+      'longitude' => $location['longitude'],
+      'html' => implode('<br />', $location['events']),
+    );
+  }
+
+  culturefeed_agenda_gmap_add_js();
+
+  // Set JS setting
+  drupal_add_js(
+    array(
+      'culturefeed_agenda_map' => array(
+        'markers' => $markers,
+      ),
+    ),
+    'setting'
+  );
+
+  // HTML for the map
+  $block['content'] = array(
+    '#theme' => 'culturefeed_agenda_search_map',
+  );
+
+  return $block;
+}

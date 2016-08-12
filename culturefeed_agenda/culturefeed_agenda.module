@@ -149,6 +149,11 @@ function culturefeed_agenda_theme() {
     'file' => 'theme.inc',
   );
 
+  $theme['culturefeed_agenda_search_map'] = array(
+    'variables' => array(),
+    'template' => 'theme/culturefeed-agenda-search-map',
+  );
+
   return $theme;
 
 }
@@ -411,6 +416,11 @@ function culturefeed_agenda_block_info() {
 		'info' => t('Culturefeed agenda: Organiser events'),
 		'cache' => DRUPAL_CACHE_PER_PAGE,
 	);
+
+  $blocks['agenda-search-map'] = array(
+    'info' => t('Culturefeed agenda: Agenda search map'),
+    'cache' => DRUPAL_NO_CACHE
+  );
 
   return $blocks;
 
@@ -711,6 +721,9 @@ function culturefeed_agenda_block_view($delta) {
 
 		case 'agenda-organiser-events':
 			return culturefeed_agenda_block_organiser_events();
+
+    case 'agenda-search-map':
+      return culturefeed_agenda_search_map();
   }
 
   return $block;
