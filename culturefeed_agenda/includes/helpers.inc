@@ -976,7 +976,7 @@ function culturefeed_agenda_get_locations_by_search_result() {
 
   return $locations;
 
-}}
+}
 
 /**
  * Returns a protocol relative URL
