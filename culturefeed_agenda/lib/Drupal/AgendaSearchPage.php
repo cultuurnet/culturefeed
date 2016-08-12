@@ -64,10 +64,17 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       $this->parameters[] = $this->facetComponent->facetField('city');
       $this->parameters[] = $this->facetComponent->facetField('location_category_facility_id');
 
-      $this->execute($params);
+      try {
+        $this->execute($params);
 
-      // Warm up cache.
-      $this->warmupCache();
+        // Warm up cache.
+        $this->warmupCache();
+      }
+      // Store the exception for later use. The loadPage will throw it.
+      catch (Exception $e) {
+        $this->exception = $e;
+      }
+
     }
   }
 
