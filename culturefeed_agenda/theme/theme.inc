@@ -1069,17 +1069,16 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
     $phones = array();
     $faxes = array();
     foreach ($contact_info->getPhones() as $phone) {
-      if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
-        if(isset($variables['device']) && $variables['device'] == 'phone')
-        {
-          $phones[] = l($phone->getNumber(), 'tel:'.culturefeed_valid_phone($phone->getNumber()));
+      if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_FAX) {
+        $faxes[] = $phone->getNumber();
+      }
+      else {
+        if (isset($variables['device']) && $variables['device'] == 'phone') {
+          $phones[] = l($phone->getNumber(), 'tel:' . culturefeed_valid_phone($phone->getNumber()));
         }
         else {
           $phones[] = $phone->getNumber();
         }
-      }
-      else {
-        $faxes[] = $phone->getNumber();
       }
     }
     $variables['contact']['phone'] = check_plain(implode(', ', $phones));
