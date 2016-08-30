@@ -634,8 +634,11 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   $reservation_links = array();
   if (method_exists($cdb_item, 'getContactInfo')) {
     try {
-      $reservation_info = $cdb_item->getContactInfo()->getReservationInfo();
-      $reservation_links = isset($reservation_info['url']) ? $reservation_info['url'] : $reservation_links;
+      $contact_info = $cdb_item->getContactInfo();
+      if ($contact_info) {
+        $reservation_info = $cdb_item->getContactInfo()->getReservationInfo();
+        $reservation_links = isset($reservation_info['url']) ? $reservation_info['url'] : $reservation_links;
+      }
     }
     catch (Exception $e) {
       watchdog_exception('notice', $e);
