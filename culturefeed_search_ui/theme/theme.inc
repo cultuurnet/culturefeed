@@ -412,6 +412,12 @@ function culturefeed_search_ui_preprocess_culturefeed_search_facet_item(&$variab
   $facet_item = $variables['facet_item'];
   $query = $variables['query'];
 
+  // Prevent fatal errors later on in this function when the min_age
+  // URL query parameter is not an array.
+  if (isset($query['min_age']) && !is_array($query['min_age'])) {
+    $query['min_age'] = array();
+  }
+
   // Create array with facet_keys that should support multiple select/unselect.
   // Don't add 'agefrom as this is not handled as a facet.
   $multiple_facet_keys = array(
