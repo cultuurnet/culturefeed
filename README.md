@@ -173,7 +173,7 @@ Basic elements to build up an event search (such as provided by Culturefeed Agen
 
 __[More info at wiki page](https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Search-UI)__
 
-To integrate a search page we also wrote a [tutorial](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-Search-page)
+To integrate a search page we also wrote a [tutorial](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-Search-page).
 
 ### Culturefeed_search_views
 
@@ -216,7 +216,7 @@ Provides a collection of pages and blocks to enhance the user pages with __UiTID
 
 __[More info at wiki page](https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-UI)__
 
-To integrate UiTID we also wrote a [Tutorial](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-CultureFeedUI)
+To integrate UiTID we also wrote a [tutorial](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-CultureFeedUI).
 
 ### Culturefeed_social
 All ‘social’ features: likes, comments, attends, etc.
@@ -232,7 +232,7 @@ Integration with the UiTPAS card system. It contains multiple pages and blocks t
 
 __[More info at wiki page](https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-UiTPAS)__
 
-To integrate UiTPAS we wrote a [tutorial](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-UiTPAS)
+To integrate UiTPAS we wrote a [tutorial](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-UiTPAS).
 
 ### Culturefeed_mailing
 To create mailings with search results from event (based on lifestyleprofile, Vlieg weekendflash, …). __Not yet available for partners.__ Please contact us if interested. 
@@ -274,7 +274,6 @@ There already a lot of integrations live on the 3.x version (and still counting)
 - http://www.cultuurkuur.be
 - http://www.uitmetvlieg.be
 - http://agenda.besteburen.eu
-- http://uitinemmen.com
 
 
 ## License
