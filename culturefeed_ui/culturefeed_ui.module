@@ -120,15 +120,8 @@ function culturefeed_ui_menu() {
  * Implements hook_menu_alter().
  */
 function culturefeed_ui_menu_alter(&$items) {
-  $remove = array(
-    'user/%user/edit',
-  );
-
-  foreach ($remove as $path) {
-    $items[$path]['access callback'] = FALSE;
-    unset($items[$path]['access arguments']);
-  }
-
+  $items['user/%user/edit']['access callback'] = 'user_access';
+  $items['user/%user/edit']['access arguments'] = ['administer users'];
 }
 
 /**

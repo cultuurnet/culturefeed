@@ -847,3 +847,146 @@ function culturefeed_agenda_get_plain_text_calendar_formatter() {
 function culturefeed_agenda_social_links_preprocessing_enabled() {
   return variable_get('culturefeed_agenda_enable_activity_links_preprocessing', TRUE) && module_exists('culturefeed_social');
 }
+
+/**
+ * OMD GMAP add javascript files
+ * @param array $settings
+ */
+function culturefeed_agenda_gmap_add_js($settings = array()) {
+  static $added = FALSE;
+
+  if (!$added) {
+    $added = TRUE;
+    $google_maps_api_key = variable_get('culturefeed_agenda_google_maps_api_key', '');
+    // Include JS files
+    drupal_add_js(CULTUREFEED_GOOGLE_MAPS_JS_API . '&key=' . $google_maps_api_key, 'external');
+    drupal_add_js(drupal_get_path('module', 'culturefeed_agenda') . '/js/markercluster.js', 'file');
+    drupal_add_js(drupal_get_path('module', 'culturefeed_agenda') . '/js/agenda_map.js', 'file');
+
+    // Set JS setting
+    $on_search = $_GET['q'] == 'agenda/search';
+    $search_params = drupal_get_query_parameters(NULL, array('page', 'q'));
+    drupal_add_js(
+      array(
+        'culturefeed_agenda_map' => array(
+          'cluster' => url(drupal_get_path('module', 'culturefeed_agenda') . '/images/cluster.png'),
+          'onSearch' => $on_search,
+          'doGeolocate' => $on_search && empty($search_params),
+        ),
+      ),
+      'setting'
+    );
+
+  }
+}
+
+/**
+ * Get the locations for current search by using a new list search request.
+ */
+function culturefeed_agenda_get_locations_by_list_search() {
+
+  $searchPage = culturefeed_search_get_active_search_page();
+  $parameters = $searchPage->getParameters();
+
+  foreach ($parameters as $key => $parameter) {
+    if ($parameter->getKey() == 'rows' || $parameter->getKey() == 'start') {
+      unset($parameters[$key]);
+    }
+  }
+  $parameters[] = new CultuurNet\Search\Parameter\Rows(variable_get('culturefeed_agenda_max_items_per_map', 700));
+
+  try {
+    $service = culturefeed_get_search_service();
+    $results = $service->search($parameters);
+  }
+  catch (Exception $e) {
+    watchdog_exception('Culturefeed Agenda', $e);
+    $results = array();
+  }
+
+  // Loop over the search result items
+  $locations = array();
+  foreach ($results->getItems() as $item) {
+
+    if ($item['latlng'] == ';' || empty($item['location'])) {
+      continue;
+    }
+
+    $key = $item['latlng'];
+    list($latitude, $longitude) = explode(';', $key);
+
+    $locations[$key]['latitude'] = $latitude;
+    $locations[$key]['longitude'] = $longitude;
+
+    // Title
+    $locations[$key]['title'] = $item['location'];
+
+    // HTML
+    $locations[$key]['events'][] = culturefeed_search_detail_l('event', $item['cdbid'], $item['title']);
+
+  }
+
+  return $locations;
+
+}
+
+/**
+ * Get the locations for current search by using current search result.
+ */
+function culturefeed_agenda_get_locations_by_search_result() {
+
+  $culturefeedSearchResult = culturefeed_get_search_result();
+  if (!$culturefeedSearchResult instanceof \Cultuurnet\Search\SearchResult) {
+    return;
+  }
+
+  global $language;
+  $locations = array();
+  foreach ($culturefeedSearchResult->getItems() as $item) {
+    $event = $item->getEntity();
+    $event_detail = $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+
+    // get the location info
+    if ($event->getLocation()) {
+      $location = $event->getLocation();
+      $address = $location->getAddress();
+      if ($address && $address->getPhysicalAddress()) {
+        $coordinates = $address->getPhysicalAddress()->getGeoInformation();
+        if ($coordinates) {
+
+          $key = $coordinates->getYCoordinate() . '-' . $coordinates->getXCoordinate();
+
+          $locations[$key]['latitude'] = $coordinates->getYCoordinate();
+          $locations[$key]['longitude'] = $coordinates->getXCoordinate();
+
+          // Title
+          $locations[$key]['title'] = $location->getLabel();
+
+          // HTML
+          if ($event_detail) {
+            $url = culturefeed_search_detail_url($item->getType(), $event->getCdbid(), $event_detail->getTitle());
+            $locations[$key]['events'][] = l($item->getTitle($language->language), $url);
+          }
+
+        }
+      }
+
+    }
+  }
+
+  return $locations;
+
+}
+
+/**
+ * Returns a protocol relative URL
+ */
+function culturefeed_get_relative_image($image_path) {
+  if(substr($image_path,0,7) === "http://") {
+    return '//' . substr($image_path, 7);
+  }
+  elseif(substr($image_path,0,8) === "https://") {
+    return '//' . substr($image_path, 8);
+  }
+  return $image_path;
+}
