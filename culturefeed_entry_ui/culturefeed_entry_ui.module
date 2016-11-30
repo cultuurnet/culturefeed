@@ -197,7 +197,10 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
   $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
 
   // Add tab for editing the event.
-  if (user_access('edit culturefeed events') && ($event->getEntity()->getCreatedBy() == $culturefeed_user->mbox)) {
+  if (user_access('edit culturefeed events')
+    && $culturefeed_user
+    && ($event->getEntity()->getCreatedBy() == $culturefeed_user->mbox)
+  ) {
 
     $link = array(
       'href' => $path . '/edit',
