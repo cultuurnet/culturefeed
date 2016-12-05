@@ -594,11 +594,12 @@ function culturefeed_agenda_search_map() {
     return;
   }
 
-  if ($culturefeedSearchResult->getTotalCount() > variable_get('culturefeed_search_ui_pager_items_per_page', 10)) {
-    $locations = culturefeed_agenda_get_locations_by_list_search();
+  //if ($culturefeedSearchResult->getTotalCount() > variable_get('culturefeed_search_ui_pager_items_per_page', 10)) {
+  if (variable_get('agenda_search_map_results_mode', 0) == 0) {
+    $locations = culturefeed_agenda_get_locations_by_search_result();
   }
   else {
-    $locations = culturefeed_agenda_get_locations_by_search_result();
+    $locations = culturefeed_agenda_get_locations_by_list_search();
   }
 
   $markers = array();
