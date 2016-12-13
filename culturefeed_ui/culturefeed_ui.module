@@ -200,7 +200,7 @@ function culturefeed_ui_theme() {
       'template' => 'culturefeed-ui-privacy-settings',
     ),
     'culturefeed_ui_most_active_user' => array(
-      'variables' => array('account' => NULL, 'sort' => CultureFeed_SearchUsersQuery::SORT_NUMBEROFACTIVEACTIVITIES),
+      'variables' => array('account' => NULL, 'sort' => 'numberOfActiveActivities'),
       'template' => 'culturefeed-ui-most-active-user',
     ),
     'culturefeed_ui_connect' => array(
