@@ -74,10 +74,14 @@
 
       // Create marker
       var myLatLng = new google.maps.LatLng(d.coordinates.lat, d.coordinates.lng);
-      var Marker = new google.maps.Marker({
+      var markerOptions = {
         position: myLatLng,
         map: map
-      });
+      };
+      if (d.markerOptions != null) {
+        jQuery.extend(markerOptions, d.markerOptions);
+      }
+      var Marker = new google.maps.Marker(markerOptions);
 
       // Map infowindow on Marker at click
       google.maps.event.addListener(Marker, 'click', function() {

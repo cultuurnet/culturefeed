@@ -25,12 +25,17 @@
       var point = markers[i];
       var latLong = new google.maps.LatLng(point.latitude,point.longitude);
       bounds.extend(latLong);
-      var marker = new google.maps.Marker({
+
+      var markerOptions = {
         position: latLong,
         map: Drupal.CultureFeed.Agenda.searchMap,
         title: point.title,
         html: point.html
-      });
+      };
+      if (point.markerOptions != null) {
+        jQuery.extend(markerOptions, point.markerOptions);
+      }
+      var marker = new google.maps.Marker(markerOptions);
 
       if (point.html) {
         google.maps.event.addListener(marker, 'click', function() {
