@@ -76,10 +76,9 @@
   }
 
   /**
-   * Initialize the map.
+   * Create the info window content.
    */
   Drupal.CultureFeed.Agenda.mapInfoWindowContent = function(d) {
-    // Create infowindow content
     var contentString = '<div>';
     if (d.title != null) {
       contentString += d.title + '<br />';
