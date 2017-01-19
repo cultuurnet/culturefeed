@@ -496,17 +496,10 @@ function culturefeed_agenda_get_map_render_array(\CultuurNet\Search\ActivityStat
 
   drupal_set_breadcrumb(array(l(t('Home'), NULL), $variables['link'], 'Stratenplan'));
 
-  $query = array(
-    'sensor' => 'true',
-    'v' => '3.5',
-    'region' => 'BE',
-    'hl' => $language->language,
-  );
-
   unset($variables['item']);
 
   $attached_js = array(
-    array('data' => CULTUREFEED_GOOGLE_MAPS_JS_API, 'type' => 'external'),
+    array('data' => culturefeed_agenda_google_maps_js_api_url(), 'type' => 'external'),
     drupal_get_path('module', 'culturefeed_agenda') . '/js/map.js',
   );
 
@@ -849,6 +842,24 @@ function culturefeed_agenda_social_links_preprocessing_enabled() {
 }
 
 /**
+ * Returns the google maps api url with the necessary query parameters.
+ *
+ * @return string
+ *   The google maps API url.
+ */
+function culturefeed_agenda_google_maps_js_api_url() {
+  global $language;
+  $query = array(
+    'v' => 3,
+    'region' => 'BE',
+    'hl' => $language->language,
+    'ln' => $language->language,
+    'key' => variable_get('culturefeed_agenda_google_maps_api_key'),
+  );
+  return url(CULTUREFEED_GOOGLE_MAPS_JS_API, array('query' => $query, 'absolute' => TRUE));
+}
+
+/**
  * OMD GMAP add javascript files
  * @param array $settings
  */
@@ -857,9 +868,8 @@ function culturefeed_agenda_gmap_add_js($settings = array()) {
 
   if (!$added) {
     $added = TRUE;
-    $google_maps_api_key = variable_get('culturefeed_agenda_google_maps_api_key', '');
     // Include JS files
-    drupal_add_js(CULTUREFEED_GOOGLE_MAPS_JS_API . '&key=' . $google_maps_api_key, 'external');
+    drupal_add_js(culturefeed_agenda_google_maps_js_api_url(), 'external');
     drupal_add_js(drupal_get_path('module', 'culturefeed_agenda') . '/js/markercluster.js', 'file');
     drupal_add_js(drupal_get_path('module', 'culturefeed_agenda') . '/js/agenda_map.js', 'file');
 
