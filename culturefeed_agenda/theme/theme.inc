@@ -303,7 +303,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
           $pictures[] = $image->getHLink();
           if ($image->isMain() && empty($main_picture)) {
             $main_picture = culturefeed_get_relative_image($image->getHLink());
-            $main_picture_cr = $photo->getCopyright();
+            $main_picture_cr = $image->getCopyright();
           }
         }
       }
