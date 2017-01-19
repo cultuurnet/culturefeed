@@ -177,8 +177,11 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
       'title' => t('Tags'),
     );
 
-    $tabs[] = array('#theme' => 'menu_local_action', '#link' => $link);
-
+    $tabs[] = array(
+      '#theme' => 'menu_local_task',
+      '#link' => $link,
+      '#active' => arg(4) === 'tags',
+    );
   }
 
   // Add tab for collaboration info.
@@ -190,8 +193,11 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
       'title' => t('Collaboration'),
     );
 
-    $tabs[] = array('#theme' => 'menu_local_action', '#link' => $link);
-
+    $tabs[] = array(
+      '#theme' => 'menu_local_task',
+      '#link' => $link,
+      '#active' => arg(4) === 'collaboration',
+    );
   }
 
   $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
@@ -208,8 +214,11 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
       'title' => t('Edit'),
     );
 
-    $tabs[] = array('#theme' => 'menu_local_action', '#link' => $link);
-
+    $tabs[] = array(
+      '#theme' => 'menu_local_task',
+      '#link' => $link,
+      '#active' => arg(4) === 'edit',
+    );
   }
 
   // Detail only exists when culturefeed_agenda is enabled.
@@ -225,18 +234,27 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
       'localized_options' => array(),
       'title' => t('View'),
     );
-    $tab = array('#theme' => 'menu_local_action', '#link' => $link);
+    $tab = array(
+      '#theme' => 'menu_local_task',
+      '#link' => $link,
+      '#active' => empty(arg(4)),
+    );
     array_unshift($tabs, $tab);
 
   }
 
-  $data['tabs'] = array(
-    0 => array(
-      'output' => $tabs,
-      'count' => count($tabs),
-    ),
-  );
+  // Clean state to start with.
+  if (empty($data['tabs'])) {
+    $data['tabs'] = array(
+      0 => array(
+        'output' => array(),
+        'count' => 0,
+      ),
+    );
+  }
 
+  $data['tabs'][0]['output'] = array_merge($data['tabs'][0]['output'], $tabs);
+  $data['tabs'][0]['count'] += count($tabs);
 }
 
 /**
