@@ -87,7 +87,7 @@ function culturefeed_menu() {
   $items['culturefeed/oauth/connect/register'] = array(
     'title' => 'Connect',
     'page callback' => 'culturefeed_oauth_connect',
-    'page arguments' => array(CultureFeed::AUTHORIZE_TYPE_REGISTER),
+    'page arguments' => array('register'),
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed.pages.inc',
