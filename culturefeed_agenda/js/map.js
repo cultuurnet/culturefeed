@@ -48,27 +48,9 @@
     var map = new google.maps.Map(document.getElementById('map_canvas'), myOptions);
 
     if (d.location != null) {
-
-      // Create infowindow content
-      var contentString = '<div>';
-      if (d.title != null) {
-        contentString += d.title + '<br />';
-      }
-
-      contentString += d.location.street + ' ';
-      contentString += d.location.zip + ' ' + d.location.city + '<br />';
-
-      contentString += '<br />' + Drupal.t('Directions') + ':' +
-              '<form action="javascript:Drupal.CultureFeed.Agenda.getDirections()"><input type="text" size="20" maxlength="38" name="saddr" id="saddr" value="';
-      if (d.to_address) {
-        contentString += d.to_address;
-      }
-      contentString += '" /> <input value="' + Drupal.t('Search') + '" type="submit"></form>' +
-              '</div>';
-
       // Create infowindow element
       var infowindow = new google.maps.InfoWindow({
-        content: contentString,
+        content: Drupal.CultureFeed.Agenda.mapInfoWindowContent(d),
         maxWidth: 250
       });
 
@@ -95,6 +77,29 @@
 
     }
 
+  }
+
+  /**
+   * Create the info window content.
+   */
+  Drupal.CultureFeed.Agenda.mapInfoWindowContent = function(d) {
+    var contentString = '<div>';
+    if (d.title != null) {
+      contentString += d.title + '<br />';
+    }
+
+    contentString += d.location.street + ' ';
+    contentString += d.location.zip + ' ' + d.location.city + '<br />';
+
+    contentString += '<br />' + Drupal.t('Directions') + ':' +
+      '<form action="javascript:Drupal.CultureFeed.Agenda.getDirections()"><input type="text" size="20" maxlength="38" name="saddr" id="saddr" value="';
+    if (d.to_address) {
+      contentString += d.to_address;
+    }
+    contentString += '" /> <input value="' + Drupal.t('Search') + '" type="submit"></form>' +
+      '</div>';
+
+    return contentString;
   }
 
 })(jQuery);
