@@ -177,7 +177,6 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
             CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBRESOURCE,
             CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS,
             CultureFeed_Cdb_Data_File::MEDIA_TYPE_FACEBOOK,
-            CultureFeed_Cdb_Data_File::MEDIA_TYPE_YOUTUBE,
             CultureFeed_Cdb_Data_File::MEDIA_TYPE_GOOGLEPLUS,
             CultureFeed_Cdb_Data_File::MEDIA_TYPE_TWITTER,
             CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBSITE,
