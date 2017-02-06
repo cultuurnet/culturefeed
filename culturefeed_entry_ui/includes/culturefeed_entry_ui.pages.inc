@@ -32,6 +32,7 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
   $default_image = '';
   $default_links = array();
   $default_links_reservation = array();
+  $default_video = array();
   $phone_contacts = array();
   $mail_contacts = array();
   $is_private = FALSE;
