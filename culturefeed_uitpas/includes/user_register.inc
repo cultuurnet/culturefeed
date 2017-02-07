@@ -9,7 +9,7 @@
  * Returns user register cta.
  */
 function culturefeed_uitpas_user_register_cta_get() {
-    return theme('culturefeed_uitpas_register_cta');
+  return theme('culturefeed_uitpas_register_cta');
 }
 
 /**
