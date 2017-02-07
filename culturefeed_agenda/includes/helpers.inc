@@ -916,26 +916,38 @@ function culturefeed_agenda_get_locations_by_list_search() {
 
   // Loop over the search result items
   $locations = array();
-  foreach ($results->getItems() as $item) {
 
-    if ($item['latlng'] == ';' || empty($item['location'])) {
+  foreach ($results->getItems() as $item) {
+    $event = $item->getEntity();
+    $event_detail = $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+
+    $cdbid = $item->getId();
+    $title = $event_detail->getTitle();
+
+    $address = $event->getLocation()->getAddress()->getPhysicalAddress();
+
+    if ($address == NULL) {
       continue;
     }
 
-    $key = $item['latlng'];
-    list($latitude, $longitude) = explode(';', $key);
+    $longitude = $address->getGeoInformation()->getXCoordinate();
+    $latitude = $address->getGeoInformation()->getYCoordinate();
 
+    if ($latitude == '' || $longitude == '') {
+      continue;
+    }
+
+    $key = $longitude . '-' . $latitude;
     $locations[$key]['latitude'] = $latitude;
     $locations[$key]['longitude'] = $longitude;
 
     // Title
-    $locations[$key]['title'] = $item['location'];
+    $locations[$key]['title'] = $title;
 
     // HTML
-    $locations[$key]['events'][] = culturefeed_search_detail_l('event', $item['cdbid'], $item['title']);
+    $locations[$key]['events'][] = culturefeed_search_detail_l('event', $cdbid, $title);
 
   }
-
   return $locations;
 
 }
@@ -952,6 +964,7 @@ function culturefeed_agenda_get_locations_by_search_result() {
 
   global $language;
   $locations = array();
+
   foreach ($culturefeedSearchResult->getItems() as $item) {
     $event = $item->getEntity();
     $event_detail = $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
