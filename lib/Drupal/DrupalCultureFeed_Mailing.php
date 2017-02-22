@@ -50,6 +50,14 @@ class DrupalCultureFeed_Mailing extends DrupalCultureFeedBase {
   public static function sendMailing($id) {
     self::getLoggedInUserInstance()->sendMailing($id);
   }
+
+  public static function getMailing($id) {
+    return self::getLoggedInUserInstance()->getMailing($id);
+  }
+
+  public static function disableMailing($id) {
+    self::getLoggedInUserInstance()->disableMailing($id);
+  }
   
 
 }

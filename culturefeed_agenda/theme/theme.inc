@@ -264,22 +264,28 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $copyrights = array();
 
     $photos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
+    $i = 0;
     foreach ($photos as $photo) {
       $pictures[] = culturefeed_get_relative_image($photo->getHLink());
       $copyrights[] = $photo->getCopyright();
       if ($photo->isMain()) {
         $main_picture = culturefeed_get_relative_image($photo->getHLink());
         $main_picture_cr = $photo->getCopyright();
+        $i++;
+        $main_index = $i;
       }
     }
 
     // Support for mediatype imageweb
     $images = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB);
+    $i = 0;
     foreach ($images as $image) {
       $pictures[] = culturefeed_get_relative_image($image->getHLink());
       if ($image->isMain() && empty($main_picture)) {
         $main_picture = culturefeed_get_relative_image($image->getHLink());
         $main_picture_cr = $image->getCopyright();
+        $i++;
+        $main_index = $i;
       }
     }
 
@@ -289,21 +295,27 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       $detail_nl = $cdb_item->getDetails()->getDetailByLanguage('nl');
       if (!empty($detail_nl)) {
         $photos = $detail_nl->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
+        $i = 0;
         foreach ($photos as $photo) {
           $pictures[] = culturefeed_get_relative_image($photo->getHLink());
           if ($photo->isMain()) {
             $main_picture = culturefeed_get_relative_image($photo->getHLink());
             $main_picture_cr = $photo->getCopyright();
+            $i++;
+            $main_index = $i;
           }
         }
 
         // Support for mediatype imageweb
         $images = $detail_nl->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB);
+        $i = 0;
         foreach ($images as $image) {
           $pictures[] = $image->getHLink();
           if ($image->isMain() && empty($main_picture)) {
             $main_picture = culturefeed_get_relative_image($image->getHLink());
             $main_picture_cr = $photo->getCopyright();
+            $i++;
+            $main_index = $i;
           }
         }
       }
@@ -319,8 +331,8 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
     // we don't want the main picture to show twice
     if (!empty($main_picture)) {
-      unset($pictures[0]);
-      unset($copyrights[0]);
+      unset($pictures[$main_index]);
+      unset($copyrights[$main_index]);
     }
 
     $variables['main_picture'] = $main_picture;
