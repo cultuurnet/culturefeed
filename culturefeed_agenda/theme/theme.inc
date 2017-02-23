@@ -260,6 +260,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     // Pictures
     $main_picture = '';
     $main_picture_cr = '';
+    $main_index = 0;
     $pictures = array();
     $copyrights = array();
 
