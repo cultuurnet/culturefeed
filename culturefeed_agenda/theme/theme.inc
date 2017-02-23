@@ -326,6 +326,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $main_picture_cr = $copyrights[0];
       }
     }
+    
+    // check if same image isn't used twice or more
+    $pictures = array_unique($pictures);
 
     // we don't want the main picture to show twice
     if (!empty($main_picture)) {
