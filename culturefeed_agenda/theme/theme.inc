@@ -1215,7 +1215,8 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
 
   if (!empty($variables['title'])) {
     $title_parts[] = $variables['title'];
-    $og_tags['og:title'] = html_entity_decode($variables['title']);
+    $title_decoded = html_entity_decode($variables['title']);
+    $og_tags['og:title'] = htmlspecialchars($title_decoded, ENT_QUOTES);
   }
   if (!empty($variables['location']) && !empty($variables['location']['city'])) {
     $title_parts[] = $variables['location']['city'];
