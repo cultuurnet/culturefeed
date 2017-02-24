@@ -88,7 +88,7 @@ class CultureFeedDomainImport {
       $termAttributes = $term->attributes();
 
       // Do not import disabled terms
-      if ($termAttributes['enabled'] == 'false' && drupal_is_cli()) {
+      if ($termAttributes['enabled'] == 'false' && drupal_is_cli() && function_exists('drush_main'))  {
         drush_log('skipped disabled term: ' . $termAttributes['id'], 'warning');
         continue;
       }
