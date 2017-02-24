@@ -11,7 +11,7 @@ define('CULTUREFEED_API_LOCATION', 'http://acc.uitid.be/uitid/rest/');
 define('CULTUREFEED_ENTRY_API_LOCATION', 'http://acc.uitid.be/uitid/rest/');
 define('CULTUREFEED_ENTRY_API_PATH', 'entry/test.rest.uitdatabank.be/api/v2/');
 
-define('CULTUREFEED_GOOGLE_MAPS_JS_API', 'https://maps.googleapis.com/maps/api/js?v=3&region=BE&hl=nl&language=nl');
+define('CULTUREFEED_GOOGLE_MAPS_JS_API', 'https://maps.googleapis.com/maps/api/js');
 
 define('CULTUREFEED_IMAGES_MAX_SIZE', 2097152);
 

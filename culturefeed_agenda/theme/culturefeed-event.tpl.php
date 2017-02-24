@@ -166,7 +166,7 @@
   </dd>
   <?php endif; ?>
 
-  <?php if ($uitpas_promotions): ?>
+  <?php if (!empty($uitpas_promotions)): ?>
   <dt><?php print t('Promotions'); ?></dt>
   <dd class="promotions"><?php print $uitpas_promotions; ?></dd>
   <?php endif; ?>

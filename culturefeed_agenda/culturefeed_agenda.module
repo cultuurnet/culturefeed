@@ -630,6 +630,18 @@ function culturefeed_agenda_block_configure($delta) {
 		);
 	}
 
+	elseif ($delta == 'agenda-search-map') {
+    $form['agenda_search_map_results_mode'] = array(
+      '#title' => t('Show results as'),
+      '#type' => 'radios',
+      '#options' => array(
+        t('Use paged results'),
+        t('Use complete list as result')
+      ),
+      '#default_value' => variable_get('agenda_search_map_results_mode', 0)
+    );
+  }
+
   return $form;
 
 }
@@ -687,6 +699,10 @@ function culturefeed_agenda_block_save($delta, $edit) {
 
 		variable_set('agenda_organiser_event_amount', $edit['agenda_organiser_event_amount']);
 	}
+
+  elseif ($delta == 'agenda-search-map') {
+    variable_set('agenda_search_map_results_mode', $edit['agenda_search_map_results_mode']);
+  }
 
 }
 

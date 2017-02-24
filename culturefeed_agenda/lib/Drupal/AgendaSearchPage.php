@@ -153,7 +153,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
         $facet['category_theme_id'] = $query['facet']['category_theme_id'];
 
         $active_trail[] = array(
-          'title' => culturefeed_search_get_term_translation($query['facet']['category_theme_id'][0]),
+          'title' => culturefeed_search_get_term_translation(reset($query['facet']['category_theme_id'])),
           'href' => 'agenda/search',
           'link_path' => '',
           'localized_options' => array(
