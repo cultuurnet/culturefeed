@@ -698,11 +698,19 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
 
     $contact_info = $event->getContactInfo();
 
+    // Prepare mailto links
+    $site_name = variable_get('site_name');
+    $permalink = url('permalink' . '/' . $variables['cdbid'], array('absolute' => TRUE));
+    $variables['mailto_query'] = array (
+      'subject' => $variables['title'] . ' (via ' . $site_name . ')',
+      'body' => $permalink
+    );
+
     // Mails.
     $mails = array();
     foreach ($contact_info->getMails() as $mail) {
       if (!$mail->isForReservations()) {
-        $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact')));
+        $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact', 'target' => '_blank'), 'query' => $variables['mailto_query']));
       }
     }
     $variables['contact']['mail'] = implode(', ', $mails);
@@ -735,7 +743,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       // Reservation mail
       if (isset($reservation_info['mails'])) {
         foreach ($reservation_info['mails'] as $mail) {
-          $reservation_mails[] = l($mail, 'mailto:' . $mail, array('attributes' => array('id' => 'cf-reservation')));
+          $reservation_mails[] = l($mail, 'mailto:' . $mail, array('attributes' => array('id' => 'cf-reservation', 'target' => '_blank'), 'query' => $variables['mailto_query']));
         }
         $variables['reservation']['mail'] = implode(', ', $reservation_mails);
       }
@@ -1074,10 +1082,18 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
       }
     }
 
+    // Prepare mailto links
+    $site_name = variable_get('site_name');
+    $permalink = url('permalink' . '/' . $variables['cdbid'], array('absolute' => TRUE));
+    $variables['mailto_query'] = array (
+      'subject' => $variables['title'] . ' (via ' . $site_name . ')',
+      'body' => $permalink
+    );
+
     // Mails.
     $mails = array();
     foreach ($contact_info->getMails() as $mail) {
-      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact')));
+      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact', 'target' => '_blank'), 'query' => $variables['mailto_query']));
     }
     $variables['contact']['mail'] = implode(', ', $mails);
 
