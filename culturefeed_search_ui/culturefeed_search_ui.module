@@ -499,7 +499,15 @@ function culturefeed_search_ui_block_configure($delta) {
       $form['culturefeed-facet-theme-hide'] = array(
         '#type' => 'checkbox',
         '#title' => t('Show the facet only when an eventtype is chosen'),
-        '#default_value' => variable_get('culturefeed_facet_theme_hide', FALSE),
+        '#default_value' => variable_get('culturefeed_facet_theme_hide', TRUE),
+      );
+    }
+
+    if ($delta == 'facet-educationfield') {
+      $form['culturefeed-facet-educationfield-hide'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Show the facet only when an eventtype is chosen'),
+        '#default_value' => variable_get('culturefeed_facet_educationfield_hide', TRUE),
       );
     }
 
@@ -711,6 +719,9 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
   if (isset($edit['culturefeed-facet-theme-hide'])) {
     variable_set('culturefeed_facet_theme_hide', $edit['culturefeed-facet-theme-hide']);
   }
+  if (isset($edit['culturefeed-facet-educationfield-hide'])) {
+    variable_set('culturefeed_facet_educationfield_hide', $edit['culturefeed-facet-educationfield-hide']);
+  }
   if (isset($edit['culturefeed-facet-city-parents'])) {
     variable_set('culturefeed_facet_city_parents', array_keys(array_filter($edit['culturefeed-facet-city-parents'])));
   }
@@ -879,7 +890,14 @@ function culturefeed_search_ui_block_view($delta) {
       if (isset($delta_parts[0]) && $delta_parts[0] == 'facet') {
 
         // Hide theme facet if no eventtype is chosen.
-        if ($delta == 'facet-theme' && variable_get('culturefeed_facet_theme_hide', FALSE)) {
+        if ($delta == 'facet-theme' && variable_get('culturefeed_facet_theme_hide', TRUE)) {
+          if (!isset($_GET['facet']['category_eventtype_id'])) {
+            return $block;
+          }
+        }
+
+        // Hide theme facet if no eventtype is chosen.
+        if ($delta == 'facet-educationfield' && variable_get('culturefeed_facet_educationfield_hide', TRUE)) {
           if (!isset($_GET['facet']['category_eventtype_id'])) {
             return $block;
           }
