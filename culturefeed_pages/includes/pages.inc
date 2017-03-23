@@ -21,13 +21,17 @@ function culturefeed_pages_page_basic_search() {
       $current_page = isset($_GET['page']) ? $_GET['page'] : 0;
       $actortypes = variable_get('culturefeed_pages_actor_types', array());
 
-      // Prepare multiple search terms for better match
-      $search_terms = str_replace('-', ' ', $_GET['search']);
-      $search_terms = explode(' ', $search_terms);
-      foreach ($search_terms as $search_term) {
-        $search_query[] = '(' . $search_term . ' OR *' . $search_term . '*)' ;
+      // Prepare multiple search terms for better match.
+      if ($_GET['search']) {
+        $search_terms = $_GET['search'];
+        $search_terms = explode(' ', $search_terms);
+        foreach ($search_terms as $search_term) {
+          // Add fuzzy search.
+          $search_query[] = '"' . $search_term . '"~2' ;
+        }
+        $search_query = implode(' AND ', $search_query);
       }
-      $search_query = implode(' AND ', $search_query);
+      else $search_query = '*:*';
 
       $parameters = array();
       $parameters[] = new Parameter\FilterQuery('category_id' . ':(' . implode(' OR ', $actortypes) . ')');
