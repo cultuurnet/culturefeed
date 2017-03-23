@@ -14,7 +14,7 @@ function culturefeed_pages_page_basic_search() {
 
   $items = array();
   $total_results = 0;
-  if (isset($_GET['search'])) {
+  if (isset($_GET['search']) || isset($_GET['zipcode'])) {
 
     try {
 
@@ -31,6 +31,9 @@ function culturefeed_pages_page_basic_search() {
 
       $parameters = array();
       $parameters[] = new Parameter\FilterQuery('category_id' . ':(' . implode(' OR ', $actortypes) . ')');
+      if ($_GET['zipcode']) {
+        $parameters[] = new Parameter\FilterQuery('zipcode:' . $_GET['zipcode']);
+      }
       $parameters[] = new Parameter\Query($search_query);
       $parameters[] = new Parameter\Sort('title_sort', Parameter\Sort::DIRECTION_ASC);
       $parameters[] = new Parameter\Start($current_page * CULTUREFEED_PAGES_BASIC_ITEMS_PER_PAGE);
@@ -78,6 +81,14 @@ function culturefeed_pages_basic_search_form() {
 
   $form = array();
 
+  $form['zipcode'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Zipcode'),
+    '#size' => 4,
+    '#maxlength' => 4,
+    '#default_value' => isset($_GET['zipcode']) ? $_GET['zipcode'] : '',
+  );
+
   $form['page'] = array(
     '#type' => 'textfield',
     '#title' => t('Term'),
@@ -99,9 +110,15 @@ function culturefeed_pages_basic_search_form() {
  */
 function culturefeed_pages_basic_search_form_submit($form, &$form_state) {
 
+  if ($form_state['values']['page']) {
+    $query['search'] =  $form_state['values']['page'];
+  }
+  if ($form_state['values']['zipcode']) {
+    $query['zipcode'] =  $form_state['values']['zipcode'];
+  }
   $form_state['redirect'] = array(
     $_GET['q'],
-    array('query' => array('search' => $form_state['values']['page'])),
+    array('query' => $query),
   );
 
 }
