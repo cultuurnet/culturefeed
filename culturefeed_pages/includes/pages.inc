@@ -39,9 +39,9 @@ function culturefeed_pages_page_basic_search() {
         $parameters[] = new Parameter\FilterQuery('zipcode:' . $_GET['zipcode']);
       }
       $parameters[] = new Parameter\Query($search_query);
-      $parameters[] = new Parameter\Sort('title_sort', Parameter\Sort::DIRECTION_ASC);
       $parameters[] = new Parameter\Start($current_page * CULTUREFEED_PAGES_BASIC_ITEMS_PER_PAGE);
       $parameters[] = new Parameter\Rows(CULTUREFEED_PAGES_BASIC_ITEMS_PER_PAGE);
+      $parameters[] = new Parameter\Sort('score', Parameter\Sort::DIRECTION_DESC);
 
 
       $result = culturefeed_get_search_service()->searchPages($parameters);
