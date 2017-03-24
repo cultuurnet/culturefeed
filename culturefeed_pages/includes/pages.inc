@@ -22,7 +22,7 @@ function culturefeed_pages_page_basic_search() {
       $actortypes = variable_get('culturefeed_pages_actor_types', array());
 
       // Prepare multiple search terms for better match.
-      if ($_GET['search']) {
+      if (isset($_GET['search'])) {
         $search_terms = $_GET['search'];
         $search_terms = explode(' ', $search_terms);
         foreach ($search_terms as $search_term) {
@@ -35,14 +35,14 @@ function culturefeed_pages_page_basic_search() {
 
       $parameters = array();
       $parameters[] = new Parameter\FilterQuery('category_id' . ':(' . implode(' OR ', $actortypes) . ')');
-      if ($_GET['zipcode']) {
+      if (isset($_GET['zipcode'])) {
         $parameters[] = new Parameter\FilterQuery('zipcode:' . $_GET['zipcode']);
       }
       $parameters[] = new Parameter\Query($search_query);
       $parameters[] = new Parameter\Start($current_page * CULTUREFEED_PAGES_BASIC_ITEMS_PER_PAGE);
       $parameters[] = new Parameter\Rows(CULTUREFEED_PAGES_BASIC_ITEMS_PER_PAGE);
       $parameters[] = new Parameter\Sort('score', Parameter\Sort::DIRECTION_DESC);
-
+      $parameters[] = new Parameter\Sort('title_sort', Parameter\Sort::DIRECTION_ASC);
 
       $result = culturefeed_get_search_service()->searchPages($parameters);
       $items = $result->getItems();
@@ -68,6 +68,7 @@ function culturefeed_pages_page_basic_search() {
     '#results' => $items,
     '#total_results' => $total_results,
     '#search' => isset($_GET['search']) ? $_GET['search'] : NULL,
+    '#zipcode' => isset($_GET['zipcode']) ? $_GET['zipcode'] : NULL,
   );
 
   $build['pager'] = array(
@@ -115,10 +116,10 @@ function culturefeed_pages_basic_search_form() {
 function culturefeed_pages_basic_search_form_submit($form, &$form_state) {
 
   if ($form_state['values']['page']) {
-    $query['search'] =  $form_state['values']['page'];
+    $query['search'] = $form_state['values']['page'];
   }
   if ($form_state['values']['zipcode']) {
-    $query['zipcode'] =  $form_state['values']['zipcode'];
+    $query['zipcode'] = $form_state['values']['zipcode'];
   }
   $form_state['redirect'] = array(
     $_GET['q'],

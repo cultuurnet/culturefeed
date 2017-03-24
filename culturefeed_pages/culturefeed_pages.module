@@ -40,6 +40,7 @@ function culturefeed_pages_theme() {
         'results' => array(),
         'total_results' => 0,
         'search' => '',
+        'zipcode' => '',
       ),
       'path' => $path,
       'file' => 'theme.inc',
