@@ -23,11 +23,16 @@ function culturefeed_pages_page_basic_search() {
 
       // Prepare multiple search terms for better match.
       if (isset($_GET['search'])) {
-        $search_terms = $_GET['search'];
+        $search_terms = trim($_GET['search']);
         $search_terms = explode(' ', $search_terms);
         foreach ($search_terms as $search_term) {
-          // Add fuzzy search.
-          $search_query[] = '"' . $search_term . '"~2' ;
+          // Trim whitespaces.
+          $search_term = trim($search_term);
+          // Remove empty terms.
+          if ($search_term != "") {
+            // Add fuzzy search.
+            $search_query[] = '"' . $search_term . '"~2' ;
+          }
         }
         $search_query = implode(' AND ', $search_query);
       }
