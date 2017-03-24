@@ -32,6 +32,7 @@ function culturefeed_pages_preprocess_culturefeed_pages_basic_search_page(&$vari
 
   $variables['site'] = check_plain(variable_get('site_name', ''));
   $variables['search'] = check_plain($variables['search']);
+  $variables['zipcode'] = check_plain($variables['zipcode']);
 
 }
 
