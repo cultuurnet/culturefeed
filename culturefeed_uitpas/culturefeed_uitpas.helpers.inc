@@ -309,3 +309,27 @@ function culturefeed_uitpas_email_is_passholder() {
     watchdog_exception('culturefeed_uitpas_not_yet_registered', $e);
   }
 }
+
+function culturefeed_uitpas_get_passholder_coupons($uitpas_user) {
+  $coupons = array();
+
+  foreach ($uitpas_user->passholder->cardSystemSpecific as $cardSystem) {
+    $current_card = $cardSystem->currentCard;
+
+    if ($current_card !== NULL) {
+      $coupons[] = $uitpas_user->cf->uitpas()->getCouponsForPassholder($current_card->uitpasNumber);
+      return $uitpas_user->cf->uitpas()->getCouponsForPassholder($current_card->uitpasNumber);
+    }
+  }
+  $total = 0;
+  $objects = array();
+
+  foreach ($coupons as $coupon_arr_elements) {
+    $total = $total + $coupon_arr_elements->total;
+    foreach ($coupon_arr_elements as $coupon_arr_element) {
+      array_push($objects, $coupon_arr_element);
+    }
+  }
+
+  return new CultureFeed_ResultSet($total, $objects);
+}

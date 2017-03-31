@@ -15,12 +15,10 @@ function culturefeed_uitpas_profile_coupons_get()
   $uitpas_user = culturefeed_uitpas_get_uitpas_user();
 
   if ($uitpas_user->user && $uitpas_user->passholder) {
-
     $coupons = culturefeed_uitpas_get_passholder_coupons($uitpas_user);
-
   }
 
-  if (count($coupons->total) > 0) {
+  if ($coupons->total > 0) {
     return array(
       '#theme' => 'culturefeed_uitpas_profile_coupons',
       '#coupons' => $coupons->objects,
