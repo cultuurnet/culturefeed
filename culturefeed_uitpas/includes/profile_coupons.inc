@@ -16,14 +16,14 @@ function culturefeed_uitpas_profile_coupons_get()
 
   if ($uitpas_user->user && $uitpas_user->passholder) {
 
-    culturefeed_uitpas_get_passholder_coupons($uitpas_user);
+    $coupons = culturefeed_uitpas_get_passholder_coupons($uitpas_user);
 
   }
 
-  if (count($coupons) > 0) {
+  if (count($coupons->total) > 0) {
     return array(
       '#theme' => 'culturefeed_uitpas_profile_coupons',
-      '#coupons' => $coupons,
+      '#coupons' => $coupons->objects,
     );
   } else {
     return array(

@@ -246,6 +246,26 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
 }
 
 /**
+ * Implements hook_preprocess_preprocess_culturefeed_uitpas_profile_coupons().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_coupons(&$vars) {
+  $coupons = array();
+
+  foreach ($vars['coupons'] as $key => $coupon) {
+    $coupons[$key]['id'] = $coupon->id;
+    $coupons[$key]['name'] = $coupon->name;
+    $coupons[$key]['description'] = $coupon->description;
+    $coupons[$key]['validTo'] = $coupon->validTo;
+    $coupons[$key]['remaining'] = $coupon->remainingTotal->volume;
+  }
+
+  unset($vars['coupons']);
+  $vars['coupons'] = $coupons;
+
+  dpm($vars);
+}
+
+/**
  * Implements hook_preprocess_preprocess_culturefeed_uitpas_profile_details().
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars) {
