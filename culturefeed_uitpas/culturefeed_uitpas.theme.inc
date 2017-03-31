@@ -144,7 +144,6 @@ function culturefeed_uitpas_theme() {
     'culturefeed_uitpas_profile_coupons' => array(
       'variables' => array(
         'coupons' => NULL,
-        'passholder' => NULL,
       ),
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
       'file' => 'theme.inc',

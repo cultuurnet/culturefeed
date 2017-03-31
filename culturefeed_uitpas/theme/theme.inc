@@ -261,8 +261,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_coupons(&$vars
 
   unset($vars['coupons']);
   $vars['coupons'] = $coupons;
-
-  dpm($vars);
 }
 
 /**

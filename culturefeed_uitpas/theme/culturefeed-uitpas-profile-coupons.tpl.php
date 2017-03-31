@@ -12,9 +12,18 @@
 ?>
 <div class="profile_coupons">
   <?php foreach ($coupons as $coupon): ?>
-    <?php print $coupon['name']; ?><br />
-    <?php print $coupon['description']; ?><br />
-    Geldig tot: <?php print $coupon['validTo']; ?><br />
-    Nog beschikbaar: <?php print $coupon['remaining']; ?>
+    <div class="coupon-detail">
+        <h3><?php print $coupon['name']; ?></h3>
+        <?php if (!empty($coupon['description'])): ?>
+            <?php print $coupon['description']; ?><br />
+        <?php endif; ?>
+        <?php if(!empty($coupon['validTo'])): ?>
+            Geldig tot: <?php print $coupon['validTo']; ?><br />
+        <?php endif; ?>
+        <?php if(!empty($coupon['remaining'])): ?>
+            Nog beschikbaar: <?php print $coupon['remaining']; ?>
+        <?php endif; ?>
+    </div>
+    <hr />
   <?php endforeach; ?>
 </div>
