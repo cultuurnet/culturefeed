@@ -317,7 +317,7 @@ function culturefeed_uitpas_get_passholder_coupons($uitpas_user) {
     $current_card = $cardSystem->currentCard;
 
     if ($current_card !== NULL) {
-      $coupons[] = $uitpas_user->cf->uitpas()->getCouponsForPassholder($current_card->uitpasNumber);
+      $coupons[] = $uitpas_user->cf->uitpas()->getCouponsForPassholder($current_card->uitpasNumber, NULL, 1000);
     }
   }
   $total = 0;

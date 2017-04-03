@@ -258,6 +258,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_coupons(&$vars
     if ($coupon->validTo !== NULL) {
       $coupons[$key]['validTo'] = date('d/m/Y', $coupon->validTo);
     }
+
     $coupons[$key]['remaining'] = $coupon->remainingTotal->volume;
   }
 
