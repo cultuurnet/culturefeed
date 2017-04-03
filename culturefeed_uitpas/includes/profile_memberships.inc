@@ -8,7 +8,7 @@
 /**
  * Returns profile actions.
  */
-function culturefeed_uitpas_profile_coupons_get() {
+function culturefeed_uitpas_profile_memberships_get() {
     $memberships = array();
     $uitpas_user = culturefeed_uitpas_get_uitpas_user();
 
