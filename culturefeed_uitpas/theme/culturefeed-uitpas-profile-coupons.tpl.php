@@ -17,7 +17,7 @@
         <?php if (!empty($coupon['description'])): ?>
             <?php print $coupon['description']; ?><br />
         <?php endif; ?>
-        <?php if(!empty($coupon['validTo'])): ?>
+        <?php if(isset($coupon['validTo'])): ?>
             Geldig tot: <?php print $coupon['validTo']; ?><br />
         <?php endif; ?>
         <?php if(!empty($coupon['remaining'])): ?>
