@@ -57,15 +57,6 @@ function _culturefeed_agenda_get_links_from_item(CultureFeed_Cdb_Item_Base $item
   $detail = $item->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
 
   $links = array();
-  // General links.
-  if ($detail) {
-
-    foreach ($detail->getMedia() as $media) {
-      if ($media->getMediaType() == CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBRESOURCE || $media->getMediaType() == CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBSITE) {
-        $links[] = $media->getHLink();
-      }
-    }
-  }
 
   // Contact info links.
   if (method_exists($item, 'getContactInfo') && $item->getContactInfo()) {
@@ -96,6 +87,16 @@ function _culturefeed_agenda_get_links_from_item(CultureFeed_Cdb_Item_Base $item
         $contact_links = _culturefeed_agenda_get_contact_links($performer->getActor()->getContactInfo());
         $links += $contact_links['main'];
         $links += $contact_links['other'];
+      }
+    }
+  }
+
+  // General links.
+  if ($detail) {
+
+    foreach ($detail->getMedia() as $media) {
+      if ($media->getMediaType() == CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBRESOURCE || $media->getMediaType() == CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBSITE) {
+        $links[] = $media->getHLink();
       }
     }
   }
