@@ -33,18 +33,18 @@ function culturefeed_uitpas_culturefeed_ui_profile_sections() {
         ),
       ),
       array(
-        'title' => t('Points history'),
-        'href' => 'culturefeed/profile/uitpas/actions',
-        'attributes' => array(
-          'title' => t('An overview of all your UiTPAS actions.'),
-        ),
-      ),
-      array(
         'title' => t('My coupons'),
         'href' => 'culturefeed/profile/uitpas/coupons',
         'attributes' => array(
           'title' => t('An overview of all your UiTPAS coupons.'),
         )
+      ),
+      array(
+        'title' => t('Points history'),
+        'href' => 'culturefeed/profile/uitpas/actions',
+        'attributes' => array(
+          'title' => t('An overview of all your UiTPAS actions.'),
+        ),
       ),
     );
 
