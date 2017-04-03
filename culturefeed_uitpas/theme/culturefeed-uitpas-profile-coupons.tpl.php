@@ -20,8 +20,8 @@
         <?php if(isset($coupon['validTo'])): ?>
             Geldig tot: <?php print $coupon['validTo']; ?><br />
         <?php endif; ?>
-        <?php if(!empty($coupon['remaining'])): ?>
-            Nog beschikbaar: <?php print $coupon['remaining']; ?>
+        <?php if(isset($coupon['remaining'])): ?>
+            <?php print $coupon['remaining']; ?>
         <?php endif; ?>
     </div>
     <hr />
