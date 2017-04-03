@@ -39,6 +39,13 @@ function culturefeed_uitpas_culturefeed_ui_profile_sections() {
           'title' => t('An overview of all your UiTPAS actions.'),
         ),
       ),
+      array(
+        'title' => t('My coupons'),
+        'href' => 'culturefeed/profile/uitpas/coupons',
+        'attributes' => array(
+          'title' => t('An overview of all your UiTPAS coupons.'),
+        )
+      ),
     );
 
     return array(
