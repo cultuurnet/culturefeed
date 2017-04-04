@@ -13,7 +13,7 @@ function culturefeed_uitpas_profile_memberships_get() {
     $uitpas_user = culturefeed_uitpas_get_uitpas_user();
 
   if ($uitpas_user->user && $uitpas_user->passholder) {
-    $memberships = $uitpas_user->passholder->memberships;
+    $memberships = culturefeed_uitpas_get_passholder_memeberships($uitpas_user);
   }
 
   if (count($memberships) > 0) {
