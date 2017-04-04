@@ -465,7 +465,13 @@ function culturefeed_external_image_style($image_url, $image_style) {
     // Not needed if the file already exists.
     if (!file_exists($local_uri)) {
       file_prepare_directory($directory, FILE_CREATE_DIRECTORY);
-      $image_content = @file_get_contents($image_url);
+      // Make sure we have a proper protocol in front of the URL.
+      $image_url_get = $image_url;
+      if (!preg_match($pattern, $image_url_get)) {
+        $image_url_get = 'http:' . $image_url_get;
+      }
+
+      $image_content = @file_get_contents($image_url_get);
       if ($image_content) {
         file_put_contents($directory . '/' . $file_name, $image_content);
       }
