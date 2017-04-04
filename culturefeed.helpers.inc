@@ -437,7 +437,7 @@ function culturefeed_external_image_style($image_url, $image_style) {
   global $base_url;
 
   // Get the URL parts without protocol.
-  $pattern = '#https?://#';
+  $pattern = '#^https?://#';
   $curr_url_parts = explode('/', preg_replace($pattern, '', $base_url));
   $image_url_parts = explode('/', preg_replace($pattern, '', $image_url));
 
