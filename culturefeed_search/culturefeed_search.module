@@ -185,11 +185,20 @@ function culturefeed_search_cache_flush_submit($form, $form_state) {
 function culturefeed_search_get_search_url_query($search_query) {
 
   // Check for custom filter options.
-  $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options());
-  $filter_options += variable_get('culturefeed_search_filter_options_2', culturefeed_search_ui_default_filter_options());
   $known_queries = array();
-  foreach ($filter_options as $filter) {
-    $known_queries[$filter['api-filter-query']] = $filter['query-string'];
+  for ($i = 1; $i <= CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS; $i++) {
+
+    if ($i == 1) {
+      $filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options($i));
+    }
+    else {
+      $filter_options = variable_get('culturefeed_search_filter_options_' . $i, culturefeed_search_ui_default_filter_options($i));
+    }
+
+    foreach ($filter_options as $filter) {
+      $known_queries[$filter['api-filter-query']] = $filter['query-string'];
+    }
+
   }
 
   $query = array();
@@ -269,7 +278,6 @@ function culturefeed_search_get_search_url_query($search_query) {
         if (strpos($facet_field, '!') === 0) {
           $inverse = TRUE;
           $facet_field = substr($facet_field, 1);
-          $facet_value = substr($facet_value, 1);
         }
         $facet_value = str_replace(array('(', ')', '"'), '', $facet_value);
         $previous_field = $facet_field;
@@ -343,7 +351,7 @@ function culturefeed_search_get_search_url_query($search_query) {
             // Don't take event and production as facet.
             if (isset($query['facet']['type'])) {
               foreach ($query['facet']['type'] as $key => $content_type) {
-                if (in_array($content_type, array('production', 'event'))) {
+                if (in_array($content_type, array('production', 'event', '!production', '!event'))) {
                   unset($query['facet']['type'][$key]);
                 }
               }

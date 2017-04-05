@@ -168,7 +168,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $cdb_item);
   $enabled_facilities = variable_get('culturefeed_facet_enabled_options', NULL);
   $variables['facilities'] = array();
-  if(!empty($facilities)) {
+  if(!empty($facilities) && !empty($enabled_facilities['facility'])) {
     foreach($facilities['id'] as $key => $facility) {
       if(in_array($facility,$enabled_facilities['facility'])) {
         $variables['facilities'][] = $facilities['text'][$key];
@@ -176,6 +176,11 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     }
   }
 
+  // Vliegtypes of this item (plain text and links).
+  $vliegtypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_UMV, $cdb_item);
+  if (!empty($vliegtypes['text'])) {
+    $variables['forkids'] = TRUE;
+  }
 
   if ($detail) {
 
@@ -192,6 +197,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
 
     if ($detail->getPrice()) {
       $variables['price'] = $detail->getPrice()->getValue() > 0 ? '&euro; ' . $detail->getPrice()->getValue() : t('free');
+      $variables['price'] = str_replace('.', ',', $variables['price']);
       $variables['price_description'] = $detail->getPrice()->getDescription();
     }
 
@@ -254,27 +260,33 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     // Pictures
     $main_picture = '';
     $main_picture_cr = '';
+    $main_index = 0;
     $pictures = array();
     $copyrights = array();
 
     $photos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
+    $i = 0;
     foreach ($photos as $photo) {
-      $pictures[] = $photo->getHLink();
+      $pictures[] = culturefeed_get_relative_image($photo->getHLink());
       $copyrights[] = $photo->getCopyright();
       if ($photo->isMain()) {
-        $main_picture = $photo->getHLink();
+        $main_picture = culturefeed_get_relative_image($photo->getHLink());
         $main_picture_cr = $photo->getCopyright();
+        $main_index = $i;
       }
+      $i++;
     }
 
     // Support for mediatype imageweb
     $images = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_IMAGEWEB);
     foreach ($images as $image) {
-      $pictures[] = $image->getHLink();
+      $pictures[] = culturefeed_get_relative_image($image->getHLink());
       if ($image->isMain() && empty($main_picture)) {
-        $main_picture = $image->getHLink();
+        $main_picture = culturefeed_get_relative_image($image->getHLink());
         $main_picture_cr = $image->getCopyright();
+        $main_index = $i;
       }
+      $i++;
     }
 
     // If no image we get image from eventdetails language=nl
@@ -284,11 +296,13 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       if (!empty($detail_nl)) {
         $photos = $detail_nl->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
         foreach ($photos as $photo) {
-          $pictures[] = $photo->getHLink();
+          $pictures[] = culturefeed_get_relative_image($photo->getHLink());
           if ($photo->isMain()) {
-            $main_picture = $photo->getHLink();
+            $main_picture = culturefeed_get_relative_image($photo->getHLink());
             $main_picture_cr = $photo->getCopyright();
+            $main_index = $i;
           }
+          $i++;
         }
 
         // Support for mediatype imageweb
@@ -296,9 +310,11 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         foreach ($images as $image) {
           $pictures[] = $image->getHLink();
           if ($image->isMain() && empty($main_picture)) {
-            $main_picture = $image->getHLink();
-            $main_picture_cr = $photo->getCopyright();
+            $main_picture = culturefeed_get_relative_image($image->getHLink());
+            $main_picture_cr = $image->getCopyright();
+            $main_index = $i;
           }
+          $i++;
         }
       }
     }
@@ -310,11 +326,14 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $main_picture_cr = $copyrights[0];
       }
     }
+    
+    // check if same image isn't used twice or more
+    $pictures = array_unique($pictures);
 
     // we don't want the main picture to show twice
     if (!empty($main_picture)) {
-      unset($pictures[0]);
-      unset($copyrights[0]);
+      unset($pictures[$main_index]);
+      unset($copyrights[$main_index]);
     }
 
     $variables['main_picture'] = $main_picture;
@@ -328,6 +347,10 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   }
 
   $variables['cdbid'] = $cdb_item->getCdbid();
+
+  if (method_exists($cdb_item, 'getCreatedBy')) { // TODO: add method for productions (UIV-1761)
+    $variables['created_by'] = $cdb_item->getCreatedBy();
+  }
 
   // Social stats.
   $variables['recommend_count'] = $item->getActivityCount(\CultuurNet\Search\ActivityStatsExtendedEntity::ACTIVITY_COUNT_RECOMMEND);
@@ -493,7 +516,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       }
     }
   }
-  
+
   // Enhance event-details with UiTPAS-information if culturefeed_uitpas is enabled
   if (module_exists('culturefeed_uitpas')) {
     $uitpas_event = culturefeed_uitpas_get_uitpas_event($item);
@@ -624,8 +647,11 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   $reservation_links = array();
   if (method_exists($cdb_item, 'getContactInfo')) {
     try {
-      $reservation_info = $cdb_item->getContactInfo()->getReservationInfo();
-      $reservation_links = isset($reservation_info['url']) ? $reservation_info['url'] : $reservation_links;
+      $contact_info = $cdb_item->getContactInfo();
+      if ($contact_info) {
+        $reservation_info = $cdb_item->getContactInfo()->getReservationInfo();
+        $reservation_links = isset($reservation_info['url']) ? $reservation_info['url'] : $reservation_links;
+      }
     }
     catch (Exception $e) {
       watchdog_exception('notice', $e);
@@ -672,11 +698,19 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
 
     $contact_info = $event->getContactInfo();
 
+    // Prepare mailto links
+    $site_name = variable_get('site_name');
+    $permalink = url('permalink' . '/' . $variables['cdbid'], array('absolute' => TRUE));
+    $variables['mailto_query'] = array (
+      'subject' => $variables['title'] . ' (via ' . $site_name . ')',
+      'body' => $permalink
+    );
+
     // Mails.
     $mails = array();
     foreach ($contact_info->getMails() as $mail) {
       if (!$mail->isForReservations()) {
-        $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact')));
+        $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact', 'target' => '_blank'), 'query' => $variables['mailto_query']));
       }
     }
     $variables['contact']['mail'] = implode(', ', $mails);
@@ -686,16 +720,16 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
     $faxes = array();
     foreach ($contact_info->getPhones() as $phone) {
       if (!$phone->isForReservations()) {
-        if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
+        if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_FAX) {
+          $faxes[] = $phone->getNumber();
+        }
+        else {
           if (isset($variables['device']) && $variables['device'] == 'phone') {
             $phones[] = l($phone->getNumber(), 'tel:' . culturefeed_valid_phone($phone->getNumber()));
           }
           else {
             $phones[] = $phone->getNumber();
           }
-        }
-        else {
-          $faxes[] = $phone->getNumber();
         }
       }
     }
@@ -709,7 +743,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       // Reservation mail
       if (isset($reservation_info['mails'])) {
         foreach ($reservation_info['mails'] as $mail) {
-          $reservation_mails[] = l($mail, 'mailto:' . $mail, array('attributes' => array('id' => 'cf-reservation')));
+          $reservation_mails[] = l($mail, 'mailto:' . $mail, array('attributes' => array('id' => 'cf-reservation', 'target' => '_blank'), 'query' => $variables['mailto_query']));
         }
         $variables['reservation']['mail'] = implode(', ', $reservation_mails);
       }
@@ -1048,10 +1082,18 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
       }
     }
 
+    // Prepare mailto links
+    $site_name = variable_get('site_name');
+    $permalink = url('permalink' . '/' . $variables['cdbid'], array('absolute' => TRUE));
+    $variables['mailto_query'] = array (
+      'subject' => $variables['title'] . ' (via ' . $site_name . ')',
+      'body' => $permalink
+    );
+
     // Mails.
     $mails = array();
     foreach ($contact_info->getMails() as $mail) {
-      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact')));
+      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact', 'target' => '_blank'), 'query' => $variables['mailto_query']));
     }
     $variables['contact']['mail'] = implode(', ', $mails);
 
@@ -1059,17 +1101,16 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
     $phones = array();
     $faxes = array();
     foreach ($contact_info->getPhones() as $phone) {
-      if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_PHONE) {
-        if(isset($variables['device']) && $variables['device'] == 'phone')
-        {
-          $phones[] = l($phone->getNumber(), 'tel:'.culturefeed_valid_phone($phone->getNumber()));
+      if ($phone->getType() == CultureFeed_Cdb_Data_Phone::PHONE_TYPE_FAX) {
+        $faxes[] = $phone->getNumber();
+      }
+      else {
+        if (isset($variables['device']) && $variables['device'] == 'phone') {
+          $phones[] = l($phone->getNumber(), 'tel:' . culturefeed_valid_phone($phone->getNumber()));
         }
         else {
           $phones[] = $phone->getNumber();
         }
-      }
-      else {
-        $faxes[] = $phone->getNumber();
       }
     }
     $variables['contact']['phone'] = check_plain(implode(', ', $phones));
@@ -1193,7 +1234,7 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
 
   if (!empty($variables['title'])) {
     $title_parts[] = $variables['title'];
-    $og_tags['og:title'] = html_entity_decode($variables['title']);
+    $og_tags['og:title'] = decode_entities(strip_tags($variables['title']));
   }
   if (!empty($variables['location']) && !empty($variables['location']['city'])) {
     $title_parts[] = $variables['location']['city'];
@@ -1233,15 +1274,22 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
   $og_tags['og:url'] = url($variables['url'], array('absolute' => TRUE));
   $og_tags['og:description'] = implode(' - ', $description_parts);
   if ($variables['main_picture']) {
-    $colonpos = strpos($variables['main_picture'], ':');
-    $path = ($colonpos == FALSE) ? 'http:' : '' ;
-    $path .= str_replace(' ', '%20', $variables['main_picture']);
-    $og_tags['og:image'] = $path . '?width=200&height=200&crop=auto&scale=both';
+    $image = str_replace(' ', '%20', $variables['main_picture']);
+    $colonpos = strpos($image, ':');
+    if ($colonpos) {
+      $image = substr($image, $colonpos + 1);
+    }
+    $image_path = 'http:' . $image;
+    $image_secure_path = 'https:' . $image;
+    $og_tags['og:image'] = $image_path . '?width=200&height=200&crop=auto&scale=both';
+    $og_tags['og:image:secure_url'] = $image_secure_path . '?width=200&height=200&crop=auto&scale=both';
   }
   else {
     $path = drupal_get_path('module', 'culturefeed_agenda');
     $og_tags['og:image'] = url($path . '/images/no-thumbnail.png', array('absolute' => TRUE));
   }
+  $og_tags['og:image:width'] = '200';
+  $og_tags['og:image:height'] = '200';
 
   foreach ($og_tags as $property => $content) {
     drupal_add_html_head(array(

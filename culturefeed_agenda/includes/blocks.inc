@@ -32,7 +32,7 @@ function culturefeed_agenda_block_related_activities() {
  */
 function culturefeed_agenda_block_nearby_activities() {
 
-  drupal_add_js(CULTUREFEED_GOOGLE_MAPS_JS_API, array('type' => 'external'));
+  drupal_add_js(culturefeed_agenda_google_maps_js_api_url(), array('type' => 'external'));
 
   // If there is a location stored in cookie, add to the block title.
   $user_location = culturefeed_search_ui_get_user_location_cookie();
@@ -204,7 +204,7 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
     // Add js for geolocate.
     global $language;
     $form['#attached']['js'] = array(
-      array('data' => CULTUREFEED_GOOGLE_MAPS_JS_API, 'type' => 'external'),
+      array('data' => culturefeed_agenda_google_maps_js_api_url(), 'type' => 'external'),
       drupal_get_path('module', 'culturefeed_agenda') . '/js/search_block.js',
       drupal_get_path('module', 'culturefeed') . '/js/common.js',
     );
@@ -310,7 +310,7 @@ function culturefeed_agenda_block_organiser_events() {
 		return;
 	}
 
-  if (is_null($item->getEntity()->getOrganiser()->getCdbid())) {
+  if (is_null($item->getEntity()->getOrganiser())) {
     return;
   }
   else {
@@ -500,7 +500,7 @@ function culturefeed_agenda_block_actor_search_form($form, &$form_state) {
 
   $form['#attached']['js'] = array(
     array(
-      'data' => CULTUREFEED_GOOGLE_MAPS_JS_API,
+      'data' => culturefeed_agenda_google_maps_js_api_url(),
       'type' => 'external'),
     drupal_get_path('module', 'culturefeed_agenda') . '/js/actor_autocomplete.js',
     drupal_get_path('module', 'culturefeed') . '/js/common.js',
@@ -574,4 +574,60 @@ function culturefeed_agenda_block_event_types() {
 
   return;
 
+}
+
+/**
+ * Block to render GMAP for the Search results page
+ * @return array|void
+ */
+function culturefeed_agenda_search_map() {
+  global $language;
+  $block = array();
+
+  // Get search results
+  $culturefeedSearchResult = culturefeed_get_search_result();
+  if (!$culturefeedSearchResult instanceof \Cultuurnet\Search\SearchResult) {
+    return;
+  }
+
+  if ($culturefeedSearchResult->getTotalCount() == 0) {
+    return;
+  }
+
+  //if ($culturefeedSearchResult->getTotalCount() > variable_get('culturefeed_search_ui_pager_items_per_page', 10)) {
+  if (variable_get('agenda_search_map_results_mode', 0) == 0) {
+    $locations = culturefeed_agenda_get_locations_by_search_result();
+  }
+  else {
+    $locations = culturefeed_agenda_get_locations_by_list_search();
+  }
+
+  $markers = array();
+  foreach ($locations as $location) {
+    $markers[] = array(
+      'title' => $location['title'],
+      'latitude' => $location['latitude'],
+      'longitude' => $location['longitude'],
+      'html' => implode('<br />', $location['events']),
+    );
+  }
+
+  culturefeed_agenda_gmap_add_js();
+
+  // Set JS setting
+  drupal_add_js(
+    array(
+      'culturefeed_agenda_map' => array(
+        'markers' => $markers,
+      ),
+    ),
+    'setting'
+  );
+
+  // HTML for the map
+  $block['content'] = array(
+    '#theme' => 'culturefeed_agenda_search_map',
+  );
+
+  return $block;
 }

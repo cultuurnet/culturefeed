@@ -12,9 +12,11 @@
 function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) {
 
 
+  $loggedin_cf_uid = DrupalCultureFeed::getLoggedInUserId();
+
   // Check if we need to show the calendar for the logged in user or for another user.
   try {
-    if (isset($variables['user_id'])) {
+    if (isset($variables['user_id']) && $loggedin_cf_uid !== $variables['user_id']) {
       $my_calendar = FALSE;
       $cf_user = DrupalCultureFeed::getUser($variables['user_id']);
     }
@@ -36,7 +38,6 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
     $variables['deny_access'] = FALSE;
   }
 
-  $authenticated = DrupalCultureFeed::isCultureFeedUser();
   $variables['sidebar'] = 'empty';
 
   // Top nav with month names.
@@ -61,6 +62,15 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
   if (!empty($activities_by_type)) {
     // Print the 'LIKED' activities.
     if (isset($activities_by_type[CultureFeed_Activity::TYPE_LIKE]) && $my_calendar) {
+
+      //Remove activities that are already started.
+      foreach ($activities_by_type[CultureFeed_Activity::TYPE_LIKE] as $key => $activity_liked) {
+        $event = culturefeed_agenda_event_load($activity_liked->nodeId);
+        if (culturefeed_calendar_get_event_status($event) !== CULTUREFEED_CALENDAR_EVENT_PLANNABLE) {
+          unset($activities_by_type[CultureFeed_Activity::TYPE_LIKE][$key]);
+        }
+      }
+
       $variables['not_yet_planned'] = theme('culturefeed_calendar_activities_liked',
         array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_LIKE]));
     }
@@ -70,13 +80,12 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
         array('activities' => $activities_by_type[CultureFeed_Activity::TYPE_IK_GA], 'month_names' => $months, 'my_calendar' => $my_calendar));
     }
     // Print the save cookie button.
-    if (!$authenticated && !empty($activities->objects) && $my_calendar) {
-      $save_cookie_button_form = drupal_get_form('culturefeed_calendar_save_cookie_form');
-      $variables['save_cookie_button'] = drupal_render($save_cookie_button_form);
+    if (!$loggedin_cf_uid && !empty($activities->objects) && $my_calendar) {
+      $variables['login_url'] = url('culturefeed/oauth/connect', array('query' => drupal_get_destination()));
     }
   }
 
-  if ($authenticated || (!$authenticated && !$my_calendar)) {
+  if ($loggedin_cf_uid || (!$loggedin_cf_uid && !$my_calendar)) {
     // Set username.
     if (empty($cf_user->givenName)) {
       $name = $cf_user->nick;
@@ -87,13 +96,15 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
     $variables['user_name'] = $name;
   }
 
-  if ($authenticated && $my_calendar) {
+  if ($loggedin_cf_uid && $my_calendar) {
     $variables['share_calendar_path'] = 'culturefeed/calendar/share';
     $variables['calendar_settings_path'] = 'culturefeed/calendar/settings';
 
     if ($cf_user->privacyConfig->calendarId == CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC) {
       $variables['shared'] = TRUE;
       $variables['data_content'] = theme('culturefeed_calendar_share_page');
+      $variables['calendar_share_path'] = 'culturefeed/calendar/' . $cf_user->id;
+      $variables['calendar_share_url'] = url($variables['calendar_share_path'], array('absolute' => TRUE));
     }
     else {
       $variables['shared'] = FALSE;
@@ -101,14 +112,8 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_page(&$variables) 
     }
   }
 
-
-  if ($cf_user && $cf_user->privacyConfig->calendarId == CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC) {
-
-    $variables['calendar_share_path'] = 'culturefeed/calendar/' . $cf_user->id;
-    $variables['calendar_share_url'] = url($variables['calendar_share_path'], array('absolute' => TRUE));
-
-  }
-
+  culturefeed_calendar_preprocess_culturefeed_calendar_share_page($variables);
+  culturefeed_calendar_preprocess_culturefeed_calendar_metatags($variables);
 }
 
 /**
@@ -128,12 +133,10 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button(&$variables
     'calendar-button',
     'calendar-button-' . $variables['button']['location'],
   );
-  $variables['finished'] = FALSE;
+  $variables['finished'] = $variables['status'] == CULTUREFEED_CALENDAR_EVENT_FINISHED;
+  $variables['started'] = $variables['status'] == CULTUREFEED_CALENDAR_EVENT_STARTED;
 
-  if ($variables['closed']) {
-    $variables['finished'] = TRUE;
-  }
-  elseif ($variables['button']['action'] == 'view') {
+  if (!$variables['finished'] && $variables['button']['action'] == 'view') {
 
     $variables['classes_array'][] = 'btn-view-calendar';
 
@@ -300,7 +303,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_button_hover(&$var
   $variables['url'] = 'culturefeed/oauth/connect';
   $variables['options'] = array(
     'query' => array(
-      'destination' => 'culturefeed/calendar/add-cookie-to-calendar',
+      'destination' => 'culturefeed/calendar',
     ),
   );
 }
@@ -345,4 +348,61 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_share_page(&$varia
     }
 
   }
+}
+
+
+/**
+ * Helper function to create a meta description tag for calendarpages
+ * @param type $variables
+ */
+function culturefeed_calendar_preprocess_culturefeed_calendar_metatags(&$variables) {
+
+  $title_parts = array();
+  $title_parts[] = t('Calendar');
+  $title_parts[] = variable_get('site_name', '');
+  $description = "";
+  $og_tags = array();
+
+  // Add meta title tag.
+  drupal_set_title(implode(' | ', $title_parts), PASS_THROUGH);
+
+  // Add meta description tag.
+  drupal_add_html_head(array(
+    '#tag' => 'meta',
+    '#attributes' => array(
+      'name' => 'description',
+      'content' => $description,
+    ),
+  ), 'meta_description');
+
+  // Add open graph meta tags.
+  $fb_app_id = variable_get('culturefeed_search_ui_fb_app_id', '');
+  if (!empty($fb_app_id)) {
+    $og_tags['fb:app_id'] = $fb_app_id;
+  }
+
+  $og_tags['og:site_name'] = variable_get('site_name', '');
+
+  if($variables['shared']) {
+    $og_tags['og:title'] = t('Calendar of ') . $variables['user_name'];
+    $og_tags['og:url'] =  $variables['calendar_share_url'];
+    $og_tags['og:description'] = t('Discover the calendar of ') . $variables['user_name'] ;
+  }
+  else {
+    $og_tags['og:title'] = t('Make your own calendar');
+    $og_tags['og:url'] = url('culturefeed/calendar', array('absolute' => TRUE));
+    $og_tags['og:description'] = t('Put activities from ') . variable_get('site_name', '') . t(' in your personal calendar.');
+  }
+
+  foreach ($og_tags as $property => $content) {
+   drupal_add_html_head(array(
+     '#tag' => 'meta',
+     '#attributes' => array(
+       'property' => $property,
+       'content' => $content,
+     ),
+   ), $property);
+  }
+
+
 }

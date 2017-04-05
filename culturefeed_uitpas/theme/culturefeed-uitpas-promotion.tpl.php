@@ -12,6 +12,7 @@
  * - $available: The availability.
  * - $description1.
  * - $description2.
+ * - $out_of_stock: True or False
  */
 ?>
 <div class="promotion_details">
@@ -28,13 +29,17 @@
     <dd class="counters"><?php print $counters; ?></dd>
     <?php endif; ?>
 
-    <?php if ($period): ?>
-    <dt><?php print t('Valid till'); ?></dt>
-    <dd class="period"><?php print $period; ?></dd>
+    <?php if ($period || $out_of_stock): ?>
+    <dt><?php print t('Availability'); ?></dt>
+      <?php if ($out_of_stock): ?>
+      <dd class="out-of-stock"><?php print t('Out of stock'); ?></dd>
+      <?php else: ?>
+      <dd class="period"><?php print $period; ?></dd>
+      <?php endif; ?>
     <?php endif; ?>
 
     <?php if ($available): ?>
-    <dt><?php print t('Still available'); ?></dt>
+    <dt><?php print t('Only available for'); ?></dt>
     <dd class="available"><?php print $available; ?></dd>
     <?php endif; ?>
 

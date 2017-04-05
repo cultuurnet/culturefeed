@@ -59,11 +59,6 @@ function culturefeed_uitpas_block_configure($delta = '') {
       culturefeed_uitpas_recent_actions_settings_get($form);
       break;
 
-    case 'uitpas_user_register':
-      module_load_include('inc', 'culturefeed_uitpas', 'includes/user_register');
-      culturefeed_uitpas_user_register_settings_get($form);
-      break;
-
   }
 
   return $form;
@@ -150,9 +145,8 @@ function culturefeed_uitpas_block_view($delta = '') {
       break;
 
     case 'uitpas_user_register':
-      module_load_include('inc', 'culturefeed_uitpas', 'includes/user_register');
-      $content = culturefeed_uitpas_user_register_get();
-
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/user_register');     
+      $content = culturefeed_uitpas_user_register_cta_get();
       if ($content) {
 
         $block['subject'] = t('Already own an UiTPAS?');

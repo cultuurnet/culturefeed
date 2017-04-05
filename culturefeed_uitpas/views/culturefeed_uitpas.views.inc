@@ -60,7 +60,7 @@ function culturefeed_uitpas_views_data() {
     ),
     'sort' => array(
       'handler' => 'culturefeed_uitpas_views_handler_sort',
-      'sort_property' => CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_TITLE,
+      'sort_property' => 'TITLE',
     ),
   );
 
@@ -72,7 +72,7 @@ function culturefeed_uitpas_views_data() {
     ),
     'sort' => array(
       'handler' => 'culturefeed_uitpas_views_handler_sort',
-      'sort_property' => CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS,
+      'sort_property' => 'POINTS',
     ),
   );
 
@@ -143,7 +143,7 @@ function culturefeed_uitpas_views_data() {
     ),
     'sort' => array(
       'handler' => 'culturefeed_uitpas_views_handler_sort',
-      'sort_property' => CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_CASHING_PERIOD_END,
+      'sort_property' => 'CASHING_PERIOD_END',
     ),
   );
 
@@ -152,7 +152,7 @@ function culturefeed_uitpas_views_data() {
     'help' => t("The creation date of the promotion."),
     'sort' => array(
       'handler' => 'culturefeed_uitpas_views_handler_sort',
-      'sort_property' => CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_CREATION_DATE,
+      'sort_property' => 'CREATION_DATE',
     ),
   );
 

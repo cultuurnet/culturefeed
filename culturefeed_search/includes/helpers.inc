@@ -476,12 +476,12 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
     if (is_array($conditions['name_like'])) {
       $db_or = db_or();
       foreach ($conditions['name_like'] as $field => $value) {
-        $query->condition('name', $value . '%', 'like');
+        $query->condition('name', '%' . $value . '%', 'like');
       }
       $query->condition($db_or);
     }
     else {
-      $query->condition('name', $conditions['name_like'] . '%', 'like');
+      $query->condition('name', '%' . $conditions['name_like'] . '%', 'like');
     }
   }
 

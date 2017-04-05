@@ -58,6 +58,11 @@ function culturefeed_uitpas_theme() {
       'template' => 'culturefeed-uitpas-profile-section',
     ),
     'culturefeed_uitpas_profile_section_register' => array(
+      'variables' => array(
+        'intro_title' => NULL,
+        'intro_text' => NULL,
+        'cta_link' => NULL,
+      ),
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
       'template' => 'culturefeed-uitpas-profile-section-register',
     ),
@@ -185,16 +190,29 @@ function culturefeed_uitpas_theme() {
       'render element' => 'element',
       'template' => 'culturefeed-uitpas-filter-labels',
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
-    )
+    ),
+    'culturefeed_uitpas_register_cta' => array(
+      'variables' => array(
+        'intro' => NULL,
+        'register_link' => NULL,
+        'get_title' => NULL,
+        'get_link' => NULL,
+      ),
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'template' => 'culturefeed-uitpas-register-cta',
+    ),
   );
 }
 
 function culturefeed_uitpas_preprocess_culturefeed_actor(&$vars) {
 
-  // Promotions.
-  module_load_include('inc', 'culturefeed_uitpas', 'includes/event_details_advantages');
-  $promotions = culturefeed_uitpas_event_details_advantages_get();
-  $vars['uitpas_promotions'] = drupal_render($promotions);
+  // Get promotions for known uitpas locations.
+  if (isset($vars['uitpas'])) { 
+    // Promotions.
+    module_load_include('inc', 'culturefeed_uitpas', 'includes/event_details_advantages');
+    $promotions = culturefeed_uitpas_event_details_advantages_get();
+    $vars['uitpas_promotions'] = drupal_render($promotions);
+  }
 
 }
 
@@ -223,11 +241,11 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
           if ($condition->definition == $condition::DEFINITION_KANSARM && $key->tariff > 0) {
 
             if ($condition->value == $condition::VALUE_MY_CARDSYSTEM) {
-              $prices[] = t('Opportunities tariff with @system: !tariff', array('@system' => culturefeed_uitpas_cardsystem_name($card_system), '!tariff' => $key->tariff));
+              $prices[] = t('Opportunities tariff with @system: &euro; !tariff', array('@system' => culturefeed_uitpas_cardsystem_name($card_system), '!tariff' => $key->tariff));
             }
 
             if ($condition->value == $condition::VALUE_AT_LEAST_ONE_CARDSYSTEM) {
-              $prices[] = t('Opportunities tariff for pass holders from another region: !tariff', array('!tariff' => $key->tariff));
+              $prices[] = t('Opportunities tariff for pass holders from another region: &euro; !tariff', array('!tariff' => $key->tariff));
             }
 
           }
@@ -236,6 +254,10 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
 
       }
 
+    }
+
+    foreach ($prices as $key => $price) {
+      $prices[$key] = str_replace('.', ',', $price);
     }
 
     if (count($prices)) {
@@ -275,4 +297,32 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_filter_labels(&$variab
     $variables['element']['#children'] .= $rendered_child;
   }
   $variables['#attributes'] = $attributes;
+}
+
+/**
+ * Implements hook_preprocess_culturefeed_uitpas_register_cta().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_register_cta(&$vars) {
+  $vars['intro'] = t('Register here, so you can follow your UiTPAS advantages and points balance online.');
+  $vars['register_link'] = l(t('Register your UiTPAS'), 'culturefeed/oauth/connect', array('query' => array('destination' => 'register_uitpas')));
+  $vars['get_title'] = t('No UiTPAS yet?');
+  $vars['get_link'] = l(t('Get an UiTPAS'), 'register_where');
+}
+
+/**
+ * Implements hook_preprocess_culturefeed_uitpas_profile_section_register().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_section_register(&$vars) {
+
+  if(culturefeed_uitpas_not_yet_registered()) {
+    $vars['intro_title'] = t('You did not register your UiTPAS yet.');
+    $vars['intro_text'] = t('Register here, so you can follow your UiTPAS advantages and points balance online.');
+    $vars['cta_link'] = l(t('Register your UiTPAS'), 'register_uitpas');
+  }
+
+  else {
+    $vars['intro_title'] = t('No UiTPAS yet?');
+    $vars['intro_text'] = t('Holders of an UiTPAS can earn points by participating in leisure activities and exchange them for') . ' ' . l(t('nice benefits'), 'promotions') . '.';
+    $vars['cta_link'] = l(t('Get an UiTPAS'), 'register_where');
+  }
 }

@@ -21,19 +21,6 @@ function culturefeed_ui_page_remove_account_form_submit($form, &$form_state) {
     drupal_set_message(t('An error occurred while deleting your account.'));
     return;
   }
-
-  db_query("DELETE FROM {culturefeed_token} WHERE cf_uid = :cf_uid", array(':cf_uid' => $cf_uid));
-  db_query("DELETE FROM {culturefeed_user} WHERE cf_uid = :cf_uid", array(':cf_uid' => $cf_uid));
-
-  global $user;
-
-  $user->status = 0;
-
-  user_save($user);
-
-  module_load_include('inc', 'user', 'user.pages');
-
-  user_logout();
 }
 
 function culturefeed_ui_page_users_search($name = '') {

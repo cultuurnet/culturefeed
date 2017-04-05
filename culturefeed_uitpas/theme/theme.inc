@@ -12,16 +12,23 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
 
   $advantage = $vars['advantage'];
 
+  // Ensure images are protocol-relative
+  if (isset($advantage->pictures)) {
+    foreach ($advantage->pictures as &$picture) {
+      $picture = str_replace('http://', '//', $picture);
+    }
+  }
+
   // Image.
   $vars['image'] = '';
   $vars['image2'] = '';
   $vars['images_list'] = '';
   $images = array();
   if (isset($advantage->pictures[0])) {
-    $vars['image'] = theme_image(array('path' => $advantage->pictures[0], 'attributes' => array()));
+    $vars['image'] = theme_image(array('path' => $advantage->pictures[0], 'alt' => $advantage->title, 'title' => $advantage->title, 'attributes' => array()));
     foreach ($advantage->pictures as $key => $picture) {
       $images[] = l(
-        theme('image', array('path' => $advantage->pictures[$key] . '?maxwidth=300&max-height=300', 'attributes' => array())),
+        theme('image', array('path' => $advantage->pictures[$key] . '?maxwidth=300&max-height=300', 'alt' => $advantage->title, 'title' => $advantage->title, 'attributes' => array())),
         $advantage->pictures[$key],
         array('html' => TRUE)
       );
@@ -29,7 +36,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
     $vars['images_list'] = theme('item_list', array('items' => $images));
   }
   if (isset($advantage->pictures[1])) {
-    $vars['image2'] = theme_image(array('path' => $advantage->pictures[1], 'attributes' => array()));
+    $vars['image2'] = theme_image(array('path' => $advantage->pictures[1], 'alt' => $advantage->title, 'title' => $advantage->title, 'attributes' => array()));
   }
 
   // Get the counters information.
@@ -44,19 +51,21 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
   $vars['counters'] = count($counters['#items']) ? drupal_render($counters) : '';
 
   // Period.
-  $vars['period'] = '';
-  if ($advantage->cashingPeriodBegin) {
-    if (date('j/m/Y', $advantage->cashingPeriodBegin) <= date('j/m/Y')) {
-      $period = t('From !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodBegin))) . ' ';
-    }
-    else {
-      $period = '';
-    }
+  $period = '';
+  $now = time();
+  if ($advantage->cashingPeriodBegin && $advantage->cashingPeriodBegin > $now) {
+    $period = t('From !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodBegin))) . ' ';
     if ($advantage->cashingPeriodEnd) {
-      $period .= t('valid until !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodEnd)));
+      $period .= t('until !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodEnd)));
     }
-    $vars['period'] = $period;
   }
+  else if ($advantage->cashingPeriodEnd) {
+    $period .= t('Until !date', array('!date' => date('j/m/Y', $advantage->cashingPeriodEnd)));
+  }
+  else {
+    $period = t('Until end of stock');
+  }
+  $vars['period'] = $period;
 
   // Provider.
   $vars['provider'] = '';
@@ -420,16 +429,23 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_summary(&$vars
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   $promotion = $vars['promotion'];
 
+  // Ensure images are protocol-relative
+  if (isset($promotion->pictures)) {
+    foreach ($promotion->pictures as &$picture) {
+      $picture = str_replace('http://', '//', $picture);
+    }
+  }
+
   // Image.
   $vars['image'] = '';
   $vars['image2'] = '';
   $vars['images_list'] = '';
   $images = array();
   if (isset($promotion->pictures[0])) {
-    $vars['image'] = theme('image', array('path' => $promotion->pictures[0] . '?maxwidth=300&max-height=300', 'attributes' => array()));
+    $vars['image'] = theme('image', array('path' => $promotion->pictures[0] . '?maxwidth=300&max-height=300', 'alt' => $promotion->title, 'title' => $promotion->title, 'attributes' => array()));
     foreach ($promotion->pictures as $key => $picture) {
       $images[] = l(
-        theme('image', array('path' => $promotion->pictures[$key] . '?maxwidth=300&max-height=300', 'attributes' => array())),
+        theme('image', array('path' => $promotion->pictures[$key] . '?maxwidth=300&max-height=300', 'alt' => $promotion->title, 'title' => $promotion->title, 'attributes' => array())),
         $promotion->pictures[$key],
         array('html' => TRUE)
       );
@@ -437,7 +453,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
     $vars['images_list'] = theme('item_list', array('items' => $images));
   }
   if (isset($promotion->pictures[1])) {
-    $vars['image2'] = theme_image(array('path' => $promotion->pictures[1] . '?maxwidth=300&max-height=300', 'attributes' => array()));
+    $vars['image2'] = theme_image(array('path' => $promotion->pictures[1] . '?maxwidth=300&max-height=300', 'alt' => $promotion->title, 'title' => $promotion->title, 'attributes' => array()));
   }
 
   // Points.
@@ -454,17 +470,23 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   }
   $vars['counters'] = count($counters['#items']) ? drupal_render($counters) : '';
 
+  // Stock.
+  $vars['out_of_stock'] = FALSE;
+  if ($promotion->maxAvailableUnits != NULL && $promotion->unitsTaken >= $promotion->maxAvailableUnits) {
+    $vars['out_of_stock'] = TRUE;
+  }
+
   // Period.
   $period = '';
   $now = time();
   if ($promotion->cashingPeriodBegin && $promotion->cashingPeriodBegin > $now) {
     $period = t('From !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodBegin))) . ' ';
     if ($promotion->cashingPeriodEnd) {
-      $period .= t('valid until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
+      $period .= t('until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
     }
   }
   else if ($promotion->cashingPeriodEnd) {
-    $period .= t('Valid until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
+    $period .= t('Until !date', array('!date' => date('j/m/Y', $promotion->cashingPeriodEnd)));
   }
   else {
     $period = t('Until end of stock');
@@ -497,12 +519,6 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
     $vars['description2'] = $promotion->description2;
   }
 
-  // Stock.
-  $vars['stock'] = FALSE;
-  if ($promotion->maxAvailableUnits != NULL && $promotion->unitsTaken >= $promotion->maxAvailableUnits) {
-    $vars['stock'] = TRUE;
-  }
-
   drupal_add_css(drupal_get_path('module', 'culturefeed_uitpas') . '/css/promotion_advantage.css');
   drupal_add_js(drupal_get_path('module', 'culturefeed_uitpas') . '/js/script.js');
 }
@@ -517,17 +533,37 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_highlight(&
 
   foreach ($promotions as $promotion) {
 
+    if (isset($promotion->pictures[0])) {
+      $thumbnail = theme('image', array('path' => $promotion->pictures[0] . '?width=400&height=300&crop=auto', 'alt' => $promotion->title, 'title' => $promotion->title, 'attributes' => array()));
+    }
+    else {
+      $thumbnail = theme('image', array('path' => drupal_get_path('module', 'culturefeed_uitpas') . '/images/default.png', 'alt' => $promotion->title, 'title' => $promotion->title, 'attributes' => array()));
+    }
+
     $singular = '@count point';
     $plural = '@count points';
-    $rows[] = array(
-      array(
+    $points = array(
         'data' => format_plural($promotion->points, $singular, $plural),
         'class' => array('points'),
-      ),
-      l($promotion->title, 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id),
+      );
+    $url = 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id;
+    $title = l($promotion->title, $url);
 
+    $rows[] = array(
+      $points,
+      $title,
     );
+
+    $items[] = array(
+      'thumbnail' => $thumbnail,
+      'points' => $points['data'],
+      'title' => $title,
+      'url' => $url
+    );
+
   }
+
+  $vars['items'] = $items;
 
   $table = array(
     'header' => array(),
@@ -714,6 +750,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_table(&$var
           'path' => $advantage->pictures[0],
           'maxwidth' => 100,
           'maxheight' => 100,
+          'alt' => $advantage->title,
+          'title' => $advantage->title,
           'attributes' => array(),
         ));
       }
@@ -722,6 +760,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_table(&$var
           'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/images/default.png',
           'width' => 100,
           'height' => 100,
+          'alt' => $advantage->title,
+          'title' => $advantage->title,
         ));
       }
       $item['image'] = l($image, $advantage_path, array('html' => TRUE));
@@ -812,6 +852,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_table(&$var
           'path' => $promotion->pictures[0],
           'maxwidth' => 100,
           'maxheight' => 100,
+          'alt' => $promotion->title,
+          'title' => $promotion->title,
           'attributes' => array(),
         ));
       }
@@ -820,6 +862,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_table(&$var
           'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/images/default.png',
           'width' => 100,
           'height' => 100,
+          'alt' => $promotion->title,
+          'title' => $promotion->title,
         ));
       }
       $item['image'] = l($image, $promotion_path, array('html' => TRUE));
@@ -843,7 +887,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_table(&$var
 
       $points_classes = array();
       if ($promotion->cashInState == $promotion::CASHIN_NOT_POSSIBLE_VOLUME_CONSTRAINT) {
-        $item['availability'] = t('not any longer in stock');
+        $item['availability'] = t('Out of stock');
         $points_classes[] = 'until-end-of-stock';
       }
       else if ($promotion->cashingPeriodEnd) {

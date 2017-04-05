@@ -26,5 +26,8 @@ files[] = lib/Drupal/CultureFeedActivityConfigPageCreated.php
 files[] = lib/Drupal/CultureFeedActivityConfigNews.php
 files[] = lib/Drupal/CultureFeedActivityConfigMoreInfo.php
 files[] = lib/Drupal/CultureFeedActivityConfigRoute.php
+files[] = lib/Drupal/CultureFeedActivityConfigConnectChannel.php
+files[] = lib/Drupal/CultureFeedActivityConfigCashin.php
+files[] = lib/Drupal/CultureFeedActivityConfigCheckin.php
 
 dependencies[] = culturefeed_search

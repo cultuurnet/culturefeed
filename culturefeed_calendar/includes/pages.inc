@@ -46,101 +46,6 @@ function culturefeed_calendar_page_settings() {
 }
 
 /**
- * Form to add a button to save the cookie events to the calendar.
- */
-function culturefeed_calendar_save_cookie_form($form, &$form_state) {
-  $form['save_cookie'] = array(
-    '#type' => 'submit',
-    '#value' => t('Login'),
-    '#submit' => array('culturefeed_calendar_save_cookie_form_submit'),
-  );
-
-  return $form;
-}
-
-/**
- * Submit the save cookie form.
- */
-function culturefeed_calendar_save_cookie_form_submit($form, &$form_state) {
-  //Go to the login screen to let the user login.
-  $url = 'culturefeed/oauth/connect';
-  $options = array(
-    'query' => array(
-      'destination' => 'culturefeed/calendar/add-cookie-to-calendar',
-    ),
-  );
-  drupal_goto($url, $options);
-}
-
-/**
- * Page callback to move the events from the cookie to the calendar.
- */
-function culturefeed_calendar_add_cookie_to_calendar() {
-  $user_id = DrupalCultureFeed::getLoggedInUserId();
-  // Stop if we don't have a user id.
-  if (empty($user_id)) {
-    return;
-  }
-
-  //Get activities from cookie
-  $cookie_activities = array();
-  if (isset($_COOKIE['Drupal_visitor_calendar'])) {
-    $cookie_activities = json_decode($_COOKIE['Drupal_visitor_calendar']);
-    if (!is_array($cookie_activities)) {
-      $cookie_activities = array();
-    }
-  }
-
-  // Get activities from calendar.
-  $calendar_ids = array();
-  $calendar_activities = culturefeed_calendar_get_user_activities();
-  foreach ($calendar_activities->objects as $calendar_activity) {
-    $calendar_ids[] = $calendar_activity->nodeId;
-  }
-
-  // Create a culturefeed activity (CultureFeed_Activity()) for each cookie activity (stdClass).
-  $added = 0;
-  $skipped = 0;
-  foreach ($cookie_activities as $key => $cookie_activity) {
-    // Only create activities that don't already exist.
-    if (!in_array($cookie_activity->nodeId, $calendar_ids)) {
-      $activity = new CultureFeed_Activity();
-      if (isset($cookie_activity->value)) {
-        $activity->value = $cookie_activity->value;
-      }
-      // Add planned activity's' date.
-      if (isset($cookie_activity->calendarDate)) {
-        $activity->calendarDate = $cookie_activity->calendarDate;
-      }
-      $activity->type = $cookie_activity->type;
-      $activity->contentType = 'event';
-      $activity->nodeId = $cookie_activity->nodeId;
-      $activity->nodeTitle = culturefeed_search_item_load($activity->nodeId, 'event')->getTitle(culturefeed_search_get_preferred_language());
-      $activity->userId = $user_id;
-
-      DrupalCultureFeed::createActivity($activity);
-
-      $added++;
-    }
-    else {
-      $skipped++;
-    }
-  }
-
-  // Delete the cookie.
-  user_cookie_delete('calendar');
-
-  // Add a timeout of 2 second, this gives index the time to place the new activity into the search index.
-  // sleep(2);
-
-  drupal_set_message(t('The items are saved to your calendar.'), 'status');
-
-  // Proceed to the calendar.
-  drupal_goto('culturefeed/calendar');
-
-}
-
-/**
  * Page callback to like items
  */
 function culturefeed_calendar_like(CultuurNet\Search\ActivityStatsExtendedEntity $event, $request_type = 'ajax') {
@@ -179,7 +84,7 @@ function culturefeed_calendar_like(CultuurNet\Search\ActivityStatsExtendedEntity
 function culturefeed_calendar_add_to_calendar(CultuurNet\Search\ActivityStatsExtendedEntity $event, $request_type = 'ajax') {
 
   $params = _culturefeed_calendar_get_event_params($event);
-  $params['title'] = t('Add !title to your calendar', array('!title' => $params['node_title']));
+  $params['title'] = t('When do you want to go?');
   $params['button_text'] = t('Add');
   $params['use_ajax'] = $request_type == 'ajax';
 
@@ -249,19 +154,40 @@ function culturefeed_calendar_edit_calendar_event($activity, $request_type = 'aj
   $params['use_ajax'] = $request_type == 'ajax';
   $params['activity'] = $activity;
 
-  $form = drupal_get_form('culturefeed_calendar_form', $params);
+  if ($params['get_form']) {
+    $form = drupal_get_form('culturefeed_calendar_form', $params);
 
-  // Always show the form/modal when editing events, no need to check on $params['show_form'].
-  if ($request_type == 'ajax') {
-    $commands = array();
-    $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
-    print ajax_render($commands);
-    exit;
+    if ($request_type == 'ajax') {
+      $commands = array();
+      $commands[] = culturefeed_ajax_command_modal('#calendar-form', drupal_render($form));
+      print ajax_render($commands);
+      exit;
+    }
+    else {
+      return $form;
+    }
   }
   else {
-    return $form;
-  }
 
+    if (!empty($params['dates'][0]['date'])) {
+      $date = $params['dates'][0]['date'];
+      if (!empty($params['dates'][0]['start'])) {
+        $date .= ' ' . $params['dates'][0]['start'];
+      }
+    }
+
+    culturefeed_calendar_update_calendar_event($activity, $date);
+
+    if ($request_type == 'ajax') {
+      $commands = array();
+      $commands[] = culturefeed_ajax_command_goto(url(culturefeed_calendar_get_url()));
+      ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+      exit;
+    }
+    else {
+      drupal_goto(url(culturefeed_calendar_get_url()));
+    }
+  }
 }
 
 /**
@@ -273,7 +199,7 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
 
   // Activity is passed when editing.
   if (!empty($params['activity'])) {
-    $selected_date = culturefeed_calendar_get_selected_date($params['activity']);
+    $selected_date = strtotime(culturefeed_calendar_get_selected_date($params['activity']));
     $edit = !empty($selected_date) ? TRUE : FALSE;
   }
   else {
@@ -293,11 +219,12 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
     '#markup' => $possible_dates,
   );*/
 
+  // periode of permanent
   if (($params['type'] == 'period') || ($params['type'] == 'permanent')) {
-    // periode of permanent
-    $help = "";
-    if($params['type'] == 'period')
-    {
+
+    $help = t('Choose a date');
+
+    if ($params['type'] == 'period') {
       // Don't add if date is in the past.
       $timestamp = strtotime($params['date_from']);
       if ($timestamp < $_SERVER['REQUEST_TIME']) {
@@ -308,18 +235,28 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
       }
 
       $help = t('Choose a date between ') . " " . format_date(strtotime($start_date), 'custom', 'd/m/Y') . " ". t('and') . " " . format_date(strtotime($params['date_to']), 'custom', 'd/m/Y') . ".";
+
+      if($params['when_lg'] !== '') {
+        $help .= " " . $params['when_lg'] ;
+      }
+    }
+    elseif ($params['type'] == 'permanent') {
+      $start_date = format_date($_SERVER['REQUEST_TIME'], 'custom', 'Y-m-d');
     }
 
     $form['date'] = array(
       '#title' => $help,
       '#type' => 'date_popup',
-      '#date_format' => 'd-m-Y',
-      '#date_year_range' => '-0:+1',
-      '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d H:i') : '',
+      '#date_format' => 'd/m/Y',
+      '#datepicker_options' => array(
+        'minDate' => format_date(strtotime($start_date), 'custom', 'd/m/Y'),
+        'maxDate' => format_date(strtotime($params['date_to']), 'custom', 'd/m/Y'),
+      ),
+      '#default_value' => $edit ? format_date($selected_date, 'custom', 'Y-m-d H:i') : $start_date,
     );
   }
   // timestamps.
-  else {
+  elseif ($params['type'] == 'timestamps') {
     foreach ($params['dates'] as $key => $date) {
 
       $full_date = $date['date'];
@@ -459,18 +396,25 @@ function culturefeed_calendar_form_validate(&$form, &$form_state) {
   }
 
   if ($form_state['params']['type'] == 'period' && !empty($form_state['values']['date'])) {
-
     $date = strtotime($form_state['values']['date']);
     $date_from = strtotime($form_state['params']['date_from']);
     $date_to = strtotime($form_state['params']['date_to']);
+    $today = mktime(0, 0, 0);
 
-    if ($date <= $_SERVER['REQUEST_TIME']) {
+    if ($date < $today) {
       form_set_error('date', t('You selected a date in the past. Please select a date in the future.'));
       $form_state['params']['validation_error'] = TRUE;
     }
     // Check if the chosen date is between the start and end date of the event.
     elseif (($date < $date_from) || ($date > $date_to)) {
-      form_set_error('date', t('Enter a date between ') . date('d-m-Y', $date_from) . t(' and ') . date('d-m-Y', $date_to) . '.');
+      if ($date_from < $today) {
+        $date_start = $_SERVER['REQUEST_TIME'];
+      }
+      else {
+        $date_start = $date_from;
+      }
+
+      form_set_error('date', t('Enter a date between ') . date('d/m/Y', $date_start) . t(' and ') . date('d/m/Y', $date_to) . '.');
       $form_state['params']['validation_error'] = TRUE;
     }
     // Check if the event is opened on the chosen day.
@@ -481,7 +425,7 @@ function culturefeed_calendar_form_validate(&$form, &$form_state) {
 
       if (!$day_allowed) {
         $form_state['params']['validation_error'] = TRUE;
-        form_set_error('date', t('The event is closed on ') . t($day) . '. Please chose another day.');
+        form_set_error('date', t('The event is closed on ') . t($day) . '. ' . t('Please choose another day') . '.');
       }
     }
   }
@@ -525,41 +469,7 @@ function culturefeed_calendar_edit_calendar_event_form_submit($form, &$form_stat
   $activity = $form_state['params']['activity'];
   $date = $form_state['values']['date'];
 
-  // Not numeric id = activity on service.
-  $success = TRUE;
-  if (!is_numeric($activity->id) != 0) {
-    try {
-
-      DrupalCultureFeed::deleteActivity($activity->id);
-
-      $activity->value = '';
-      $activity->calendarDate = gmdate('c', strtotime($date));
-      $new_activity = $activity;
-      $new_activity->type = CultureFeed_Activity::TYPE_IK_GA;
-
-      DrupalCultureFeed::createActivity($new_activity);
-
-      // Add a timeout of 2 second, this gives index the time to place the new activity into the search index.
-      // sleep(2);
-
-    }
-    catch (Exception $e) {
-      $success = FALSE;
-      watchdog_exception('culturefeed_calendar', $e);
-    }
-  }
-  // No uuid = anonymous user. Update in cookie.
-  else {
-    $success = culturefeed_calendar_update_calendar_event_cookie($activity, $date);
-  }
-
-  if ($success) {
-    drupal_set_message(t('Your calendar event was updated.'));
-  }
-  else {
-    drupal_set_message(t('An error occured while saving your calendar'), 'error');
-  }
-
+  culturefeed_calendar_update_calendar_event($activity, $date);
 }
 
 /**
@@ -693,7 +603,8 @@ function _culturefeed_calendar_get_event_params($event) {
   $entity = $event->getEntity();
   $node_id = $entity->getCdbId();
 
-  $event_detail = $entity->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+  $event_detail = $entity->getDetails()
+    ->getDetailByLanguage(culturefeed_search_get_preferred_language());
   $calendar_summary = check_plain($event_detail->getCalendarSummary());
 
   $calendar = $entity->getCalendar();
@@ -707,6 +618,7 @@ function _culturefeed_calendar_get_event_params($event) {
   $params['node_title'] = $title;
   $params['calendar_summary'] = $calendar_summary;
   $params['get_form'] = TRUE;
+  $params['type'] = '';
 
   if ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_Permanent') {
     $params['type'] = 'permanent';
@@ -716,26 +628,35 @@ function _culturefeed_calendar_get_event_params($event) {
     $params['date_to'] = $calendar->current()->getDateTo();
     $params['type'] = 'period';
     $params['week_scheme'] = $calendar->current()->getWeekScheme();
+    // Format Calendar details to readable & themable HTML.
+    $html_formatter = culturefeed_agenda_get_html_calendar_formatter();
+    $variables['when_lg'] = '';
+    try {
+      $params['when_lg'] = $html_formatter->format($calendar, 'lg');
+    }
+    catch (Exception $e) {
+    }
 
     // if date-to = today, pass modal-form and direct
-    if($calendar->current()->getDateTo() == date('Y-m-d',$_SERVER['REQUEST_TIME']))
-    {
+    if ($calendar->current()->getDateTo() == date('Y-m-d', $_SERVER['REQUEST_TIME'])) {
       $params['dates'][]['date'] = $params['date_to'];
       $params['get_form'] = FALSE;
     }
 
   }
   elseif ($calendar_type == 'CultureFeed_Cdb_Data_Calendar_TimestampList') {
+
+    $params['type'] = 'timestamps';
+    $params['dates'] = array();
+
     $i = 0;
     $dates = array();
     while ($calendar->valid()) {
       $endtime = $calendar->current()->getEndTime();
-      if($endtime == null);
-      {
+      if ($endtime == NULL || $endtime == "00:00:00") {
         $endtime = "23:59:59";
       }
-      if(DateTime::createFromFormat('Y-m-d H:i:s', $calendar->current()->getDate() . " " . $endtime)->getTimestamp() >  $_SERVER['REQUEST_TIME'])
-      {
+      if (DateTime::createFromFormat('Y-m-d H:i:s', $calendar->current()->getDate() . " " . $endtime)->getTimestamp() > $_SERVER['REQUEST_TIME']) {
         $dates[$i]['date'] = $calendar->current()->getDate();
         $dates[$i]['start'] = $calendar->current()->getStartTime();
         $dates[$i]['end'] = $calendar->current()->getEndTime();
@@ -847,9 +768,12 @@ function culturefeed_calendar_settings_form_submit($form, &$form_state) {
     }
     DrupalCultureFeed::updateUser($cf_user, array('calendarId'));
 
-    drupal_set_message(t('Changes succesfully saved.'));
-
-    $form_state['redirect'] = culturefeed_calendar_get_url();
+    if ($cf_user->privacyConfig->calendarId == CultureFeed_UserPrivacyConfig::PRIVACY_PUBLIC) {
+      drupal_set_message(t('Changes succesfully saved.') . ' ' . l(t('Go to your calendar'), culturefeed_calendar_get_url()) .  ' ' . t('or') . ' ' . l(t('share it with your friends'), 'culturefeed/calendar/share') . '.');
+    }
+    else {
+      drupal_set_message(t('Changes succesfully saved.') . ' ' . l(t('Go to your calendar'), culturefeed_calendar_get_url()));
+    }
 
   }
   catch (Exception $ex) {

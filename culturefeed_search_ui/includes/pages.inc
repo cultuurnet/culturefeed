@@ -64,14 +64,15 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
 
     }
     
-    // Add rss to head
-    drupal_add_html_head_link(array(
-      'rel' => 'alternate',
-      'type' => 'application/rss+xml',
-      'title' => end($active_trail)['title'],
-      'href' => url(current_path() . '/rss', array('absolute' => TRUE, 'query' => drupal_get_query_parameters(NULL, array('q', 'page')))),
-    ));
-
+    // Add rss to head if we're on a valid search path
+    if (current_path() == 'agenda/search') {
+      drupal_add_html_head_link(array(
+        'rel' => 'alternate',
+        'type' => 'application/rss+xml',
+        'title' => end($active_trail)['title'],
+        'href' => url(current_path() . '/rss', array('absolute' => TRUE, 'query' => drupal_get_query_parameters(NULL, array('q', 'page')))),
+      ));
+    }
   }
   catch (Exception\ClientErrorResponseException $e) {
     watchdog_exception('culturefeed_search_ui', $e);
@@ -109,15 +110,15 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
     foreach ($page->getSearchResult()->getItems() as $item) {
       $object['cdbid'] = $item->getEntity()->getCdbId();
       $details = $item->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-      $object['title'] = $details->getTitle();
+      $object['title'] = $details->getTitle(); 
       $object['created'] = $item->getEntity()->getCreationDate();
-      if (method_exists($item->getEntity()->getLocation()->getAddress()->getPhysicalAddress(), 'getCity')) {
+      if ($item->getType() == 'event' && method_exists($item->getEntity()->getLocation()->getAddress()->getPhysicalAddress(), 'getCity')) {
         $object['city'] = $item->getEntity()->getLocation()->getAddress()->getPhysicalAddress()->getCity();
       }
       else {
         $object['city'] = '';
       }
-      if (method_exists($item->getEntity(), 'getCalendar')) {
+      if ($item->getType() == 'event' && method_exists($item->getEntity(), 'getCalendar')) {
         $calendar = $item->getEntity()->getCalendar();
         $calendar_class = get_class($calendar);
         $txt_formatter = culturefeed_agenda_get_plain_text_calendar_formatter();

@@ -19,7 +19,7 @@ class views_handler_field_cdb_item_operations extends views_handler_field {
     $links = array();
 
     if ($extended_entity->getType() === 'event') {
-      
+
       // Update and delete
       $ops = array(
         'edit' => array(
@@ -31,10 +31,10 @@ class views_handler_field_cdb_item_operations extends views_handler_field {
           'title' => t('Delete'),
         )
       );
-      
+
       $user = $cf_account = DrupalCultureFeed::getLoggedInUser();
-      $ubd_permission = Drupalculturefeed_EntryApi::checkPermission($user->id, $user->mbox, array('ids' => $extended_entity->getId()));
-      
+      $ubd_permission = user_access('edit culturefeed events') && ($extended_entity->getEntity()->getCreatedBy() == $user->mbox);
+
       if ($ubd_permission[$extended_entity->getId()] == 'true') {
         foreach ($ops as $op => $op_details) {
           $path = culturefeed_entry_ui_entity_path($extended_entity, $op);
@@ -46,7 +46,7 @@ class views_handler_field_cdb_item_operations extends views_handler_field {
       else {
         $links[] = '<button class="btn btn-default disabled">' . t('No permission to edit event') . '</button>';
       }
-      
+
       // Collaboration
       $ops = array(
         'tags' => array(
@@ -60,7 +60,7 @@ class views_handler_field_cdb_item_operations extends views_handler_field {
           $links[$op] = l($op_details['title'], $path);
         }
       }
-      
+
     }
 
     if (!empty($links)) {
