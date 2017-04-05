@@ -132,16 +132,6 @@ function culturefeed_entry_ui_menu() {
     'file' => 'includes/culturefeed_entry_ui.admin.inc',
   );
 
-  $items['admin/config/culturefeed/entry'] = array(
-    'title' => 'CultureFeed Entry',
-    'description' => 'Change CultureFeed Entry API settings like API Application key, location, ...',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('culturefeed_entry_settings_form'),
-    'access arguments' => array('administer site configuration'),
-    'file' => 'includes/culturefeed_entry_ui.admin.inc',
-  );
-
-
   return $items;
 
 }

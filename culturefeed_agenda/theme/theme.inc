@@ -260,17 +260,21 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     // Pictures
     $main_picture = '';
     $main_picture_cr = '';
+    $main_index = 0;
     $pictures = array();
     $copyrights = array();
 
     $photos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
+    $i = 0;
     foreach ($photos as $photo) {
       $pictures[] = culturefeed_get_relative_image($photo->getHLink());
       $copyrights[] = $photo->getCopyright();
       if ($photo->isMain()) {
         $main_picture = culturefeed_get_relative_image($photo->getHLink());
         $main_picture_cr = $photo->getCopyright();
+        $main_index = $i;
       }
+      $i++;
     }
 
     // Support for mediatype imageweb
@@ -280,7 +284,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       if ($image->isMain() && empty($main_picture)) {
         $main_picture = culturefeed_get_relative_image($image->getHLink());
         $main_picture_cr = $image->getCopyright();
+        $main_index = $i;
       }
+      $i++;
     }
 
     // If no image we get image from eventdetails language=nl
@@ -294,7 +300,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
           if ($photo->isMain()) {
             $main_picture = culturefeed_get_relative_image($photo->getHLink());
             $main_picture_cr = $photo->getCopyright();
+            $main_index = $i;
           }
+          $i++;
         }
 
         // Support for mediatype imageweb
@@ -304,7 +312,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
           if ($image->isMain() && empty($main_picture)) {
             $main_picture = culturefeed_get_relative_image($image->getHLink());
             $main_picture_cr = $image->getCopyright();
+            $main_index = $i;
           }
+          $i++;
         }
       }
     }
@@ -316,11 +326,14 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $main_picture_cr = $copyrights[0];
       }
     }
+    
+    // check if same image isn't used twice or more
+    $pictures = array_unique($pictures);
 
     // we don't want the main picture to show twice
     if (!empty($main_picture)) {
-      unset($pictures[0]);
-      unset($copyrights[0]);
+      unset($pictures[$main_index]);
+      unset($copyrights[$main_index]);
     }
 
     $variables['main_picture'] = $main_picture;
@@ -690,11 +703,19 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
 
     $contact_info = $event->getContactInfo();
 
+    // Prepare mailto links
+    $site_name = variable_get('site_name');
+    $permalink = url('permalink' . '/' . $variables['cdbid'], array('absolute' => TRUE));
+    $variables['mailto_query'] = array (
+      'subject' => $variables['title'] . ' (via ' . $site_name . ')',
+      'body' => $permalink
+    );
+
     // Mails.
     $mails = array();
     foreach ($contact_info->getMails() as $mail) {
       if (!$mail->isForReservations()) {
-        $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact')));
+        $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact', 'target' => '_blank'), 'query' => $variables['mailto_query']));
       }
     }
     $variables['contact']['mail'] = implode(', ', $mails);
@@ -727,7 +748,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       // Reservation mail
       if (isset($reservation_info['mails'])) {
         foreach ($reservation_info['mails'] as $mail) {
-          $reservation_mails[] = l($mail, 'mailto:' . $mail, array('attributes' => array('id' => 'cf-reservation')));
+          $reservation_mails[] = l($mail, 'mailto:' . $mail, array('attributes' => array('id' => 'cf-reservation', 'target' => '_blank'), 'query' => $variables['mailto_query']));
         }
         $variables['reservation']['mail'] = implode(', ', $reservation_mails);
       }
@@ -1066,10 +1087,18 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
       }
     }
 
+    // Prepare mailto links
+    $site_name = variable_get('site_name');
+    $permalink = url('permalink' . '/' . $variables['cdbid'], array('absolute' => TRUE));
+    $variables['mailto_query'] = array (
+      'subject' => $variables['title'] . ' (via ' . $site_name . ')',
+      'body' => $permalink
+    );
+
     // Mails.
     $mails = array();
     foreach ($contact_info->getMails() as $mail) {
-      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact')));
+      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact', 'target' => '_blank'), 'query' => $variables['mailto_query']));
     }
     $variables['contact']['mail'] = implode(', ', $mails);
 
@@ -1210,7 +1239,7 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
 
   if (!empty($variables['title'])) {
     $title_parts[] = $variables['title'];
-    $og_tags['og:title'] = html_entity_decode($variables['title']);
+    $og_tags['og:title'] = decode_entities(strip_tags($variables['title']));
   }
   if (!empty($variables['location']) && !empty($variables['location']['city'])) {
     $title_parts[] = $variables['location']['city'];
