@@ -78,7 +78,7 @@ function culturefeed_search_menu() {
   $items['autocomplete/culturefeed/actor-suggestions/all'] = array(
     'title' => 'Culturefeed suggestions autocomplete',
     'page callback' => 'culturefeed_search_suggestions_autocomplete_page',
-    'page arguments' => array(4, FALSE, 'actor', TRUE),
+    'page arguments' => array(4, FALSE, 'actor', TRUE, TRUE),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
@@ -256,7 +256,7 @@ function culturefeed_search_get_search_url_query($search_query) {
           continue;
         }
 
-        // Add a limit because timestamps also contains ':' 
+        // Add a limit because timestamps also contains ':'
         $search_on = explode(':', $condition, 2);
 
         if (count($search_on) == 2) {
@@ -313,8 +313,8 @@ function culturefeed_search_get_search_url_query($search_query) {
           case 'location_category_facility_id':
             $query['facet']['location_category_facility_id'][] = $facet_value;
             break;
-            
-          // Daterage  
+
+          // Daterage
           case 'startdate':
             $dates = str_replace (array('[',']','T','Z'), '' , explode('TO', $facet_value));
             $date_range = DateTime::createFromFormat('Y-m-dH:i:s', trim($dates[0]))->format('d/m/Y');
