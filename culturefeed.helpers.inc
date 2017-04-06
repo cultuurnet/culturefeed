@@ -582,32 +582,6 @@ function culturefeed_share_link($share_url, $platform, $title, $device) {
 }
 
 /**
- * Getter function to retrieve a Mobile_Detect() singleton.
- * @return object
- * Instance of Mobile_Detect(), NULL if failure.
- */
-function culturefeed_mobile_detect_get_object() {
-  $detect = &drupal_static(__FUNCTION__);
-
-  if (!isset($detect)) {
-    if (class_exists('Mobile_Detect')) {
-      try {
-        $detect = new Mobile_Detect();
-      } catch (Exception $e) {
-        $detect = NULL;
-        watchdog('mobile_detect', 'Could not instantiate Mobile_Detect(): %message',
-          array('%message' => $e->getMessage()), WATCHDOG_ALERT);
-      }
-    } else {
-      $detect = NULL;
-      watchdog('mobile_detect', 'Mobile_Detect() class does not exist', array(), WATCHDOG_ALERT);
-    }
-  }
-
-  return $detect;
-}
-
-/**
  * Known versions of cdb xml.
  *
  * @return array

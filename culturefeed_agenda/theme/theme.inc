@@ -468,25 +468,6 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     }
   }
 
-  $variables['device'] = '(not set)';
-  $variables['is_ios'] = FALSE;
-  $variables['is_android'] = FALSE;
-
-  if (module_exists('culturefeed')) {
-    $detect = culturefeed_mobile_detect_get_object();
-  }
-
-  if ($detect) {
-    $device = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
-    $variables['device'] = $device;
-
-    $is_ios = $detect->isiOS();
-    $variables['is_ios'] = $is_ios;
-
-    $is_android = $detect->isAndroidOS();
-    $variables['is_android'] = $is_android;
-  }
-
 }
 
 /**
