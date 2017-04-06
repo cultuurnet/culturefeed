@@ -711,7 +711,6 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
   if ($default_video) {
     foreach ($default_video as $i => $info) {
       culturefeed_entry_ui_attach_video_elements($form, $i, $info);
-      $video_count++;
     }
   }
   else {
