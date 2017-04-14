@@ -164,7 +164,7 @@ msgstr "Mijn Lidmaatschappen"
 
 #: culturefeed_uitpas.menu.inc:76
 msgid "An overview of all you UiTPAS memberships"
-msgstr ""
+msgstr "Een overzicht van al uw UiTPAS lidmaatschappen"
 
 #: culturefeed_uitpas.profile.inc:25
 msgid "Check your personal UiTPAS data and cardnumber."
