@@ -322,3 +322,30 @@ function culturefeed_uitpas_get_passholder_memeberships($uitpas_user) {
 
   return $memberships;
 }
+
+function culturefeed_uitpas_get_passholder_coupons($uitpas_user) {
+  $coupons = array();
+
+  foreach ($uitpas_user->passholder->cardSystemSpecific as $cardSystem) {
+    $current_card = $cardSystem->currentCard;
+
+    if ($current_card !== NULL) {
+      $coupons[] = $uitpas_user->cf->uitpas()->getCouponsForPassholder($current_card->uitpasNumber, NULL, 1000);
+    }
+  }
+  $total = 0;
+  $objects = array();
+
+  foreach ($coupons as $coupon_result_set) {
+    $total = $total + $coupon_result_set->total;
+    foreach ($coupon_result_set as $coupon_arr_elements) {
+      if (is_array($coupon_arr_elements)) {
+        foreach($coupon_arr_elements as $coupon_arr_element) {
+          array_push($objects, $coupon_arr_element);
+        }
+      }
+    }
+  }
+
+  return new CultureFeed_ResultSet($total, $objects);
+}

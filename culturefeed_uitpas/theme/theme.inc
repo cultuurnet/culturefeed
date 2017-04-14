@@ -246,6 +246,37 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
 }
 
 /**
+ * Implements hook_preprocess_preprocess_culturefeed_uitpas_profile_coupons().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_coupons(&$vars) {
+  $coupons = array();
+
+  foreach ($vars['coupons'] as $key => $coupon) {
+    $coupons[$key]['id'] = $coupon->id;
+    $coupons[$key]['name'] = $coupon->name;
+    $coupons[$key]['description'] = $coupon->description;
+    if ($coupon->validTo !== NULL) {
+      $coupons[$key]['validTo'] = date('d/m/Y', $coupon->validTo);
+    }
+    if ($coupon->remainingTotal->volume !== NULL) {
+      $t_vars = array(
+        '@volume' => $coupon->remainingTotal->volume,
+        '@type' => strtolower($coupon->remainingTotal->type),
+        '@turn' => ($coupon->remainingTotal->volume > 1 ? 'turns' : 'turn')
+      );
+      if ($coupon->remainingTotal->type == 'ABSOLUTE') {
+        $coupons[$key]['remaining'] = t('Available: @volume @turn', $t_vars);
+      } else {
+        $coupons[$key]['remaining'] = t('Available: @volume @turn this @type', $t_vars);
+      }
+    }
+  }
+
+  unset($vars['coupons']);
+  $vars['coupons'] = $coupons;
+}
+
+/**
  * Implements hook_preprocess_preprocess_culturefeed_uitpas_profile_details().
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars) {
