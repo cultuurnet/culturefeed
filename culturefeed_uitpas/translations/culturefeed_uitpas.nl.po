@@ -202,7 +202,7 @@ msgstr "Mijn lidmaatschappen"
 
 #: culturefeed_uitpas.profile.inc:39
 msgid "An overview of all your UiTPAS memberships."
-msgstr ""
+msgstr "Een overzicht van al jouw UiTPAS lidmaatschappen"
 
 #: culturefeed_uitpas.profile.inc:43 culturefeed_uitpas.module:85
 #: includes/profile_actions.inc:77
