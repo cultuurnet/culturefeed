@@ -26,6 +26,7 @@
 #  includes/promotions_highlight.inc: n/a
 #  includes/event_details_advantages.inc: n/a
 #  includes/profile_coupons.inc: n/a
+#  includes/profile_memberships.inc: n/a
 #  includes/register_where.inc: n/a
 #  includes/synchronization.inc: n/a
 #  includes/profile_summary.inc: n/a
@@ -121,7 +122,8 @@ msgstr "Culturefeed uitpas: UiTPAS registratie"
 msgid "UiTPAS Advantages"
 msgstr "UiTPAS voordelen"
 
-#: culturefeed_uitpas.blocks.inc:119 culturefeed_uitpas.profile.inc:22 culturefeed_uitpas.module:67 includes/profile_details.inc:256
+#: culturefeed_uitpas.blocks.inc:119 culturefeed_uitpas.profile.inc:22
+#: culturefeed_uitpas.module:67 includes/profile_details.inc:256
 msgid "My UiTPAS"
 msgstr "Mijn UiTPAS"
 
@@ -165,11 +167,20 @@ msgstr "Mijn Voordeelbonnen"
 msgid "An overview of all you UiTPAS coupons"
 msgstr ""
 
+#: culturefeed_uitpas.menu.inc:75
+msgid "My Memberships"
+msgstr "Mijn Lidmaatschappen"
+
+#: culturefeed_uitpas.menu.inc:76
+msgid "An overview of all you UiTPAS memberships"
+msgstr "Een overzicht van al uw UiTPAS lidmaatschappen"
+
 #: culturefeed_uitpas.profile.inc:25
 msgid "Check your personal UiTPAS data and cardnumber."
 msgstr "Bekijk je persoonlijke UiTPAS-gegevens en kaartnummer."
 
-#: culturefeed_uitpas.profile.inc:29 culturefeed_uitpas.module:73 includes/profile_promotions.inc:66;113
+#: culturefeed_uitpas.profile.inc:29 culturefeed_uitpas.module:73
+#: includes/profile_promotions.inc:66;113
 msgid "My promotions"
 msgstr "Mijn voordelen"
 
@@ -186,6 +197,15 @@ msgid "An overview of all your UiTPAS coupons."
 msgstr "Een overzicht van al jouw UiTPAS voordeelbonnen."
 
 #: culturefeed_uitpas.profile.inc:43 culturefeed_uitpas.module:85 includes/profile_actions.inc:77
+msgid "My memberships"
+msgstr "Mijn lidmaatschappen"
+
+#: culturefeed_uitpas.profile.inc:39
+msgid "An overview of all your UiTPAS memberships."
+msgstr ""
+
+#: culturefeed_uitpas.profile.inc:43 culturefeed_uitpas.module:85
+#: includes/profile_actions.inc:77
 msgid "Points history"
 msgstr "Puntenhistoriek"
 
@@ -197,7 +217,8 @@ msgstr "Puntensaldo"
 msgid "Advantages"
 msgstr "Voordelen"
 
-#: culturefeed_uitpas.theme.inc:99 includes/advantages.inc:90 includes/promotions.inc:121
+#: culturefeed_uitpas.theme.inc:99 includes/advantages.inc:90
+#: includes/promotions.inc:121
 msgid "Promotions"
 msgstr "Voordelen"
 
@@ -273,7 +294,8 @@ msgstr "UiTPAS welkomstvoordelen instellingen"
 msgid "Number of advantages to display"
 msgstr "Aantal weer te geven welkomstvoordelen"
 
-#: includes/advantages.inc:94 includes/profile_advantages.inc:125 includes/profile_promotions.inc:133 includes/promotions.inc:125
+#: includes/advantages.inc:94 includes/profile_advantages.inc:125
+#: includes/profile_promotions.inc:133 includes/promotions.inc:125
 msgid "Welcome Advantages"
 msgstr "Welkomstvoordelen"
 
@@ -297,7 +319,8 @@ msgstr "of <a href=\"@login\">meld je aan</a> en activeer je UiTPAS om je punten
 msgid "Filter by"
 msgstr "Filter op"
 
-#: includes/advantages.inc:149 includes/profile_advantages.inc:148 includes/profile_promotions.inc:156 includes/promotions.inc:185
+#: includes/advantages.inc:149 includes/profile_advantages.inc:148
+#: includes/profile_promotions.inc:156 includes/promotions.inc:185
 msgid "All card systems"
 msgstr "Alle kaartsystemen"
 
@@ -363,7 +386,7 @@ msgstr "Er werden geen voordeelbonnen gevonden voor deze gebruiker"
 msgid "First name"
 msgstr "Voornaam"
 
-#: includes/profile_details.inc:37
+#: includes/profile_details.inc:37 includes/profile_memberships.inc:20
 msgid "Name"
 msgstr "Naam"
 
@@ -435,9 +458,18 @@ msgstr "Gelieve een geldig e-mailadres in te vullen"
 msgid "An error occurred."
 msgstr "Er is een tijdelijke fout opgetreden. Probeer het later opnieuw."
 
-#: includes/profile_details.inc:228 includes/registration_confirmation.inc:82 includes/synchronization.inc:140
+#: includes/profile_details.inc:228 includes/registration_confirmation.inc:82
+#: includes/synchronization.inc:140
 msgid "Your changes have been saved."
 msgstr "Jouw wijzigingen werden bewaard."
+
+#: includes/profile_memberships.inc:20
+msgid "Valid until"
+msgstr ""
+
+#: includes/profile_memberships.inc:30
+msgid "There were no memberships found for this user"
+msgstr "Er werden geen lidmaatschappen gevonden voor deze gebruiker"
 
 #: includes/profile_promotions.inc:96
 msgid "My UiTPAS promotions settings"
@@ -619,11 +651,13 @@ msgstr "Er is een fout opgetreden. Probeer het later opnieuw."
 msgid "We are unable to process your request at this moment. Please try again later."
 msgstr "Het activeren van je UiTPAS is tijdelijk niet mogelijk. Probeer het later opnieuw."
 
-#: theme/culturefeed-uitpas-advantage.tpl.php:25 theme/culturefeed-uitpas-promotion.tpl.php:28
+#: theme/culturefeed-uitpas-advantage.tpl.php:25
+#: theme/culturefeed-uitpas-promotion.tpl.php:28
 msgid "Offered by"
 msgstr "Aangeboden door"
 
-#: theme/culturefeed-uitpas-advantage.tpl.php:30 theme/culturefeed-uitpas-promotion.tpl.php:33
+#: theme/culturefeed-uitpas-advantage.tpl.php:30
+#: theme/culturefeed-uitpas-promotion.tpl.php:33
 msgid "Availability"
 msgstr "Geldigheidsperiode"
 
@@ -631,11 +665,13 @@ msgstr "Geldigheidsperiode"
 msgid "Only available for"
 msgstr "Enkel geldig voor"
 
-#: theme/culturefeed-uitpas-advantage.tpl.php:40 theme/culturefeed-uitpas-promotion.tpl.php:47
+#: theme/culturefeed-uitpas-advantage.tpl.php:40
+#: theme/culturefeed-uitpas-promotion.tpl.php:47
 msgid "Conditions"
 msgstr "Voorwaarden"
 
-#: theme/culturefeed-uitpas-advantage.tpl.php:48 theme/culturefeed-uitpas-promotion.tpl.php:55
+#: theme/culturefeed-uitpas-advantage.tpl.php:48
+#: theme/culturefeed-uitpas-promotion.tpl.php:55
 msgid "How to exchange"
 msgstr "Hoe omruilen"
 
@@ -932,11 +968,13 @@ msgstr "Maximum hoogte voor afbeeldingen"
 msgid "Maximum width for images"
 msgstr "Maximum breedte voor afbeeldingen"
 
-#: views/handlers/culturefeed_uitpas_views_handler_field_markup.inc:33 views/handlers/culturefeed_uitpas_views_handler_field_title.inc:27
+#: views/handlers/culturefeed_uitpas_views_handler_field_markup.inc:33
+#: views/handlers/culturefeed_uitpas_views_handler_field_title.inc:27
 msgid "Link this field to the original piece of content"
 msgstr "Link dit veld aan de oorspronkelijke inhoud"
 
-#: views/handlers/culturefeed_uitpas_views_handler_field_markup.inc:34 views/handlers/culturefeed_uitpas_views_handler_field_title.inc:28
+#: views/handlers/culturefeed_uitpas_views_handler_field_markup.inc:34
+#: views/handlers/culturefeed_uitpas_views_handler_field_title.inc:28
 msgid "Enable to override this field's links."
 msgstr "Maak het mogelijk om hyperlinks te overschrijven."
 

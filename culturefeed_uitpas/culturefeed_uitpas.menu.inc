@@ -71,6 +71,13 @@ function culturefeed_uitpas_menu() {
       'access callback' => 'culturefeed_uitpas_is_passholder',
       'file' => 'includes/profile_advantages.inc',
     ),
+    'culturefeed/profile/uitpas/memberships' => array(
+      'title' => t('My Memberships'),
+      'description' => t('An overview of all you UiTPAS memberships'),
+      'page callback' => 'culturefeed_uitpas_profile_memberships_get',
+      'access callback' => 'culturefeed_uitpas_is_passholder',
+      'file' => 'includes/profile_memberships.inc',
+    ),
     'culturefeed/profile/uitpas/coupons' => array(
       'title' => t('My Coupons'),
       'description' => t('An overview of all you UiTPAS coupons'),
