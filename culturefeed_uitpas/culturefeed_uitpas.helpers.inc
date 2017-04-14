@@ -309,3 +309,16 @@ function culturefeed_uitpas_email_is_passholder() {
     watchdog_exception('culturefeed_uitpas_not_yet_registered', $e);
   }
 }
+
+function culturefeed_uitpas_get_passholder_memeberships($uitpas_user) {
+  $memberships = $uitpas_user->passholder->memberships;
+  $today = strtotime(date('d/m/Y'));
+
+  foreach ($memberships as $key => $membership) {
+    if ($membership->endDate < $today) {
+      unset($memberships[$key]);
+    }
+  }
+
+  return $memberships;
+}
