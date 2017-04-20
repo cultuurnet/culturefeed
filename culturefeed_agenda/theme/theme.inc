@@ -705,12 +705,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
           $faxes[] = $phone->getNumber();
         }
         else {
-          if (isset($variables['device']) && $variables['device'] == 'phone') {
-            $phones[] = l($phone->getNumber(), 'tel:' . culturefeed_valid_phone($phone->getNumber()));
-          }
-          else {
-            $phones[] = $phone->getNumber();
-          }
+          $phones[] = $phone->getNumber();
         }
       }
     }
