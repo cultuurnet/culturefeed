@@ -123,9 +123,10 @@ function culturefeed_search_flush_caches() {
 /**
  * Clears all cache for culturefeed search results and related activity.
  */
-function _culturefeed_search_flush_caches($search_only = FALSE) {
+function _culturefeed_search_flush_caches() {
   cache_clear_all('culturefeed:', 'cache_culturefeed_search', TRUE);
-  if (!$search_only) {
+  // CF-464 ignore cache_culturefeed table is culturefeed module is not enabled.
+  if (module_exists('culturefeed')) {
     cache_clear_all('culturefeed:', 'cache_culturefeed', TRUE);
   }
 }
