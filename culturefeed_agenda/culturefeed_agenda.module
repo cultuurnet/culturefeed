@@ -461,7 +461,12 @@ function culturefeed_agenda_block_configure($delta) {
 
     // sort_direction is no longer a seperate field. Add it to the sort field if variable exists.
     $sort_direction = variable_get('agenda_related_activities_sort_direction', '');
-    $default_sort = variable_get('agenda_related_activities_sort') . ' ' . $sort_direction;
+    if (!empty($sort_direction)) {
+      $default_sort = variable_get('agenda_related_activities_sort') . ' ' . $sort_direction;
+    }
+    else {
+      $default_sort = variable_get('agenda_related_activities_sort');
+    }
 
     $form['agenda_related_activities_sort'] = array(
       '#title' => t('Sort field'),
