@@ -700,7 +700,8 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
 
     // Prepare mailto links
     $site_name = variable_get('site_name');
-    $permalink = url('permalink' . '/' . $variables['cdbid'], array('absolute' => TRUE));
+    $cdbid = $event->getCdbid();
+    $permalink = url('permalink' . '/' . $cdbid, array('absolute' => TRUE));
     $variables['mailto_query'] = array (
       'subject' => $variables['title'] . ' (via ' . $site_name . ')',
       'body' => $permalink
@@ -1084,7 +1085,8 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
 
     // Prepare mailto links
     $site_name = variable_get('site_name');
-    $permalink = url('permalink' . '/' . $variables['cdbid'], array('absolute' => TRUE));
+    $cdbid = $actor->getCdbid();
+    $permalink = url('permalink' . '/' . $cdbid, array('absolute' => TRUE));
     $variables['mailto_query'] = array (
       'subject' => $variables['title'] . ' (via ' . $site_name . ')',
       'body' => $permalink
