@@ -2357,7 +2357,7 @@ function culturefeed_entry_ui_event_form_submission_timeout_batch($form_state, &
   $context['finished'] = $context['sandbox']['duration'] / $context['sandbox']['max_duration'];
 
   // Load the search api item and check if the batch can be finished.
-  $search_api_extended_entity = culturefeed_search_item_load($event_cdbid, 'event', FALSE);
+  $search_api_extended_entity = culturefeed_search_item_load($event_cdbid, FALSE, FALSE);
 
   if ($search_api_extended_entity) {
 
