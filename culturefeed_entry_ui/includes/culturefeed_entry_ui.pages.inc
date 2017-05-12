@@ -2123,6 +2123,7 @@ function culturefeed_entry_ui_event_form_submit($form, &$form_state) {
 
   $batch = array(
     'title' => t('Saving the event'),
+    'progress_message' => t('Je evenement is bewaard, maar we sturen het nog door naar alle publicatiekanalen. Dit kan nog even duren.'),
     'operations' => array(
       array(
         'culturefeed_entry_ui_event_form_submission_timeout_batch',
