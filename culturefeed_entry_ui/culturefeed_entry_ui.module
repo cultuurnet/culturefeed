@@ -149,13 +149,13 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
     return;
   }
 
-  $event = culturefeed_search_item_load($id, 'event');
-  $title = $event->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle();
+  $event = entry_api_event_load($id);
+  $title = $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle();
   $request_detail = array(
     'event' => $id,
     'title' => $title,
   );
-  $path = culturefeed_search_detail_path($event->getType(), $id, $title);
+  $path = culturefeed_search_detail_path('event', $id, $title);
 
   $tabs = array();
   // Add a tab for managing the tags.
@@ -191,12 +191,12 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
   }
 
   $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
+  if ($culturefeed_user && user_access('edit culturefeed events')) {
+    $udb_permission = Drupalculturefeed_EntryApi::checkPermission($culturefeed_user->id, $culturefeed_user->mbox, array('ids' => $event->getCdbId()));
+  }
 
   // Add tab for editing the event.
-  if (user_access('edit culturefeed events')
-    && $culturefeed_user
-    && ($event->getEntity()->getCreatedBy() == $culturefeed_user->mbox)
-  ) {
+  if (user_access('edit culturefeed events') && ($event->getCreatedBy() == $culturefeed_user->mbox || (isset($udb_permission) && $udb_permission[$event->getCdbId()] == 'true'))) {
 
     $link = array(
       'href' => $path . '/edit',
