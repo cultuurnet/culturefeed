@@ -613,7 +613,6 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
   if ($default_links) {
     foreach ($default_links as $i => $info) {
       culturefeed_entry_ui_attach_link_info_elements($form, $i, $info, $default_links_reservation[$i]);
-      $links_count++;
     }
   }
   else {
