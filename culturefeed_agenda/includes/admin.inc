@@ -27,6 +27,13 @@ function culturefeed_agenda_admin_settings_form() {
     '#description' => t('Check this checkbox if you want to have culturefeed_social links in the template variables.'),
   );
 
+  $form['culturefeed_agenda_hide_webresources'] = array(
+    '#title' => t('Hide deprecated links stored as mediatype webresource or website'),
+    '#type' => 'checkbox',
+    '#default_value' => variable_get('culturefeed_agenda_hide_webresources', FALSE),
+    '#description' => t('By enabling this the event detail page will only show url\'s in the contactinfo object of cdbxml.'),
+  );
+
   $form['gmap'] = array(
     '#type' => 'fieldset',
     '#collapsible' => TRUE,

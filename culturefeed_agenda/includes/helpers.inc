@@ -92,8 +92,7 @@ function _culturefeed_agenda_get_links_from_item(CultureFeed_Cdb_Item_Base $item
   }
 
   // General links.
-  if ($detail) {
-
+  if ($detail && !(variable_get('culturefeed_agenda_hide_webresources', FALSE))) {
     foreach ($detail->getMedia() as $media) {
       if ($media->getMediaType() == CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBRESOURCE || $media->getMediaType() == CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBSITE) {
         $links[] = $media->getHLink();
