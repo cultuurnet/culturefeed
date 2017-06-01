@@ -187,6 +187,47 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['title'] = check_plain($detail->getTitle());
     $variables['shortdescription'] = check_plain($detail->getShortDescription());
     $variables['longdescription'] = $detail->getLongDescription();
+    
+    if (variable_get('culturefeed_agenda_deduplicate_descriptions', TRUE)) {
+
+      // Strip shortdecription and longdescription to the same comparable length.
+      $shortdescription_stripped = trim(preg_replace('/\s+/', '', $variables['shortdescription']));
+      $shortdescription_shortened = substr($shortdescription_stripped, 0, -3);
+      $shortdescription_length = strlen($shortdescription_shortened);
+  
+      $longdescription_stripped = trim(preg_replace('/\s+/', '', strip_tags($variables['longdescription'])));
+      $longdescription_shortened = substr($longdescription_stripped, 0, $shortdescription_length);
+      
+      // Check if both short versions are equal.
+      if (strcmp($shortdescription_shortened, $longdescription_shortened) == 0) {
+
+        // Set initial break points.
+        $i = 0;
+        $j = 0;
+
+        // Find position of first double break tag.  
+        $br_position = stripos($variables['longdescription'], '<br><br>');
+        if ($br_position != FALSE) {
+          $i = $br_position;
+          $j = $br_position + 8;
+        }
+
+        // Find position of first paragraph tag. 
+        $p_position = stripos($variables['longdescription'], '<p>');
+        if ($p_position !== FALSE) {
+          if ($i > 0) {
+            $i = min($i, $p_position);
+            $j = $br_position + 3;
+          }
+        }
+
+        // Use first paragraph of longdescription to replace the shortdescription.
+        $variables['shortdescription'] = substr($variables['longdescription'], 0, $i);
+        $variables['longdescription'] = substr($variables['longdescription'], $j);
+
+      }
+
+    }
 
     // Ad id / title to Drupal settings for easy reference in GTM.
     drupal_add_js(array('culturefeed_search_ui' => array('gtm' => array(
