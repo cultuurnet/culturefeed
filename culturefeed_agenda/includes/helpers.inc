@@ -238,8 +238,9 @@ function culturefeed_agenda_get_location_of_event(CultureFeed_Cdb_Item_Event $ev
     if ($event->getCdbid()) {
       $location['cdbid_event'] = $event->getCdbid();
     }
-    if ($event->getLocation()->getCdbid()) {
-      $location['link'] = culturefeed_search_detail_l('actor', $event->getLocation()->getCdbid(), $location['title']);
+    $location_id = $event->getLocation()->getCdbid();
+    if ($location_id && is_object(culturefeed_agenda_actor_load($location_id))) {
+      $location['link'] = culturefeed_search_detail_l('actor', $location_id, $location['title']);
     }
     if ($location_info->getActor()) {
       $actor_detail = $location_info->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
