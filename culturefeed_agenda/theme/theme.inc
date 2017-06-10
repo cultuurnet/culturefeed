@@ -502,12 +502,11 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       else if (is_object(culturefeed_agenda_actor_load($actor_id))) {
         $actor = culturefeed_agenda_actor_load($actor_id)->getEntity();
       }
-      else $actor = FALSE;
     }
-      if ($actor) {
-        $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $actor);
-        $variables['locations_facilities'] = $facilities['text'];
-      }
+    if (isset($actor)) {
+      $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $actor);
+      $variables['locations_facilities'] = $facilities['text'];
+    }
   }
 
   // Enhance event-details with UiTPAS-information if culturefeed_uitpas is enabled
