@@ -191,13 +191,16 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     if (variable_get('culturefeed_agenda_deduplicate_descriptions', TRUE)) {
 
       // Strip shortdecription and longdescription to the same comparable length.
-      $shortdescription_stripped = trim(preg_replace('/\s+/', '', $variables['shortdescription']));
-      $shortdescription_shortened = substr($shortdescription_stripped, 0, -3);
+      $shortdescription_decoded = html_entity_decode($variables['shortdescription'], ENT_QUOTES, 'UTF-8');
+      $shortdescription_stripped = trim(preg_replace('/\s+/', '', strip_tags($shortdescription_decoded)));
+      $shortdescription_shortened = rtrim($shortdescription_stripped, '...');
       $shortdescription_length = strlen($shortdescription_shortened);
   
-      $longdescription_stripped = trim(preg_replace('/\s+/', '', strip_tags($variables['longdescription'])));
+      $longdescription_decoded = html_entity_decode($variables['longdescription']);
+      $longdescription_stripped = trim(preg_replace('/\s+/', '', strip_tags($longdescription_decoded)));
       $longdescription_shortened = substr($longdescription_stripped, 0, $shortdescription_length);
-      
+      $longdescription_length = strlen($longdescription_shortened);
+
       // Check if both short versions are equal.
       if (strcmp($shortdescription_shortened, $longdescription_shortened) == 0) {
 
