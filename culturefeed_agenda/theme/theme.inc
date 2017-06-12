@@ -212,12 +212,18 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
           $j = $br_position + 8;
         }
 
-        // Find position of first paragraph tag. 
-        $p_position = stripos($variables['longdescription'], '<p>');
-        if ($p_position !== FALSE) {
+        // Find position of first paragraph tag that isn't at the beginning of the string.
+        $p_offset = 3;
+        $p_position = stripos($variables['longdescription'], '<p>', $p_offset);
+        if ($p_position != FALSE) {
           if ($i > 0) {
-            $i = min($i, $p_position);
-            $j = $br_position + 3;
+            if ($br_position < $p_position) {
+              break;
+            }
+          }
+          else {
+            $i = $p_position;
+            $j = $p_position;
           }
         }
 
