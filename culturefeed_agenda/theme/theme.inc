@@ -216,11 +216,13 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $p_offset = 3;
         $p_position = stripos($variables['longdescription'], '<p>', $p_offset);
         if ($p_position != FALSE) {
-          if ($i > 0) {
-            if ($p_position < $br_position) {
-              $i = $p_position;
-              $j = $p_position;
-            }
+          if ($i == 0) {
+            $i = $p_position;
+            $j = $p_position;
+          }
+          else if ($p_position < $br_position) {
+            $i = $p_position;
+            $j = $p_position;
           }
         }
 
