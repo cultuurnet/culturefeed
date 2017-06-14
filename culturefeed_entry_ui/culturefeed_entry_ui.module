@@ -150,6 +150,10 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
   }
 
   $event = entry_api_event_load($id);
+  if (!$event) {
+    return;
+  }
+
   $title = $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle();
   $request_detail = array(
     'event' => $id,
