@@ -525,7 +525,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
 
   if ($detail) {
 
-    if (variable_get('culturefeed_agenda_deduplicate_descriptions', TRUE)) {
+    if (variable_get('culturefeed_agenda_deduplicate_descriptions', TRUE) && $variables['longdescription']) {
 
       // Strip shortdecription and longdescription to the same comparable length.
       $shortdescription_decoded = html_entity_decode($variables['shortdescription'], ENT_QUOTES, 'UTF-8');
