@@ -187,55 +187,6 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['title'] = check_plain($detail->getTitle());
     $variables['shortdescription'] = check_plain($detail->getShortDescription());
     $variables['longdescription'] = $detail->getLongDescription();
-    
-    if (variable_get('culturefeed_agenda_deduplicate_descriptions', TRUE)) {
-
-      // Strip shortdecription and longdescription to the same comparable length.
-      $shortdescription_decoded = html_entity_decode($variables['shortdescription'], ENT_QUOTES, 'UTF-8');
-      $shortdescription_stripped = trim(preg_replace('/\s+/', '', strip_tags($shortdescription_decoded)));
-      $shortdescription_shortened = rtrim($shortdescription_stripped, '\.\.\.');
-      $shortdescription_length = strlen($shortdescription_shortened);
-  
-      $longdescription_decoded = html_entity_decode($variables['longdescription']);
-      $longdescription_stripped = trim(preg_replace('/\s+/', '', strip_tags($longdescription_decoded)));
-      $longdescription_shortened = substr($longdescription_stripped, 0, $shortdescription_length);
-      $longdescription_length = strlen($longdescription_shortened);
-
-      // Check if both short versions are equal.
-      if (strcmp($shortdescription_shortened, $longdescription_shortened) == 0) {
-
-        // Set initial break points.
-        $i = 0;
-        $j = 0;
-
-        // Find position of first double break tag.  
-        $br_position = stripos($variables['longdescription'], '<br><br>');
-        if ($br_position != FALSE) {
-          $i = $br_position;
-          $j = $br_position + 8;
-        }
-
-        // Find position of first paragraph tag that isn't at the beginning of the string.
-        $p_offset = 3;
-        $p_position = stripos($variables['longdescription'], '<p>', $p_offset);
-        if ($p_position != FALSE) {
-          if ($i == 0) {
-            $i = $p_position;
-            $j = $p_position;
-          }
-          else if ($p_position < $br_position) {
-            $i = $p_position;
-            $j = $p_position;
-          }
-        }
-
-        // Use first paragraph of longdescription to replace the shortdescription.
-        $variables['shortdescription'] = substr($variables['longdescription'], 0, $i);
-        $variables['longdescription'] = substr($variables['longdescription'], $j);
-
-      }
-
-    }
 
     // Ad id / title to Drupal settings for easy reference in GTM.
     drupal_add_js(array('culturefeed_search_ui' => array('gtm' => array(
@@ -573,6 +524,55 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   }
 
   if ($detail) {
+
+    if (variable_get('culturefeed_agenda_deduplicate_descriptions', TRUE)) {
+
+      // Strip shortdecription and longdescription to the same comparable length.
+      $shortdescription_decoded = html_entity_decode($variables['shortdescription'], ENT_QUOTES, 'UTF-8');
+      $shortdescription_stripped = trim(preg_replace('/\s+/', '', strip_tags($shortdescription_decoded)));
+      $shortdescription_shortened = rtrim($shortdescription_stripped, '\.\.\.');
+      $shortdescription_length = strlen($shortdescription_shortened);
+  
+      $longdescription_decoded = html_entity_decode($variables['longdescription']);
+      $longdescription_stripped = trim(preg_replace('/\s+/', '', strip_tags($longdescription_decoded)));
+      $longdescription_shortened = substr($longdescription_stripped, 0, $shortdescription_length);
+      $longdescription_length = strlen($longdescription_shortened);
+
+      // Check if both short versions are equal.
+      if (strcmp($shortdescription_shortened, $longdescription_shortened) == 0) {
+
+        // Set initial break points.
+        $i = 0;
+        $j = 0;
+
+        // Find position of first double break tag.  
+        $br_position = stripos($variables['longdescription'], '<br><br>');
+        if ($br_position != FALSE) {
+          $i = $br_position;
+          $j = $br_position + 8;
+        }
+
+        // Find position of first paragraph tag that isn't at the beginning of the string.
+        $p_offset = 3;
+        $p_position = stripos($variables['longdescription'], '<p>', $p_offset);
+        if ($p_position != FALSE) {
+          if ($i == 0) {
+            $i = $p_position;
+            $j = $p_position;
+          }
+          else if ($p_position < $br_position) {
+            $i = $p_position;
+            $j = $p_position;
+          }
+        }
+
+        // Use first paragraph of longdescription to replace the shortdescription.
+        $variables['shortdescription'] = substr($variables['longdescription'], 0, $i);
+        $variables['longdescription'] = substr($variables['longdescription'], $j);
+
+      }
+
+    }
 
     // Add videos.
     $variables['videos'] = array();
