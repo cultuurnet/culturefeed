@@ -193,7 +193,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       // Strip shortdecription and longdescription to the same comparable length.
       $shortdescription_decoded = html_entity_decode($variables['shortdescription'], ENT_QUOTES, 'UTF-8');
       $shortdescription_stripped = trim(preg_replace('/\s+/', '', strip_tags($shortdescription_decoded)));
-      $shortdescription_shortened = rtrim($shortdescription_stripped, '...');
+      $shortdescription_shortened = rtrim($shortdescription_stripped, '\.\.\.');
       $shortdescription_length = strlen($shortdescription_shortened);
   
       $longdescription_decoded = html_entity_decode($variables['longdescription']);
