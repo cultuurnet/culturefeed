@@ -551,10 +551,20 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
         $j = 0;
 
         // Find position of first double break tag.  
-        $br_position = stripos($variables['longdescription'], '<br><br>');
-        if ($br_position != FALSE) {
+        if (stripos($variables['longdescription'], '<br><br>')) {
+          $br_position = stripos($variables['longdescription'], '<br><br>');
           $i = $br_position;
           $j = $br_position + 8;
+        }
+        else if (stripos($variables['longdescription'], '<br/><br/>')) {
+          $br_position = stripos($variables['longdescription'], '<br/><br/>');
+          $i = $br_position;
+          $j = $br_position + 10;
+        }
+        else if (stripos($variables['longdescription'], '<br /><br />')) {
+          $br_position = stripos($variables['longdescription'], '<br /><br />');
+          $i = $br_position;
+          $j = $br_position + 12;
         }
 
         // Find position of first paragraph tag that isn't at the beginning of the string.
