@@ -188,6 +188,19 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     $variables['shortdescription'] = check_plain($detail->getShortDescription());
     $variables['longdescription'] = $detail->getLongDescription();
 
+    if (strlen($variables['longdescription']) > 400) {
+      $longdescription = substr($variables['longdescription'], 0, strpos($variables['longdescription'], '<p class="uiv-source">'));
+      $shortdescription = substr($longdescription, 0, strpos($longdescription, '<br>'));
+      $source = strstr($variables['longdescription'], '<p class="uiv-source">');
+
+      $variables['shortdescription'] = $shortdescription . ' ...';
+      $variables['longdescription'] = substr($longdescription, strlen($shortdescription)) . $source;
+    }
+    else if (strlen($variables['longdescription']) >= 400) {
+      $variables['shortdescription'] = $variables['longdescription'];
+      $variables['longdescription'] = '';
+    }
+
     // Ad id / title to Drupal settings for easy reference in GTM.
     drupal_add_js(array('culturefeed_search_ui' => array('gtm' => array(
       'events' => array(
