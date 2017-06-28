@@ -1256,6 +1256,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
 
   // Check if form filters are selected.
   $filter_options = array();
+  $extra_filter_options = array();
   for ($i = 1; $i <= CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS; $i++) {
 
     if ($i == 1) {
