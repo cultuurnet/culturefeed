@@ -15,9 +15,9 @@ function culturefeed_uitpas_user_register_cta_get() {
 /**
  * Returns user register form.
  */
-function culturefeed_uitpas_user_register_get() {
+function culturefeed_uitpas_user_register_get($called_from_block) {
 
-  if (culturefeed_uitpas_is_passholder()) {
+  if (culturefeed_uitpas_is_passholder() && !$called_from_block) {
     drupal_goto('culturefeed/profile/uitpas');
   }
   else {
@@ -42,11 +42,16 @@ function culturefeed_uitpas_user_register_get() {
  */
 function culturefeed_uitpas_user_register_form(array $form, array $form_state, $uitpas_user) {
 
-  if ($uitpas_user->user->givenName && $uitpas_user->user->familyName) {
-    $username_to_use = $uitpas_user->user->givenName . ' ' . $uitpas_user->user->familyName;
+  if (isset($uitpas_user->user)) {
+    if ($uitpas_user->user->givenName && $uitpas_user->user->familyName) {
+      $username_to_use = $uitpas_user->user->givenName . ' ' . $uitpas_user->user->familyName;
+    }
+    else {
+      $username_to_use = $uitpas_user->user->nick;
+    }
   }
   else {
-    $username_to_use = $uitpas_user->user->nick;
+    $username_to_use = '';
   }
 
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/user_register');
@@ -58,12 +63,14 @@ function culturefeed_uitpas_user_register_form(array $form, array $form_state, $
   $form['link'] = array(
     '#type' => 'value',
   );
-  $form['username'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Username'),
-    '#value' => $username_to_use,
-    '#disabled' => TRUE,
-  );
+  if (!empty($username_to_use)) {
+    $form['username'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Username'),
+      '#value' => $username_to_use,
+      '#disabled' => TRUE,
+    );
+  }
   $form['uitpasnumber'] = array(
     '#type' => 'textfield',
     '#title' => t('UiTPAS number'),
