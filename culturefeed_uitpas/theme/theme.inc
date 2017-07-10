@@ -973,3 +973,17 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_table(&$var
     drupal_add_css(drupal_get_path('module', 'culturefeed_uitpas') . '/css/promotions.css');
   }
 }
+
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_memberships(&$variables) {
+  $memberships = array();
+  foreach ($variables['memberships'] as $key => $memberships_per_cardsystem) {
+    if (!array_key_exists($key, $memberships)) {
+      $memberships[$key] = array();
+    }
+    foreach ($memberships_per_cardsystem as $membership) {
+      $memberships[$key][] = array('name' => $membership->name, 'date' => date('d/m/Y', $membership->endDate));
+    }
+  }
+  unset($variables['memberships']);
+  $variables['memberships'] = $memberships;
+}

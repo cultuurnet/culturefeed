@@ -17,13 +17,7 @@ function culturefeed_uitpas_profile_memberships_get() {
   }
 
   if (count($memberships) > 0) {
-    $header = array(t('Name'), t('Valid until'));
-    $rows = array();
-    foreach ($memberships as $membership) {
-      $row = array($membership->name, date('d/m/Y', $membership->endDate));
-      $rows[] = $row;
-    }
-    return theme('table', array('header' => $header, 'rows' => $rows));
+    return theme('culturefeed_uitpas_memberships', array('memberships' => $memberships));
   }
   else {
     return array(
