@@ -320,9 +320,15 @@ function culturefeed_uitpas_get_passholder_memberships($uitpas_user) {
     }
   }
 
+  $grouped_memberships = array();
+  foreach ($memberships as $membership) {
+    if (!array_key_exists($membership->association->cardSystems[0]->name, $grouped_memberships)) {
+      $grouped_memberships[$membership->association->cardSystems[0]->name] = array();
+    }
+    $grouped_memberships[$membership->association->cardSystems[0]->name][] = $membership;
+  }
 
-
-  return $memberships;
+  return $grouped_memberships;
 }
 
 function culturefeed_uitpas_get_passholder_coupons($uitpas_user) {
