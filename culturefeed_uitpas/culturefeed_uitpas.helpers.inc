@@ -310,7 +310,7 @@ function culturefeed_uitpas_email_is_passholder() {
   }
 }
 
-function culturefeed_uitpas_get_passholder_memeberships($uitpas_user) {
+function culturefeed_uitpas_get_passholder_memberships($uitpas_user) {
   $memberships = $uitpas_user->passholder->memberships;
   $today = strtotime(date('d/m/Y'));
 
@@ -319,6 +319,8 @@ function culturefeed_uitpas_get_passholder_memeberships($uitpas_user) {
       unset($memberships[$key]);
     }
   }
+
+
 
   return $memberships;
 }
