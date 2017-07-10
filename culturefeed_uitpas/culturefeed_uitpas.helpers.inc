@@ -330,10 +330,13 @@ function culturefeed_uitpas_get_passholder_coupons($uitpas_user) {
     $current_card = $cardSystem->currentCard;
 
     if ($current_card !== NULL) {
-      $coupons[] = $uitpas_user->cf->uitpas()->getCouponsForPassholder($current_card->uitpasNumber, NULL, 1000);
+      $coupons_for_passholder = $uitpas_user->cf->uitpas()->getCouponsForPassholder($current_card->uitpasNumber, NULL, 1000);
+      $coupons[$cardSystem->cardSystem->name] = $coupons_for_passholder->objects;
     }
   }
-  $total = 0;
+
+  return $coupons;
+  /*$total = 0;
   $objects = array();
 
   foreach ($coupons as $coupon_result_set) {
@@ -347,5 +350,5 @@ function culturefeed_uitpas_get_passholder_coupons($uitpas_user) {
     }
   }
 
-  return new CultureFeed_ResultSet($total, $objects);
+  return new CultureFeed_ResultSet($total, $objects);*/
 }

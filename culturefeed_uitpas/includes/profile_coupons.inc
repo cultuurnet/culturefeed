@@ -18,10 +18,10 @@ function culturefeed_uitpas_profile_coupons_get()
     $coupons = culturefeed_uitpas_get_passholder_coupons($uitpas_user);
   }
 
-  if ($coupons->total > 0) {
+  if (count($coupons) > 0) {
     return array(
       '#theme' => 'culturefeed_uitpas_profile_coupons',
-      '#coupons' => $coupons->objects,
+      '#coupons' => $coupons,
     );
   } else {
     return array(
