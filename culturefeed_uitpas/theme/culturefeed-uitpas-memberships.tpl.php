@@ -9,8 +9,8 @@
     </tr>
     <?php foreach ($membership_per_card_system as $membership): ?>
       <tr>
-        <td><?php print $membership['name']; ?></td>
-        <td><?php print $membership['date']; ?></td>
+        <td><?php print $membership->name; ?></td>
+        <td><?php print date('d/m/Y', $membership->endDate); ?></td>
       </tr>
     <?php endforeach; ?>
   </table>
