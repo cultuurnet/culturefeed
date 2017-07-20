@@ -2123,6 +2123,7 @@ function culturefeed_entry_ui_event_form_submit($form, &$form_state) {
 
   $batch = array(
     'title' => t('Saving the event'),
+    'progress_message' => t('Je evenement is bewaard, maar we sturen het nog door naar alle publicatiekanalen. Dit kan nog even duren.'),
     'operations' => array(
       array(
         'culturefeed_entry_ui_event_form_submission_timeout_batch',
@@ -2357,7 +2358,7 @@ function culturefeed_entry_ui_event_form_submission_timeout_batch($form_state, &
   $context['finished'] = $context['sandbox']['duration'] / $context['sandbox']['max_duration'];
 
   // Load the search api item and check if the batch can be finished.
-  $search_api_extended_entity = culturefeed_search_item_load($event_cdbid, 'event', FALSE);
+  $search_api_extended_entity = culturefeed_search_item_load($event_cdbid, '', FALSE);
 
   if ($search_api_extended_entity) {
 

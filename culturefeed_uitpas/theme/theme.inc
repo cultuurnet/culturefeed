@@ -246,6 +246,58 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
 }
 
 /**
+ * Implements hook_preprocess_preprocess_culturefeed_uitpas_profile_coupons().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_coupons(&$vars) {
+  $coupons = array();
+
+  foreach ($vars['coupons'] as $key => $coupon) {
+    $coupons[$key]['id'] = $coupon->id;
+    $coupons[$key]['name'] = $coupon->name;
+    $coupons[$key]['description'] = $coupon->description;
+    if ($coupon->validTo !== NULL) {
+      $coupons[$key]['validTo'] = date('d/m/Y', $coupon->validTo);
+    }
+    if ($coupon->remainingTotal->volume !== NULL) {
+      $type = strtolower($coupon->remainingTotal->type);
+      if ($type == 'day') {
+        $t_type = t('day');
+      }
+      else if ($type == 'week') {
+        $t_type = t('week');
+      }
+      else if ($type == 'month') {
+        $t_type = t('month');
+      }
+      else if ($type == 'quarter') {
+        $t_type = t('quarter');
+      }
+      else if ($type == 'year') {
+        $t_type = t('year');
+      }
+      else {
+        $t_type = '';
+      }
+      $t_vars = array(
+        '@volume' => $coupon->remainingTotal->volume,
+        '@type' => $t_type,
+        '@turn' => ($coupon->remainingTotal->volume > 1 ? t('turns') : t('turn'))
+      );
+      if ($coupon->remainingTotal->type == 'ABSOLUTE') {
+        $coupons[$key]['remaining'] = t('@volume @turn', $t_vars);
+      } else {
+        $coupons[$key]['remaining'] = t('@volume @turn this @type', $t_vars);
+      }
+    }
+  }
+
+  unset($vars['coupons']);
+  $vars['coupons'] = $coupons;
+
+  drupal_add_css(drupal_get_path('module', 'culturefeed_uitpas') . '/css/coupons.css');
+}
+
+/**
  * Implements hook_preprocess_preprocess_culturefeed_uitpas_profile_details().
  */
 function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_details(&$vars) {

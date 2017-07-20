@@ -490,11 +490,16 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   if ($cdb_item instanceof CultureFeed_Cdb_Item_Event) {
     $actor_id = $cdb_item->getLocation()->getCdbid();
     if ($actor_id) {
-      $actor = $cdb_item->getLocation()->getActor() ?: culturefeed_agenda_actor_load($actor_id)->getEntity();
-      if ($actor) {
-        $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $actor);
-        $variables['locations_facilities'] = $facilities['text'];
+      if ($cdb_item->getLocation()->getActor()) {
+        $actor = $cdb_item->getLocation()->getActor();
       }
+      else if (is_object(culturefeed_agenda_actor_load($actor_id))) {
+        $actor = culturefeed_agenda_actor_load($actor_id)->getEntity();
+      }
+    }
+    if (isset($actor)) {
+      $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $actor);
+      $variables['locations_facilities'] = $facilities['text'];
     }
   }
 
@@ -681,7 +686,8 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
 
     // Prepare mailto links
     $site_name = variable_get('site_name');
-    $permalink = url('permalink' . '/' . $variables['cdbid'], array('absolute' => TRUE));
+    $cdbid = $event->getCdbid();
+    $permalink = url('permalink' . '/' . $cdbid, array('absolute' => TRUE));
     $variables['mailto_query'] = array (
       'subject' => $variables['title'] . ' (via ' . $site_name . ')',
       'body' => $permalink
@@ -1060,7 +1066,8 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
 
     // Prepare mailto links
     $site_name = variable_get('site_name');
-    $permalink = url('permalink' . '/' . $variables['cdbid'], array('absolute' => TRUE));
+    $cdbid = $actor->getCdbid();
+    $permalink = url('permalink' . '/' . $cdbid, array('absolute' => TRUE));
     $variables['mailto_query'] = array (
       'subject' => $variables['title'] . ' (via ' . $site_name . ')',
       'body' => $permalink
