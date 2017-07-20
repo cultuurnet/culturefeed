@@ -1256,13 +1256,20 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
 
   // Check if form filters are selected.
   $filter_options = array();
+  $extra_filter_options = array();
   for ($i = 1; $i <= CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS; $i++) {
 
     if ($i == 1) {
-      $extra_filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options($i));
+      $block = block_load('culturefeed_search_ui', 'filter-form');
+      if ($block->status) {
+        $extra_filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options($i));
+      }
     }
     else {
-      $extra_filter_options = variable_get('culturefeed_search_filter_options_' . $i, culturefeed_search_ui_default_filter_options($i));
+      $block = block_load('culturefeed_search_ui', 'filter-form-' . $i);
+      if ($block->status) {
+        $extra_filter_options = variable_get('culturefeed_search_filter_options_' . $i, culturefeed_search_ui_default_filter_options($i));
+      }
     }
 
     $filter_options = array_merge($filter_options, $extra_filter_options);

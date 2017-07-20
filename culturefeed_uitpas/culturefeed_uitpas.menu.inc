@@ -118,6 +118,7 @@ function culturefeed_uitpas_menu() {
     'register_uitpas' => array(
       'title' => 'Register your UiTPAS',
       'page callback' => 'culturefeed_uitpas_user_register_get',
+      'page arguments' => array(false),
       'access callback' => 'culturefeed_is_culturefeed_user',
       'file' => 'includes/user_register.inc',
       'type' => MENU_CALLBACK,

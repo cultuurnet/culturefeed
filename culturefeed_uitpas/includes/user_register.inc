@@ -15,9 +15,9 @@ function culturefeed_uitpas_user_register_cta_get() {
 /**
  * Returns user register form.
  */
-function culturefeed_uitpas_user_register_get() {
+function culturefeed_uitpas_user_register_get($called_from_block) {
 
-  if (culturefeed_uitpas_is_passholder()) {
+  if (culturefeed_uitpas_is_passholder() && !$called_from_block) {
     drupal_goto('culturefeed/profile/uitpas');
   }
   else {
@@ -42,11 +42,16 @@ function culturefeed_uitpas_user_register_get() {
  */
 function culturefeed_uitpas_user_register_form(array $form, array $form_state, $uitpas_user) {
 
-  if ($uitpas_user->user->givenName && $uitpas_user->user->familyName) {
-    $username_to_use = $uitpas_user->user->givenName . ' ' . $uitpas_user->user->familyName;
+  if (isset($uitpas_user->user)) {
+    if ($uitpas_user->user->givenName && $uitpas_user->user->familyName) {
+      $username_to_use = $uitpas_user->user->givenName . ' ' . $uitpas_user->user->familyName;
+    }
+    else {
+      $username_to_use = $uitpas_user->user->nick;
+    }
   }
   else {
-    $username_to_use = $uitpas_user->user->nick;
+    $username_to_use = '';
   }
 
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/user_register');
@@ -58,18 +63,20 @@ function culturefeed_uitpas_user_register_form(array $form, array $form_state, $
   $form['link'] = array(
     '#type' => 'value',
   );
-  $form['username'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Username'),
-    '#value' => $username_to_use,
-    '#disabled' => TRUE,
-  );
+  if (!empty($username_to_use)) {
+    $form['username'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Username'),
+      '#value' => $username_to_use,
+      '#disabled' => TRUE,
+    );
+  }
   $form['uitpasnumber'] = array(
     '#type' => 'textfield',
     '#title' => t('UiTPAS number'),
     '#required' => TRUE,
   );
-  
+
   // Set date of birth in right timezone
   if (!empty($uitpas_user->user->dob)) {
     $dob = new DateTime();
@@ -86,7 +93,7 @@ function culturefeed_uitpas_user_register_form(array $form, array $form_state, $
     '#type' => 'date',
     '#title' => t('Date of birth'),
     '#after_build' => array('culturefeed_uitpas_user_register_form_process_year'),
-    '#default_value' => array(           
+    '#default_value' => array(
       'year' => isset($default_year) ? $default_year : date('Y', $now),
       'month' => isset($default_month) ? $default_month : date('n', $now),
       'day' => isset($default_day) ? $default_day : date('j', $now),
@@ -103,7 +110,7 @@ function culturefeed_uitpas_user_register_form(array $form, array $form_state, $
 
   if ($_GET['q'] != 'register_uitpas' && !$uitpas_user->user) {
 
-    $args = array('@url' => url('culturefeed/oauth/connect'));
+    $args = array('@url' => url('authenticated?destination=register_uitpas'));
     $form['suffix']['#markup'] = '<p>' . format_string(t('Already registered?  <a href="@url">Apply here</a>.'), $args) . '</p>';
 
   }

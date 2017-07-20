@@ -115,8 +115,12 @@ msgid "Culturefeed uitpas: recent actions"
 msgstr "Culturefeed uitpas: recente acties"
 
 #: culturefeed_uitpas.blocks.inc:31
-msgid "Culturefeed uitpas: user register"
-msgstr "Culturefeed uitpas: UiTPAS registratie"
+msgid "Culturefeed uitpas: register for logged in users."
+msgstr "Culturefeed uitpas: UiTPAS registratie voor ingelogde gebruikers."
+
+#: culturefeed_uitpas.blocks.inc:35
+msgid "Culturefeed uitpas: register for not authenticated users."
+msgstr "Culturefeed uitpas: UiTPAS registratie voor niet geauthenticeerde gebruikers."
 
 #: culturefeed_uitpas.blocks.inc:109
 msgid "UiTPAS Advantages"

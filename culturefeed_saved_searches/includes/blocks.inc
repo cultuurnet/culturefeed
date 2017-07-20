@@ -86,6 +86,9 @@ function culturefeed_saved_searches_get_cta_query() {
         if ($page->getGroup() === 'event_production' && $param->getValue() !== '!type:production') {
           $params[] = $key . '=' . $param->getValue();
         }
+        else {
+          $params[] = $key . '=' . $param->getValue();
+        }
       }
       elseif ($key == 'datetype') {
         $has_date_filter = TRUE;

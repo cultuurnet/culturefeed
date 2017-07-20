@@ -28,7 +28,11 @@ function culturefeed_uitpas_block_info() {
       'cache' => DRUPAL_NO_CACHE,
     ),
     'uitpas_user_register' => array(
-      'info' => t('Culturefeed uitpas: user register'),
+      'info' => t('Culturefeed uitpas: register for logged in users.'),
+      'cache' => DRUPAL_NO_CACHE,
+    ),
+    'uitpas_register' => array(
+      'info' => t('Culturefeed uitpas: register for not authenticated users.'),
       'cache' => DRUPAL_NO_CACHE,
     ),
   );
@@ -150,6 +154,18 @@ function culturefeed_uitpas_block_view($delta = '') {
       if ($content) {
 
         $block['subject'] = t('Already own an UiTPAS?');
+        $block['content'] = $content;
+
+      }
+      break;
+
+    case 'uitpas_register':
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/user_register');
+      $content = culturefeed_uitpas_user_register_get(true);
+
+      if ($content) {
+
+        $block['subject'] = t('Already own an UiTPAS ?');
         $block['content'] = $content;
 
       }

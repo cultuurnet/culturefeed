@@ -153,15 +153,14 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
   if (!$event) {
     return;
   }
-
   $title = $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle();
   $request_detail = array(
     'event' => $id,
     'title' => $title,
   );
+  $tabs = array();
   $path = culturefeed_search_detail_path('event', $id, $title);
 
-  $tabs = array();
   // Add a tab for managing the tags.
   if (culturefeed_entry_ui_manage_tags_access()) {
 
