@@ -330,22 +330,19 @@ function culturefeed_uitpas_get_passholder_coupons($uitpas_user) {
     $current_card = $cardSystem->currentCard;
 
     if ($current_card !== NULL) {
-      $coupons[] = $uitpas_user->cf->uitpas()->getCouponsForPassholder($current_card->uitpasNumber, NULL, 1000);
-    }
-  }
-  $total = 0;
-  $objects = array();
-
-  foreach ($coupons as $coupon_result_set) {
-    $total = $total + $coupon_result_set->total;
-    foreach ($coupon_result_set as $coupon_arr_elements) {
-      if (is_array($coupon_arr_elements)) {
-        foreach($coupon_arr_elements as $coupon_arr_element) {
-          array_push($objects, $coupon_arr_element);
-        }
-      }
+      $coupons = $uitpas_user->cf->uitpas()->getCouponsForPassholder($current_card->uitpasNumber, NULL, 1000);
+      $coupons = $coupons->objects;
     }
   }
 
-  return new CultureFeed_ResultSet($total, $objects);
+  // Group coupons per card system.
+  $grouped_coupons = array();
+  foreach ($coupons as $coupon) {
+    if (!array_key_exists($coupon->cardSystem->name, $grouped_coupons)) {
+      $grouped_coupons[$coupon->cardSystem->name] = array();
+    }
+    $grouped_coupons[$coupon->cardSystem->name][] = $coupon;
+  }
+
+  return $grouped_coupons;
 }
