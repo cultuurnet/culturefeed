@@ -34,6 +34,13 @@ function culturefeed_agenda_admin_settings_form() {
     '#description' => t('By enabling this the event detail page will only show url\'s in the contactinfo object of cdbxml.'),
   );
 
+  $form['culturefeed_agenda_deduplicate_descriptions'] = array(
+    '#title' => t('Remove duplicate short description on detail pages'),
+    '#type' => 'checkbox',
+    '#default_value' => variable_get('culturefeed_agenda_deduplicate_descriptions', TRUE),
+    '#description' => t('By enabling this, the short description on event detail pages will be removed if they are redundant with the long description.'),
+  );
+
   $form['gmap'] = array(
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
