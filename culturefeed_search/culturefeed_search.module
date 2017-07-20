@@ -125,7 +125,8 @@ function culturefeed_search_flush_caches() {
  */
 function _culturefeed_search_flush_caches($search_only = FALSE) {
   cache_clear_all('culturefeed:', 'cache_culturefeed_search', TRUE);
-  if (!$search_only) {
+  // CF-464 ignore cache_culturefeed table if culturefeed module is not enabled.
+  if (!$search_only && module_exists('culturefeed')) {
     cache_clear_all('culturefeed:', 'cache_culturefeed', TRUE);
   }
 }
