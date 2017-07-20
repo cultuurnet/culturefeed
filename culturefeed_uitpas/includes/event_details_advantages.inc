@@ -39,6 +39,7 @@ function culturefeed_uitpas_event_details_advantages_get() {
       $query->unexpired = TRUE;
       $query->start = 0;
       $query->max = 5;
+      $query->published = TRUE;
       $query->sort = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::SORT_POINTS;
       $query->order = CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions::ORDER_ASC;
 

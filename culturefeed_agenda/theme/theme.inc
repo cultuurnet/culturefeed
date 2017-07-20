@@ -260,17 +260,21 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
     // Pictures
     $main_picture = '';
     $main_picture_cr = '';
+    $main_index = 0;
     $pictures = array();
     $copyrights = array();
 
     $photos = $detail->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
+    $i = 0;
     foreach ($photos as $photo) {
       $pictures[] = culturefeed_get_relative_image($photo->getHLink());
       $copyrights[] = $photo->getCopyright();
       if ($photo->isMain()) {
         $main_picture = culturefeed_get_relative_image($photo->getHLink());
         $main_picture_cr = $photo->getCopyright();
+        $main_index = $i;
       }
+      $i++;
     }
 
     // Support for mediatype imageweb
@@ -280,7 +284,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       if ($image->isMain() && empty($main_picture)) {
         $main_picture = culturefeed_get_relative_image($image->getHLink());
         $main_picture_cr = $image->getCopyright();
+        $main_index = $i;
       }
+      $i++;
     }
 
     // If no image we get image from eventdetails language=nl
@@ -294,7 +300,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
           if ($photo->isMain()) {
             $main_picture = culturefeed_get_relative_image($photo->getHLink());
             $main_picture_cr = $photo->getCopyright();
+            $main_index = $i;
           }
+          $i++;
         }
 
         // Support for mediatype imageweb
@@ -304,7 +312,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
           if ($image->isMain() && empty($main_picture)) {
             $main_picture = culturefeed_get_relative_image($image->getHLink());
             $main_picture_cr = $image->getCopyright();
+            $main_index = $i;
           }
+          $i++;
         }
       }
     }
@@ -316,11 +326,14 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $main_picture_cr = $copyrights[0];
       }
     }
+    
+    // check if same image isn't used twice or more
+    $pictures = array_unique($pictures);
 
     // we don't want the main picture to show twice
     if (!empty($main_picture)) {
-      unset($pictures[0]);
-      unset($copyrights[0]);
+      unset($pictures[$main_index]);
+      unset($copyrights[$main_index]);
     }
 
     $variables['main_picture'] = $main_picture;
@@ -517,6 +530,65 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
 
   if ($detail) {
 
+    if (variable_get('culturefeed_agenda_deduplicate_descriptions', TRUE) && $variables['longdescription']) {
+
+      // Strip shortdecription and longdescription to the same comparable length.
+      $shortdescription_decoded = html_entity_decode($variables['shortdescription'], ENT_QUOTES, 'UTF-8');
+      $shortdescription_stripped = trim(preg_replace('/\s+/', '', strip_tags($shortdescription_decoded)));
+      $shortdescription_shortened = rtrim($shortdescription_stripped, '\.\.\.');
+      $shortdescription_length = strlen($shortdescription_shortened);
+  
+      $longdescription_decoded = html_entity_decode($variables['longdescription']);
+      $longdescription_stripped = trim(preg_replace('/\s+/', '', strip_tags($longdescription_decoded)));
+      $longdescription_shortened = substr($longdescription_stripped, 0, $shortdescription_length);
+      $longdescription_length = strlen($longdescription_shortened);
+
+      // Check if both short versions are equal.
+      if (strcmp($shortdescription_shortened, $longdescription_shortened) == 0) {
+
+        // Set initial break points.
+        $i = 0;
+        $j = 0;
+
+        // Find position of first double break tag.  
+        if (stripos($variables['longdescription'], '<br><br>')) {
+          $br_position = stripos($variables['longdescription'], '<br><br>');
+          $i = $br_position;
+          $j = $br_position + 8;
+        }
+        else if (stripos($variables['longdescription'], '<br/><br/>')) {
+          $br_position = stripos($variables['longdescription'], '<br/><br/>');
+          $i = $br_position;
+          $j = $br_position + 10;
+        }
+        else if (stripos($variables['longdescription'], '<br /><br />')) {
+          $br_position = stripos($variables['longdescription'], '<br /><br />');
+          $i = $br_position;
+          $j = $br_position + 12;
+        }
+
+        // Find position of first paragraph tag that isn't at the beginning of the string.
+        $p_offset = 3;
+        $p_position = stripos($variables['longdescription'], '<p>', $p_offset);
+        if ($p_position != FALSE) {
+          if ($i == 0) {
+            $i = $p_position;
+            $j = $p_position;
+          }
+          else if ($p_position < $br_position) {
+            $i = $p_position;
+            $j = $p_position;
+          }
+        }
+
+        // Use first paragraph of longdescription to replace the shortdescription.
+        $variables['shortdescription'] = substr($variables['longdescription'], 0, $i);
+        $variables['longdescription'] = substr($variables['longdescription'], $j);
+
+      }
+
+    }
+
     // Add videos.
     $variables['videos'] = array();
     $variables['videos_id'] = array();
@@ -690,11 +762,20 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
 
     $contact_info = $event->getContactInfo();
 
+    // Prepare mailto links
+    $site_name = variable_get('site_name');
+    $cdbid = $event->getCdbid();
+    $permalink = url('permalink' . '/' . $cdbid, array('absolute' => TRUE));
+    $variables['mailto_query'] = array (
+      'subject' => $variables['title'] . ' (via ' . $site_name . ')',
+      'body' => $permalink
+    );
+
     // Mails.
     $mails = array();
     foreach ($contact_info->getMails() as $mail) {
       if (!$mail->isForReservations()) {
-        $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact')));
+        $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact', 'target' => '_blank'), 'query' => $variables['mailto_query']));
       }
     }
     $variables['contact']['mail'] = implode(', ', $mails);
@@ -727,7 +808,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       // Reservation mail
       if (isset($reservation_info['mails'])) {
         foreach ($reservation_info['mails'] as $mail) {
-          $reservation_mails[] = l($mail, 'mailto:' . $mail, array('attributes' => array('id' => 'cf-reservation')));
+          $reservation_mails[] = l($mail, 'mailto:' . $mail, array('attributes' => array('id' => 'cf-reservation', 'target' => '_blank'), 'query' => $variables['mailto_query']));
         }
         $variables['reservation']['mail'] = implode(', ', $reservation_mails);
       }
@@ -1066,10 +1147,19 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
       }
     }
 
+    // Prepare mailto links
+    $site_name = variable_get('site_name');
+    $cdbid = $actor->getCdbid();
+    $permalink = url('permalink' . '/' . $cdbid, array('absolute' => TRUE));
+    $variables['mailto_query'] = array (
+      'subject' => $variables['title'] . ' (via ' . $site_name . ')',
+      'body' => $permalink
+    );
+
     // Mails.
     $mails = array();
     foreach ($contact_info->getMails() as $mail) {
-      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact')));
+      $mails[] = l($mail->getMailAddress(), 'mailto:' . $mail->getMailAddress(), array('attributes' => array('id' => 'cf-contact', 'target' => '_blank'), 'query' => $variables['mailto_query']));
     }
     $variables['contact']['mail'] = implode(', ', $mails);
 
@@ -1210,7 +1300,7 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
 
   if (!empty($variables['title'])) {
     $title_parts[] = $variables['title'];
-    $og_tags['og:title'] = html_entity_decode($variables['title']);
+    $og_tags['og:title'] = decode_entities(strip_tags($variables['title']));
   }
   if (!empty($variables['location']) && !empty($variables['location']['city'])) {
     $title_parts[] = $variables['location']['city'];

@@ -43,12 +43,20 @@ class DrupalCultureFeed_Mailing extends DrupalCultureFeedBase {
     self::getLoggedInUserInstance()->deleteTemplate($id);
   }
 
+  public static function getMailingList(CultureFeed_SearchMailingsQuery $query) {
+    return self::getLoggedInUserInstance()->getMailingList($query);
+  }
+
   public static function sendTestMailing($user_id, $mailing_id) {
     self::getLoggedInUserInstance()->sendTestMailing($user_id, $mailing_id);
   }
 
   public static function sendMailing($id) {
     self::getLoggedInUserInstance()->sendMailing($id);
+  }
+
+  public static function searchMailings(CultureFeed_SearchMailingsQuery $query) {
+    return self::getLoggedInUserInstance()->searchMailings($query);
   }
 
   public static function getMailing($id) {

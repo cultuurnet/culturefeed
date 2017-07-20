@@ -309,3 +309,48 @@ function culturefeed_uitpas_email_is_passholder() {
     watchdog_exception('culturefeed_uitpas_not_yet_registered', $e);
   }
 }
+
+function culturefeed_uitpas_get_passholder_memberships($uitpas_user) {
+  $memberships = $uitpas_user->passholder->memberships;
+  $today = strtotime(date('d/m/Y'));
+
+  foreach ($memberships as $key => $membership) {
+    if ($membership->endDate < $today) {
+      unset($memberships[$key]);
+    }
+  }
+
+  $grouped_memberships = array();
+  foreach ($memberships as $membership) {
+    if (!array_key_exists($membership->association->cardSystems[0]->name, $grouped_memberships)) {
+      $grouped_memberships[$membership->association->cardSystems[0]->name] = array();
+    }
+    $grouped_memberships[$membership->association->cardSystems[0]->name][] = $membership;
+  }
+
+  return $grouped_memberships;
+}
+
+function culturefeed_uitpas_get_passholder_coupons($uitpas_user) {
+  $coupons = array();
+
+  foreach ($uitpas_user->passholder->cardSystemSpecific as $cardSystem) {
+    $current_card = $cardSystem->currentCard;
+
+    if ($current_card !== NULL) {
+      $coupons = $uitpas_user->cf->uitpas()->getCouponsForPassholder($current_card->uitpasNumber, NULL, 1000);
+      $coupons = $coupons->objects;
+    }
+  }
+
+  // Group coupons per card system.
+  $grouped_coupons = array();
+  foreach ($coupons as $coupon) {
+    if (!array_key_exists($coupon->cardSystem->name, $grouped_coupons)) {
+      $grouped_coupons[$coupon->cardSystem->name] = array();
+    }
+    $grouped_coupons[$coupon->cardSystem->name][] = $coupon;
+  }
+
+  return $grouped_coupons;
+}

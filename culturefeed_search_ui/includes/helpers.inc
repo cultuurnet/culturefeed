@@ -291,6 +291,33 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
     }
 
+    // No index is FALSE, if user is filtering on datetype today and max 1 flandersregion Id.
+    elseif (isset($query['facet']['datetype'])) {
+
+      if ($query['facet']['datetype'][0] == 'today') {
+
+        $facets = $query['facet'];
+        unset($facets['datetype']);
+
+        if (isset($query['facet']['category_flandersregion_id'])) {
+
+          if(count($query['facet']['category_flandersregion_id']) == 1) {
+            unset($facets['category_flandersregion_id']);
+          }
+
+        }
+        
+        unset($query['facet']);
+
+        // If datetype today was the only filter with max 1 flandersregion Id set noindex to false.
+        if (count($facets) == 0 && count($query) == 0) {
+          $noindex = FALSE;
+        }
+
+      }
+
+    }
+
     // No index is FALSE, if user is filtering on flandersregion Id.
     elseif (isset($query['facet']['category_flandersregion_id'])) {
 

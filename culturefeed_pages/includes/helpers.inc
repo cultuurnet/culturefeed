@@ -375,7 +375,7 @@ function culturefeed_pages_get_activities_from_page(CultureFeed_Cdb_Item_Page $p
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
   $parameters[] = new \CultuurNet\Search\Parameter\Query('"' . $page->getId() . '"');
   $parameters[] = new \CultuurNet\Search\Parameter\Start($page_nr);
-  $parameters[] = new \CultuurNet\Search\Parameter\Sort('startdate', 'asc');
+  $parameters[] = new \CultuurNet\Search\Parameter\Sort('availableto', 'asc');
 
   try {
     return culturefeed_get_search_service()->search($parameters);
@@ -564,10 +564,10 @@ function culturefeed_pages_get_page_suggestions_list() {
     else {
       $parameters[] = new CultuurNet\Search\Parameter\FilterQuery('city:' . $city);
     }
-    
+
     // Sort on proximity.
     $parameters[] = new CultuurNet\Search\Parameter\Sort('geodist()', CultuurNet\Search\Parameter\Sort::DIRECTION_ASC);
-    
+
   }
   else {
     // Sort on total followers.
@@ -588,4 +588,3 @@ function culturefeed_pages_get_page_suggestions_list() {
 
   return theme('culturefeed_pages_page_suggestion_list', array('suggestions' => $result->getItems()));
 }
-

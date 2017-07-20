@@ -434,22 +434,22 @@ function culturefeed_ui_block_ajaxload($config) {
  * Generate an image style url for an external image.
  */
 function culturefeed_external_image_style($image_url, $image_style) {
-
   global $base_url;
-  $curr_url = str_replace('http://', '', $base_url);
-  $image_url_parts = explode('/', str_replace('http://', '', $image_url));
-  $curr_url_parts = explode('/', $curr_url);
+
+  // Get the URL parts without protocol.
+  $pattern = '#^https?://#';
+  $curr_url_parts = explode('/', preg_replace($pattern, '', $base_url));
+  $image_url_parts = explode('/', preg_replace($pattern, '', $image_url));
 
   $file_directory = variable_get('file_public_path', 'sites/default/files');
 
   // If this file is original of current host, just use the original path.
-  if ($image_url_parts[0] == $curr_url_parts[0]) {
+  if ($image_url_parts[0] === $curr_url_parts[0]) {
     $local_uri = trim(str_replace($base_url . '/', '', $image_url), '/');
     $local_uri = str_replace($file_directory . '/', 'public://', $local_uri);
   }
   // If the file is of another site, download it locally. This is needed to use imagecache.
   else {
-
     $file = new stdClass();
     $file->filename = $image_url;
     $validation_errors = file_validate_extensions($file, 'jpg jpeg png gif');
@@ -465,7 +465,13 @@ function culturefeed_external_image_style($image_url, $image_style) {
     // Not needed if the file already exists.
     if (!file_exists($local_uri)) {
       file_prepare_directory($directory, FILE_CREATE_DIRECTORY);
-      $image_content = @file_get_contents($image_url);
+      // Make sure we have a proper protocol in front of the URL.
+      $image_url_get = $image_url;
+      if (!preg_match($pattern, $image_url_get)) {
+        $image_url_get = 'http:' . $image_url_get;
+      }
+
+      $image_content = @file_get_contents($image_url_get);
       if ($image_content) {
         file_put_contents($directory . '/' . $file_name, $image_content);
       }
@@ -473,11 +479,9 @@ function culturefeed_external_image_style($image_url, $image_style) {
         return;
       }
     }
-
   }
 
   return image_style_url($image_style, $local_uri);
-
 }
 
 /**

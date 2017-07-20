@@ -295,7 +295,7 @@ function culturefeed_mailing_lists_overview() {
 
   try {
     $query = new CultureFeed_SearchMailingsQuery();
-    $lists = DrupalCultureFeed::getMailingList($query)->objects;
+    $lists = DrupalCultureFeed_Mailing::getMailingList($query)->objects;
     $options = array();
 
     foreach ($lists as $list) {

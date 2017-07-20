@@ -499,7 +499,15 @@ function culturefeed_search_ui_block_configure($delta) {
       $form['culturefeed-facet-theme-hide'] = array(
         '#type' => 'checkbox',
         '#title' => t('Show the facet only when an eventtype is chosen'),
-        '#default_value' => variable_get('culturefeed_facet_theme_hide', FALSE),
+        '#default_value' => variable_get('culturefeed_facet_theme_hide', TRUE),
+      );
+    }
+
+    if ($delta == 'facet-educationfield') {
+      $form['culturefeed-facet-educationfield-hide'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Show the facet only when an eventtype is chosen'),
+        '#default_value' => variable_get('culturefeed_facet_educationfield_hide', TRUE),
       );
     }
 
@@ -711,6 +719,9 @@ function culturefeed_search_ui_block_save($delta, $edit = array()) {
   if (isset($edit['culturefeed-facet-theme-hide'])) {
     variable_set('culturefeed_facet_theme_hide', $edit['culturefeed-facet-theme-hide']);
   }
+  if (isset($edit['culturefeed-facet-educationfield-hide'])) {
+    variable_set('culturefeed_facet_educationfield_hide', $edit['culturefeed-facet-educationfield-hide']);
+  }
   if (isset($edit['culturefeed-facet-city-parents'])) {
     variable_set('culturefeed_facet_city_parents', array_keys(array_filter($edit['culturefeed-facet-city-parents'])));
   }
@@ -879,7 +890,14 @@ function culturefeed_search_ui_block_view($delta) {
       if (isset($delta_parts[0]) && $delta_parts[0] == 'facet') {
 
         // Hide theme facet if no eventtype is chosen.
-        if ($delta == 'facet-theme' && variable_get('culturefeed_facet_theme_hide', FALSE)) {
+        if ($delta == 'facet-theme' && variable_get('culturefeed_facet_theme_hide', TRUE)) {
+          if (!isset($_GET['facet']['category_eventtype_id'])) {
+            return $block;
+          }
+        }
+
+        // Hide theme facet if no eventtype is chosen.
+        if ($delta == 'facet-educationfield' && variable_get('culturefeed_facet_educationfield_hide', TRUE)) {
           if (!isset($_GET['facet']['category_eventtype_id'])) {
             return $block;
           }
@@ -939,6 +957,13 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
     variable_get('culturefeed_search_holidays_options', culturefeed_search_ui_default_holidays_options()),
     'or'
     );
+
+  // If group = event and we are looking for movies switch to group = event_production
+  if ($culturefeedSearchPage->getGroup() == 'event' && (isset($_GET['facet']['category_eventtype_id']) && in_array('0.50.6.0.0', $_GET['facet']['category_eventtype_id']))) {
+    $culturefeedSearchPage->unsetParameter(7);
+    $culturefeedSearchPage->addParameter(new Parameter\Parameter('group', 'event_production'));
+    $culturefeedSearchPage->setGroup('event_production');
+  }
 
   // If group = event_production exclude productions (already included in group)
   if ($culturefeedSearchPage->getGroup() == 'event_production') {
@@ -1231,13 +1256,20 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
 
   // Check if form filters are selected.
   $filter_options = array();
+  $extra_filter_options = array();
   for ($i = 1; $i <= CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS; $i++) {
 
     if ($i == 1) {
-      $extra_filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options($i));
+      $block = block_load('culturefeed_search_ui', 'filter-form');
+      if ($block->status) {
+        $extra_filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options($i));
+      }
     }
     else {
-      $extra_filter_options = variable_get('culturefeed_search_filter_options_' . $i, culturefeed_search_ui_default_filter_options($i));
+      $block = block_load('culturefeed_search_ui', 'filter-form-' . $i);
+      if ($block->status) {
+        $extra_filter_options = variable_get('culturefeed_search_filter_options_' . $i, culturefeed_search_ui_default_filter_options($i));
+      }
     }
 
     $filter_options = array_merge($filter_options, $extra_filter_options);
