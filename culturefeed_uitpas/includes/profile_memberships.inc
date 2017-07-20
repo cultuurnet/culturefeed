@@ -13,17 +13,11 @@ function culturefeed_uitpas_profile_memberships_get() {
     $uitpas_user = culturefeed_uitpas_get_uitpas_user();
 
   if ($uitpas_user->user && $uitpas_user->passholder) {
-    $memberships = culturefeed_uitpas_get_passholder_memeberships($uitpas_user);
+    $memberships = culturefeed_uitpas_get_passholder_memberships($uitpas_user);
   }
 
   if (count($memberships) > 0) {
-    $header = array(t('Name'), t('Valid until'));
-    $rows = array();
-    foreach ($memberships as $membership) {
-      $row = array($membership->name, date('d/m/Y', $membership->endDate));
-      $rows[] = $row;
-    }
-    return theme('table', array('header' => $header, 'rows' => $rows));
+    return theme('culturefeed_uitpas_memberships', array('memberships' => $memberships));
   }
   else {
     return array(

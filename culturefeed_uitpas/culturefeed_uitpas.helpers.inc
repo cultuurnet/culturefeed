@@ -310,7 +310,7 @@ function culturefeed_uitpas_email_is_passholder() {
   }
 }
 
-function culturefeed_uitpas_get_passholder_memeberships($uitpas_user) {
+function culturefeed_uitpas_get_passholder_memberships($uitpas_user) {
   $memberships = $uitpas_user->passholder->memberships;
   $today = strtotime(date('d/m/Y'));
 
@@ -320,7 +320,15 @@ function culturefeed_uitpas_get_passholder_memeberships($uitpas_user) {
     }
   }
 
-  return $memberships;
+  $grouped_memberships = array();
+  foreach ($memberships as $membership) {
+    if (!array_key_exists($membership->association->cardSystems[0]->name, $grouped_memberships)) {
+      $grouped_memberships[$membership->association->cardSystems[0]->name] = array();
+    }
+    $grouped_memberships[$membership->association->cardSystems[0]->name][] = $membership;
+  }
+
+  return $grouped_memberships;
 }
 
 function culturefeed_uitpas_get_passholder_coupons($uitpas_user) {
