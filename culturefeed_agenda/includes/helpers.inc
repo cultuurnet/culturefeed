@@ -92,8 +92,7 @@ function _culturefeed_agenda_get_links_from_item(CultureFeed_Cdb_Item_Base $item
   }
 
   // General links.
-  if ($detail) {
-
+  if ($detail && !(variable_get('culturefeed_agenda_hide_webresources', FALSE))) {
     foreach ($detail->getMedia() as $media) {
       if ($media->getMediaType() == CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBRESOURCE || $media->getMediaType() == CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBSITE) {
         $links[] = $media->getHLink();
@@ -239,8 +238,9 @@ function culturefeed_agenda_get_location_of_event(CultureFeed_Cdb_Item_Event $ev
     if ($event->getCdbid()) {
       $location['cdbid_event'] = $event->getCdbid();
     }
-    if ($event->getLocation()->getCdbid()) {
-      $location['link'] = culturefeed_search_detail_l('actor', $event->getLocation()->getCdbid(), $location['title']);
+    $location_id = $event->getLocation()->getCdbid();
+    if ($location_id && is_object(culturefeed_agenda_actor_load($location_id))) {
+      $location['link'] = culturefeed_search_detail_l('actor', $location_id, $location['title']);
     }
     if ($location_info->getActor()) {
       $actor_detail = $location_info->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
@@ -547,7 +547,7 @@ function culturefeed_agenda_load_events_of_production($production, $future_only 
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
   $parameters[] = new \CultuurNet\Search\Parameter\Query(implode(' OR ', $cdb_ids));
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
-  $parameters[] = new \CultuurNet\Search\Parameter\Sort('startdate', 'asc');
+  $parameters[] = new \CultuurNet\Search\Parameter\Sort('availableto', 'asc');
 
   if (!$future_only) {
     $parameters[] = new \CultuurNet\Search\Parameter\Parameter('past', 'true');

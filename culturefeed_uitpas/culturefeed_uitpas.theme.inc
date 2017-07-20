@@ -209,6 +209,13 @@ function culturefeed_uitpas_theme() {
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
       'template' => 'culturefeed-uitpas-register-cta',
     ),
+    'culturefeed_uitpas_memberships' => array(
+      'variables' => array(
+        'memberships' => NULL,
+      ),
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'template' => 'culturefeed-uitpas-memberships',
+    ),
   );
 }
 

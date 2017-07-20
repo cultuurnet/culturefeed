@@ -509,11 +509,16 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   if ($cdb_item instanceof CultureFeed_Cdb_Item_Event) {
     $actor_id = $cdb_item->getLocation()->getCdbid();
     if ($actor_id) {
-      $actor = $cdb_item->getLocation()->getActor() ?: culturefeed_agenda_actor_load($actor_id)->getEntity();
-      if ($actor) {
-        $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $actor);
-        $variables['locations_facilities'] = $facilities['text'];
+      if ($cdb_item->getLocation()->getActor()) {
+        $actor = $cdb_item->getLocation()->getActor();
       }
+      else if (is_object(culturefeed_agenda_actor_load($actor_id))) {
+        $actor = culturefeed_agenda_actor_load($actor_id)->getEntity();
+      }
+    }
+    if (isset($actor)) {
+      $facilities = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_FACILITY, $actor);
+      $variables['locations_facilities'] = $facilities['text'];
     }
   }
 
@@ -524,6 +529,65 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   }
 
   if ($detail) {
+
+    if (variable_get('culturefeed_agenda_deduplicate_descriptions', TRUE) && $variables['longdescription']) {
+
+      // Strip shortdecription and longdescription to the same comparable length.
+      $shortdescription_decoded = html_entity_decode($variables['shortdescription'], ENT_QUOTES, 'UTF-8');
+      $shortdescription_stripped = trim(preg_replace('/\s+/', '', strip_tags($shortdescription_decoded)));
+      $shortdescription_shortened = rtrim($shortdescription_stripped, '\.\.\.');
+      $shortdescription_length = strlen($shortdescription_shortened);
+  
+      $longdescription_decoded = html_entity_decode($variables['longdescription']);
+      $longdescription_stripped = trim(preg_replace('/\s+/', '', strip_tags($longdescription_decoded)));
+      $longdescription_shortened = substr($longdescription_stripped, 0, $shortdescription_length);
+      $longdescription_length = strlen($longdescription_shortened);
+
+      // Check if both short versions are equal.
+      if (strcmp($shortdescription_shortened, $longdescription_shortened) == 0) {
+
+        // Set initial break points.
+        $i = 0;
+        $j = 0;
+
+        // Find position of first double break tag.  
+        if (stripos($variables['longdescription'], '<br><br>')) {
+          $br_position = stripos($variables['longdescription'], '<br><br>');
+          $i = $br_position;
+          $j = $br_position + 8;
+        }
+        else if (stripos($variables['longdescription'], '<br/><br/>')) {
+          $br_position = stripos($variables['longdescription'], '<br/><br/>');
+          $i = $br_position;
+          $j = $br_position + 10;
+        }
+        else if (stripos($variables['longdescription'], '<br /><br />')) {
+          $br_position = stripos($variables['longdescription'], '<br /><br />');
+          $i = $br_position;
+          $j = $br_position + 12;
+        }
+
+        // Find position of first paragraph tag that isn't at the beginning of the string.
+        $p_offset = 3;
+        $p_position = stripos($variables['longdescription'], '<p>', $p_offset);
+        if ($p_position != FALSE) {
+          if ($i == 0) {
+            $i = $p_position;
+            $j = $p_position;
+          }
+          else if ($p_position < $br_position) {
+            $i = $p_position;
+            $j = $p_position;
+          }
+        }
+
+        // Use first paragraph of longdescription to replace the shortdescription.
+        $variables['shortdescription'] = substr($variables['longdescription'], 0, $i);
+        $variables['longdescription'] = substr($variables['longdescription'], $j);
+
+      }
+
+    }
 
     // Add videos.
     $variables['videos'] = array();
@@ -700,7 +764,8 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
 
     // Prepare mailto links
     $site_name = variable_get('site_name');
-    $permalink = url('permalink' . '/' . $variables['cdbid'], array('absolute' => TRUE));
+    $cdbid = $event->getCdbid();
+    $permalink = url('permalink' . '/' . $cdbid, array('absolute' => TRUE));
     $variables['mailto_query'] = array (
       'subject' => $variables['title'] . ' (via ' . $site_name . ')',
       'body' => $permalink
@@ -1084,7 +1149,8 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
 
     // Prepare mailto links
     $site_name = variable_get('site_name');
-    $permalink = url('permalink' . '/' . $variables['cdbid'], array('absolute' => TRUE));
+    $cdbid = $actor->getCdbid();
+    $permalink = url('permalink' . '/' . $cdbid, array('absolute' => TRUE));
     $variables['mailto_query'] = array (
       'subject' => $variables['title'] . ' (via ' . $site_name . ')',
       'body' => $permalink

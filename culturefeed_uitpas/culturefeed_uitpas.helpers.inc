@@ -310,7 +310,7 @@ function culturefeed_uitpas_email_is_passholder() {
   }
 }
 
-function culturefeed_uitpas_get_passholder_memeberships($uitpas_user) {
+function culturefeed_uitpas_get_passholder_memberships($uitpas_user) {
   $memberships = $uitpas_user->passholder->memberships;
   $today = strtotime(date('d/m/Y'));
 
@@ -320,7 +320,15 @@ function culturefeed_uitpas_get_passholder_memeberships($uitpas_user) {
     }
   }
 
-  return $memberships;
+  $grouped_memberships = array();
+  foreach ($memberships as $membership) {
+    if (!array_key_exists($membership->association->cardSystems[0]->name, $grouped_memberships)) {
+      $grouped_memberships[$membership->association->cardSystems[0]->name] = array();
+    }
+    $grouped_memberships[$membership->association->cardSystems[0]->name][] = $membership;
+  }
+
+  return $grouped_memberships;
 }
 
 function culturefeed_uitpas_get_passholder_coupons($uitpas_user) {
@@ -330,22 +338,19 @@ function culturefeed_uitpas_get_passholder_coupons($uitpas_user) {
     $current_card = $cardSystem->currentCard;
 
     if ($current_card !== NULL) {
-      $coupons[] = $uitpas_user->cf->uitpas()->getCouponsForPassholder($current_card->uitpasNumber, NULL, 1000);
-    }
-  }
-  $total = 0;
-  $objects = array();
-
-  foreach ($coupons as $coupon_result_set) {
-    $total = $total + $coupon_result_set->total;
-    foreach ($coupon_result_set as $coupon_arr_elements) {
-      if (is_array($coupon_arr_elements)) {
-        foreach($coupon_arr_elements as $coupon_arr_element) {
-          array_push($objects, $coupon_arr_element);
-        }
-      }
+      $coupons = $uitpas_user->cf->uitpas()->getCouponsForPassholder($current_card->uitpasNumber, NULL, 1000);
+      $coupons = $coupons->objects;
     }
   }
 
-  return new CultureFeed_ResultSet($total, $objects);
+  // Group coupons per card system.
+  $grouped_coupons = array();
+  foreach ($coupons as $coupon) {
+    if (!array_key_exists($coupon->cardSystem->name, $grouped_coupons)) {
+      $grouped_coupons[$coupon->cardSystem->name] = array();
+    }
+    $grouped_coupons[$coupon->cardSystem->name][] = $coupon;
+  }
+
+  return $grouped_coupons;
 }
