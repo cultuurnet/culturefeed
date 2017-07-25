@@ -28,8 +28,10 @@ function culturefeed_social_get_activity_filter_options($active_only = FALSE) {
 
   // Do a full query to get all available types.
   $query = new CultureFeed_SearchActivitiesQuery();
-  $query->userId = DrupalCultureFeed::getLoggedInUserId();
-  $query->private = TRUE;
+  if (DrupalCultureFeed::getLoggedInUserId()) {
+    $query->userId = DrupalCultureFeed::getLoggedInUserId();
+    $query->private = TRUE;
+  }
   try {
     $activities = DrupalCultureFeed::searchActivities($query);
     foreach ($activities->objects as $activity) {
