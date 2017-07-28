@@ -686,6 +686,16 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       ), 'setting');
     }
 
+    if (isset($variables['contact']['phone'])) {
+      drupal_add_js(array(
+        'culturefeed_agenda' => array(
+          'contact' => array(
+            'phones' => $variables['contact']['phone']
+          )
+        )
+      ), 'setting');
+    }
+
     // Use dialog when Facebook app id is set.
     culturefeed_search_ui_add_facebook_share();
 
@@ -1158,16 +1168,6 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
     }
     $variables['contact']['phone'] = check_plain(implode(', ', $phones));
     $variables['contact']['fax'] = check_plain(implode(', ', $faxes));
-
-    // Pass the phones through a setting in Javascript
-    // In Culturefeed Bootstrap we use mobile_detect.js for formatting those.
-    drupal_add_js(array(
-      'culturefeed_agenda' => array(
-        'contact' => array(
-          'phones' => $phones
-        )
-      )
-    ), 'setting');
   }
 
   // Link to detail.
