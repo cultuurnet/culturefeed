@@ -149,70 +149,69 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
     return;
   }
 
-  $tabs = array();
   $event = entry_api_event_load($id);
-  if ($event) {
-    $title = $event->getDetails()
-      ->getDetailByLanguage(culturefeed_search_get_preferred_language())
-      ->getTitle();
-    $request_detail = array(
-      'event' => $id,
-      'title' => $title,
+  if (!$event) {
+    return;
+  }
+  $title = $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle();
+  $request_detail = array(
+    'event' => $id,
+    'title' => $title,
+  );
+  $tabs = array();
+  $path = culturefeed_search_detail_path('event', $id, $title);
+
+  // Add a tab for managing the tags.
+  if (culturefeed_entry_ui_manage_tags_access()) {
+
+    $link = array(
+      'href' => $path . '/tags',
+      'localized_options' => array(),
+      'title' => t('Tags'),
     );
-    $path = culturefeed_search_detail_path('event', $id, $title);
 
-    // Add a tab for managing the tags.
-    if (culturefeed_entry_ui_manage_tags_access()) {
+    $tabs[] = array(
+      '#theme' => 'menu_local_task',
+      '#link' => $link,
+      '#active' => arg(4) === 'tags',
+    );
+  }
 
-      $link = array(
-        'href' => $path . '/tags',
-        'localized_options' => array(),
-        'title' => t('Tags'),
-      );
+  // Add tab for collaboration info.
+  if (culturefeed_entry_ui_manage_collaboration_access()) {
 
-      $tabs[] = array(
-        '#theme' => 'menu_local_task',
-        '#link' => $link,
-        '#active' => arg(4) === 'tags',
-      );
-    }
+    $link = array(
+      'href' => $path . '/collaboration',
+      'localized_options' => array(),
+      'title' => t('Collaboration'),
+    );
 
-    // Add tab for collaboration info.
-    if (culturefeed_entry_ui_manage_collaboration_access()) {
+    $tabs[] = array(
+      '#theme' => 'menu_local_task',
+      '#link' => $link,
+      '#active' => arg(4) === 'collaboration',
+    );
+  }
 
-      $link = array(
-        'href' => $path . '/collaboration',
-        'localized_options' => array(),
-        'title' => t('Collaboration'),
-      );
+  $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
+  if ($culturefeed_user && user_access('edit culturefeed events')) {
+    $udb_permission = Drupalculturefeed_EntryApi::checkPermission($culturefeed_user->id, $culturefeed_user->mbox, array('ids' => $event->getCdbId()));
+  }
 
-      $tabs[] = array(
-        '#theme' => 'menu_local_task',
-        '#link' => $link,
-        '#active' => arg(4) === 'collaboration',
-      );
-    }
+  // Add tab for editing the event.
+  if (user_access('edit culturefeed events') && ($event->getCreatedBy() == $culturefeed_user->mbox || (isset($udb_permission) && $udb_permission[$event->getCdbId()] == 'true'))) {
 
-    $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
-    if ($culturefeed_user && user_access('edit culturefeed events')) {
-      $udb_permission = Drupalculturefeed_EntryApi::checkPermission($culturefeed_user->id, $culturefeed_user->mbox, array('ids' => $event->getCdbId()));
-    }
+    $link = array(
+      'href' => $path . '/edit',
+      'localized_options' => array(),
+      'title' => t('Edit'),
+    );
 
-    // Add tab for editing the event.
-    if (user_access('edit culturefeed events') && ($event->getCreatedBy() == $culturefeed_user->mbox || (isset($udb_permission) && $udb_permission[$event->getCdbId()] == 'true'))) {
-
-      $link = array(
-        'href' => $path . '/edit',
-        'localized_options' => array(),
-        'title' => t('Edit'),
-      );
-
-      $tabs[] = array(
-        '#theme' => 'menu_local_task',
-        '#link' => $link,
-        '#active' => arg(4) === 'edit',
-      );
-    }
+    $tabs[] = array(
+      '#theme' => 'menu_local_task',
+      '#link' => $link,
+      '#active' => arg(4) === 'edit',
+    );
   }
 
   // Detail only exists when culturefeed_agenda is enabled.
