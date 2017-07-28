@@ -1147,17 +1147,21 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
         $faxes[] = $phone->getNumber();
       }
       else {
-        if (isset($variables['device']) && $variables['device'] == 'phone') {
-          $phones[] = l($phone->getNumber(), 'tel:' . culturefeed_valid_phone($phone->getNumber()));
-        }
-        else {
-          $phones[] = $phone->getNumber();
-        }
+        $phones[] = $phone->getNumber();
       }
     }
     $variables['contact']['phone'] = check_plain(implode(', ', $phones));
     $variables['contact']['fax'] = check_plain(implode(', ', $faxes));
 
+    // Pass the phones through a setting in Javascript
+    // In Culturefeed Bootstrap we use mobile_detect.js for formatting those.
+    drupal_add_js(array(
+      'culturefeed_agenda' => array(
+        'contact' => array(
+          'phones' => $phones
+        )
+      )
+    ), 'setting');
   }
 
   // Link to detail.
