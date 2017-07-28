@@ -674,6 +674,18 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $mail_options['attributes']['alt'] = $mail_title;
     $variables['mail_link'] = l($mail_title, $variables['mail']['url'], $mail_options);
 
+    // Pass the phone data through a setting in Javascript
+    // In Culturefeed Bootstrap we use mobile_detect.js for formatting those.
+    if (isset($variables['reservation']['phone'])) {
+      drupal_add_js(array(
+        'culturefeed_agenda' => array(
+          'reservation' => array(
+            'phones' => $variables['reservation']['phone']
+          )
+        )
+      ), 'setting');
+    }
+
     // Use dialog when Facebook app id is set.
     culturefeed_search_ui_add_facebook_share();
 
@@ -792,13 +804,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       // Reservation phone
       if (isset($reservation_info['phone'])) {
         foreach ($reservation_info['phone'] as $phone) {
-          if(isset($variables['device']) && $variables['device'] == 'phone')
-          {
-            $reservation_phones[] = l($phone, 'tel:'.culturefeed_valid_phone($phone));
-          }
-          else {
-            $reservation_phones[] = $phone;
-          }
+          $reservation_phones[] = $phone;
         }
         $variables['reservation']['phone'] = implode(', ', $reservation_phones);
       }
