@@ -1337,6 +1337,7 @@ function _culturefeed_agenda_preprocess_event_production_metatags($variables) {
     $og_tags['fb:app_id'] = $fb_app_id;
   }
   $og_tags['og:site_name'] = variable_get('site_name', '');
+  $og_tags['og:type'] = 'article';
   $og_tags['og:url'] = url($variables['url'], array('absolute' => TRUE));
   $og_tags['og:description'] = implode(' - ', $description_parts);
   if ($variables['main_picture']) {
