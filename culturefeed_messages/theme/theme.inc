@@ -312,10 +312,3 @@ function _culturefeed_messages_preprocess_message(&$variables) {
 
   }
 }
-
-/**
- * Theme the total messages profile box item.
- */
-function theme_culturefeed_messages_total_messages_profile_box_item($variables) {
-  return l(format_plural($variables['total'], '@count new message', '@count new messages'), 'culturefeed/messages');
-}
