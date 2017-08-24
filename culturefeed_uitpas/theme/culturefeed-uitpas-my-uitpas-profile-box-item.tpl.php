@@ -1,0 +1,1 @@
+<a href="<?print $path; ?>"><?php print t('My UiTPAS'); ?> - <?php print $points; ?></a>
