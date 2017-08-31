@@ -515,21 +515,3 @@ function culturefeed_template_load($id) {
     return FALSE;
   }
 }
-
-/**
- * Implements hook_node_info().
- */
-function culturefeed_mailing_node_info() {
-  $items = array(
-    'mail_item' => array(
-      'name' => t('Mail item'),
-      'base' => 'node_content',
-      'description' => t('Mail items can be used to create content for culturefeed_mailing newsletters'),
-      'has_title' => '1',
-      'title_label' => t('Title'),
-      'help' => '',
-    ),
-  );
-  drupal_alter('node_info', $items);
-  return $items;
-}
