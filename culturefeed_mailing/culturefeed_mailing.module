@@ -15,14 +15,6 @@ function culturefeed_mailing_permission() {
       'title' => t('Subscribe to mailings'),
       'description' => t('Allows the user to subscribe to mailings'),
     ),
-    'manage mailing lists' => array(
-      'title' => t('Manage mailing lists'),
-      'description' => t('Allows the user to manage mailing lists & templates'),
-    ),
-    'delete mail template' => array(
-      'title' => t('Delete mail template'),
-      'description' => t('Allows the user to delete mailing lists & templates'),
-    ),
   );
 }
 
