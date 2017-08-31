@@ -219,7 +219,7 @@ function culturefeed_uitpas_theme() {
     'culturefeed_uitpas_my_uitpas_profile_box_item' => array(
       'variables' => array(
         'total' => 0,
-        'path' => 'culturefeed/profile/uitpas'
+        'path' => ''
       ),
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
       'file' => 'theme.inc',
