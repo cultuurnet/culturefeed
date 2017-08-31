@@ -43,7 +43,7 @@ function culturefeed_mailing_admin_settings() {
       '#type' => 'textfield',
       '#title' => t('Newsletter block description'),
       '#description' => t('Description displayed in the form as block'),
-      '#default_value' => variable_get('culturefeed_mailing_block_description', ''),
+      '#default_value' => variable_get('culturefeed_mailing_block_description', t('Subscribe to our newsletter')),
     );
 
     $form['culturefeed_mailing_optional_description'] = array(
