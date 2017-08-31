@@ -424,8 +424,8 @@ msgid "Congratulations! you collected"
 msgstr "Es hat geklappt! Sie haben gesammelt"
 
 #: theme/theme.inc:371
-msgid "with your @action and have now"
-msgstr "mit Ihrer @action und Sie haben jetzt"
+msgid "and have now"
+msgstr "und Sie haben jetzt"
 
 #: theme/theme.inc:383
 msgid ""

@@ -25,10 +25,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
   $vars['images_list'] = '';
   $images = array();
   if (isset($advantage->pictures[0])) {
-    $vars['image'] = theme_image(array('path' => $advantage->pictures[0], 'attributes' => array()));
+    $vars['image'] = theme_image(array('path' => $advantage->pictures[0], 'alt' => $advantage->title, 'title' => $advantage->title, 'attributes' => array()));
     foreach ($advantage->pictures as $key => $picture) {
       $images[] = l(
-        theme('image', array('path' => $advantage->pictures[$key] . '?maxwidth=300&max-height=300', 'attributes' => array())),
+        theme('image', array('path' => $advantage->pictures[$key] . '?maxwidth=300&max-height=300', 'alt' => $advantage->title, 'title' => $advantage->title, 'attributes' => array())),
         $advantage->pictures[$key],
         array('html' => TRUE)
       );
@@ -36,7 +36,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
     $vars['images_list'] = theme('item_list', array('items' => $images));
   }
   if (isset($advantage->pictures[1])) {
-    $vars['image2'] = theme_image(array('path' => $advantage->pictures[1], 'attributes' => array()));
+    $vars['image2'] = theme_image(array('path' => $advantage->pictures[1], 'alt' => $advantage->title, 'title' => $advantage->title, 'attributes' => array()));
   }
 
   // Get the counters information.
@@ -65,7 +65,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantage(&$vars) {
   else {
     $period = t('Until end of stock');
   }
-  $vars['period'] = $period;  
+  $vars['period'] = $period;
 
   // Provider.
   $vars['provider'] = '';
@@ -243,6 +243,72 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_actions(&$vars
     $vars['activity_preferences_form'] = drupal_render($form);
   }
 
+}
+
+/**
+ * Implements hook_preprocess_preprocess_culturefeed_uitpas_profile_coupons().
+ */
+function culturefeed_uitpas_preprocess_culturefeed_uitpas_profile_coupons(&$vars) {
+  $coupons = array();
+
+  foreach ($vars['coupons'] as $key => $coupons_per_cardSystem) {
+
+    foreach ($coupons_per_cardSystem as $coupon) {
+      $newCoupon = array();
+      $newCoupon['id'] = $coupon->id;
+      $newCoupon['name'] = $coupon->name;
+      $newCoupon['description'] = $coupon->description;
+      if ($coupon->validTo !== NULL) {
+        $newCoupon['validTo'] = date('d/m/Y', $coupon->validTo);
+      }
+      if ($coupon->remainingTotal->volume !== NULL) {
+        $type = strtolower($coupon->remainingTotal->type);
+        if ($type == 'day') {
+          $t_type = t('day');
+        }
+        else {
+          if ($type == 'week') {
+            $t_type = t('week');
+          }
+          else {
+            if ($type == 'month') {
+              $t_type = t('month');
+            }
+            else {
+              if ($type == 'quarter') {
+                $t_type = t('quarter');
+              }
+              else {
+                if ($type == 'year') {
+                  $t_type = t('year');
+                }
+                else {
+                  $t_type = '';
+                }
+              }
+            }
+          }
+        }
+        $t_vars = array(
+          '@volume' => $coupon->remainingTotal->volume,
+          '@type' => $t_type,
+          '@turn' => ($coupon->remainingTotal->volume > 1 ? t('turns') : t('turn'))
+        );
+        if ($coupon->remainingTotal->type == 'ABSOLUTE') {
+          $newCoupon['remaining'] = t('@volume @turn', $t_vars);
+        }
+        else {
+          $newCoupon['remaining'] = t('@volume @turn this @type', $t_vars);
+        }
+      }
+      $coupons[$key][] = $newCoupon;
+    }
+  }
+
+  unset($vars['coupons']);
+  $vars['coupons'] = $coupons;
+
+  drupal_add_css(drupal_get_path('module', 'culturefeed_uitpas') . '/css/coupons.css');
 }
 
 /**
@@ -442,10 +508,10 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
   $vars['images_list'] = '';
   $images = array();
   if (isset($promotion->pictures[0])) {
-    $vars['image'] = theme('image', array('path' => $promotion->pictures[0] . '?maxwidth=300&max-height=300', 'attributes' => array()));
+    $vars['image'] = theme('image', array('path' => $promotion->pictures[0] . '?maxwidth=300&max-height=300', 'alt' => $promotion->title, 'title' => $promotion->title, 'attributes' => array()));
     foreach ($promotion->pictures as $key => $picture) {
       $images[] = l(
-        theme('image', array('path' => $promotion->pictures[$key] . '?maxwidth=300&max-height=300', 'attributes' => array())),
+        theme('image', array('path' => $promotion->pictures[$key] . '?maxwidth=300&max-height=300', 'alt' => $promotion->title, 'title' => $promotion->title, 'attributes' => array())),
         $promotion->pictures[$key],
         array('html' => TRUE)
       );
@@ -453,7 +519,7 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotion(&$vars) {
     $vars['images_list'] = theme('item_list', array('items' => $images));
   }
   if (isset($promotion->pictures[1])) {
-    $vars['image2'] = theme_image(array('path' => $promotion->pictures[1] . '?maxwidth=300&max-height=300', 'attributes' => array()));
+    $vars['image2'] = theme_image(array('path' => $promotion->pictures[1] . '?maxwidth=300&max-height=300', 'alt' => $promotion->title, 'title' => $promotion->title, 'attributes' => array()));
   }
 
   // Points.
@@ -533,17 +599,37 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_highlight(&
 
   foreach ($promotions as $promotion) {
 
+    if (isset($promotion->pictures[0])) {
+      $thumbnail = theme('image', array('path' => $promotion->pictures[0] . '?width=400&height=300&crop=auto', 'alt' => $promotion->title, 'title' => $promotion->title, 'attributes' => array()));
+    }
+    else {
+      $thumbnail = theme('image', array('path' => drupal_get_path('module', 'culturefeed_uitpas') . '/images/default.png', 'alt' => $promotion->title, 'title' => $promotion->title, 'attributes' => array()));
+    }
+
     $singular = '@count point';
     $plural = '@count points';
-    $rows[] = array(
-      array(
+    $points = array(
         'data' => format_plural($promotion->points, $singular, $plural),
         'class' => array('points'),
-      ),
-      l($promotion->title, 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id),
+      );
+    $url = 'promotion/' . culturefeed_search_slug($promotion->title) . '/' . $promotion->id;
+    $title = l($promotion->title, $url);
 
+    $rows[] = array(
+      $points,
+      $title,
     );
+
+    $items[] = array(
+      'thumbnail' => $thumbnail,
+      'points' => $points['data'],
+      'title' => $title,
+      'url' => $url
+    );
+
   }
+
+  $vars['items'] = $items;
 
   $table = array(
     'header' => array(),
@@ -730,6 +816,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_table(&$var
           'path' => $advantage->pictures[0],
           'maxwidth' => 100,
           'maxheight' => 100,
+          'alt' => $advantage->title,
+          'title' => $advantage->title,
           'attributes' => array(),
         ));
       }
@@ -738,6 +826,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_advantages_table(&$var
           'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/images/default.png',
           'width' => 100,
           'height' => 100,
+          'alt' => $advantage->title,
+          'title' => $advantage->title,
         ));
       }
       $item['image'] = l($image, $advantage_path, array('html' => TRUE));
@@ -828,6 +918,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_table(&$var
           'path' => $promotion->pictures[0],
           'maxwidth' => 100,
           'maxheight' => 100,
+          'alt' => $promotion->title,
+          'title' => $promotion->title,
           'attributes' => array(),
         ));
       }
@@ -836,6 +928,8 @@ function culturefeed_uitpas_preprocess_culturefeed_uitpas_promotions_table(&$var
           'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/images/default.png',
           'width' => 100,
           'height' => 100,
+          'alt' => $promotion->title,
+          'title' => $promotion->title,
         ));
       }
       $item['image'] = l($image, $promotion_path, array('html' => TRUE));

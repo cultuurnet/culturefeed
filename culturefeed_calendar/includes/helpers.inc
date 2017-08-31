@@ -472,15 +472,20 @@ function culturefeed_calendar_filter_duplicate_activities($activities) {
  * Helper function to read cookie betaCalendar (in progress)
  */
 function culturefeed_calendar_enabled() {
+  if (variable_get('culturefeed_calendar_beta', FALSE)) {  
 
-  return true;
+    // Check if the user has opted in for the beta program
+    if (isset($_COOKIE['betaCalendar']) && $_COOKIE['betaCalendar'] == 'true') {
+      return TRUE;
+    }
+    else {
+      return FALSE;
+    }
 
-  /*if(isset($_COOKIE['betaCalendar']) && $_COOKIE['betaCalendar'] == 'true') {
-    return true;
   }
-  else {
-    return false;
-  }*/
+
+  return TRUE;
+
 }
 
 /**

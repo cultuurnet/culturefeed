@@ -1,0 +1,11 @@
+#agenda-search-map {
+    width: auto;
+    height: 300px;
+    z-index: 10;
+    border: none;
+    color: #000;
+}
+
+#agenda-search-map img {
+    max-width: none;
+}

@@ -69,16 +69,10 @@ function culturefeed_uitpas_culturefeed_ui_profile_box_dropdown_items(CultureFee
       'weight' => 10,
     );
 
-    $items['uitpas-advantages'] = array(
-      'data' => l(t('My promotions'), 'culturefeed/profile/uitpas/promotions'),
-      'class' => 'uitpas-advantages',
-      'weight' => 11,
-    );
-
     $items['uitpas-history'] = array(
       'data' => l(t('Points history'), 'culturefeed/profile/uitpas/actions'),
       'class' => 'uitpas-history',
-      'weight' => 12,
+      'weight' => 14,
     );
 
     return $items;

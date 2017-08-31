@@ -191,7 +191,7 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
       $facets = $query['facet'];
       if ($query['facet']['type'][0] == 'actor') {
-        unset($facets['type']);      
+        unset($facets['type']);
         if (isset($query['facet']['category_flandersregion_id'])) {
           if (count($query['facet']['category_flandersregion_id']) <= 1) {
             unset($facets['category_flandersregion_id']);
@@ -212,7 +212,7 @@ function culturefeed_search_ui_set_noindex_metatag() {
       $facets = $query['facet'];
       unset($facets['category_actortype_id']);
       unset($facets['type']);
-      
+
       if (isset($query['facet']['category_flandersregion_id'])) {
         if (count($query['facet']['category_flandersregion_id']) <= 1) {
           unset($facets['category_flandersregion_id']);
@@ -238,23 +238,23 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
         $facets = $query['facet'];
         unset($facets['category_eventtype_id']);
-      
+
         if (isset($query['facet']['category_theme_id'])) {
           if (count($query['facet']['category_theme_id']) <= 1) {
             unset($facets['category_theme_id']);
           }
         }
-      
+
         if (isset($query['facet']['category_flandersregion_id'])) {
           if (count($query['facet']['category_flandersregion_id']) <= 1) {
             unset($facets['category_flandersregion_id']);
           }
         }
-  
+
         unset($query['location']);
         unset($query['regId']);
         unset($query['facet']);
-  
+
         // If theme_id, flandersregion and/or regId was the only extra facet / parameters, set noindex to false.
         if (count($facets) == 0 && count($query) == 0) {
           $noindex = FALSE;
@@ -271,18 +271,45 @@ function culturefeed_search_ui_set_noindex_metatag() {
 
         $facets = $query['facet'];
         unset($facets['category_umv_id']);
-      
+
         if (isset($query['facet']['category_flandersregion_id'])) {
           if (count($query['facet']['category_flandersregion_id']) <= 1) {
             unset($facets['category_flandersregion_id']);
           }
         }
-  
+
         unset($query['location']);
         unset($query['regId']);
         unset($query['facet']);
-  
+
         // If flandersregion or regId was the only extra facet / parameters, set noindex to false.
+        if (count($facets) == 0 && count($query) == 0) {
+          $noindex = FALSE;
+        }
+
+      }
+
+    }
+
+    // No index is FALSE, if user is filtering on datetype today and max 1 flandersregion Id.
+    elseif (isset($query['facet']['datetype'])) {
+
+      if ($query['facet']['datetype'][0] == 'today') {
+
+        $facets = $query['facet'];
+        unset($facets['datetype']);
+
+        if (isset($query['facet']['category_flandersregion_id'])) {
+
+          if(count($query['facet']['category_flandersregion_id']) == 1) {
+            unset($facets['category_flandersregion_id']);
+          }
+
+        }
+        
+        unset($query['facet']);
+
+        // If datetype today was the only filter with max 1 flandersregion Id set noindex to false.
         if (count($facets) == 0 && count($query) == 0) {
           $noindex = FALSE;
         }
@@ -299,7 +326,7 @@ function culturefeed_search_ui_set_noindex_metatag() {
         $facets = $query['facet'];
         unset($facets['category_flandersregion_id']);
         unset($query['facet']);
-  
+
         // If flandersregion Id was the only filter set noindex to false.
         if (count($facets) == 0 && count($query) == 0) {
           $noindex = FALSE;
@@ -512,8 +539,17 @@ function culturefeed_search_ui_get_headings_mapping($heading) {
     102 => array('category_umv_id' => 'umv.8','voor_kinderen' => '1'),
     103 => array('category_umv_id' => 'umv.4','voor_kinderen' => '1'),
     104 => array('category_umv_id' => 'umv.5','voor_kinderen' => '1'),
+    105 => array('category_umv_id' => 'umv.2','voor_kinderen' => '1'),
+    107 => array('category_umv_id' => 'umv.7','voor_kinderen' => '1'),
+    108 => array('category_umv_id' => 'umv.1','voor_kinderen' => '1'),
+    109 => array('category_umv_id' => 'umv.2','voor_kinderen' => '1'),
+    110 => array('category_umv_id' => 'umv.2','voor_kinderen' => '1'),
+    111 => array('category_umv_id' => 'umv.7','voor_kinderen' => '1'),
+    112 => array('category_umv_id' => 'umv.5','voor_kinderen' => '1'),
     121 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.4.0.0.0'),
     122 => array('category_eventtype_id' => '0.55.0.0.0','category_theme_id' => '1.5.0.0.0'),
+    123 => array('category_umv_id' => 'umv.9','voor_kinderen' => '1'),
+    124 => array('category_umv_id' => 'umv.8','voor_kinderen' => '1'),
     125 => array('category_eventtype_id' => '0.50.6.0.0','category_theme_id' => '1.7.2.0.0'),
     126 => array('category_eventtype_id' => '0.50.6.0.0','category_theme_id' => '1.7.12.0.0'),
     127 => array('category_eventtype_id' => '0.50.6.0.0','category_theme_id' => '1.7.1.0.0'),
@@ -728,32 +764,166 @@ function culturefeed_get_search_result() {
 /**
  * Return the default options for the filter form.
  */
-function culturefeed_search_ui_default_filter_options() {
+function culturefeed_search_ui_default_filter_options($filter_form_number) {
+
+  $defaults = array(
+    1 => array(
+      array(
+        'exposed' => TRUE,
+        'title' => 'Free only',
+        'query-string' => 'free-only',
+        'api-filter-query' => 'price:0'
+      ),
+      array(
+        'exposed' => TRUE,
+        'title' => 'No courses and workshops',
+        'query-string' => 'no-courses-workshops',
+        'api-filter-query' => '!category_id:0.3.1.0.0'
+      ),
+      array(
+        'exposed' => TRUE,
+        'title' => 'For toddlers',
+        'query-string' => 'voor-kinderen',
+        'api-filter-query' => '(agefrom:[* TO 12] OR keywords:"ook voor kinderen")'
+      ),
+      array(
+        'exposed' => TRUE,
+        'title' => 'For UiTPAS and Paspartoe',
+        'query-string' => 'uitpas',
+        'api-filter-query' => '(keywords:uitpas* OR Paspartoe)'
+      ),
+    ),
+    2 => array(
+      array(
+        'exposed' => TRUE,
+        'title' => 'Hide long-running events',
+        'query-string' => 'no-periods',
+        'api-filter-query' => 'periods:false'
+      ),
+      array(
+        'exposed' => TRUE,
+        'title' => 'Hide permanent events',
+        'query-string' => 'no-permanent',
+        'api-filter-query' => 'permanent:false'
+      ),
+    ),
+    3 => array(
+      array(
+        'exposed' => TRUE,
+        'title' => 'Free only',
+        'query-string' => 'free-only',
+        'api-filter-query' => 'price:0'
+      ),
+      array(
+        'exposed' => TRUE,
+        'title' => 'No courses and workshops',
+        'query-string' => 'no-courses-workshops',
+        'api-filter-query' => '!category_id:0.3.1.0.0'
+      ),
+      array(
+        'exposed' => TRUE,
+        'title' => 'For toddlers',
+        'query-string' => 'voor-kinderen',
+        'api-filter-query' => '(agefrom:[* TO 12] OR keywords:"ook voor kinderen")'
+      ),
+      array(
+        'exposed' => TRUE,
+        'title' => 'For UiTPAS and Paspartoe',
+        'query-string' => 'uitpas',
+        'api-filter-query' => '(keywords:uitpas* OR Paspartoe)'
+      ),
+    ),
+  );
+
+  return isset($defaults[$filter_form_number]) ? $defaults[$filter_form_number] : array();
+
+}
+
+/**
+ * Return the default options for the holiday facet block.
+ */
+function culturefeed_search_ui_default_holidays_options() {
 
   return array(
     array(
       'exposed' => TRUE,
-      'title' => 'Free only',
-      'query-string' => 'free-only',
-      'api-filter-query' => 'price:0'
+      'holiday' => 'Krokusvakantie 2016',
+      'query-string' => 'krokusvakantie',
+      'start-date' => array(
+        'year' => '2016',
+        'month' => '2',
+        'day' => '6'
+      ),
+      'end-date' => array(
+        'year' => '2016',
+        'month' => '2',
+        'day' => '14'
+      ),
+      'api-filter-query' => 'startdate:[2016-02-06T00:00:00Z TO 2016-02-14T23:59:59Z]'
     ),
     array(
       'exposed' => TRUE,
-      'title' => 'No courses and workshops',
-      'query-string' => 'no-courses-workshops',
-      'api-filter-query' => '!category_id:0.3.1.0.0'
+      'holiday' => 'Paasvakantie 2016',
+      'query-string' => 'paasvakantie',
+      'start-date' => array(
+        'year' => '2016',
+        'month' => '3',
+        'day' => '26'
+      ),
+      'end-date' => array(
+        'year' => '2016',
+        'month' => '4',
+        'day' => '10'
+      ),
+      'api-filter-query' => 'startdate:[2016-03-26T00:00:00Z TO 2016-04-10T23:59:59Z]'
     ),
     array(
       'exposed' => TRUE,
-      'title' => 'For toddlers',
-      'query-string' => 'for-toddlers',
-      'api-filter-query' => 'agefrom:(3 OR 4 OR 5)'
+      'holiday' => 'Zomervakantie 2016',
+      'query-string' => 'zomervakantie',
+      'start-date' => array(
+        'year' => '2016',
+        'month' => '7',
+        'day' => '1'
+      ),
+      'end-date' => array(
+        'year' => '2016',
+        'month' => '8',
+        'day' => '31'
+      ),
+      'api-filter-query' => 'startdate:[2016-07-01T00:00:00Z TO 2016-08-31T23:59:59Z]'
     ),
     array(
       'exposed' => TRUE,
-      'title' => 'Geschikt voor kinderen',
-      'query-string' => 'voor-kinderen',
-      'api-filter-query' => '(agefrom:[* TO 12] OR keywords:"ook voor kinderen")'
+      'holiday' => 'Herfstvakantie 2016',
+      'query-string' => 'herfstvakantie',
+      'start-date' => array(
+        'year' => '2016',
+        'month' => '10',
+        'day' => '29'
+      ),
+      'end-date' => array(
+        'year' => '2016',
+        'month' => '11',
+        'day' => '6'
+      ),
+      'api-filter-query' => 'startdate:[2016-10-29T00:00:00Z TO 2016-11-06T23:59:59Z]'
+    ),
+    array(
+      'exposed' => TRUE,
+      'holiday' => 'Kerstvakantie 2016',
+      'query-string' => 'kerstvakantie',
+      'start-date' => array(
+        'year' => '2016',
+        'month' => '12',
+        'day' => '24'
+      ),
+      'end-date' => array(
+        'year' => '2017',
+        'month' => '1',
+        'day' => '8'
+      ),
+      'api-filter-query' => 'startdate:[2016-12-24T00:00:00Z TO 2017-01-08T23:59:59Z]'
     ),
   );
 }
@@ -828,7 +998,7 @@ function _culturefeed_search_ui_sanitize_query_term($term) {
     // Put words with a special character between quotes.
     $words = explode(' ', trim($search_string));
     $parts = array();
-    $special_characters = '-!?&';
+    $special_characters = '-!?&/';
     foreach ($words as $word) {
       if (strpbrk($word, $special_characters)) {
         $word = '"' . $word . '"';

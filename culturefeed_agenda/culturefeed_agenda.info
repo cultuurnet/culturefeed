@@ -7,4 +7,6 @@ core = 7.x
 dependencies[] = culturefeed_search
 dependencies[] = culturefeed_search_ui
 
+stylesheets[all][] = css/style.css
+
 files[] = lib/Drupal/AgendaSearchPage.php

@@ -8,7 +8,7 @@
       "mobiledetect/mobiledetectlib": "dev-master",
       "cultuurnet/search": "~1.2",
       "cultuurnet/cdb": "~2.1",
-      "cultuurnet/culturefeed-php": "~1.5",
+      "cultuurnet/culturefeed-php": "~1.6",
       "cultuurnet/calendar-summary": "~1.0",
       "cultuurnet/sitemap-xml": "~1.0"
     },

@@ -10,7 +10,7 @@ use \Guzzle\Http\Client;
 /**
  * Autcomplete callback for the suggestions on Cdb items.
  */
-function culturefeed_search_suggestions_autocomplete_page($search_string, $past = FALSE, $type = NULL, $all = FALSE) {
+function culturefeed_search_suggestions_autocomplete_page($search_string, $past = FALSE, $type = NULL, $all = FALSE, $zip = FALSE) {
 
   $matches = array();
 
@@ -20,15 +20,33 @@ function culturefeed_search_suggestions_autocomplete_page($search_string, $past 
 
       $types = !empty($type) ? array($type) : array();
       $extra_parameters[] = !empty($all) ? new \CultuurNet\Search\Parameter\Parameter('admin','true') : array();
-      
+
       // Get the list of suggestions from service.
       $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, $types, $past, $extra_parameters);
       if ($suggestions->hasSuggestions()) {
         foreach ($suggestions as $suggestion) {
           $title = $location_title = check_plain($suggestion->getTitle());
           $location = $suggestion->getLocation();
-          if (!empty($location)) {
-            $location_title .= ' - <small class="muted">(' . $location . ')<small>';
+          if ($zip) {
+            $zipcode = $suggestion->getZipcode();
+          }
+
+          if (empty($location) && !empty($zipcode)) {
+            $location = culturefeed_search_get_city_by_zipcode($zipcode);
+          }
+
+          if (!empty($location) || !empty($zipcode)) {
+            $location_title .= ' - <small class="muted">';
+            if (!empty($zipcode)) {
+              $location_title .= $zipcode;
+            }
+            if (!empty($location) && !empty($zipcode)) {
+              $location_title .= ' ';
+            }
+            if (!empty($location)) {
+              $location_title .= $location;
+            }
+            $location_title .= '</small>';
           }
           $object = new stdClass();
           $object->title = $title;

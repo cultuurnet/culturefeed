@@ -71,6 +71,20 @@ function culturefeed_uitpas_menu() {
       'access callback' => 'culturefeed_uitpas_is_passholder',
       'file' => 'includes/profile_advantages.inc',
     ),
+    'culturefeed/profile/uitpas/memberships' => array(
+      'title' => t('My Memberships'),
+      'description' => t('An overview of all you UiTPAS memberships'),
+      'page callback' => 'culturefeed_uitpas_profile_memberships_get',
+      'access callback' => 'culturefeed_uitpas_is_passholder',
+      'file' => 'includes/profile_memberships.inc',
+    ),
+    'culturefeed/profile/uitpas/coupons' => array(
+      'title' => t('My Coupons'),
+      'description' => t('An overview of all you UiTPAS coupons'),
+      'page callback' => 'culturefeed_uitpas_profile_coupons_get',
+      'access callback' => 'culturefeed_uitpas_is_passholder',
+      'file' => 'includes/profile_coupons.inc',
+    ),
     'promotion/%/%uitpas_promotion' => array(
       'title callback' => 'culturefeed_uitpas_promotion_details_title_get',
       'title arguments' => array(2),
@@ -104,6 +118,7 @@ function culturefeed_uitpas_menu() {
     'register_uitpas' => array(
       'title' => 'Register your UiTPAS',
       'page callback' => 'culturefeed_uitpas_user_register_get',
+      'page arguments' => array(false),
       'access callback' => 'culturefeed_is_culturefeed_user',
       'file' => 'includes/user_register.inc',
       'type' => MENU_CALLBACK,

@@ -18,7 +18,7 @@ __[Live demo connecting acceptance API](http://acc.culturefeed.be/) only availab
 
 When you start with a clean Drupal install or just for setting up a quick demo site we created a __[Drupal install profile](https://drupal.org/developing/distributions)__ ("Installation profiles provide specific site features and functions for a specific purpose or type of site distributions"). This included also a shell script (Build.sh) which downloads:
 
-- drupal core (at the moment 7.32) 
+- drupal core (at the moment 7.56) 
 - drupal contribs (bootstrap 3.0)
 - culturefeed
 - culturefeed_bootstrap
@@ -54,9 +54,11 @@ Afterwards copy the composer.json file from the root of the module suite to the 
     "description": "CultuurNet culturefeed Drupal module",
     "license": "Apache-2.0",
     "require": {
+      "composer/composer": "~1.0",
+      "mobiledetect/mobiledetectlib": "dev-master",
       "cultuurnet/search": "~1.2",
       "cultuurnet/cdb": "~2.1",
-      "cultuurnet/culturefeed-php": "~1.5",
+      "cultuurnet/culturefeed-php": "~1.6",
       "cultuurnet/calendar-summary": "~1.0",
       "cultuurnet/sitemap-xml": "~1.0"
     },
@@ -101,7 +103,7 @@ We created 3 tutorials to integrate the most common use cases:
 Most of the modules have an dependency on these PHP libraries. See "Install" how to install theme with composer.
 
 ###CultuurNet\Cdb 
-Fluent PHP library for manipulating, serializing and deserializing data present in CultuurNet's CdbXML 3.2 format
+Fluent PHP library for manipulating, serializing and deserializing data present in CultuurNet's CdbXML 3.2 or 3.3 format
 
 [https://github.com/cultuurnet/cdb](https://github.com/cultuurnet/cdb)
 
@@ -173,7 +175,7 @@ Basic elements to build up an event search (such as provided by Culturefeed Agen
 
 __[More info at wiki page](https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-Search-UI)__
 
-To integrate a search page we also wrote a [tutorial](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-Search-page)
+To integrate a search page we also wrote a [tutorial](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-Search-page).
 
 ### Culturefeed_search_views
 
@@ -216,7 +218,7 @@ Provides a collection of pages and blocks to enhance the user pages with __UiTID
 
 __[More info at wiki page](https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-UI)__
 
-To integrate UiTID we also wrote a [Tutorial](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-CultureFeedUI)
+To integrate UiTID we also wrote a [tutorial](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-CultureFeedUI).
 
 ### Culturefeed_social
 All ‘social’ features: likes, comments, attends, etc.
@@ -232,7 +234,7 @@ Integration with the UiTPAS card system. It contains multiple pages and blocks t
 
 __[More info at wiki page](https://github.com/cultuurnet/culturefeed/wiki/Culturefeed-UiTPAS)__
 
-To integrate UiTPAS we wrote a [tutorial](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-UiTPAS)
+To integrate UiTPAS we wrote a [tutorial](https://github.com/cultuurnet/culturefeed/wiki/Tutorial-UiTPAS).
 
 ### Culturefeed_mailing
 To create mailings with search results from event (based on lifestyleprofile, Vlieg weekendflash, …). __Not yet available for partners.__ Please contact us if interested. 
@@ -274,7 +276,6 @@ There already a lot of integrations live on the 3.x version (and still counting)
 - http://www.cultuurkuur.be
 - http://www.uitmetvlieg.be
 - http://agenda.besteburen.eu
-- http://uitinemmen.com
 
 
 ## License

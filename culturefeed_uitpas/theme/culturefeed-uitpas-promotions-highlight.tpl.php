@@ -2,11 +2,12 @@
 
 /**
  * @file
- * Default theme implementation to display culturefeed uitpas promotions 
+ * Default theme implementation to display culturefeed uitpas promotions
  * highlight.
  *
  * Available variables:
- * - $promotions_table: The list of promotions.
+ * - $items: The list of promotions.
+ * - $promotions_table: Table of promotions.
  * - $more: Linked url of the full list.
  */
 ?>
