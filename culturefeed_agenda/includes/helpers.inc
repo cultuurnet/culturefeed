@@ -931,8 +931,10 @@ function culturefeed_agenda_get_locations_by_list_search() {
       continue;
     }
 
-    $longitude = $address->getGeoInformation()->getXCoordinate();
-    $latitude = $address->getGeoInformation()->getYCoordinate();
+    if ($address->getGeoInformation()) {
+        $longitude = $address->getGeoInformation()->getXCoordinate();
+        $latitude = $address->getGeoInformation()->getYCoordinate();
+    }
 
     if ($latitude == '' || $longitude == '') {
       continue;
