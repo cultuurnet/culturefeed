@@ -32,25 +32,11 @@ function culturefeed_mailing_admin_settings() {
       '#default_value' => variable_get('culturefeed_mailing_list', ''),
     );
 
-    $form['culturefeed_mailing_list_optional'] = array(
-      '#type' => 'select',
-      '#title' => t('Optional mailing list'),
-      '#options' => $options,
-      '#default_value' => variable_get('culturefeed_mailing_list_optional', ''),
-    );
-
     $form['culturefeed_mailing_block_description'] = array(
       '#type' => 'textfield',
       '#title' => t('Newsletter block description'),
       '#description' => t('Description displayed in the form as block'),
       '#default_value' => variable_get('culturefeed_mailing_block_description', t('Subscribe to our newsletter')),
-    );
-
-    $form['culturefeed_mailing_optional_description'] = array(
-      '#type' => 'textarea',
-      '#title' => t('Optional newsletter description'),
-      '#description' => t('Description displayed beside the checkbox for an optional registration'),
-      '#default_value' => variable_get('culturefeed_mailing_optional_description', ''),
     );
 
     $form['culturefeed_mailing_subscribed_message'] = array(

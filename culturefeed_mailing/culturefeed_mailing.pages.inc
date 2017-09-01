@@ -158,14 +158,6 @@ function culturefeed_mailing_subscribe_form() {
       '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
     );
 
-    if (variable_get('culturefeed_mailing_list_optional', '')) {
-      $form['optional_mailing'] = array(
-        '#type' => 'checkbox',
-        '#title' => variable_get('culturefeed_mailing_optional_description', ''),
-        '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
-      );
-    }
-
     $form['privacy'] = array(
       '#type' => 'markup',
       '#value' => '<div id="privacy">' . l(t('Privacy statement'), 'privacyverklaring') . '</div>',
@@ -247,26 +239,6 @@ function culturefeed_mailing_subscribe_form_submit($form, &$form_state) {
     catch (Exception $e) {
       drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
       return;
-    }
-
-    // Subscribe to optional mailing.
-    if (!empty($form_state['values']['optional_mailing'])) {
-      try {
-        culturefeed_mailing_subscribe_user($account, variable_get('culturefeed_mailing_list_optional', ''));
-      }
-      catch (CultureFeed_Exception $e) {
-
-        // If user was already subscribed, don't show a message.
-        if ($e->error_code != CultureFeed::CODE_MAILING_ALREADY_SUBSCRIBED) {
-          drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
-          return;
-        }
-
-      }
-      catch (Exception $e) {
-        drupal_set_message(t('An error occurred while subscribing, please try again later.'), 'error');
-        return;
-      }
     }
 
     // Update user with entered fields.
