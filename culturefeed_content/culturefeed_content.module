@@ -108,12 +108,12 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
           }
         }
 
-        $parameters[] = new \CultuurNet\Search\Parameter\Rows($rows);
-
         // Set type according to types value.
         $types_filter = _culturefeed_search_ui_format_types_filter($types);
         $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery($types_filter);
 
+        // Rows and group parameter.
+        $parameters[] = new \CultuurNet\Search\Parameter\Rows($rows);
         $parameters[] = new \CultuurNet\Search\Parameter\Group();
 
         // Execute search.
