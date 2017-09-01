@@ -247,6 +247,21 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#maxlength' => 1000,
   );
 
+  // Types.
+  $type_options = array(
+    'event' => t('Events only'),
+    'actor' => t('Actors only'),
+    'event_actor' => t('Events and actors'),
+    'event_production_actor' => t('Events, actors and productions'),
+  );
+  $element['wrapper']['type'] = array(
+    '#default_value' => 'event',
+    '#options' => $type_options,
+    '#required' => $element['#required'],
+    '#title' => t('Types to show'),
+    '#type' => 'radios',
+  );
+
   $element['wrapper']['rows'] = array(
     '#default_value' => $rows,
     '#required' => $element['#required'],
