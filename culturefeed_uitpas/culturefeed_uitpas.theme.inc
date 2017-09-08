@@ -216,6 +216,15 @@ function culturefeed_uitpas_theme() {
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
       'template' => 'culturefeed-uitpas-memberships',
     ),
+    'culturefeed_uitpas_my_uitpas_profile_box_item' => array(
+      'variables' => array(
+        'total' => 0,
+        'url' => ''
+      ),
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-uitpas-my-uitpas-profile-box-item',
+    ),
   );
 }
 
