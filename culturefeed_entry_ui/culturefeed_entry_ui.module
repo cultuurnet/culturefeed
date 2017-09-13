@@ -140,6 +140,11 @@ function culturefeed_entry_ui_menu() {
  * Implements hook_menu_local_tasks_alter().
  */
 function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  // Tabs can only by added for logged in users.
+  $culturefeed_user = culturefeed_load_logged_in_user();
+  if (!$culturefeed_user) {
+    return;
+  }
 
   $id = '';
   if (arg(0) == 'agenda' && arg(1) == 'e') {
@@ -193,7 +198,6 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
     );
   }
 
-  $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
   if ($culturefeed_user && user_access('edit culturefeed events')) {
     $udb_permission = Drupalculturefeed_EntryApi::checkPermission($culturefeed_user->id, $culturefeed_user->mbox, array('ids' => $event->getCdbId()));
   }
