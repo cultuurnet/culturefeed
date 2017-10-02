@@ -41,6 +41,13 @@ function culturefeed_agenda_admin_settings_form() {
     '#description' => t('By enabling this, the short description on event detail pages will be removed if they are redundant with the long description.'),
   );
 
+  $form['culturefeed_agenda_hide_images'] = array(
+    '#title' => t('Use dummy image in all agenda detail & summary templates' ),
+    '#type' => 'checkbox',
+    '#default_value' => variable_get('culturefeed_agenda_hide_images', FALSE),
+    '#description' => t('By enabling this, all images on agenda detail & summary templates will use a local dummy image.'),
+  );
+
   $form['gmap'] = array(
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
