@@ -313,12 +313,16 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#description' => t('You can provide a custom URL in this field.'),
     '#type' => 'textfield',
     '#maxlength' => 1000,
-    '#states' => array(
+  );
+
+  // Only add state API implementation here when the field is used in node context.
+  if ($element['#entity_type'] == 'node') {
+    $element['wrapper']['more_link']['#states'] = array(
       'visible' => array(
         ':input[name*="show_more_link"]' => array('checked' => FALSE),
       ),
-    ),
-  );
+    );
+  }
 
   $element['#element_validate'] = array('culturefeed_content_field_culturefeed_content_validate');
 
