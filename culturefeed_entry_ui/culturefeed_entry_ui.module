@@ -337,10 +337,6 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
       $form_state['#opening_times_needed'] = count(element_children($form['basic']['when']['period_or_permanent']['opening_times']['monday'])) + 1;
       break;
 
-    case 'ld_add_more':
-      $form_state['#ld_needed'] = TRUE;
-      break;
-
     case 'price_add_more':
       $form_state['#price_needed'] = TRUE;
       break;

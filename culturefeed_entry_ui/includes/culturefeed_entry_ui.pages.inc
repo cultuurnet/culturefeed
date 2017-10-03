@@ -144,20 +144,13 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
       $form_state['#opening_times_needed'] = $opening_times_needed;
     }
 
-    // Default short description
-    if ($event_details->getShortDescription()) {
-      $default_short_description = $event_details->getShortDescription();
-    }
-
     // Default long description
     if ($event_details->getLongDescription()) {
       $default_long_description = $event_details->getLongDescription();
       $source_text = '/<p class="uiv-source">(.*)<\/p>/';
       $default_long_description = preg_replace($source_text, '', $default_long_description);
-      $allowed_tags = array('a', 'em', 'strong', 'ul', 'ol', 'li', 'hr');
+      $allowed_tags = array('a', 'em', 'strong', 'ul', 'ol', 'li', 'hr', 'p');
       $default_long_description = filter_xss($default_long_description, $allowed_tags);
-      //$default_long_description = substr($default_long_description, 0, -169);
-      $form_state['#ld_needed'] = TRUE;
     }
 
     // Default mails, phones, urls
@@ -522,58 +515,13 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
     '#title' => t('Description'),
   );
 
-  $form['extra']['description']['sd'] = array(
-    '#tree' => TRUE,
-    '#type' => 'container',
-    '#prefix' => '<div id="description-sd-ajax-wrapper">',
-    '#suffix' => '</div>',
-    '#title' => t('Description'),
-  );
-
-  $form['extra']['description']['sd']['short_description'] = array(
+  $form['extra']['description']['ld']['long_description'] = array(
     '#type' => 'textarea',
-    '#title' => t('Short description'),
-    '#rows' => 4,
-    '#maxlength' => 400,
-    '#description' => t('Maximum 400 characters'),
-    '#default_value' => $default_short_description,
+    '#title' => t('Description'),
+    '#rows' => 10,
+    '#default_value' => $default_long_description,
     '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
   );
-
-  $form['extra']['description']['ld'] = array(
-    '#tree' => TRUE,
-    '#type' => 'container',
-    '#prefix' => '<div id="description-ld-ajax-wrapper">',
-    '#suffix' => '</div>',
-    '#title' => t('Description'),
-  );
-
-  //Long Description
-  if (!isset($form_state['#ld_needed'])) {
-    $form['extra']['description']['ld']['add_long_description'] = array(
-      '#type' => 'submit',
-      '#name' => 'ld_add_more',
-      '#value' => t('+ add long description'),
-      '#attributes' => array('class' => array('add-more-link btn-link')),
-      '#ajax' => array(
-        'callback' => 'culturefeed_entry_ui_add_more_js',
-        'wrapper' => 'description-ld-ajax-wrapper',
-        'effect' => 'none',
-      ),
-      '#limit_validation_errors' => array(array('ld')),
-      '#submit' => array('culturefeed_entry_ui_add_more_submit'),
-    );
-  }
-
-  if (isset($form_state['#ld_needed'])) {
-    $form['extra']['description']['ld']['long_description'] = array(
-      '#type' => 'textarea',
-      '#title' => t('Long description'),
-      '#rows' => 10,
-      '#default_value' => $default_long_description,
-      '#element_validate' => array('culturefeed_entry_ui_validate_textarea_markup'),
-    );
-  }
 
   // Tags
   form_load_include($form_state, 'inc', 'culturefeed_entry_ui', 'includes/form/culturefeed_entry_ui.tags');
