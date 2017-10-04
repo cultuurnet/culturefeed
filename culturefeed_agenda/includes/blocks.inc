@@ -274,12 +274,10 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
       unset($query['distance']);
     }
 
-    $form_state['values']['where'] = 'Gent';
     if (!empty($form_state['values']['where'])) {
       $query['location'] = $form_state['values']['where'];
     }
 
-    $form_state['values']['radius'] = '10';
     if (!empty($form_state['values']['radius'])) {
       // Only add distance parameter if location parameter corresponds to correct pattern.
       if (!empty($form_state['values']['where'])) {
