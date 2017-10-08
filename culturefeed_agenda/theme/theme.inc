@@ -381,30 +381,6 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $variables['actortypes'] = $actortypes['text'];
   $variables['actortypes_links'] = $actortypes['links'];
 
-  // Preprocess the organiser variables.
-  if (method_exists($cdb_item, 'getOrganiser')) {
-
-    $organiser = $cdb_item->getOrganiser();
-    $variables['organiser'] = array();
-    if ($organiser) {
-
-      // If the organiser is a reference to an actor, link to it.
-      if ($organiser->getActor() && $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())) {
-        $actor = $organiser->getActor();
-        $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-        $variables['organiser']['title'] = $organiser_actor_details->getTitle();
-        $variables['organiser']['link'] = culturefeed_search_detail_l('actor', $actor->getCdbid(), $variables['organiser']['title']);
-      }
-      elseif ($organiser->getLabel()) {
-        $variables['organiser']['title'] = $organiser->getLabel();
-        if ($organiser->getCdbid()) {
-          $variables['organiser']['link'] = culturefeed_search_detail_l('actor', $organiser->getCdbid(), $variables['organiser']['title']);
-        }
-      }
-
-    }
-  }
-
   $version = variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION);
   if (version_compare($version, '3.3', '>=')) {
 
@@ -855,6 +831,30 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
           'lat' => $coordinates->getYCoordinate(),
           'lng' => $coordinates->getXCoordinate(),
         );
+      }
+    }
+    
+    // Organiser data.
+    if (method_exists($event, 'getOrganiser')) {
+  
+      $organiser = $event->getOrganiser();
+      $variables['organiser'] = array();
+      if ($organiser) {
+  
+        // If the organiser is a reference to an actor, link to it.
+        if ($organiser->getActor() && $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())) {
+          $actor = $organiser->getActor();
+          $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+          $variables['organiser']['title'] = $organiser_actor_details->getTitle();
+          $variables['organiser']['link'] = culturefeed_search_detail_l('actor', $actor->getCdbid(), $variables['organiser']['title']);
+        }
+        elseif ($organiser->getLabel()) {
+          $variables['organiser']['title'] = $organiser->getLabel();
+          if ($organiser->getCdbid()) {
+            $variables['organiser']['link'] = culturefeed_search_detail_l('actor', $organiser->getCdbid(), $variables['organiser']['title']);
+          }
+        }
+  
       }
     }
 
