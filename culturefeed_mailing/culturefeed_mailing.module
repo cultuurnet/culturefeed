@@ -272,7 +272,7 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
         $description = '';
       }
 
-      $form['intro'] =  array(
+      $form['intro'] = array(
         '#type' => 'item',
         '#title' => '',
         '#markup' => variable_get('culturefeed_mailing_block_description', ''),
