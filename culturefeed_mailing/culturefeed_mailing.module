@@ -344,7 +344,7 @@ function culturefeed_mailing_newsletter_block_form_validate($form, &$form_state)
   $datavalidationClient = _culturefeed_data_validation_get_datavalidation_client();
 
   $response = $datavalidationClient->validateEmail($form_state['values']['mail']);
-  if ($response && !in_array($response->getGrade(), array('A', 'A+')) ) {
+  if ($response && (!$response->isOK() || !in_array($response->getGrade(), array('A', 'A+'))) ) {
     form_set_error('mail', t('The provided email address is invalid.'));
   }
 }
