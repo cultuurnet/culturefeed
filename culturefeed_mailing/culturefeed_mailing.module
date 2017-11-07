@@ -335,6 +335,21 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
 }
 
 /**
+ * Validate the email address using an external service.
+ *
+ * Implements hook_form_validate().
+ */
+function culturefeed_mailing_newsletter_block_form_validate($form, &$form_state) {
+  module_load_include('inc', 'culturefeed_data_validation', 'culturefeed_data_validation.helpers');
+  $datavalidationClient = _culturefeed_data_validation_get_datavalidation_client();
+
+  $response = $datavalidationClient->validateEmail($form_state['values']['mail']);
+  if ($response && !in_array($response->getGrade(), array('A', 'A+')) ) {
+    form_set_error('mail', t('The provided email address is invalid.'));
+  }
+}
+
+/**
  * Submit the newsletter block form.
  */
 function culturefeed_mailing_newsletter_block_form_submit($form, &$form_state) {
