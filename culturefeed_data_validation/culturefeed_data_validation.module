@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * Implementation of the cultuurnet/data-validation library.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_data_validation_menu() {
+  $items = array();
+
+  // Configuration page.
+  $items['admin/config/culturefeed/data-validation'] = array(
+    'title' => 'CultureFeed Data Validation',
+    'description' => 'CultureFeed Data Validation settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_data_validation_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'culturefeed_data_validation.admin.inc',
+  );
+
+  return $items;
+}
