@@ -34,18 +34,23 @@ function culturefeed_admin_settings() {
     '#size' => 40,
     '#maxlength' => 40,
   );
-
-  $form['culturefeed_api_uitid_light_permission'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('My consumer has UiTiD light permissions.'),
-    '#default_value' => CULTUREFEED_API_LIGHT_ID_ALLOWED,
+  $form['culturefeed_entry_api_location'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Entry API location'),
+    '#description' => t('The URL where the CultureFeed Entry API resides. End with a slash. Example: http://acc.uitid.be/uitid/rest/'),
+    '#default_value' => variable_get('culturefeed_entry_api_location', CULTUREFEED_API_LOCATION),
   );
-
   $form['culturefeed_entry_api_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Entry API path'),
     '#description' => t('The path where the CultureFeed Entry API resides. End with a slash. Example: entry/test.rest.uitdatabank.be/api/v2/'),
     '#default_value' => variable_get('culturefeed_entry_api_path', CULTUREFEED_ENTRY_API_PATH),
+  );
+
+  $form['culturefeed_api_uitid_light_permission'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('My consumer has UiTiD light permissions.'),
+    '#default_value' => CULTUREFEED_API_LIGHT_ID_ALLOWED,
   );
 
   $cdb_xml_versions = culturefeed_cdb_xml_versions();

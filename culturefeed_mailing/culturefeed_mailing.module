@@ -443,7 +443,7 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
 
     $form['mail'] = array(
       '#type' => 'textfield',
-      '#title' => variable_get('culturefeed_mailing_block_description', ''),
+      '#title' => t('Email'),
       '#description' => $description,
       '#size' => 40,
       '#maxlength' => 255,
@@ -552,7 +552,7 @@ function culturefeed_mailing_newsletter_block_form_submit($form, &$form_state) {
  */
 function culturefeed_mailing_load($id) {
   try {
-    return DrupalCultureFeed::getMailing($id);
+    return DrupalCultureFeed_Mailing::getMailing($id);
   }
   catch (Exception $e) {
     return FALSE;
@@ -570,7 +570,7 @@ function culturefeed_mailing_load($id) {
  */
 function culturefeed_template_load($id) {
   try {
-    return DrupalCultureFeed::getTemplate($id);
+    return DrupalCultureFeed_Mailing::getTemplate($id);
   }
   catch (Exception $e) {
     return FALSE;

@@ -64,10 +64,17 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
       $this->parameters[] = $this->facetComponent->facetField('city');
       $this->parameters[] = $this->facetComponent->facetField('location_category_facility_id');
 
-      $this->execute($params);
+      try {
+        $this->execute($params);
 
-      // Warm up cache.
-      $this->warmupCache();
+        // Warm up cache.
+        $this->warmupCache();
+      }
+      // Store the exception for later use. The loadPage will throw it.
+      catch (Exception $e) {
+        $this->exception = $e;
+      }
+
     }
   }
 
@@ -146,7 +153,7 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
         $facet['category_theme_id'] = $query['facet']['category_theme_id'];
 
         $active_trail[] = array(
-          'title' => culturefeed_search_get_term_translation($query['facet']['category_theme_id'][0]),
+          'title' => culturefeed_search_get_term_translation(reset($query['facet']['category_theme_id'])),
           'href' => 'agenda/search',
           'link_path' => '',
           'localized_options' => array(

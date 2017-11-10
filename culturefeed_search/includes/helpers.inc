@@ -48,6 +48,7 @@ function culturefeed_search_item_load($cdb_id, $type = '', $watchdog = TRUE) {
     $parameters = array();
     $parameters[] = new \CultuurNet\Search\Parameter\Group();
     $parameters[] = new \CultuurNet\Search\Parameter\Parameter("past", "true");
+    $parameters[] = new \CultuurNet\Search\Parameter\Parameter("unavailable", "true");
     $parameters[] = new \CultuurNet\Search\Parameter\Query('cdbid:' . $cdb_id);
 
     try {
@@ -85,7 +86,7 @@ function culturefeed_search_item_load($cdb_id, $type = '', $watchdog = TRUE) {
  * @return mixed
  *   FALSE if not found, otherwise CultuurNet\Search\ActivityStatsExtendedEntity
  */
-function culturefeed_search_item_load_by_title($title, $type) {
+function culturefeed_search_item_load_by_title($title) {
 
   $search_string = trim($title);
   $parameters = array();
@@ -476,12 +477,12 @@ function culturefeed_search_get_categories_by_domain($domain, $conditions = arra
     if (is_array($conditions['name_like'])) {
       $db_or = db_or();
       foreach ($conditions['name_like'] as $field => $value) {
-        $query->condition('name', $value . '%', 'like');
+        $query->condition('name', '%' . $value . '%', 'like');
       }
       $query->condition($db_or);
     }
     else {
-      $query->condition('name', $conditions['name_like'] . '%', 'like');
+      $query->condition('name', '%' . $conditions['name_like'] . '%', 'like');
     }
   }
 
@@ -1026,4 +1027,10 @@ function culturefeed_search_set_noindex_metatag() {
 
   drupal_add_html_head($element, 'robots');
 
+}
+
+function culturefeed_search_get_city_by_zipcode($zip) {
+  $city = db_query('SELECT name FROM {culturefeed_search_cities} WHERE zip = :zip', array(':zip' => $zip))->fetchField();
+
+  return $city;
 }

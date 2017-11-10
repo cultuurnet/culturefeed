@@ -15,8 +15,8 @@
 <?php if ($deny_access) : ?>
   <h3><?php print t("This calendar has not been shared yet.") ?></h3>
 <?php else : ?>
-  <?php if (!empty($save_cookie_button)) : ?>
-    <?php print $save_cookie_button ?>
+  <?php if (!empty($login_url)) : ?>
+    <a href="<?php print $login_url ?>"><?php print t('Login') ?></a>
   <?php endif; ?>
 
   <?php if (!empty($calendar_settings_path)) : ?>

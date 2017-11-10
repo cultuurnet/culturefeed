@@ -18,7 +18,7 @@ function culturefeed_mailing_admin_settings() {
   try {
 
     $query = new CultureFeed_SearchMailingsQuery();
-    $lists = DrupalCultureFeed::getMailingList($query)->objects;
+    $lists = DrupalCultureFeed_Mailing::getMailingList($query)->objects;
     $options = array('' => t('None'));
 
     foreach ($lists as $list) {

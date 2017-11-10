@@ -8,8 +8,10 @@ define('CULTUREFEED_CACHE_ENABLED', 1);
 define('CULTUREFEED_CACHE_EXPIRES', 3600);
 
 define('CULTUREFEED_API_LOCATION', 'http://acc.uitid.be/uitid/rest/');
+define('CULTUREFEED_ENTRY_API_LOCATION', 'http://acc.uitid.be/uitid/rest/');
 define('CULTUREFEED_ENTRY_API_PATH', 'entry/test.rest.uitdatabank.be/api/v2/');
-define('CULTUREFEED_GOOGLE_MAPS_JS_API', 'https://maps.googleapis.com/maps/api/js?sensor=true&v=3.5&region=BE&hl=nl&language=nl');
+
+define('CULTUREFEED_GOOGLE_MAPS_JS_API', 'https://maps.googleapis.com/maps/api/js');
 
 define('CULTUREFEED_IMAGES_MAX_SIZE', 2097152);
 
@@ -85,7 +87,7 @@ function culturefeed_menu() {
   $items['culturefeed/oauth/connect/register'] = array(
     'title' => 'Connect',
     'page callback' => 'culturefeed_oauth_connect',
-    'page arguments' => array(CultureFeed::AUTHORIZE_TYPE_REGISTER),
+    'page arguments' => array('register'),
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
     'file' => 'culturefeed.pages.inc',
@@ -329,3 +331,24 @@ function culturefeed_prepare_curl_upload_from_file($file) {
 
   return $file_upload;
 }
+
+/**
+ * Implements hook_culturefeed_user_delete().
+ *
+ * @param $cf_uid The culturefeed userid
+ */
+function culturefeed_culturefeed_user_delete($cf_uid) {
+  // Delete the drupal user
+  $uid = db_query("SELECT uid FROM {culturefeed_user} WHERE cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchField();
+  if ($uid) {
+    user_delete($uid);
+
+    // Logout
+    global $user;
+    if ($user->uid == $uid) {
+      module_load_include('inc', 'user', 'user.pages');
+      user_logout();
+    }
+  }
+}
+

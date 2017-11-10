@@ -11,8 +11,9 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
 
   $form['culturefeed_uitpas_cardsystem_id'] = array(
     '#type' => 'textfield',
-    '#title' => t('Card system ID'),
+    '#title' => t('Your cardsystem id'),
     '#default_value' => variable_get('culturefeed_uitpas_cardsystem_id', 3),
+    '#description' => t('Use the id of your cardsystem. Leave empty when your site is using multiple cardsystems.'),
   );
 
   $card_system_ids = array();
@@ -25,8 +26,9 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
   $form['culturefeed_uitpas_cardsystem_ids'] = array(
     '#default_value' => variable_get('culturefeed_uitpas_cardsystem_ids', array()),
     '#options' => $card_system_ids,
-    '#title' => t('Card system IDs'),
+    '#title' => t('Or select multiple cardsystems'),
     '#type' => 'checkboxes',
+    '#description' => t('Only use this if your site is intended for passholders of multiple UiTPAS regions'),
   );
 
   $form['culturefeed_uitpas_card_name'] = array(
@@ -69,6 +71,7 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
     '#title' => t('Locations'),
     '#value_callback' => 'culturefeed_uitpas_locations_value_callback',
     '#default_value' => implode("\r\n", $locations),
+    '#description' => t('These locations will only be used when only 1 card system is enabled'),
   );
 
   // Profile promotions.

@@ -12,7 +12,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
     attach: function (context, settings) {
 
       $(window).bind('load', function() {
-        if($("#edit-price-free").attr("checked")==true) {
+        if($("#edit-price-free").is(":checked")) {
           $('#edit-price-amount').val('0');
           $('#edit-price-amount').attr('disabled','disabled');
           $('#edit-price-amount').css('color','#ccc');
@@ -28,7 +28,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
       });
 
       $('#edit-price-free').change(function () {
-        if($("#edit-price-free").attr("checked")==true) {
+        if($("#edit-price-free").is(":checked")) {
           $('#edit-price-amount').val('0');
           $('#edit-price-amount').attr('disabled','disabled');
           $('#edit-price-amount').css('color','#ccc');
@@ -158,7 +158,7 @@ Drupal.Culturefeed_entry_ui = Drupal.Culturefeed_entry_ui || {};
 
       var inputs = $(this.input).closest('form').find(':input:visible');
       var index = inputs.index($(this.input));
-      inputs.eq(index + 1).focus();
+      //inputs.eq(index + 1).focus();
 
     }
 

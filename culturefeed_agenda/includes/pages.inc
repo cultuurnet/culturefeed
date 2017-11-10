@@ -234,7 +234,14 @@ function culturefeed_agenda_page_ajax_related_activities($cdb_id) {
   }
 
   $commands = array();
-  $commands[] = ajax_command_html('#related-activities', $data);
+
+  if (!empty($data)) {
+    $commands[] = ajax_command_html('#related-activities', $data);
+  }
+  else {
+    $commands[] = ajax_command_remove('#block-culturefeed-agenda-agenda-related-activities');
+  }
+
 
   ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
 

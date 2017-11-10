@@ -184,6 +184,13 @@ function culturefeed_search_schema() {
 }
 
 /**
+ * Implements hook_install().
+ */
+function culturefeed_search_install() {
+  variable_set('culturefeed_search_cdb_version', '3.3');
+}
+
+/**
  * Re-creates the culturefeed_search_terms table.
  */
 function culturefeed_search_update_7001() {

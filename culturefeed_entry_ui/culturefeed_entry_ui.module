@@ -149,15 +149,18 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
     return;
   }
 
-  $event = culturefeed_search_item_load($id, 'event');
-  $title = $event->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle();
+  $event = entry_api_event_load($id);
+  if (!$event) {
+    return;
+  }
+  $title = $event->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())->getTitle();
   $request_detail = array(
     'event' => $id,
     'title' => $title,
   );
-  $path = culturefeed_search_detail_path($event->getType(), $id, $title);
-
   $tabs = array();
+  $path = culturefeed_search_detail_path('event', $id, $title);
+
   // Add a tab for managing the tags.
   if (culturefeed_entry_ui_manage_tags_access()) {
 
@@ -167,8 +170,11 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
       'title' => t('Tags'),
     );
 
-    $tabs[] = array('#theme' => 'menu_local_action', '#link' => $link);
-
+    $tabs[] = array(
+      '#theme' => 'menu_local_task',
+      '#link' => $link,
+      '#active' => arg(4) === 'tags',
+    );
   }
 
   // Add tab for collaboration info.
@@ -180,17 +186,20 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
       'title' => t('Collaboration'),
     );
 
-    $tabs[] = array('#theme' => 'menu_local_action', '#link' => $link);
-
+    $tabs[] = array(
+      '#theme' => 'menu_local_task',
+      '#link' => $link,
+      '#active' => arg(4) === 'collaboration',
+    );
   }
 
   $culturefeed_user = DrupalCultureFeed::getLoggedInUser();
   if ($culturefeed_user && user_access('edit culturefeed events')) {
-    $ubd_permission = Drupalculturefeed_EntryApi::checkPermission($culturefeed_user->id, $culturefeed_user->mbox, array('ids' => $event->getId()));
+    $udb_permission = Drupalculturefeed_EntryApi::checkPermission($culturefeed_user->id, $culturefeed_user->mbox, array('ids' => $event->getCdbId()));
   }
-  
+
   // Add tab for editing the event.
-  if (user_access('edit culturefeed events') && ($event->getEntity()->getCreatedBy() == $culturefeed_user->mbox || (isset($ubd_permission) && $ubd_permission[$event->getId()] == 'true'))) {
+  if (user_access('edit culturefeed events') && ($event->getCreatedBy() == $culturefeed_user->mbox || (isset($udb_permission) && $udb_permission[$event->getCdbId()] == 'true'))) {
 
     $link = array(
       'href' => $path . '/edit',
@@ -198,8 +207,11 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
       'title' => t('Edit'),
     );
 
-    $tabs[] = array('#theme' => 'menu_local_action', '#link' => $link);
-
+    $tabs[] = array(
+      '#theme' => 'menu_local_task',
+      '#link' => $link,
+      '#active' => arg(4) === 'edit',
+    );
   }
 
   // Detail only exists when culturefeed_agenda is enabled.
@@ -215,18 +227,27 @@ function culturefeed_entry_ui_menu_local_tasks_alter(&$data, $router_item, $root
       'localized_options' => array(),
       'title' => t('View'),
     );
-    $tab = array('#theme' => 'menu_local_action', '#link' => $link);
+    $tab = array(
+      '#theme' => 'menu_local_task',
+      '#link' => $link,
+      '#active' => empty(arg(4)),
+    );
     array_unshift($tabs, $tab);
 
   }
 
-  $data['tabs'] = array(
-    0 => array(
-      'output' => $tabs,
-      'count' => count($tabs),
-    ),
-  );
+  // Clean state to start with.
+  if (empty($data['tabs'])) {
+    $data['tabs'] = array(
+      0 => array(
+        'output' => array(),
+        'count' => 0,
+      ),
+    );
+  }
 
+  $data['tabs'][0]['output'] = array_merge($data['tabs'][0]['output'], $tabs);
+  $data['tabs'][0]['count'] += count($tabs);
 }
 
 /**
@@ -300,34 +321,34 @@ function culturefeed_entry_ui_add_more_submit($form, &$form_state) {
     case 'opening_times_add_more':
       $form_state['#opening_times_needed'] = count(element_children($form['basic']['when']['period_or_permanent']['opening_times']['monday'])) + 1;
       break;
-    
+
     case 'ld_add_more':
       $form_state['#ld_needed'] = TRUE;
       break;
-    
+
     case 'price_add_more':
       $form_state['#price_needed'] = TRUE;
       break;
-    
+
     case 'actor_add_more':
       $form_state['#actor_needed'] = TRUE;
       if (isset($form_state['input']['organiser']['actor']['organiser_actor_label']) && $form_state['input']['organiser']['actor']['organiser_actor_label']) {
         $form_state['#actor_label'] = $form_state['input']['organiser']['actor']['organiser_actor_label'];
       }
       break;
-      
+
     case 'performers_add_more':
       $form_state['#performers_needed'] = count(element_children($form['extra']['performers']['wrapper']));
       break;
-    
+
     case 'contacts_add_more':
       $form_state['#contacts_needed'] = count(element_children($form['extra']['contacts']['wrapper']));
       break;
-      
+
     case 'languages_add_more':
       $form_state['#languages_needed'] = count(element_children($form['extra']['language']['wrapper']));
       break;
-      
+
   }
 
   $form_state['rebuild'] = TRUE;
