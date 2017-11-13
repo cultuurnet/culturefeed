@@ -1046,6 +1046,13 @@ function culturefeed_agenda_url_inbound_alter(&$path, $original_path, $path_lang
         $rewrite = TRUE;
       }
 
+      // Check if distance parameter is valid.
+      if (isset($_GET['distance'])) {
+        if (!culturefeed_agenda_validate_location_has_postal_code($city_slug)) {
+          unset($_GET['distance']);
+        }
+      }
+
     }
 
     // When rewrite flag is set, change the path.
@@ -1055,6 +1062,15 @@ function culturefeed_agenda_url_inbound_alter(&$path, $original_path, $path_lang
 
   }
 
+}
+
+/**
+ * Check if location string contains postal code.
+ */
+function culturefeed_agenda_validate_location_has_postal_code($location) {
+  $matches = [];
+  preg_match("/\d{4}-\D+/", $location, $matches);
+  return (!empty($matches) ? true : false);
 }
 
 /**
