@@ -1230,7 +1230,7 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
 
     $build['distance'] =  array(
       '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => $query['distance'] . ' km',
+      '#label' => '+ ' . $query['distance'] . ' km',
       '#url' => $url
     );
   }
