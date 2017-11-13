@@ -1230,6 +1230,19 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
     );
   }
 
+  // Add distance filter.
+  if (isset($query['distance'])) {
+    $search_query = $query;
+    unset($search_query['distance']);
+    $url = url($path, array('query' => $search_query));
+
+    $build['distance'] =  array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => '+ ' . $query['distance'] . ' km',
+      '#url' => $url
+    );
+  }
+  
   // Add min age to active facet filters.
   if (isset($query['min_age'])) {
 
