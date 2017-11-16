@@ -64,15 +64,12 @@ function culturefeed_uitpas_culturefeed_ui_profile_box_dropdown_items(CultureFee
     );
 
     $items['my-uitpas'] = array(
-      'data' => l(t('My UiTPAS'), 'culturefeed/profile/uitpas'),
+      'data' => theme('culturefeed_uitpas_my_uitpas_profile_box_item', array(
+        'points' => culturefeed_uitpas_get_uitpas_user()->passholder->points,
+        'url' => url('culturefeed/profile/uitpas')
+      )),
       'class' => 'my-uitpas',
       'weight' => 10,
-    );
-
-    $items['uitpas-history'] = array(
-      'data' => l(t('Points history'), 'culturefeed/profile/uitpas/actions'),
-      'class' => 'uitpas-history',
-      'weight' => 14,
     );
 
     return $items;
