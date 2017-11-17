@@ -32,6 +32,7 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
   $default_image = '';
   $default_links = array();
   $default_links_reservation = array();
+  $default_video = array();
   $phone_contacts = array();
   $mail_contacts = array();
   $is_private = FALSE;
@@ -176,7 +177,6 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
             CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBRESOURCE,
             CultureFeed_Cdb_Data_File::MEDIA_TYPE_RESERVATIONS,
             CultureFeed_Cdb_Data_File::MEDIA_TYPE_FACEBOOK,
-            CultureFeed_Cdb_Data_File::MEDIA_TYPE_YOUTUBE,
             CultureFeed_Cdb_Data_File::MEDIA_TYPE_GOOGLEPLUS,
             CultureFeed_Cdb_Data_File::MEDIA_TYPE_TWITTER,
             CultureFeed_Cdb_Data_File::MEDIA_TYPE_WEBSITE,
@@ -192,6 +192,21 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
         $default_links_reservation[$media_link->getHLink()] = FALSE;
       }
     }
+
+    // Default video
+    $video_media =
+      $event_details->getMedia()
+        ->byMediaTypes(
+          array(
+            CultureFeed_Cdb_Data_File::MEDIA_TYPE_VIDEO,
+            CultureFeed_Cdb_Data_File::MEDIA_TYPE_YOUTUBE,
+          )
+        );
+
+    foreach ($video_media as $video_link) {
+      $default_video[$video_link->getHlink()] = $video_link->getHLink();
+    }
+
 
     // Default image
     $photo_media = $event_details->getMedia()
@@ -598,7 +613,6 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
   if ($default_links) {
     foreach ($default_links as $i => $info) {
       culturefeed_entry_ui_attach_link_info_elements($form, $i, $info, $default_links_reservation[$i]);
-      $links_count++;
     }
   }
   else {
@@ -675,6 +689,53 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
     '#type' => 'checkbox',
     '#default_value' => isset($default_image->fid) ? 1 : 0,
     '#title' => t('I agree to the <a href="http://www.uitdatabank.be/uitportal/legal.aspx">terms & conditions</a> and I declare that I have the necessary rights or permissions to distribute the image.'),
+  );
+
+  // Video
+  $form['extra']['video'] = array(
+    '#tree' => TRUE,
+    '#type' => 'container',
+    '#prefix' => '<div id="video-ajax-wrapper">',
+    '#suffix' => '</div>',
+    '#title' => t('Video'),
+  );
+
+  if ($default_video) {
+    $video_count = count($default_video);
+  }
+  else {
+    $video_count = 0;
+  }
+  // Add link type selections.
+  if ($default_video) {
+    foreach ($default_video as $i => $info) {
+      culturefeed_entry_ui_attach_video_elements($form, $i, $info);
+    }
+  }
+  else {
+    culturefeed_entry_ui_attach_video_elements($form, 0);
+    $video_count++;
+  }
+
+  // Add more button was clicked. Check how many extra rows need to be added.
+  if (isset($form_state['#video_needed'])) {
+    for (; $video_count < $form_state['#video_needed']; $video_count++) {
+      culturefeed_entry_ui_attach_video_elements($form, $video_count);
+    }
+  }
+
+  $form['extra']['add_more_video'] = array(
+    '#type' => 'submit',
+    '#name' => 'video_add_more',
+    '#value' => t('+ add another video'),
+    '#attributes' => array('class' => array('add-more-video btn-link')),
+    '#ajax' => array(
+      'callback' => 'culturefeed_entry_ui_add_more_js',
+      'wrapper' => 'video-ajax-wrapper',
+      'effect' => 'none',
+    ),
+    '#limit_validation_errors' => array(array('video')),
+    '#submit' => array('culturefeed_entry_ui_add_more_submit'),
   );
 
   // Price
@@ -1375,6 +1436,25 @@ function culturefeed_entry_ui_attach_link_info_elements(&$form, $i, $info = NULL
 }
 
 /**
+ * Attach a new video element
+ *
+ */
+function culturefeed_entry_ui_attach_video_elements(&$form, $i, $info = NULL) {
+
+  $form['extra']['video'][$i]['URL'] = array(
+    '#title' => t('Video'),
+    '#type' => 'textfield',
+    '#description' => t('A link to a video, for example http://youtube.com'),
+    '#default_value' => $info,
+    '#attributes' => array(
+      'placeholder' => array(
+        'http://'
+      ),
+    ),
+  );
+}
+
+/**
  * Validate the event form.
  */
 function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
@@ -1519,6 +1599,20 @@ function culturefeed_entry_ui_event_save_validate($form, &$form_state) {
       }
     }
     $i++;
+  }
+
+  // Validate video
+  $j = 0;
+  foreach ($values['video'] as $video_data) {
+    if (!empty($video_data['URL'])) {
+      if (!preg_match("@^https?://@", $video_data['URL'])) {
+        $video_data['URL'] = 'http://' . $video_data['URL'];
+      }
+      if (!valid_url($video_data['URL'], TRUE)) {
+        form_set_error('video][' . $i . '][URL', t('Not a valid URL'));
+      }
+    }
+    $j++;
   }
 
   // Validate organiser.
@@ -1687,10 +1781,6 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
         $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_TWITTER;
       }
 
-      if (strpos($link_data['URL'], 'youtube.com') || strpos($link_data['URL'], 'youtu.be')) {
-        $mediatype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_YOUTUBE;
-      }
-
       if ($link_data['reservation']) {
 
         // Make reservation link for contact element
@@ -1709,6 +1799,26 @@ function _culturefeed_entry_ui_ui_event_form_save_event($form, &$form_state, Cul
         $link->setTitle(t('Order tickets'));
       }
       array_push($media_links, $link);
+    }
+  }
+
+  // Video
+  foreach ($values['video'] as $video_data) {
+    if ($video_data['URL']) {
+      if (!preg_match("@^https?://@", $video_data['URL'])) {
+        $video_data['URL'] = 'http://' . $video_data['URL'];
+      }
+
+      $videotype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_VIDEO;
+
+      if (strpos($video_data['URL'], 'youtube.com') || strpos($video_data['URL'], 'youtu.be')) {
+        $videotype = CultureFeed_Cdb_Data_File::MEDIA_TYPE_YOUTUBE;
+      }
+
+      $video = new CultureFeed_Cdb_Data_File();
+      $video->setHLink($video_data['URL']);
+      $video->setMediaType($videotype);
+      array_push($media_links, $video);
     }
   }
 
