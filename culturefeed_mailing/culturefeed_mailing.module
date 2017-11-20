@@ -246,7 +246,7 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
     // Get the user account.
     $account = culturefeed_load_logged_in_user();
 
-    $user_already_subscribed = _culturefeed_mailing_check_user_subscription($account->id, variable_get('culturefeed_mailing_list'));
+    $user_already_subscribed = $account ? _culturefeed_mailing_check_user_subscription($account->id, variable_get('culturefeed_mailing_list')) : FALSE;
     if ($user_already_subscribed) {
 
       $form['already_subscribed'] = array(
@@ -332,26 +332,6 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
 
   return $form;
 
-}
-
-/**
- * Validate the email address using an external service.
- *
- * Implements hook_form_validate().
- */
-function culturefeed_mailing_newsletter_block_form_validate($form, &$form_state) {
-  try {
-    module_load_include('inc', 'culturefeed_data_validation', 'culturefeed_data_validation.helpers');
-    $datavalidationClient = _culturefeed_data_validation_get_datavalidation_client();
-
-    $response = $datavalidationClient->validateEmail($form_state['values']['mail']);
-    if ($response && (!$response->isOK() || !in_array($response->getGrade(), array('A', 'A+'))) ) {
-      form_set_error('mail', t('The provided email address is invalid.'));
-    }
-  }
-  catch (Exception $e) {
-    // Show no error here.
-  }
 }
 
 /**

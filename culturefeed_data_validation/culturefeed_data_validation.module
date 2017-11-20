@@ -5,6 +5,8 @@
  * Implementation of the cultuurnet/data-validation library.
  */
 
+require_once 'culturefeed_data_validation.helpers.inc';
+
 /**
  * Implements hook_menu().
  */
@@ -22,4 +24,28 @@ function culturefeed_data_validation_menu() {
   );
 
   return $items;
+}
+
+/**
+ * Implements hook_form_{culturefeed_mailing_newsletter_block_form}_alter().
+ */
+function culturefeed_data_validation_form_culturefeed_mailing_newsletter_block_form_alter(&$form, $form_state) {
+  $form['#validate'][] = 'culturefeed_data_validation_newsletter_block_form_validate';
+}
+
+/**
+ * Validate the email address using the datavalidation service.
+ */
+function culturefeed_data_validation_newsletter_block_form_validate($form, &$form_state) {
+  try {
+
+    $datavalidationClient = _culturefeed_data_validation_get_datavalidation_client();
+    $response = $datavalidationClient->validateEmail($form_state['values']['mail']);
+    if ($response && (!$response->isOK() || $response->getGrade() === 'F') ) {
+      form_set_error('mail', t('The provided email address is invalid.'));
+    }
+  }
+  catch (Exception $e) {
+    // Show no error here.
+  }
 }
