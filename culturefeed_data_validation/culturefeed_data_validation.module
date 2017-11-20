@@ -30,22 +30,31 @@ function culturefeed_data_validation_menu() {
  * Implements hook_form_{culturefeed_mailing_newsletter_block_form}_alter().
  */
 function culturefeed_data_validation_form_culturefeed_mailing_newsletter_block_form_alter(&$form, $form_state) {
-  $form['#validate'][] = 'culturefeed_data_validation_newsletter_block_form_validate';
+  $form['#submit'] = ['culturefeed_data_validation_newsletter_block_form_submit'];
 }
 
 /**
  * Validate the email address using the datavalidation service.
+ * Use form submit, as some sites are removing the messages again.
  */
-function culturefeed_data_validation_newsletter_block_form_validate($form, &$form_state) {
+function culturefeed_data_validation_newsletter_block_form_submit($form, &$form_state) {
+
+  $valid = TRUE;
+
   try {
 
     $datavalidationClient = _culturefeed_data_validation_get_datavalidation_client();
     $response = $datavalidationClient->validateEmail($form_state['values']['mail']);
     if ($response && (!$response->isOK() || $response->getGrade() === 'F') ) {
-      form_set_error('mail', t('The provided email address is invalid.'));
+      drupal_set_message(t('The provided email address is invalid.'), 'error');
+      $valid = FALSE;
     }
   }
   catch (Exception $e) {
     // Show no error here.
+  }
+
+  if ($valid) {
+    culturefeed_mailing_newsletter_block_form_submit($form, $form_state);
   }
 }

@@ -243,6 +243,10 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
   }
   else {
 
+    if (!empty($form_state['invalid_email'])) {
+      drupal_set_message(t('The provided email address is invalid'), 'error');
+    }
+
     // Get the user account.
     $account = culturefeed_load_logged_in_user();
 
