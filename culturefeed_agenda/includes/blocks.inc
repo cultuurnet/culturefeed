@@ -269,11 +269,6 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
       unset($query['facet']['category_flandersregion_id']);
     }
 
-    // Remove the distance filter.
-    if (isset($query['distance'])) {
-      unset($query['distance']);
-    }
-
     if (!empty($form_state['values']['where'])) {
       $query['location'] = $form_state['values']['where'];
     }
