@@ -65,3 +65,16 @@ function culturefeed_mailing_preprocess_culturefeed_mailing_user_profile_admin_i
 function culturefeed_mailing_preprocess_culturefeed_mailing_content_block_subscribed(&$variables) {
 
 }
+
+/**
+ * Preprocess variables for already subscribed message.
+ *
+ * @see culturefeed-mailing-content-block-already-subscribed.tpl.php
+ */
+function culturefeed_mailing_preprocess_culturefeed_mailing_content_block_already_subscribed(&$variables) {
+
+  $variables['message'] = variable_get('culturefeed_mailing_already_subscribed_message', t('You are already subscribed to our newsletter'));
+  $variables['unsubscribe_link'] = l(t('Manage subscriptions'), 'culturefeed/mailing');
+
+
+}

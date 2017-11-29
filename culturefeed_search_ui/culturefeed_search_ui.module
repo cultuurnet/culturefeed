@@ -960,7 +960,16 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
 
   // If group = event and we are looking for movies switch to group = event_production
   if ($culturefeedSearchPage->getGroup() == 'event' && (isset($_GET['facet']['category_eventtype_id']) && in_array('0.50.6.0.0', $_GET['facet']['category_eventtype_id']))) {
-    $culturefeedSearchPage->unsetParameter(7);
+    // Find index of group parameter
+    $params = $culturefeedSearchPage->getParameters();
+    for ($i = 0; $i <= count($params); $i++) {
+      $name = get_class($params[$i]);
+      if ($name == 'CultuurNet\Search\Parameter\Group') {
+        $key = $i;
+        break;
+      }
+    }
+    $culturefeedSearchPage->unsetParameter($key);
     $culturefeedSearchPage->addParameter(new Parameter\Parameter('group', 'event_production'));
     $culturefeedSearchPage->setGroup('event_production');
   }
@@ -1152,8 +1161,8 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
           // Get translated label from terms.
           $label = culturefeed_search_get_term_translation($selected_value[$key]);
 
-          // If there is also a distance parameter, remove this together with location on disable.
           if ($active_facet_name == 'category_flandersregion_id' && !empty($query['distance'])) {
+            $label .= ' + ' . check_plain($query['distance']) . ' km';
             unset($search_query['distance']);
           }
 
@@ -1206,14 +1215,13 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
   if (!empty($query['location']) && !isset($query['facet']['category_flandersregion_id'])) {
     $search_query = $query;
     unset($search_query['location']);
-    $label = $query['location'];
+    $url = url($path, array('query' => $search_query));
 
-    // If there is also a distance parameter, remove this together with location on disable.
+    $label = $query['location'];
     if (!empty($query['distance'])) {
+      $label .= ' + ' . check_plain($query['distance']) . ' km';
       unset($search_query['distance']);
     }
-
-    $url = url($path, array('query' => $search_query));
 
     $build['location'] =  array(
       '#theme' => 'culturefeed_search_active_filters_item',
