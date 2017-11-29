@@ -34,6 +34,13 @@ function culturefeed_data_validation_form_culturefeed_mailing_newsletter_block_f
 }
 
 /**
+ * Implements hook_form_{culturefeed_mailing_subscribe_form}_alter().
+ */
+function culturefeed_data_validation_form_culturefeed_mailing_subscribe_form_alter(&$form, $form_state) {
+  $form['#submit'] = ['culturefeed_data_validation_newsletter_block_form_submit'];
+}
+
+/**
  * Validate the email address using the datavalidation service.
  * Use form submit, as some sites are removing the messages again.
  */
