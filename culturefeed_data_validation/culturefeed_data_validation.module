@@ -38,23 +38,26 @@ function culturefeed_data_validation_form_culturefeed_mailing_newsletter_block_f
  * Use form submit, as some sites are removing the messages again.
  */
 function culturefeed_data_validation_newsletter_block_form_submit($form, &$form_state) {
-
   $valid = TRUE;
 
   try {
-
     $datavalidationClient = _culturefeed_data_validation_get_datavalidation_client();
     $response = $datavalidationClient->validateEmail($form_state['values']['mail']);
     if ($response && (!$response->isOK() || $response->getGrade() === 'F') ) {
-      drupal_set_message(t('The provided email address is invalid.'), 'error');
       $valid = FALSE;
     }
   }
   catch (Exception $e) {
-    // Show no error here.
+    // Only trigger an error if the value was the cause.
+    if ($e->getResponse()->getStatusCode() == 422) {
+      $valid = FALSE;
+    }
   }
 
   if ($valid) {
     culturefeed_mailing_newsletter_block_form_submit($form, $form_state);
+  }
+  else {
+    drupal_set_message(t('The provided email address is invalid.'), 'error');
   }
 }
