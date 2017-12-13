@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the CultureFeed UI module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function culturefeed_ui_install() {
+
+  $translationFiles = [
+    (object)[
+      'langcode' => 'nl',
+      'uri' => 'modules/culturefeed/culturefeed_ui/translations/culturefeed_ui.nl.po'
+    ],
+    (object)[
+      'langcode' => 'fr',
+      'uri' => 'modules/culturefeed/culturefeed_ui/translations/culturefeed_ui.fr.po'
+    ],
+    (object)[
+      'langcode' => 'de',
+      'uri' => 'modules/culturefeed/culturefeed_ui/translations/culturefeed_ui.de.po'
+    ],
+  ];
+
+  foreach ($translationFiles as $translationFile) {
+    \Drupal\locale\Gettext::fileToDatabase($translationFile, array());
+  };
+
+}

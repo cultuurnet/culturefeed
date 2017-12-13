@@ -1,0 +1,74 @@
+culturefeed_ui.user_controller_profile:
+  path: '/culturefeed/profile'
+  defaults:
+    _controller: '\Drupal\culturefeed_ui\Controller\UserController::profile'
+    _title: 'Culturefeed profile'
+  options:
+    _access_mode: 'ANY'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+
+culturefeed_ui.profile_form:
+  path: '/culturefeed/profile/edit'
+  defaults:
+    _form: '\Drupal\culturefeed_ui\Form\ProfileForm'
+    _title: 'Edit profile'
+  options:
+    _access_mode: 'ANY'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+
+culturefeed_ui.account_form:
+  path: '/culturefeed/account/edit'
+  defaults:
+    _form: '\Drupal\culturefeed_ui\Form\AccountForm'
+    _title: 'Edit account'
+  options:
+    _access_mode: 'ANY'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+
+culturefeed_ui.delete_account_form:
+  path: '/culturefeed/removeaccount'
+  defaults:
+    _form: '\Drupal\culturefeed_ui\Form\DeleteAccountForm'
+    _title: 'Delete account'
+  options:
+    _access_mode: 'ANY'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+
+culturefeed_ui.connected_accounts.disconnect:
+  path: '/culturefeed/connected-account/{account_type}/{account_name}/disconnect'
+  defaults:
+    _controller: '\Drupal\culturefeed_ui\Controller\ConnectedAccountsController::disconnect'
+    _title: 'Disconnect culturefeed user from external account'
+  options:
+    _access_mode: 'ANY'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+    _method: GET
+
+culturefeed_ui.connected_accounts.make_private:
+  path: '/culturefeed/connected-account/{account_type}/{account_name}/make-private'
+  defaults:
+    _controller: '\Drupal\culturefeed_ui\Controller\ConnectedAccountsController::makePrivate'
+    _title: 'Make all culturefeed activities private for the connected account'
+  options:
+    _access_mode: 'ANY'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+    _method: GET
+
+culturefeed_ui.connected_accounts.make_public:
+  path: '/culturefeed/connected-account/{account_type}/{account_name}/make-public'
+  defaults:
+    _controller: '\Drupal\culturefeed_ui\Controller\ConnectedAccountsController::makePublic'
+    _title: 'Make all culturefeed activities public for the connected account'
+  options:
+    _access_mode: 'ANY'
+  requirements:
+    _culturefeed_current_user: 'TRUE'
+    _method: GET
+
+
