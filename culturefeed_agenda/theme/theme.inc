@@ -717,6 +717,9 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['recommend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_RECOMMEND, $item, FALSE, FALSE, '', '', FALSE);
   }
 
+  // Check item to add possible canonical tag for organisation.
+  culturefeed_agenda_add_organisation_canonical($cdb_item);
+
 }
 
 /**
