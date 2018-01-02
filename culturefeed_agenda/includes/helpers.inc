@@ -1012,6 +1012,7 @@ function culturefeed_get_relative_image($image_path) {
  * @param $cdb_item
  */
 function culturefeed_agenda_add_organisation_canonical($cdb_item) {
+  // Only check actors.
   $class_name = 'CultureFeed_Cdb_Item_Actor';
   if ($cdb_item instanceof $class_name) {
     // Check the external id for an organisation.
