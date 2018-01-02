@@ -511,7 +511,7 @@ function culturefeed_ajax_command_goto($url) {
 /*
 f
 */
-function culturefeed_share_link($share_url, $platform, $title) {
+function culturefeed_share_link($share_url, $platform, $title, $device) {
 
   // Set prefix for share URL's.
   $facebook['prefix'] = 'https://www.facebook.com/sharer/sharer.php?u=';
@@ -568,10 +568,43 @@ function culturefeed_share_link($share_url, $platform, $title) {
       return $whatsapp['prefix'] . urlencode(url($share_url, array('query' => $whatsapp['utm'])));
       break;
     case 'mail' :
-      return 'mailto:?subject=' . $title . '&body=' . t('I thought this might interest you:') . '%0D%0A' .  urlencode(url(current_path(), array('absolute' => TRUE, 'query' => $mail['utm'])));
+      if (module_exists('forward') && $device == 'computer') {
+        // We can't forward external URL's
+        $share_url = current_path();
+        return url('forward', array('query' => array('path' => $share_url)));
+      }
+      else {
+        return 'mailto:?subject=' . $title . '&body=' . t('I thought this might interest you:') . '%0D%0A' .  urlencode(url($share_url, array('query' => $mail['utm'])));
+      }
       break;
   }
 
+}
+
+/**
+ * Getter function to retrieve a Mobile_Detect() singleton.
+ * @return object
+ * Instance of Mobile_Detect(), NULL if failure.
+ */
+function culturefeed_mobile_detect_get_object() {
+  $detect = &drupal_static(__FUNCTION__);
+
+  if (!isset($detect)) {
+    if (class_exists('Mobile_Detect')) {
+      try {
+        $detect = new Mobile_Detect();
+      } catch (Exception $e) {
+        $detect = NULL;
+        watchdog('mobile_detect', 'Could not instantiate Mobile_Detect(): %message',
+          array('%message' => $e->getMessage()), WATCHDOG_ALERT);
+      }
+    } else {
+      $detect = NULL;
+      watchdog('mobile_detect', 'Mobile_Detect() class does not exist', array(), WATCHDOG_ALERT);
+    }
+  }
+
+  return $detect;
 }
 
 /**

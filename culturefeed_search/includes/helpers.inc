@@ -86,12 +86,12 @@ function culturefeed_search_item_load($cdb_id, $type = '', $watchdog = TRUE) {
  * @return mixed
  *   FALSE if not found, otherwise CultuurNet\Search\ActivityStatsExtendedEntity
  */
-function culturefeed_search_item_load_by_title($title, $type) {
+function culturefeed_search_item_load_by_title($title) {
 
   $search_string = trim($title);
   $parameters = array();
   $parameters[] = new \CultuurNet\Search\Parameter\Query('title:"' . $search_string . '"');
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:' . $type);
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:actor');
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
   $result = culturefeed_get_search_service()->search($parameters);
 
