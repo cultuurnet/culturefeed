@@ -297,8 +297,24 @@ function _culturefeed_social_do($activity_type, $type, $id) {
   }
 
   try {
-    $activitiy_result = DrupalCultureFeed::createActivity($activity);
-    $activity->id = $activitiy_result->id;
+    // Check session if user has already performed this activity for this event.
+    if (isset($_SESSION[$activity->userId]['activities']) && !empty($_SESSION[$activity->userId]['activities']) && in_array($activity_type, ['8', '15'])) {
+      foreach ($_SESSION[$activity->userId]['activities'] as $stored_activity) {
+        if ($stored_activity['nodeId'] == $activity->nodeId && $stored_activity['type'] == $activity_type) {
+          return $activity;
+        }
+      }
+    }
+
+    $activity_result = DrupalCultureFeed::createActivity($activity);
+    $activity->id = $activity_result->id;
+
+    // Store created activity data in session for user.
+    $_SESSION[$activity_result->userId]['activities'][] = [
+      'type' => $activity_result->type,
+      'nodeId' => $activity_result->nodeId
+    ];
+
     return $activity;
   }
   catch (Exception $e) {
@@ -315,7 +331,7 @@ function _culturefeed_social_do($activity_type, $type, $id) {
  *
  * @param String $activity_type
  * @param String $type
- * @param Integer $id
+ * @param Integer $node_id
  * @return array Deleted activity results.
  */
 function _culturefeed_social_undo($activity_type, $type, $node_id) {
@@ -323,7 +339,20 @@ function _culturefeed_social_undo($activity_type, $type, $node_id) {
   $user_id = DrupalCultureFeed::getLoggedInUserId();
 
   try {
-    return DrupalCultureFeed::deleteActivities($user_id, $node_id, $type, $activity_type);
+    $delete_activity_result = DrupalCultureFeed::deleteActivities($user_id, $node_id, $type, $activity_type);
+
+    // Remove possible stored created activity session data.
+    if ($delete_activity_result) {
+      if (isset($_SESSION[$user_id]['activities']) && !empty($_SESSION[$user_id]['activities']) && in_array($activity_type, ['8', '15'])) {
+        foreach ($_SESSION[$user_id]['activities'] as $i => $stored_activity) {
+          if ($stored_activity['nodeId'] == $node_id && $stored_activity['type'] == $activity_type) {
+            unset($_SESSION[$user_id]['activities'][$i]);
+          }
+        }
+      }
+    }
+
+    return $delete_activity_result;
   }
   catch (Exception $e) {
     watchdog_exception('culturefeed_social', $e);
