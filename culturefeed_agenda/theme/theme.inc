@@ -381,6 +381,30 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $variables['actortypes'] = $actortypes['text'];
   $variables['actortypes_links'] = $actortypes['links'];
 
+  // Preprocess the organiser variables.
+  if (method_exists($cdb_item, 'getOrganiser')) {
+
+    $organiser = $cdb_item->getOrganiser();
+    $variables['organiser'] = array();
+    if ($organiser) {
+
+      // If the organiser is a reference to an actor, link to it.
+      if ($organiser->getActor() && $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())) {
+        $actor = $organiser->getActor();
+        $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+        $variables['organiser']['title'] = $organiser_actor_details->getTitle();
+        $variables['organiser']['link'] = culturefeed_search_detail_l('actor', $actor->getCdbid(), $variables['organiser']['title']);
+      }
+      elseif ($organiser->getLabel()) {
+        $variables['organiser']['title'] = $organiser->getLabel();
+        if ($organiser->getCdbid()) {
+          $variables['organiser']['link'] = culturefeed_search_detail_l('actor', $organiser->getCdbid(), $variables['organiser']['title']);
+        }
+      }
+
+    }
+  }
+
   $version = variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION);
   if (version_compare($version, '3.3', '>=')) {
 
@@ -442,6 +466,25 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $variables['uitpas'] = TRUE;
       }
     }
+  }
+
+  $variables['device'] = '(not set)';
+  $variables['is_ios'] = FALSE;
+  $variables['is_android'] = FALSE;
+
+  if (module_exists('culturefeed')) {
+    $detect = culturefeed_mobile_detect_get_object();
+  }
+
+  if ($detect) {
+    $device = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
+    $variables['device'] = $device;
+
+    $is_ios = $detect->isiOS();
+    $variables['is_ios'] = $is_ios;
+
+    $is_android = $detect->isAndroidOS();
+    $variables['is_android'] = $is_android;
   }
 
 }
@@ -563,11 +606,11 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $variables['share_url'] = $base_root . $variables['url'];
 
     // Build share URL's.
-    $variables['facebook']['url'] = culturefeed_share_link($variables['share_url'], 'facebook', $variables['title']);
-    $variables['googleplus']['url'] = culturefeed_share_link($variables['share_url'], 'googleplus', $variables['title']);
-    $variables['twitter']['url'] = culturefeed_share_link($variables['share_url'], 'twitter', $variables['title']);
-    $variables['whatsapp']['url'] = culturefeed_share_link($variables['share_url'], 'whatsapp', $variables['title']);
-    $variables['mail']['url'] = culturefeed_share_link($variables['share_url'], 'mail', $variables['title']);
+    $variables['facebook']['url'] = culturefeed_share_link($variables['share_url'], 'facebook', $variables['title'], $variables['device']);
+    $variables['googleplus']['url'] = culturefeed_share_link($variables['share_url'], 'googleplus', $variables['title'], $variables['device']);
+    $variables['twitter']['url'] = culturefeed_share_link($variables['share_url'], 'twitter', $variables['title'], $variables['device']);
+    $variables['whatsapp']['url'] = culturefeed_share_link($variables['share_url'], 'whatsapp', $variables['title'], $variables['device']);
+    $variables['mail']['url'] = culturefeed_share_link($variables['share_url'], 'mail', $variables['title'], $variables['device']);
 
     $variables['facebook']['options'] = array();
     $variables['twitter']['options'] = array();
@@ -649,28 +692,6 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $mail_options['attributes']['title'] = $mail_title;
     $mail_options['attributes']['alt'] = $mail_title;
     $variables['mail_link'] = l($mail_title, $variables['mail']['url'], $mail_options);
-
-    // Pass the phone data through a setting in Javascript
-    // In Culturefeed Bootstrap we use mobile_detect.js for formatting those.
-    if (isset($variables['reservation']['phone'])) {
-      drupal_add_js(array(
-        'culturefeed_agenda' => array(
-          'reservation' => array(
-            'phones' => $variables['reservation']['phone']
-          )
-        )
-      ), 'setting');
-    }
-
-    if (isset($variables['contact']['phone'])) {
-      drupal_add_js(array(
-        'culturefeed_agenda' => array(
-          'contact' => array(
-            'phones' => $variables['contact']['phone']
-          )
-        )
-      ), 'setting');
-    }
 
     // Use dialog when Facebook app id is set.
     culturefeed_search_ui_add_facebook_share();
@@ -768,7 +789,12 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
           $faxes[] = $phone->getNumber();
         }
         else {
-          $phones[] = $phone->getNumber();
+          if (isset($variables['device']) && $variables['device'] == 'phone') {
+            $phones[] = l($phone->getNumber(), 'tel:' . culturefeed_valid_phone($phone->getNumber()));
+          }
+          else {
+            $phones[] = $phone->getNumber();
+          }
         }
       }
     }
@@ -790,7 +816,13 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
       // Reservation phone
       if (isset($reservation_info['phone'])) {
         foreach ($reservation_info['phone'] as $phone) {
-          $reservation_phones[] = $phone;
+          if(isset($variables['device']) && $variables['device'] == 'phone')
+          {
+            $reservation_phones[] = l($phone, 'tel:'.culturefeed_valid_phone($phone));
+          }
+          else {
+            $reservation_phones[] = $phone;
+          }
         }
         $variables['reservation']['phone'] = implode(', ', $reservation_phones);
       }
@@ -823,30 +855,6 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
           'lat' => $coordinates->getYCoordinate(),
           'lng' => $coordinates->getXCoordinate(),
         );
-      }
-    }
-    
-    // Organiser data.
-    if (method_exists($event, 'getOrganiser')) {
-  
-      $organiser = $event->getOrganiser();
-      $variables['organiser'] = array();
-      if ($organiser) {
-  
-        // If the organiser is a reference to an actor, link to it.
-        if ($organiser->getActor() && $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())) {
-          $actor = $organiser->getActor();
-          $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-          $variables['organiser']['title'] = $organiser_actor_details->getTitle();
-          $variables['organiser']['link'] = culturefeed_search_detail_l('actor', $actor->getCdbid(), $variables['organiser']['title']);
-        }
-        elseif ($organiser->getLabel()) {
-          $variables['organiser']['title'] = $organiser->getLabel();
-          if ($organiser->getCdbid()) {
-            $variables['organiser']['link'] = culturefeed_search_detail_l('actor', $organiser->getCdbid(), $variables['organiser']['title']);
-          }
-        }
-  
       }
     }
 
@@ -1163,11 +1171,17 @@ function _culturefeed_agenda_preprocess_actor(&$variables) {
         $faxes[] = $phone->getNumber();
       }
       else {
-        $phones[] = $phone->getNumber();
+        if (isset($variables['device']) && $variables['device'] == 'phone') {
+          $phones[] = l($phone->getNumber(), 'tel:' . culturefeed_valid_phone($phone->getNumber()));
+        }
+        else {
+          $phones[] = $phone->getNumber();
+        }
       }
     }
     $variables['contact']['phone'] = check_plain(implode(', ', $phones));
     $variables['contact']['fax'] = check_plain(implode(', ', $faxes));
+
   }
 
   // Link to detail.

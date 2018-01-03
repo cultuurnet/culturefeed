@@ -237,7 +237,6 @@ function culturefeed_agenda_search_block_form($form, &$form_state) {
 function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
 
   $query = drupal_get_query_parameters(NULL, array('q', 'page', 'search'));
-  $destination = drupal_get_destination();
 
   // UIV-1406 reset $query if http headers return 404.
   $status = drupal_get_http_header();
@@ -270,17 +269,19 @@ function culturefeed_agenda_search_block_form_submit($form, &$form_state) {
       unset($query['facet']['category_flandersregion_id']);
     }
 
-    // Remove the distance filter.
-    if (isset($query['distance'])) {
-      unset($query['distance']);
-    }
-
     if (!empty($form_state['values']['where'])) {
       $query['location'] = $form_state['values']['where'];
     }
 
     if (!empty($form_state['values']['radius'])) {
-      $query['distance'] = $form_state['values']['radius'];
+      // Only add distance parameter if location parameter corresponds to correct pattern.
+      if (!empty($form_state['values']['where'])) {
+        $matches = [];
+        preg_match("/\d{4} \D+/", $form_state['values']['where'], $matches);
+        if (!empty($matches)) {
+          $query['distance'] = $form_state['values']['radius'];
+        }
+      }
     }
   }
 

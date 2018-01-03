@@ -4,6 +4,18 @@
  * Helper functions for the culturefeed agenda.
  **/
 
+ /**
+  * Return a phone number without spaces, dashes, slashes, characters
+  */
+ function culturefeed_valid_phone($raw_phone) {
+
+   $phone = str_replace(' ', '-', $raw_phone);
+   $phone = preg_replace('/[^0-9\+\(\)]/', '', $phone);
+
+   return $phone;
+
+}
+
 /**
  * Return all the known agenda entity types.
  */
@@ -843,7 +855,6 @@ function culturefeed_agenda_google_maps_js_api_url() {
     'region' => 'BE',
     'hl' => $language->language,
     'ln' => $language->language,
-    'language' => $language->language,
     'key' => variable_get('culturefeed_agenda_google_maps_api_key'),
   );
   return url(CULTUREFEED_GOOGLE_MAPS_JS_API, array('query' => $query, 'absolute' => TRUE));
