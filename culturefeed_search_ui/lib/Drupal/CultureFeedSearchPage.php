@@ -793,4 +793,10 @@ class CultureFeedSearchPage {
     return;
   }
 
+  protected function addAdvancedQueryFilters($query) {
+    $filters = explode('&', $query);
+    // TODO: add parameters to search query.
+
+  }
+
 }
