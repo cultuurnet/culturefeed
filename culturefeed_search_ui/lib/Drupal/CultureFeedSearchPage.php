@@ -793,10 +793,27 @@ class CultureFeedSearchPage {
     return;
   }
 
+  /**
+   * Add advanced query as separate filters.
+   *
+   * @param $query
+   */
   protected function addAdvancedQueryFilters($query) {
-    $filters = explode('&', $query);
-    // TODO: add parameters to search query.
 
+    foreach (explode('&', $query) as $filter) {
+      $key_value = explode('=', $filter);
+
+      switch ($key_value[0]) {
+        case 'q':
+          $this->addQueryTerm($key_value[1]);
+          break;
+        case 'fq':
+        default:
+          $facetFilterQuery = new Parameter\FilterQuery($key_value[1]);
+          $this->parameters[] = $facetFilterQuery;
+          break;
+      }
+    }
   }
 
 }
