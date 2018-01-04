@@ -1306,6 +1306,18 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
     }
   }
 
+  // Check for advanced query.
+  if (isset($query['advanced_query'])) {
+    $search_query = $query;
+    unset($search_query['advanced_query']);
+    $url = url($path, array('query' => $search_query));
+    $build['advanced-query'] =  array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => !empty($query['advanced_query']['title']) ? $query['advanced_query']['title'] : t('Advanced query'),
+      '#url' => $url
+    );
+  }
+
   return $build;
 }
 
