@@ -57,6 +57,11 @@ class CultureFeedAgendaPage extends CultureFeedSearchPage
         $this->parameters[] = new Parameter\FilterQuery(implode(' OR ', $active_types));
       }
 
+      // Check for advanced query parameter.
+      if (!empty($params['advanced_query'])) {
+        $this->addAdvancedQueryFilters($params['advanced_query']['query']);
+      }
+
       $this->addFacetFilters($params);
 
       $this->parameters[] = $this->facetComponent->facetField('category');
