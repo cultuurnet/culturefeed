@@ -39,6 +39,8 @@ function culturefeed_agenda_preprocess_culturefeed_actor(&$variables) {
   _culturefeed_agenda_preprocess_agenda_detail($variables);
 
   _culturefeed_agenda_preprocess_actor_page_metatags($variables);
+  // Check item to add possible canonical tag for organisation.
+  culturefeed_agenda_actor_set_organisation_canonical($variables['item']->getEntity());
 
 }
 
@@ -716,9 +718,6 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
   if (culturefeed_agenda_social_links_preprocessing_enabled()) {
     $variables['recommend_link'] = culturefeed_social_activity_link(CultureFeed_Activity::TYPE_RECOMMEND, $item, FALSE, FALSE, '', '', FALSE);
   }
-
-  // Check item to add possible canonical tag for organisation.
-  culturefeed_agenda_add_organisation_canonical($cdb_item);
 
 }
 
