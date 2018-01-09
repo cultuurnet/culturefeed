@@ -1020,10 +1020,12 @@ function culturefeed_agenda_actor_set_organisation_canonical(CultureFeed_Cdb_Ite
   if ($ext_id_key == 'ORG') {
     // Retrieve canonical href path.
     $detail = $actor->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-    $slug = strtolower(str_replace(' ', '_', $detail->getTitle()));
-    $canonical_path = culturefeed_search_detail_path('actor', $ext_id_value, $slug);
-    // Add canonical tag to head.
-    global $base_url;
-    drupal_add_html_head_link(array('rel' => 'canonical', 'href' => "$base_url/$canonical_path"), TRUE);
+    if ($detail) {
+      $slug = strtolower(str_replace(' ', '_', $detail->getTitle()));
+      $canonical_path = culturefeed_search_detail_path('actor', $ext_id_value, $slug);
+      // Add canonical tag to head.
+      global $base_url;
+      drupal_add_html_head_link(array('rel' => 'canonical', 'href' => "$base_url/$canonical_path"), TRUE);
+    }
   }
 }
