@@ -43,6 +43,12 @@ function culturefeed_content_field_culturefeed_content_validate($element, &$form
     'sort' => $values['sort'],
     'show_more_link' => $values['show_more_link'],
     'more_link' => $values['more_link'],
+    'what' => $values['what'],
+    'where' => $values['where'],
+    'when' => $values['when'],
+    'composite_query' => $values['composite_query'],
+    'query_title' => $values['query_title'],
+    'show_postal_code_search_box' => $values['show_postal_code_search_box'],
   );
   form_set_value($element, $items, $form_state);
 
@@ -237,6 +243,11 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#description' => t('Free text search, used for the SOLR query (q) parameter'),
     '#type' => 'textfield',
     '#maxlength' => 1000,
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
+    ),
   );
 
   // TODO: rename
@@ -247,6 +258,11 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#description' => t('Please use SOLR filter query (fq). You can use advanced combinations with AND, OR, double quotes (exact match), and wildcards (*)'),
     '#type' => 'textfield',
     '#maxlength' => 1000,
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
+    ),
   );
 
   $element['wrapper']['rows'] = array(
@@ -300,7 +316,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     ),
   );
 
-  // TODO: New fields
   $element['wrapper']['type'] = array(
     '#type' => 'checkboxes',
     '#options' => [
@@ -310,20 +325,14 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     ],
     '#title' => t('Type'),
     '#required' => $element['#required'],
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
+    ),
   );
 
-
-  // TODO: ook andere opties bij?
-  $equal_options = [
-    t('is equal to'),
-    t('is not equal to')
-  ];
-  $before_after_options = [
-    t('before'),
-    t('after')
-  ];
-
-  // TODO: Categories (WAT)
+  // "Categories" fieldset (What)
 
   $element['wrapper']['what'] = array(
     '#title' => t('Categories'),
@@ -331,19 +340,27 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#attributes' => ['class' => 'fieldset-query-builder']
   );
 
-  $element['wrapper']['where']['where_type'] = array(
+  // Build category options.
+  $selectable_categories = ['eventtype', 'theme', 'actortype', 'facility'];
+  $domains = culturefeed_search_get_domains();
+  $category_options = ['all' => t('Alle')];
+
+  foreach ($selectable_categories as $category) {
+    $category_options[$category] = $domains[$category];
+  }
+
+  $element['wrapper']['what']['what_type'] = array(
     '#type' => 'select',
-    '#options' => [
-      'all' => t('Alle'),
-      'region' => t('Region'),
-      'city' => t('City or municipality'),
-      'postal_code' => t('Postal code + radius'),
-    ],
+    '#options' => $category_options,
     '#default_value' => 'all',
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
+    ),
   );
 
-
-  // TODO: WAAR
+  // "Where" fieldset.
 
   $element['wrapper']['where'] = array(
     '#title' => t('Where'),
@@ -360,11 +377,19 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       'postal_code' => t('Postal code + radius'),
     ],
     '#default_value' => 'all',
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
+    ),
   );
 
   $element['wrapper']['where']['where_equal'] = array(
     '#type' => 'select',
-    '#options' => $equal_options,
+    '#options' => [
+      t('is equal to'),
+      t('is not equal to')
+    ],
     '#default_value' => 0,
     '#states' => array(
       'visible' => array(
@@ -376,15 +401,24 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
         ),
       ),
     ),
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
+    ),
   );
 
-  // TODO: check which options (since some have postal code included)
+  // Retrieve region options from DB.
+  $region_options = ['all' => t('Alle')];
+  $region_terms = culturefeed_search_get_terms_by_hierarchy_depth('flandersregion', 2, culturefeed_search_get_preferred_language(), 'name');
+
+  foreach ($region_terms as $term) {
+    $region_options[$term->tid] = $term->name;
+  }
+
   $element['wrapper']['where']['where_region'] = array(
     '#type' => 'select',
-    '#options' => [
-      2 => 'Foo',
-      5 => 'Bar'
-    ],
+    '#options' => $region_options,
     '#default_value' => 2,
     '#states' => array(
       'visible' => array(
@@ -393,15 +427,24 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
         ),
       ),
     ),
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
+    ),
   );
 
-  // TODO: check which options
+  // Retrieve city options from DB.
+  $city_options = ['all' => t('Alle')];
+  $city_terms = culturefeed_search_get_terms_by_hierarchy_depth('flandersregion', 3, culturefeed_search_get_preferred_language(), 'name');
+
+  foreach ($city_terms as $term) {
+    $city_options[$term->tid] = $term->name;
+  }
+
   $element['wrapper']['where']['where_city'] = array(
     '#type' => 'select',
-    '#options' => [
-      2 => 'Foo',
-      5 => 'Bar'
-    ],
+    '#options' => $city_options,
     '#default_value' => 2,
     '#states' => array(
       'visible' => array(
@@ -409,6 +452,11 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
           ':input[name="field_zoekopdracht[und][0][wrapper][where][where_type]"]' => array('value' => 'city'),
         ),
       ),
+    ),
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
     ),
   );
 
@@ -422,6 +470,11 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
           ':input[name="field_zoekopdracht[und][0][wrapper][where][where_type]"]' => array('value' => 'postal_code'),
         ),
       ),
+    ),
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
     ),
   );
 
@@ -441,9 +494,19 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
         ),
       ),
     ),
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
+    ),
   );
 
-  // TODO: WANNEER
+  // "When" fieldset.
+
+  $before_after_options = [
+    t('before'),
+    t('after')
+  ];
 
   $element['wrapper']['when'] = array(
     '#title' => t('When'),
@@ -451,54 +514,103 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#attributes' => ['class' => 'fieldset-query-builder']
   );
 
-  $element['wrapper']['when']['when_type'] = array(
+  $element['wrapper']['when']['when_type_1'] = array(
     '#type' => 'select',
     '#options' => [
       'all' => t('Alle'),
-      'date' => t('Start and end date'),
+      'start_date' => t('Start date'),
+      'end_date' => t('End date'),
     ],
     '#default_value' => 'all',
-  );
-
-  $element['wrapper']['when']['when_before_after'] = array(
-    '#type' => 'select',
-    '#options' => $before_after_options,
-    '#default_value' => 0,
-    '#states' => array(
-      'visible' => array(
-        array(
-          ':input[name="field_zoekopdracht[und][0][wrapper][when][when_type]"]' => array('value' => 'date'),
-        ),
-      ),
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
     ),
   );
 
-  $element['wrapper']['when']['when_date'] = array(
+  $element['wrapper']['when']['when_before_after_1'] = array(
+    '#type' => 'select',
+    '#options' => $before_after_options,
+    '#default_value' => 0,
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
+    ),
+  );
+
+  $element['wrapper']['when']['when_date_1'] = array(
     '#type' => 'date_popup',
     '#date_year_range' => '-2:+2',
     '#date_format' => 'd/m/Y',
     '#default_value' => 'YYYY-MM-DD 00:00:00',
     '#date_label_position' => 'none',
-    '#states' => array(
-      'visible' => array(
-        array(
-          ':input[name="field_zoekopdracht[und][0][wrapper][when][when_type]"]' => array('value' => 'date'),
-        ),
-      ),
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
+    ),
+  );
+
+  $element['wrapper']['when']['when_type_2'] = array(
+    '#type' => 'select',
+    '#options' => [
+      'all' => t('Alle'),
+      'start_date' => t('Start date'),
+      'end_date' => t('End date'),
+    ],
+    '#default_value' => 'all',
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
+    ),
+  );
+
+  $element['wrapper']['when']['when_before_after_2'] = array(
+    '#type' => 'select',
+    '#options' => $before_after_options,
+    '#default_value' => 0,
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
+    ),
+  );
+
+  $element['wrapper']['when']['when_date_2'] = array(
+    '#type' => 'date_popup',
+    '#date_year_range' => '-2:+2',
+    '#date_format' => 'd/m/Y',
+    '#default_value' => 'YYYY-MM-DD 00:00:00',
+    '#date_label_position' => 'none',
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
     ),
   );
 
   $element['wrapper']['composite_query'] = array(
     '#type' => 'textarea',
     '#title' => t('Composite query'),
-    '#disabled' => TRUE
+    '#disabled' => TRUE,
+    '#prefix' => '<div id="advanced_query_field">',
+    '#suffix' => '</div>',
   );
+  $element['wrapper']['composite_query']['#default_value'] = _culturefeed_build_advanced_query($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]);
 
   $element['wrapper']['query_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Query title'),
     '#required' => $element['#required'],
     '#maxlength' => 255,
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
+    ),
   );
 
   $element['wrapper']['show_postal_code_search_box'] = array(
@@ -506,13 +618,24 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#title' => t('Show search box to filter by postal code'),
   );
 
-  // -- TODO
-
-
   $element['#element_validate'] = array('culturefeed_content_field_culturefeed_content_validate');
 
   return $element;
+}
 
+/**
+ * Show/hide textfields based on AJAX-enabled checkbox clicks.
+ */
+function _culturefeed_build_advanced_query($values) {
+  // TODO: Build advanced query based on current form values.
+  return 'todo';
+}
+
+/**
+ *
+ */
+function _culturefeed_ajax_rebuild_composite_query($form, &$form_state) {
+  return $form['field_zoekopdracht'][LANGUAGE_NONE][0]['wrapper']['composite_query'];
 }
 
 /**
