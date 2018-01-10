@@ -229,6 +229,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#maxlength' => 255,
   );
 
+  // TODO: rename
   $element['wrapper']['query_string'] = array(
     '#default_value' => $query_string,
     '#required' => $element['#required'],
@@ -238,6 +239,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#maxlength' => 1000,
   );
 
+  // TODO: rename
   $element['wrapper']['filter_query'] = array(
     '#default_value' => $filter_query,
     '#required' => $element['#required'],
@@ -297,6 +299,215 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       ),
     ),
   );
+
+  // TODO: New fields
+  $element['wrapper']['type'] = array(
+    '#type' => 'checkboxes',
+    '#options' => [
+      'event' => t('Event'),
+      'actor' => t('Actor'),
+      'production' => t('Production')
+    ],
+    '#title' => t('Type'),
+    '#required' => $element['#required'],
+  );
+
+
+  // TODO: ook andere opties bij?
+  $equal_options = [
+    t('is equal to'),
+    t('is not equal to')
+  ];
+  $before_after_options = [
+    t('before'),
+    t('after')
+  ];
+
+  // TODO: Categories (WAT)
+
+  $element['wrapper']['what'] = array(
+    '#title' => t('Categories'),
+    '#type' => 'fieldset',
+    '#attributes' => ['class' => 'fieldset-query-builder']
+  );
+
+  $element['wrapper']['where']['where_type'] = array(
+    '#type' => 'select',
+    '#options' => [
+      'all' => t('Alle'),
+      'region' => t('Region'),
+      'city' => t('City or municipality'),
+      'postal_code' => t('Postal code + radius'),
+    ],
+    '#default_value' => 'all',
+  );
+
+
+  // TODO: WAAR
+
+  $element['wrapper']['where'] = array(
+    '#title' => t('Where'),
+    '#type' => 'fieldset',
+    '#attributes' => ['class' => 'fieldset-query-builder']
+  );
+
+  $element['wrapper']['where']['where_type'] = array(
+    '#type' => 'select',
+    '#options' => [
+      'all' => t('Alle'),
+      'region' => t('Region'),
+      'city' => t('City or municipality'),
+      'postal_code' => t('Postal code + radius'),
+    ],
+    '#default_value' => 'all',
+  );
+
+  $element['wrapper']['where']['where_equal'] = array(
+    '#type' => 'select',
+    '#options' => $equal_options,
+    '#default_value' => 0,
+    '#states' => array(
+      'visible' => array(
+        array(
+          ':input[name="field_zoekopdracht[und][0][wrapper][where][where_type]"]' => array('value' => 'region'),
+        ),
+        array(
+          ':input[name="field_zoekopdracht[und][0][wrapper][where][where_type]"]' => array('value' => 'city'),
+        ),
+      ),
+    ),
+  );
+
+  // TODO: check which options (since some have postal code included)
+  $element['wrapper']['where']['where_region'] = array(
+    '#type' => 'select',
+    '#options' => [
+      2 => 'Foo',
+      5 => 'Bar'
+    ],
+    '#default_value' => 2,
+    '#states' => array(
+      'visible' => array(
+        array(
+          ':input[name="field_zoekopdracht[und][0][wrapper][where][where_type]"]' => array('value' => 'region'),
+        ),
+      ),
+    ),
+  );
+
+  // TODO: check which options
+  $element['wrapper']['where']['where_city'] = array(
+    '#type' => 'select',
+    '#options' => [
+      2 => 'Foo',
+      5 => 'Bar'
+    ],
+    '#default_value' => 2,
+    '#states' => array(
+      'visible' => array(
+        array(
+          ':input[name="field_zoekopdracht[und][0][wrapper][where][where_type]"]' => array('value' => 'city'),
+        ),
+      ),
+    ),
+  );
+
+  $element['wrapper']['where']['where_postal_code'] = array(
+    '#type' => 'textfield',
+    '#size' => 10,
+    '#maxlength' => 255,
+    '#states' => array(
+      'visible' => array(
+        array(
+          ':input[name="field_zoekopdracht[und][0][wrapper][where][where_type]"]' => array('value' => 'postal_code'),
+        ),
+      ),
+    ),
+  );
+
+  $element['wrapper']['where']['where_postal_code_radius'] = array(
+    '#type' => 'select',
+    '#options' => [
+      5 => '+5 km',
+      10 => '+10 km',
+      15 => '+15 km',
+      20 => '+20 km'
+    ],
+    '#default_value' => 5,
+    '#states' => array(
+      'visible' => array(
+        array(
+          ':input[name="field_zoekopdracht[und][0][wrapper][where][where_type]"]' => array('value' => 'postal_code'),
+        ),
+      ),
+    ),
+  );
+
+  // TODO: WANNEER
+
+  $element['wrapper']['when'] = array(
+    '#title' => t('When'),
+    '#type' => 'fieldset',
+    '#attributes' => ['class' => 'fieldset-query-builder']
+  );
+
+  $element['wrapper']['when']['when_type'] = array(
+    '#type' => 'select',
+    '#options' => [
+      'all' => t('Alle'),
+      'date' => t('Start and end date'),
+    ],
+    '#default_value' => 'all',
+  );
+
+  $element['wrapper']['when']['when_before_after'] = array(
+    '#type' => 'select',
+    '#options' => $before_after_options,
+    '#default_value' => 0,
+    '#states' => array(
+      'visible' => array(
+        array(
+          ':input[name="field_zoekopdracht[und][0][wrapper][when][when_type]"]' => array('value' => 'date'),
+        ),
+      ),
+    ),
+  );
+
+  $element['wrapper']['when']['when_date'] = array(
+    '#type' => 'date_popup',
+    '#date_year_range' => '-2:+2',
+    '#date_format' => 'd/m/Y',
+    '#default_value' => 'YYYY-MM-DD 00:00:00',
+    '#date_label_position' => 'none',
+    '#states' => array(
+      'visible' => array(
+        array(
+          ':input[name="field_zoekopdracht[und][0][wrapper][when][when_type]"]' => array('value' => 'date'),
+        ),
+      ),
+    ),
+  );
+
+  $element['wrapper']['composite_query'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Composite query'),
+    '#disabled' => TRUE
+  );
+
+  $element['wrapper']['query_title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Query title'),
+    '#required' => $element['#required'],
+    '#maxlength' => 255,
+  );
+
+  $element['wrapper']['show_postal_code_search_box'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show search box to filter by postal code'),
+  );
+
+  // -- TODO
+
 
   $element['#element_validate'] = array('culturefeed_content_field_culturefeed_content_validate');
 
