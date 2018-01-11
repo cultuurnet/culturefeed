@@ -34,14 +34,72 @@ function culturefeed_content_field_schema($field) {
           'type' => 'text',
           'size' => 'medium',
         ),
-        'show_more_link' => array(
-          'type' => 'int',
-          'default' => 1
+        'types' => array(
+          'type' => 'varchar',
+          'length' => '255',
         ),
-        'more_link' => array(
+        'what_type' => array(
           'type' => 'text',
-          'size' => 'medium'
-        )
+          'size' => 'medium',
+        ),
+        'where_type' => array(
+          'type' => 'varchar',
+          'length' => '255',
+        ),
+        'where_equal' => array(
+          'type' => 'int',
+          'size' => 'tiny',
+        ),
+        'where_region' => array(
+          'type' => 'varchar',
+          'length' => '255',
+        ),
+        'where_city' => array(
+          'type' => 'varchar',
+          'length' => '255',
+        ),
+        'where_postal_code' => array(
+          'type' => 'int',
+        ),
+        'where_postal_code_radius' => array(
+          'type' => 'int',
+        ),
+        'when_type_1' => array(
+          'type' => 'varchar',
+          'length' => '255',
+        ),
+        'when_before_after_1' => array(
+          'type' => 'int',
+          'size' => 'tiny',
+        ),
+        'when_date_1' => array(
+          'type' => 'datetime',
+          'mysql_type' => 'datetime',
+        ),
+        'when_type_2' => array(
+          'type' => 'varchar',
+          'length' => '255',
+        ),
+        'when_before_after_2' => array(
+          'type' => 'int',
+          'size' => 'tiny',
+        ),
+        'when_date_2' => array(
+          'type' => 'datetime',
+          'mysql_type' => 'datetime',
+        ),
+        'composite_query' => array(
+          'type' => 'text',
+          'size' => 'medium',
+        ),
+        'query_title' => array(
+          'type' => 'varchar',
+          'length' => '255',
+        ),
+        'show_postal_code_search_box' => array(
+          'type' => 'int',
+          'size' => 'tiny',
+        ),
       ),
     );
 
@@ -119,11 +177,15 @@ function culturefeed_content_update_7003() {
         $table = $table_prefix;
 
         // Add new field columns.
-        $type = array(
-          'type' => 'varchar',
-          'length' => '255',
-        );
-        db_add_field($table, $field_name . '_type', $type);
+
+        if (!db_field_exists($table, $field_name . '_types')) {
+          // Multiple checkbox field -> saved as a combined csv string.
+          $types = array(
+            'type' => 'text',
+            'size' => 'medium',
+          );
+          db_add_field($table, $field_name . '_types', $types);
+        }
 
         // Infinite fields -> saved as single combined value that gets converted back to form values when needed.
         // TODO: might change after feedback.
@@ -180,7 +242,8 @@ function culturefeed_content_update_7003() {
         db_add_field($table, $field_name . '_when_before_after_1', $when_before_after_1);
 
         $when_date_1 = array(
-          'type' => 'int',
+          'type' => 'datetime',
+          'mysql_type' => 'datetime',
         );
         db_add_field($table, $field_name . '_when_date_1', $when_date_1);
 
@@ -197,7 +260,8 @@ function culturefeed_content_update_7003() {
         db_add_field($table, $field_name . '_when_before_after_2', $when_before_after_2);
 
         $when_date_2 = array(
-          'type' => 'int',
+          'type' => 'datetime',
+          'mysql_type' => 'datetime',
         );
         db_add_field($table, $field_name . '_when_date_2', $when_date_2);
 
