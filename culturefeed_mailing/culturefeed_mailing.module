@@ -249,39 +249,38 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
 
     // Get the user account.
     $account = culturefeed_load_logged_in_user();
-
     $user_already_subscribed = $account ? _culturefeed_mailing_check_user_subscription($account->id, variable_get('culturefeed_mailing_list')) : FALSE;
     if ($user_already_subscribed) {
-
       $form['already_subscribed'] = array(
         '#theme' => 'culturefeed_mailing_content_block_already_subscribed',
         '#title' => NULL,
         '#message' => NULL,
       );
-
     }
     else {
 
       $show_zip = variable_get('culturefeed_mailing_block_show_zip', 0);
 
-      // Set defaults for the email field.
       if ($account) {
         $email = $account->mbox;
         $disabled = TRUE;
         $description = '<span>' . t('Change your email address <a href="!url">here</a>.', array('!url' => url('culturefeed/account/edit'))) . '</span>';
+        $zipcode = !empty($account->zip) ? $account->zip : '';
       }
+
       else {
         $email = '';
         $disabled = FALSE;
         $description = '';
+        $zipcode = '';
       }
-
+  
       $form['intro'] = array(
         '#type' => 'item',
         '#title' => '',
         '#markup' => variable_get('culturefeed_mailing_block_description', ''),
       );
-
+  
       $form['mail'] = array(
         '#type' => 'textfield',
         '#title' => t('Email'),
@@ -291,14 +290,9 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
         '#default_value' => $email,
         '#disabled' => $disabled,
       );
-
+  
       if ($show_zip && CULTUREFEED_API_LIGHT_ID_ALLOWED) {
-
-        $zipcode = '';
-        if ($account) {
-          $zipcode = !empty($account->zip) ? $account->zip : '';
-        }
-
+  
         $form['zip'] = array(
           '#type' => 'textfield',
           '#title' => t('Zipcode'),
@@ -310,12 +304,12 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
             'class' => array('zip-field'),
           ),
         );
-
+  
         // Set zipcode with cookie
         // Attach jquery.cookie library.
         if (empty($zipcode)) {
           $form['#attached']['library'][] = array('system', 'jquery.cookie');
-
+  
           // Attach scripts.
           $form['#attached']['js'][] = array(
             'data' => drupal_get_path('module', 'culturefeed_mailing') . '/js/culturefeed_mailing.js',
@@ -323,14 +317,12 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
             'weight' => 0,
           );
         }
-
       }
 
       $form['inschrijven'] = array(
         '#type' => 'submit',
         '#value' => t('Subscribe'),
       );
-
     }
   }
 

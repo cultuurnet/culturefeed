@@ -19,7 +19,7 @@
               modal: true,
               title: title,
               open: function() {
-                $.cookie('profile-synchronization', 1);
+                $.cookie('profile-synchronization', 1, { expires: 365, path: '/' });
               }
             };
 

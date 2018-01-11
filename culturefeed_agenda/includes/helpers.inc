@@ -843,6 +843,7 @@ function culturefeed_agenda_google_maps_js_api_url() {
     'region' => 'BE',
     'hl' => $language->language,
     'ln' => $language->language,
+    'language' => $language->language,
     'key' => variable_get('culturefeed_agenda_google_maps_api_key'),
   );
   return url(CULTUREFEED_GOOGLE_MAPS_JS_API, array('query' => $query, 'absolute' => TRUE));
