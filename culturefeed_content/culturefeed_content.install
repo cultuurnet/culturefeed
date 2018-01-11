@@ -38,7 +38,7 @@ function culturefeed_content_field_schema($field) {
           'type' => 'varchar',
           'length' => '255',
         ),
-        'what_type' => array(
+        'what_categories' => array(
           'type' => 'text',
           'size' => 'medium',
         ),
@@ -188,8 +188,7 @@ function culturefeed_content_update_7003() {
         }
 
         // Infinite fields -> saved as single combined value that gets converted back to form values when needed.
-        // TODO: might change after feedback.
-        $what_type = array(
+        $what_categories = array(
           'type' => 'text',
           'size' => 'medium',
         );

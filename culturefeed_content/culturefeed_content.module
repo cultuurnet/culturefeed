@@ -41,7 +41,6 @@ function culturefeed_content_field_culturefeed_content_validate($element, &$form
     'filter_query' => $values['filter_query'],
     'rows' => ($values['rows'] || $values['rows'] == 0) ? $values['rows'] : CULTUREFEED_CONTENT_DEFAULT_ROWS,
     'sort' => $values['sort'],
-    'what_type' => $values['what']['what_type'],
     'where_type' => $values['where']['where_type'],
     'where_equal' => (int)$values['where']['where_equal'],
     'where_region' => $values['where']['where_region'],
@@ -58,6 +57,8 @@ function culturefeed_content_field_culturefeed_content_validate($element, &$form
     'query_title' => $values['query_title'],
     'show_postal_code_search_box' => $values['show_postal_code_search_box'],
   );
+
+  // TODO: what_categories
 
   // Save types as CSV.
   $types_csv = '';
@@ -231,7 +232,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $filter_query = isset($items[$delta]['filter_query']) ? $items[$delta]['filter_query'] : '';
   $rows = isset($items[$delta]['rows']) ? $items[$delta]['rows'] : '';
   $sort = isset($items[$delta]['sort']) ? $items[$delta]['sort'] : '';
-  $what_type = isset($items[$delta]['what_type']) ? $items[$delta]['what_type'] : 'all';
   $where_type = isset($items[$delta]['where_type']) ? $items[$delta]['where_type'] : 'all';
   $where_equal = isset($items[$delta]['where_equal']) ? $items[$delta]['where_equal'] : 0;
   $where_region = isset($items[$delta]['where_region']) ? $items[$delta]['where_region'] : '';
@@ -249,6 +249,9 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
 
   // Return types CSV to array.
   $types = isset($items[$delta]['types']) ? explode(',', $items[$delta]['types']) : [];
+
+  // TODO
+  // $what_category_rows = isset($items[$delta]['what_categories']) ? $items[$delta]['what_categories'] : [];
 
   $element['wrapper'] = array(
     '#title' => t('CultureFeed content'),
@@ -346,24 +349,25 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#attributes' => ['class' => 'fieldset-query-builder']
   );
 
-  // Build category options.
-  $selectable_categories = ['eventtype', 'theme', 'actortype', 'facility'];
-  $domains = culturefeed_search_get_domains();
-  $category_options = ['all' => t('Alle')];
+  // Possibly build multiple rows in markup.
+  $what_category_rows = [
+    'todo: row values array'
+  ];
 
-  foreach ($selectable_categories as $category) {
-    $category_options[$category] = $domains[$category];
+  $markup = '';
+  if (empty($what_category_rows)) {
+    $markup = _culturefeed_add_builder_category_row(0);
+  }
+  else {
+    foreach($what_category_rows as $i => $values) {
+      $markup .= _culturefeed_add_builder_category_row($i, $values);
+    }
   }
 
-  $element['wrapper']['what']['what_type'] = array(
-    '#type' => 'select',
-    '#options' => $category_options,
-    '#default_value' => $what_type,
-    '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
-      'wrapper' => 'advanced_query_field',
-      'progress' => array('type' => 'none')
-    ),
+
+  $element['wrapper']['what']['what_categories'] = array(
+    '#type' => 'markup',
+    '#markup' => $markup,
   );
 
   // "Where" fieldset.
@@ -540,6 +544,13 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#type' => 'select',
     '#options' => $before_after_options,
     '#default_value' => $when_before_after_1,
+    '#states' => array(
+      'invisible' => array(
+        array(
+          ':input[name="field_zoekopdracht[und][0][wrapper][when][when_type_1]"]' => array('value' => 'all'),
+        ),
+      ),
+    ),
     '#ajax' => array(
       'callback' => '_culturefeed_ajax_rebuild_composite_query',
       'wrapper' => 'advanced_query_field',
@@ -553,6 +564,13 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#date_format' => 'd-m-Y',
     '#default_value' => $when_date_1,
     '#date_label_position' => 'none',
+    '#states' => array(
+      'invisible' => array(
+        array(
+          ':input[name="field_zoekopdracht[und][0][wrapper][when][when_type_1]"]' => array('value' => 'all'),
+        ),
+      ),
+    ),
     '#ajax' => array(
       'callback' => '_culturefeed_ajax_rebuild_composite_query',
       'wrapper' => 'advanced_query_field',
@@ -579,6 +597,13 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#type' => 'select',
     '#options' => $before_after_options,
     '#default_value' => $when_before_after_2,
+    '#states' => array(
+      'invisible' => array(
+        array(
+          ':input[name="field_zoekopdracht[und][0][wrapper][when][when_type_2]"]' => array('value' => 'all'),
+        ),
+      ),
+    ),
     '#ajax' => array(
       'callback' => '_culturefeed_ajax_rebuild_composite_query',
       'wrapper' => 'advanced_query_field',
@@ -592,6 +617,13 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#date_format' => 'd-m-Y',
     '#default_value' => $when_date_2,
     '#date_label_position' => 'none',
+    '#states' => array(
+      'invisible' => array(
+        array(
+          ':input[name="field_zoekopdracht[und][0][wrapper][when][when_type_2]"]' => array('value' => 'all'),
+        ),
+      ),
+    ),
     '#ajax' => array(
       'callback' => '_culturefeed_ajax_rebuild_composite_query',
       'wrapper' => 'advanced_query_field',
@@ -633,7 +665,91 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
 }
 
 /**
- * Show/hide textfields based on AJAX-enabled checkbox clicks.
+ * Add a category row to the query builder categories field.
+ *
+ * @param $id
+ * @param array $values
+ *
+ * @return string
+ */
+function _culturefeed_add_builder_category_row($id, $values = []) {
+  $row = [];
+
+  // TODO: check values for defaults.
+
+  // Build category type options.
+  $selectable_categories = ['eventtype', 'theme', 'actortype', 'facility'];
+  $domains = culturefeed_search_get_domains();
+  $category_type_options = ['all' => t('Alle')];
+
+  foreach ($selectable_categories as $category) {
+    $category_type_options[$category] = $domains[$category];
+  }
+
+  $row["what_type_$id"] = array(
+    '#type' => 'select',
+    '#options' => $category_type_options,
+    '#default_value' => 'all',
+    '#attributes' => array(
+      'name' => "field_zoekopdracht[und][0][wrapper][what][what_type_$id]"
+    ),
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
+    ),
+  );
+
+  $row["what_equal_$id"] = array(
+    '#type' => 'select',
+    '#options' => [
+      t('is equal to'),
+      t('is not equal to')
+    ],
+    '#default_value' => 0,
+    '#id' => "edit-field-zoekopdracht-und-0-wrapper-what-what-equal-$id",
+    '#states' => array(
+      'invisible' => array(
+        array(
+          ":input[name=\"field_zoekopdracht[und][0][wrapper][what][what_type_$id]\"]" => array('value' => 'all'),
+        ),
+      ),
+    ),
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'wrapper' => 'advanced_query_field',
+      'progress' => array('type' => 'none')
+    ),
+  );
+
+  // Build select fields for each category.
+  foreach ($selectable_categories as $category) {
+    $category_options = culturefeed_search_get_categories_by_domain($category);
+
+    $row["what_$category" . "_$id"] = array(
+      '#type' => 'select',
+      '#options' => $category_options,
+      '#id' => "edit-field-zoekopdracht-und-0-wrapper-what-what-$category-$id",
+      '#states' => array(
+        'visible' => array(
+          array(
+            ":input[name=\"field_zoekopdracht[und][0][wrapper][what][what_type_$id]\"]" => array('value' => $category),
+          ),
+        ),
+      ),
+      '#ajax' => array(
+        'callback' => '_culturefeed_ajax_rebuild_composite_query',
+        'wrapper' => 'advanced_query_field',
+        'progress' => array('type' => 'none')
+      ),
+    );
+  }
+
+  return render($row);
+}
+
+/**
+ * Build an advanced query string based on the current builder values.
  */
 function _culturefeed_build_advanced_query($values) {
   // TODO: Build advanced query based on current form values.
@@ -641,7 +757,7 @@ function _culturefeed_build_advanced_query($values) {
 }
 
 /**
- *
+ * Rebuild the composite_query field.
  */
 function _culturefeed_ajax_rebuild_composite_query($form, &$form_state) {
   return $form['field_zoekopdracht'][LANGUAGE_NONE][0]['wrapper']['composite_query'];
