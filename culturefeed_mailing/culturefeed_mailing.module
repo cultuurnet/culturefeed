@@ -243,15 +243,13 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
   }
   else {
 
-    // Get the user account.
-    $account = culturefeed_load_logged_in_user();
-    $user_already_subscribed = FALSE;
-
-    if ($account) {
-      // Check if user is already subscribed
-      $user_already_subscribed = _culturefeed_mailing_check_user_subscription($account->id, variable_get('culturefeed_mailing_list'));
+    if (!empty($form_state['invalid_email'])) {
+      drupal_set_message(t('The provided email address is invalid'), 'error');
     }
 
+    // Get the user account.
+    $account = culturefeed_load_logged_in_user();
+    $user_already_subscribed = $account ? _culturefeed_mailing_check_user_subscription($account->id, variable_get('culturefeed_mailing_list')) : FALSE;
     if ($user_already_subscribed) {
       $form['already_subscribed'] = array(
         '#theme' => 'culturefeed_mailing_content_block_already_subscribed',
