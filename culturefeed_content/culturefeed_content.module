@@ -227,12 +227,11 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#maxlength' => 255,
   );
 
-  // TODO: rename
   $element['wrapper']['query_string'] = array(
     '#default_value' => $query_string,
     '#required' => $element['#required'],
-    '#title' => t('Query'),
-    '#description' => t('Free text search, used for the SOLR query (q) parameter'),
+    '#title' => t('Keywords'),
+    '#description' => t('Use * as a wildcard to search on parts of a word, e.g. <strong>*speeltuin, sinterklaas*</strong>.<br> Combine multiple terms with AND, OR and through using brackets, e.g. <strong>(workshop OR cursus) AND keramiek*</strong>.<br> Exact combinations need to use double qoutes, e.g. <strong>"dag van de wetenschap"</strong>.'),
     '#type' => 'textfield',
     '#maxlength' => 1000,
     '#ajax' => array(
@@ -242,12 +241,11 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     ),
   );
 
-  // TODO: rename
   $element['wrapper']['filter_query'] = array(
     '#default_value' => $filter_query,
     '#required' => $element['#required'],
-    '#title' => t('Filter query'),
-    '#description' => t('Please use SOLR filter query (fq). You can use advanced combinations with AND, OR, double quotes (exact match), and wildcards (*)'),
+    '#title' => t('Custom filters'),
+    '#description' => t('Add extra parameters or your own advanced filter query, e.g. price:0 or hasimage:true'),
     '#type' => 'textfield',
     '#maxlength' => 1000,
     '#ajax' => array(
