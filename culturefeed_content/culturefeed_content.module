@@ -550,7 +550,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $element['wrapper']['when']['when_date_1'] = array(
     '#type' => 'date_popup',
     '#date_year_range' => '-2:+2',
-    '#date_format' => 'Y-m-d',
+    '#date_format' => 'd-m-Y',
     '#default_value' => $when_date_1,
     '#date_label_position' => 'none',
     '#ajax' => array(
@@ -589,7 +589,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $element['wrapper']['when']['when_date_2'] = array(
     '#type' => 'date_popup',
     '#date_year_range' => '-2:+2',
-    '#date_format' => 'Y-m-d',
+    '#date_format' => 'd-m-Y',
     '#default_value' => $when_date_2,
     '#date_label_position' => 'none',
     '#ajax' => array(
