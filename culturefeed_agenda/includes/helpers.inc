@@ -1014,18 +1014,17 @@ function culturefeed_get_relative_image($image_path) {
 function culturefeed_agenda_actor_set_organisation_canonical(CultureFeed_Cdb_Item_Actor $actor) {
   // Check the external id for an organisation.
   $split_ext_id = explode(':', $actor->getExternalId());
-  $ext_id_key = $split_ext_id[0];
-  $ext_id_value = $split_ext_id[1];
+  if (!empty($split_ext_id[0]) && !empty($split_ext_id[1])) {
+    $ext_id_key = $split_ext_id[0];
+    $ext_id_value = $split_ext_id[1];
 
-  if ($ext_id_key == 'ORG') {
-    // Retrieve canonical href path.
-    $detail = $actor->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-    if ($detail) {
-      $slug = strtolower(str_replace(' ', '_', $detail->getTitle()));
-      $canonical_path = culturefeed_search_detail_path('actor', $ext_id_value, $slug);
-      // Add canonical tag to head.
-      global $base_url;
-      drupal_add_html_head_link(array('rel' => 'canonical', 'href' => "$base_url/$canonical_path"), TRUE);
+    if ($ext_id_key == 'ORG') {
+      // Retrieve canonical href path.
+      $detail = $actor->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+      if ($detail) {
+        $canonical_url = culturefeed_search_detail_url('actor', $ext_id_value, $detail->getTitle(), ['absolute' => TRUE]);
+        drupal_add_html_head_link(array('rel' => 'canonical', 'href' => $canonical_url, TRUE));
+      }
     }
   }
 }
