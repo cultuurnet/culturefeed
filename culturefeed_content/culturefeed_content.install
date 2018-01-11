@@ -192,7 +192,7 @@ function culturefeed_content_update_7003() {
           'type' => 'text',
           'size' => 'medium',
         );
-        db_add_field($table, $field_name . '_what_type', $what_type);
+        db_add_field($table, $field_name . '_what_categories', $what_categories);
 
         $where_type = array(
           'type' => 'varchar',
