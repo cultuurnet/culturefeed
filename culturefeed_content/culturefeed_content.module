@@ -59,6 +59,7 @@ function culturefeed_content_field_culturefeed_content_validate($element, &$form
   );
 
   // TODO: what_categories
+  $items['what_categories'] = _culturefeed_build_categories_query($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['wrapper']['what']);
 
   // Save types as CSV.
   $types_csv = '';
@@ -250,8 +251,28 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   // Return types CSV to array.
   $types = isset($items[$delta]['types']) ? explode(',', $items[$delta]['types']) : [];
 
-  // TODO
-  // $what_category_rows = isset($items[$delta]['what_categories']) ? $items[$delta]['what_categories'] : [];
+  $field_parents = $element['#field_parents'];
+  $field_name = $element['#field_name'];
+  $language = $element['#language'];
+  $parents = array_merge($field_parents, array($field_name, $language, $delta));
+
+  // TODO: check triggering element for add and add empty row
+  $what_category_rows = [];
+
+  if (!empty($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['what_categories'])) {
+    $what_category_rows = _culturefeed_convert_categories_query_to_rows($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['what_categories']);
+  }
+  elseif (!empty($items[$delta]['what_categories'])) {
+    $what_category_rows = _culturefeed_convert_categories_query_to_rows($items[$delta]['what_categories']);
+  }
+  else {
+    $what_category_rows[] = [];
+  }
+
+  // Check triggering element to possibly add an empty row
+  if (isset($form_state['triggering_element']) && $form_state['triggering_element']['#name'] == 'what-add-category') {
+    $what_category_rows[] = [];
+  }
 
   $element['wrapper'] = array(
     '#title' => t('CultureFeed content'),
@@ -346,18 +367,17 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $element['wrapper']['what'] = array(
     '#title' => t('Categories'),
     '#type' => 'fieldset',
-    '#attributes' => ['class' => 'fieldset-query-builder']
+    '#attributes' => ['class' => 'fieldset-query-builder'],
+    '#prefix' => '<div id="categories_fieldset">',
+    '#suffix' => '</div>',
   );
 
-
+  // TODO: not needed?
   $element['wrapper']['what']['what_categories'] = array(
     '#type' => 'hidden',
   );
 
   // Possibly add multiple rows to the existing element.
-  // TODO
-  $what_category_rows = [];
-
   if (empty($what_category_rows)) {
     $element = _culturefeed_add_builder_category_row($element, 0);
   }
@@ -366,6 +386,25 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       $element = _culturefeed_add_builder_category_row($element, $i, $values);
     }
   }
+
+  $element['wrapper']['what']['add_category'] = array(
+    '#name' => 'what-add-category',
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+    '#submit' => array('culturefeed_content_widget_add_category_submit'),
+    //'#limit_validation_errors' => array($parents),
+    '#states' => array(
+      'invisible' => array(
+        array(
+          ':input[name="field_zoekopdracht[und][0][wrapper][what][what_type_0]"]' => array('value' => 'all'),
+        ),
+      ),
+    ),
+    '#ajax' => array(
+      'callback' => '_culturefeed_rebuild_categories',
+      'wrapper' => 'categories_fieldset',
+    ),
+  );
 
   // "Where" fieldset.
 
@@ -661,6 +700,10 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   return $element;
 }
 
+function culturefeed_content_widget_add_category_submit($form, &$form_state) {
+  $form_state['rebuild'] = TRUE;
+}
+
 /**
  * Add a category row to the query builder categories field.
  *
@@ -670,7 +713,10 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
  * @return string
  */
 function _culturefeed_add_builder_category_row($element, $id, $values = []) {
-  // TODO: check values for defaults.
+  // Check values for defaults.
+  $default_type = (isset($values['type']) ? $values['type'] : 'all');
+  $default_equal = (isset($values['equal']) ? $values['equal'] : 0);
+  $default_ids = (isset($values['ids']) ? $values['ids'] : '');
 
   // Build category type options.
   $selectable_categories = ['eventtype', 'theme', 'actortype', 'facility'];
@@ -684,7 +730,7 @@ function _culturefeed_add_builder_category_row($element, $id, $values = []) {
   $element['wrapper']['what']["what_type_$id"] = array(
     '#type' => 'select',
     '#options' => $category_type_options,
-    '#default_value' => 'all',
+    '#default_value' => $default_type,
     '#ajax' => array(
       'callback' => '_culturefeed_ajax_rebuild_composite_query',
       'wrapper' => 'advanced_query_field',
@@ -698,7 +744,7 @@ function _culturefeed_add_builder_category_row($element, $id, $values = []) {
       t('is equal to'),
       t('is not equal to')
     ],
-    '#default_value' => 0,
+    '#default_value' => $default_equal,
     '#states' => array(
       'invisible' => array(
         array(
@@ -720,6 +766,7 @@ function _culturefeed_add_builder_category_row($element, $id, $values = []) {
     $element['wrapper']['what']["what_$category" . "_$id"] = array(
       '#type' => 'select',
       '#options' => $category_options,
+      '#multiple' => TRUE,
       '#states' => array(
         'visible' => array(
           array(
@@ -727,15 +774,94 @@ function _culturefeed_add_builder_category_row($element, $id, $values = []) {
           ),
         ),
       ),
-      '#ajax' => array(
+      /*'#ajax' => array(
         'callback' => '_culturefeed_ajax_rebuild_composite_query',
         'wrapper' => 'advanced_query_field',
         'progress' => array('type' => 'none')
-      ),
+      ),*/
     );
+
+    if ($category == $default_type && $default_type !== 'all') {
+      $element['wrapper']['what']["what_$category" . "_$id"]['#default_value'] = $default_ids;
+    }
   }
 
   return $element;
+}
+
+/**
+ * Build the categories query string based on the current builder values.
+ */
+function _culturefeed_build_categories_query($values) {
+  $query = '';
+
+  // Loop through all possible field rows.
+  for ($i = 0; $i >= 0; $i++) {
+
+    if (!isset($values["what_type_$i"]) || $values["what_type_$i"] == 'all') {
+      break;
+    }
+
+    $type = $values["what_type_$i"];
+
+    $selected = $values["what_$type" . "_$i"];
+
+    if (!empty($selected)) {
+      $selected_ids = explode(',', array_pop($selected));
+
+      $not_equal = (int)$values["what_equal_$i"];
+
+      $query .= 'fq=(';
+
+      $j = 0;
+      foreach ($selected_ids as $cat_id) {
+        $query .= ($not_equal ? 'NOT ' : '');
+
+        $query .= "category_$type" ."_id:$cat_id";
+
+        $j++;
+        if(count($selected_ids) > $j) {
+          $query .= ' OR ';
+        }
+        else {
+          continue;
+        }
+      }
+
+      $query .= ')&';
+    }
+    else {
+      break;
+    }
+  }
+
+  return rtrim($query, '&');
+}
+
+/**
+ * Return rows data array based on categories query string.
+ */
+function _culturefeed_convert_categories_query_to_rows ($query) {
+  $rows = [];
+
+  $query_split = explode('&', $query);
+
+  foreach ($query_split as $part) {
+
+    $equal = strpos($part, 'NOT') ? 1 : 0;
+
+    $matches = [];
+
+    preg_match_all('/category_(.*?)_id:([\w\.]+)/', $part, $matches);
+
+    $rows[] = [
+      'type' => $matches[1][0],
+      'equal' => $equal,
+      'ids' => $matches[2]
+    ];
+  }
+
+  return $rows;
 }
 
 /**
@@ -743,7 +869,15 @@ function _culturefeed_add_builder_category_row($element, $id, $values = []) {
  */
 function _culturefeed_build_advanced_query($values) {
   // TODO: Build advanced query based on current form values.
+  // categories query is built separately and should be added to this query.
   return 'todo';
+}
+
+/**
+ * Rebuild the categories field.
+ */
+function _culturefeed_rebuild_categories($form, &$form_state) {
+  return $form['field_zoekopdracht'][LANGUAGE_NONE][0]['wrapper']['what'];
 }
 
 /**
