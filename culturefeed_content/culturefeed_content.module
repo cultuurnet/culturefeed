@@ -349,26 +349,23 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#attributes' => ['class' => 'fieldset-query-builder']
   );
 
-  // Possibly build multiple rows in markup.
-  $what_category_rows = [
-    'todo: row values array'
-  ];
 
-  $markup = '';
+  $element['wrapper']['what']['what_categories'] = array(
+    '#type' => 'hidden',
+  );
+
+  // Possibly add multiple rows to the existing element.
+  // TODO
+  $what_category_rows = [];
+
   if (empty($what_category_rows)) {
-    $markup = _culturefeed_add_builder_category_row(0);
+    $element = _culturefeed_add_builder_category_row($element, 0);
   }
   else {
     foreach($what_category_rows as $i => $values) {
-      $markup .= _culturefeed_add_builder_category_row($i, $values);
+      $element = _culturefeed_add_builder_category_row($element, $i, $values);
     }
   }
-
-
-  $element['wrapper']['what']['what_categories'] = array(
-    '#type' => 'markup',
-    '#markup' => $markup,
-  );
 
   // "Where" fieldset.
 
@@ -672,9 +669,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
  *
  * @return string
  */
-function _culturefeed_add_builder_category_row($id, $values = []) {
-  $row = [];
-
+function _culturefeed_add_builder_category_row($element, $id, $values = []) {
   // TODO: check values for defaults.
 
   // Build category type options.
@@ -686,13 +681,10 @@ function _culturefeed_add_builder_category_row($id, $values = []) {
     $category_type_options[$category] = $domains[$category];
   }
 
-  $row["what_type_$id"] = array(
+  $element['wrapper']['what']["what_type_$id"] = array(
     '#type' => 'select',
     '#options' => $category_type_options,
     '#default_value' => 'all',
-    '#attributes' => array(
-      'name' => "field_zoekopdracht[und][0][wrapper][what][what_type_$id]"
-    ),
     '#ajax' => array(
       'callback' => '_culturefeed_ajax_rebuild_composite_query',
       'wrapper' => 'advanced_query_field',
@@ -700,14 +692,13 @@ function _culturefeed_add_builder_category_row($id, $values = []) {
     ),
   );
 
-  $row["what_equal_$id"] = array(
+  $element['wrapper']['what']["what_equal_$id"] = array(
     '#type' => 'select',
     '#options' => [
       t('is equal to'),
       t('is not equal to')
     ],
     '#default_value' => 0,
-    '#id' => "edit-field-zoekopdracht-und-0-wrapper-what-what-equal-$id",
     '#states' => array(
       'invisible' => array(
         array(
@@ -726,10 +717,9 @@ function _culturefeed_add_builder_category_row($id, $values = []) {
   foreach ($selectable_categories as $category) {
     $category_options = culturefeed_search_get_categories_by_domain($category);
 
-    $row["what_$category" . "_$id"] = array(
+    $element['wrapper']['what']["what_$category" . "_$id"] = array(
       '#type' => 'select',
       '#options' => $category_options,
-      '#id' => "edit-field-zoekopdracht-und-0-wrapper-what-what-$category-$id",
       '#states' => array(
         'visible' => array(
           array(
@@ -745,7 +735,7 @@ function _culturefeed_add_builder_category_row($id, $values = []) {
     );
   }
 
-  return render($row);
+  return $element;
 }
 
 /**
