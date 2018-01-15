@@ -255,8 +255,8 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $field_name = $element['#field_name'];
   $language = $element['#language'];
   $parents = array_merge($field_parents, array($field_name, $language, $delta));
+  $field_name_base = implode('][', $parents);
 
-  // TODO: check triggering element for add and add empty row
   $what_category_rows = [];
 
   if (!empty($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['what_categories'])) {
@@ -379,11 +379,11 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
 
   // Possibly add multiple rows to the existing element.
   if (empty($what_category_rows)) {
-    $element = _culturefeed_add_builder_category_row($element, 0);
+    $element = _culturefeed_add_builder_category_row($element, $field_name_base, 0);
   }
   else {
     foreach($what_category_rows as $i => $values) {
-      $element = _culturefeed_add_builder_category_row($element, $i, $values);
+      $element = _culturefeed_add_builder_category_row($element, $field_name_base, $i, $values);
     }
   }
 
@@ -396,7 +396,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#states' => array(
       'invisible' => array(
         array(
-          ':input[name="field_zoekopdracht[und][0][wrapper][what][what_type_0]"]' => array('value' => 'all'),
+          ":input[name=\"$field_name_base][wrapper][what][what_type_0]\"]" => array('value' => 'all'),
         ),
       ),
     ),
@@ -440,10 +440,10 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#states' => array(
       'visible' => array(
         array(
-          ':input[name="field_zoekopdracht[und][0][wrapper][where][where_type]"]' => array('value' => 'region'),
+          ":input[name=\"$field_name_base][wrapper][where][where_type]\"]" => array('value' => 'region'),
         ),
         array(
-          ':input[name="field_zoekopdracht[und][0][wrapper][where][where_type]"]' => array('value' => 'city'),
+          ":input[name=\"$field_name_base][wrapper][where][where_type]\"]" => array('value' => 'city'),
         ),
       ),
     ),
@@ -469,7 +469,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#states' => array(
       'visible' => array(
         array(
-          ':input[name="field_zoekopdracht[und][0][wrapper][where][where_type]"]' => array('value' => 'region'),
+          ":input[name=\"$field_name_base][wrapper][where][where_type]\"]" => array('value' => 'region'),
         ),
       ),
     ),
@@ -495,7 +495,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#states' => array(
       'visible' => array(
         array(
-          ':input[name="field_zoekopdracht[und][0][wrapper][where][where_type]"]' => array('value' => 'city'),
+          ":input[name=\"$field_name_base][wrapper][where][where_type]\"]" => array('value' => 'city'),
         ),
       ),
     ),
@@ -514,7 +514,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#states' => array(
       'visible' => array(
         array(
-          ':input[name="field_zoekopdracht[und][0][wrapper][where][where_type]"]' => array('value' => 'postal_code'),
+          ":input[name=\"$field_name_base][wrapper][where][where_type]\"]" => array('value' => 'postal_code'),
         ),
       ),
     ),
@@ -537,7 +537,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#states' => array(
       'visible' => array(
         array(
-          ':input[name="field_zoekopdracht[und][0][wrapper][where][where_type]"]' => array('value' => 'postal_code'),
+          ":input[name=\"$field_name_base][wrapper][where][where_type]\"]" => array('value' => 'postal_code'),
         ),
       ),
     ),
@@ -583,7 +583,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#states' => array(
       'invisible' => array(
         array(
-          ':input[name="field_zoekopdracht[und][0][wrapper][when][when_type_1]"]' => array('value' => 'all'),
+          ":input[name=\"$field_name_base][wrapper][when][when_type_1]\"]" => array('value' => 'all'),
         ),
       ),
     ),
@@ -603,7 +603,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#states' => array(
       'invisible' => array(
         array(
-          ':input[name="field_zoekopdracht[und][0][wrapper][when][when_type_1]"]' => array('value' => 'all'),
+          ":input[name=\"$field_name_base][wrapper][when][when_type_1]\"]" => array('value' => 'all'),
         ),
       ),
     ),
@@ -636,7 +636,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#states' => array(
       'invisible' => array(
         array(
-          ':input[name="field_zoekopdracht[und][0][wrapper][when][when_type_2]"]' => array('value' => 'all'),
+          ":input[name=\"$field_name_base][wrapper][when][when_type_2]\"]" => array('value' => 'all'),
         ),
       ),
     ),
@@ -656,7 +656,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#states' => array(
       'invisible' => array(
         array(
-          ':input[name="field_zoekopdracht[und][0][wrapper][when][when_type_2]"]' => array('value' => 'all'),
+          ":input[name=\"$field_name_base][wrapper][when][when_type_2]\"]" => array('value' => 'all'),
         ),
       ),
     ),
@@ -712,7 +712,7 @@ function culturefeed_content_widget_add_category_submit($form, &$form_state) {
  *
  * @return string
  */
-function _culturefeed_add_builder_category_row($element, $id, $values = []) {
+function _culturefeed_add_builder_category_row($element, $field_name_base, $id, $values = []) {
   // Check values for defaults.
   $default_type = (isset($values['type']) ? $values['type'] : 'all');
   $default_equal = (isset($values['equal']) ? $values['equal'] : 0);
@@ -748,7 +748,7 @@ function _culturefeed_add_builder_category_row($element, $id, $values = []) {
     '#states' => array(
       'invisible' => array(
         array(
-          ":input[name=\"field_zoekopdracht[und][0][wrapper][what][what_type_$id]\"]" => array('value' => 'all'),
+          ":input[name=\"$field_name_base][wrapper][what][what_type_$id]\"]" => array('value' => 'all'),
         ),
       ),
     ),
@@ -770,7 +770,7 @@ function _culturefeed_add_builder_category_row($element, $id, $values = []) {
       '#states' => array(
         'visible' => array(
           array(
-            ":input[name=\"field_zoekopdracht[und][0][wrapper][what][what_type_$id]\"]" => array('value' => $category),
+            ":input[name=\"$field_name_base][wrapper][what][what_type_$id]\"]" => array('value' => $category),
           ),
         ),
       ),
