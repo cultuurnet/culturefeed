@@ -255,7 +255,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $field_name = $element['#field_name'];
   $language = $element['#language'];
   $parents = array_merge($field_parents, array($field_name, $language, $delta));
-  $field_name_base = implode('][', $parents);
+  $field_name_base = $field_name . "[$language]" . "[$delta";
 
   $what_category_rows = [];
 
