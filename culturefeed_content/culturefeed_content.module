@@ -41,6 +41,7 @@ function culturefeed_content_field_culturefeed_content_validate($element, &$form
     'filter_query' => $values['filter_query'],
     'rows' => ($values['rows'] || $values['rows'] == 0) ? $values['rows'] : CULTUREFEED_CONTENT_DEFAULT_ROWS,
     'sort' => $values['sort'],
+    'types' => $values['types'],
     'what_categories' => serialize($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['wrapper']['what']),
     'where_type' => $values['where']['where_type'],
     'where_equal' => (int)$values['where']['where_equal'],
@@ -58,13 +59,6 @@ function culturefeed_content_field_culturefeed_content_validate($element, &$form
     'query_title' => $values['query_title'],
     'show_postal_code_search_box' => $values['show_postal_code_search_box'],
   );
-
-  // Save types as CSV.
-  $types_csv = '';
-  foreach ($values['types'] as $type => $value) {
-    $types_csv = $value ? $types_csv . "$type," : $types_csv;
-  }
-  $items['types'] = rtrim($types_csv, ',');
 
   form_set_value($element, $items, $form_state);
 
@@ -352,6 +346,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       'actor' => t('Actor'),
       'production' => t('Production')
     ],
+    '#description' => t('Selecting none means that all types will be shown.'),
     '#default_value' => $types,
     '#title' => t('Type'),
     '#required' => $element['#required'],
@@ -686,7 +681,9 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#prefix' => '<div id="advanced_query_field">',
     '#suffix' => '</div>',
   );
-  $element['wrapper']['composite_query']['#default_value'] = _culturefeed_build_advanced_query($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]);
+
+  $build_values = $form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0] ? $form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0] : $items[0];
+  $element['wrapper']['composite_query']['#default_value'] = _culturefeed_build_advanced_query($build_values);
 
   $element['wrapper']['query_title'] = array(
     '#type' => 'textfield',
@@ -802,54 +799,12 @@ function _culturefeed_add_builder_category_row($element, $field_name_base, $id =
 }
 
 /**
- * Build the categories query string based on the current builder values.
+ * Unserialize categories form values and convert to custom row value arrays.
+ *
+ * @param $serialized_values
+ *
+ * @return array
  */
-function _culturefeed_build_categories_query($values) {
-  $query = '';
-
-  // Loop through all possible field rows.
-  for ($i = 0; $i >= 0; $i++) {
-
-    if (!isset($values["what_type_$i"]) || $values["what_type_$i"] == 'all') {
-      break;
-    }
-
-    $type = $values["what_type_$i"];
-
-    $selected = $values["what_$type" . "_$i"];
-
-    if (!empty($selected)) {
-      $selected_ids = explode(',', array_pop($selected));
-
-      $not_equal = (int)$values["what_equal_$i"];
-
-      $query .= 'fq=(';
-
-      $j = 0;
-      foreach ($selected_ids as $cat_id) {
-        $query .= ($not_equal ? 'NOT ' : '');
-
-        $query .= "category_$type" ."_id:$cat_id";
-
-        $j++;
-        if(count($selected_ids) > $j) {
-          $query .= ' OR ';
-        }
-        else {
-          continue;
-        }
-      }
-
-      $query .= ')&';
-    }
-    else {
-      break;
-    }
-  }
-
-  return rtrim($query, '&');
-}
-
 function _culturefeed_convert_serialized_categories_to_rows ($serialized_values) {
   $rows = [];
 
@@ -896,38 +851,124 @@ function _culturefeed_convert_serialized_categories_to_rows ($serialized_values)
 }
 
 /**
- * Return rows data array based on categories query string.
- */
-function _culturefeed_convert_categories_query_to_rows ($query) {
-  $rows = [];
-
-  $query_split = explode('&', $query);
-
-  foreach ($query_split as $part) {
-
-    $equal = strpos($part, 'NOT') ? 1 : 0;
-
-    $matches = [];
-
-    preg_match_all('/category_(.*?)_id:([\w\.]+)/', $part, $matches);
-
-    $rows[] = [
-      'type' => $matches[1][0],
-      'equal' => $equal,
-      'ids' => $matches[2]
-    ];
-  }
-
-  return $rows;
-}
-
-/**
  * Build an advanced query string based on the current builder values.
  */
 function _culturefeed_build_advanced_query($values) {
-  // TODO: Build advanced query based on current form values.
-  // categories query is built separately and should be added to this query.
-  return 'todo';
+  $title = !empty($values['query_title']) ? $values['query_title'] : t('Advanced query filter');
+  $query_param = !empty($values['query_string']) ? $values['query_string'] : '*';
+  $advanced_query = "advanced_query[title]=$title&advanced_query[query]=\"q=$query_param";
+
+  // Types.
+  $types = [];
+  foreach ($values['types'] as $type => $value) {
+    if ($value) {
+      $types[] = $type;
+    }
+  }
+
+  if (empty($types)) {
+    $types = ['event', 'actor', 'production'];
+  }
+
+  $type_filters = '';
+
+  foreach ($types as $type) {
+    if (!empty($type_filters)) {
+      $type_filters .= ' OR ';
+    }
+    $type_filters .= "type:$type";
+  }
+
+  $advanced_query .= "&fq=($type_filters)";
+
+  if (!empty($values['filter_query'])) {
+    $advanced_query .= '&fq=(' . $values['filter_query'] . ')';
+  }
+
+  // Categories query.
+  $advanced_query .= _culturefeed_build_categories_query(unserialize($values['what_categories']));
+
+  // Where.
+  $where_query = '';
+
+  switch ($values['where_type']) {
+    case 'region':
+      $region = $values['where_region'];
+      if ($region !== 'all') {
+        $where_query = $values['where_equal'] ? "&fq=(NOT category_flandersregion_id:$region)" : "&fq=(category_flandersregion_id:$region)";
+      }
+      break;
+    case 'city':
+      $city = $values['where_city'];
+      if ($city !== 'all') {
+        $where_query = $values['where_equal'] ? "&fq=(NOT category_flandersregion_id:$city)" : "&fq=(category_flandersregion_id:$city)";
+      }
+      break;
+    case 'postal_code':
+      $postal_code = $values['where_postal_code'];
+      $radius = $values['where_postal_code_radius'] . 'km';
+      $where_query = $values['where_equal'] ? "&fq=(NOT zipcode:$postal_code!$radius)" : "&fq=(zipcode:$postal_code)";
+      break;
+  }
+
+  $advanced_query .= $where_query;
+
+  // TODO: When.
+  $when_query = '';
+
+  // Extra sort param.
+  $advanced_query .= '"&sort=' . $values['sort'];
+
+  return $advanced_query;
+}
+
+/**
+ * Build the categories query string based on the current builder values.
+ */
+function _culturefeed_build_categories_query($values) {
+  $query = '';
+
+  // Loop through all possible field rows.
+  for ($i = 0; $i >= 0; $i++) {
+
+    if (!isset($values["what_type_$i"]) || $values["what_type_$i"] == 'all') {
+      break;
+    }
+
+    $type = $values["what_type_$i"];
+
+    $selected = $values["what_$type" . "_$i"];
+
+    if (!empty($selected)) {
+      $selected_ids = explode(',', array_pop($selected));
+
+      $not_equal = (int)$values["what_equal_$i"];
+
+      $query .= '&fq=(';
+
+      $j = 0;
+      foreach ($selected_ids as $cat_id) {
+        $query .= ($not_equal ? 'NOT ' : '');
+
+        $query .= "category_$type" ."_id:$cat_id";
+
+        $j++;
+        if(count($selected_ids) > $j) {
+          $query .= ' OR ';
+        }
+        else {
+          continue;
+        }
+      }
+
+      $query .= ')';
+    }
+    else {
+      break;
+    }
+  }
+
+  return rtrim($query, '&');
 }
 
 /**
