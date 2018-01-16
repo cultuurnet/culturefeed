@@ -60,6 +60,13 @@ function culturefeed_content_field_culturefeed_content_validate($element, &$form
     'show_postal_code_search_box' => $values['show_postal_code_search_box'],
   );
 
+  // Save types as CSV.
+  $types_csv = '';
+  foreach ($values['types'] as $type => $value) {
+    $types_csv = $value ? $types_csv . "$type," : $types_csv;
+  }
+  $items['types'] = rtrim($types_csv, ',');
+
   form_set_value($element, $items, $form_state);
 
 }
