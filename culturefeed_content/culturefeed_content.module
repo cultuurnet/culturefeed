@@ -58,7 +58,7 @@ function culturefeed_content_field_culturefeed_content_validate($element, &$form
     'query_title' => $values['query_title'],
     'show_postal_code_search_box' => $values['show_postal_code_search_box'],
   );
-  
+
   // Save types as CSV.
   $types_csv = '';
   foreach ($values['types'] as $type => $value) {
@@ -269,6 +269,11 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     $what_category_rows[] = [];
   }
 
+  // Check triggering element to possibly remove the last row
+  if (isset($form_state['triggering_element']) && $form_state['triggering_element']['#name'] == 'what-remove-category') {
+    array_pop($what_category_rows);
+  }
+
   $element['wrapper'] = array(
     '#title' => t('CultureFeed content'),
     '#type' => 'fieldset',
@@ -369,7 +374,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
 
   // Possibly add multiple rows to the existing element.
   if (empty($what_category_rows)) {
-    $element = _culturefeed_add_builder_category_row($element, $field_name_base, 0);
+    $element = _culturefeed_add_builder_category_row($element, $field_name_base);
   }
   else {
     foreach($what_category_rows as $i => $values) {
@@ -381,9 +386,8 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#name' => 'what-add-category',
     '#type' => 'submit',
     '#value' => t('Submit'),
-    '#submit' => array('culturefeed_content_widget_add_category_submit'),
+    '#submit' => array('culturefeed_content_widget_add_remove_category_submit'),
     '#limit_validation_errors' => array($parents),
-    //'#executes_submit_callback' => FALSE,
     '#states' => array(
       'invisible' => array(
         array(
@@ -396,6 +400,23 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       'wrapper' => 'categories_fieldset',
     ),
   );
+
+  $element['wrapper']['what']['remove_category'] = array(
+    '#name' => 'what-remove-category',
+    '#type' => 'submit',
+    '#value' => t('Remove'),
+    '#submit' => array('culturefeed_content_widget_add_remove_category_submit'),
+    '#limit_validation_errors' => array($parents),
+    '#ajax' => array(
+      'callback' => '_culturefeed_rebuild_categories',
+      'wrapper' => 'categories_fieldset',
+    ),
+  );
+
+  // Hide "remove" button when there are fewer than 2 category field rows.
+  if (!isset($element['wrapper']['what']['what_type_1'])) {
+    $element['wrapper']['what']['remove_category']['#access'] = FALSE;
+  }
 
   // "Where" fieldset.
 
@@ -691,7 +712,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   return $element;
 }
 
-function culturefeed_content_widget_add_category_submit($form, &$form_state) {
+function culturefeed_content_widget_add_remove_category_submit($form, &$form_state) {
   $form_state['rebuild'] = TRUE;
 }
 
@@ -703,7 +724,7 @@ function culturefeed_content_widget_add_category_submit($form, &$form_state) {
  *
  * @return string
  */
-function _culturefeed_add_builder_category_row($element, $field_name_base, $id, $values = []) {
+function _culturefeed_add_builder_category_row($element, $field_name_base, $id = 0, $values = []) {
   // Check values for defaults.
   $default_type = (isset($values['type']) ? $values['type'] : 'all');
   $default_equal = (isset($values['equal']) ? $values['equal'] : 0);
