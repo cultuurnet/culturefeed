@@ -41,6 +41,7 @@ function culturefeed_content_field_culturefeed_content_validate($element, &$form
     'filter_query' => $values['filter_query'],
     'rows' => ($values['rows'] || $values['rows'] == 0) ? $values['rows'] : CULTUREFEED_CONTENT_DEFAULT_ROWS,
     'sort' => $values['sort'],
+    'what_categories' => serialize($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['wrapper']['what']),
     'where_type' => $values['where']['where_type'],
     'where_equal' => (int)$values['where']['where_equal'],
     'where_region' => $values['where']['where_region'],
@@ -57,10 +58,7 @@ function culturefeed_content_field_culturefeed_content_validate($element, &$form
     'query_title' => $values['query_title'],
     'show_postal_code_search_box' => $values['show_postal_code_search_box'],
   );
-
-  // TODO: what_categories
-  $items['what_categories'] = _culturefeed_build_categories_query($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['wrapper']['what']);
-
+  
   // Save types as CSV.
   $types_csv = '';
   foreach ($values['types'] as $type => $value) {
@@ -259,14 +257,11 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
 
   $what_category_rows = [];
 
-  if (!empty($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['what_categories'])) {
-    $what_category_rows = _culturefeed_convert_categories_query_to_rows($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['what_categories']);
+  if (!empty(unserialize($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['what_categories']))) {
+    $what_category_rows = _culturefeed_convert_serialized_categories_to_rows($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['what_categories']);
   }
   elseif (!empty($items[$delta]['what_categories'])) {
-    $what_category_rows = _culturefeed_convert_categories_query_to_rows($items[$delta]['what_categories']);
-  }
-  else {
-    $what_category_rows[] = [];
+    $what_category_rows = _culturefeed_convert_serialized_categories_to_rows($items[$delta]['what_categories']);
   }
 
   // Check triggering element to possibly add an empty row
@@ -372,11 +367,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#suffix' => '</div>',
   );
 
-  // TODO: not needed?
-  $element['wrapper']['what']['what_categories'] = array(
-    '#type' => 'hidden',
-  );
-
   // Possibly add multiple rows to the existing element.
   if (empty($what_category_rows)) {
     $element = _culturefeed_add_builder_category_row($element, $field_name_base, 0);
@@ -392,7 +382,8 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#type' => 'submit',
     '#value' => t('Submit'),
     '#submit' => array('culturefeed_content_widget_add_category_submit'),
-    //'#limit_validation_errors' => array($parents),
+    '#limit_validation_errors' => array($parents),
+    //'#executes_submit_callback' => FALSE,
     '#states' => array(
       'invisible' => array(
         array(
@@ -774,11 +765,11 @@ function _culturefeed_add_builder_category_row($element, $field_name_base, $id, 
           ),
         ),
       ),
-      /*'#ajax' => array(
+      '#ajax' => array(
         'callback' => '_culturefeed_ajax_rebuild_composite_query',
         'wrapper' => 'advanced_query_field',
         'progress' => array('type' => 'none')
-      ),*/
+      ),
     );
 
     if ($category == $default_type && $default_type !== 'all') {
@@ -836,6 +827,51 @@ function _culturefeed_build_categories_query($values) {
   }
 
   return rtrim($query, '&');
+}
+
+function _culturefeed_convert_serialized_categories_to_rows ($serialized_values) {
+  $rows = [];
+
+  $values = unserialize($serialized_values);
+
+  for ($i = 0; $i >= 0; $i++) {
+    if (isset($values["what_type_$i"])) {
+      if ($values["what_type_$i"] !== 'all') {
+
+        switch ($values["what_type_$i"]) {
+          case 'eventtype':
+            $ids = $values["what_eventtype_$i"];
+            break;
+          case 'theme':
+            $ids = $values["what_theme_$i"];
+            break;
+          case 'actortype':
+            $ids = $values["what_actortype_$i"];
+            break;
+          case 'facility':
+            $ids = $values["what_facility_$i"];
+            break;
+          default:
+            $ids = [];
+            break;
+        }
+
+        $rows[] = [
+          'type' => $values["what_type_$i"],
+          'equal' => $values["what_equal_$i"],
+          'ids' => $ids
+        ];
+      }
+      else {
+        $rows[] = [];
+      }
+    }
+    else {
+      break;
+    }
+  }
+
+  return $rows;
 }
 
 /**
