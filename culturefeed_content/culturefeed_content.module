@@ -98,23 +98,11 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
       foreach ($items as $delta => $item) {
 
         $title = $item['title'];
-        $query_string = $item['query_string'];
-        $filter_query = $item['filter_query'];
+
         $sort = isset($item['sort']) ? $item['sort'] : CULTUREFEED_CONTENT_DEFAULT_SORT;
         $rows = isset($item['rows']) ? $item['rows'] : CULTUREFEED_CONTENT_DEFAULT_ROWS;
 
-        if (empty($query_string)) {
-          $query_string = '*:*';
-        }
-
         $parameters = array();
-        if ($query_string) {
-          $query_string = _culturefeed_search_ui_sanitize_query_term($query_string);
-          $parameters[] = new \CultuurNet\Search\Parameter\Query($query_string);
-        }
-        if ($filter_query) {
-          $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery($filter_query);
-        }
 
         $search_type = culturefeed_get_searchable_type('activiteiten');
         $sort_options = culturefeed_search_ui_get_sort_options_for_page($search_type);
@@ -128,8 +116,26 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
         }
 
         $parameters[] = new \CultuurNet\Search\Parameter\Rows($rows);
-        $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
         $parameters[] = new \CultuurNet\Search\Parameter\Group();
+
+        // Retrieve advanced query string and convert values to parameters.
+        preg_match('/\[query\]=\((.*)\)/', $item['composite_query'], $matches);
+
+        foreach (explode('&', $matches[1]) as $filter) {
+          $key_value = explode('=', $filter);
+
+          switch ($key_value[0]) {
+            case 'q':
+              $parameters[] = new \CultuurNet\Search\Parameter\Query($key_value[1]);
+              break;
+            case 'fq':
+            default:
+              $facetFilterQuery = new \CultuurNet\Search\Parameter\FilterQuery($key_value[1]);
+              $parameters[] = $facetFilterQuery;
+              break;
+          }
+        }
+
 
         // Execute search.
         try {
@@ -859,14 +865,18 @@ function _culturefeed_convert_serialized_categories_to_rows ($serialized_values)
 
 /**
  * Build an advanced query string based on the current builder values.
+ *
+ * @param $values
+ *
+ * @return string
  */
 function _culturefeed_build_advanced_query($values) {
   $title = !empty($values['query_title']) ? $values['query_title'] : t('Advanced query filter');
-  $query_param = !empty($values['query_string']) ? $values['query_string'] : '*';
-  $advanced_query = "advanced_query[title]=$title&advanced_query[query]=\"q=$query_param";
+  $query_param = !empty($values['query_string']) ? _culturefeed_search_ui_sanitize_query_term($values['query_string']) : '*:*';
+  $advanced_query = "advanced_query[title]=$title&advanced_query[query]=(q=$query_param";
 
   // Types.
-  $types = [];
+  $types = isset($values['types']) ? explode(',', $values['types']) : null;
   foreach ($values['types'] as $type => $value) {
     if ($value) {
       $types[] = $type;
@@ -924,13 +934,17 @@ function _culturefeed_build_advanced_query($values) {
   $when_query = '';
 
   // Extra sort param.
-  $advanced_query .= '"&sort=' . $values['sort'];
+  $advanced_query .= ')&sort=' . $values['sort'];
 
   return $advanced_query;
 }
 
 /**
  * Build the categories query string based on the current builder values.
+ *
+ * @param $values
+ *
+ * @return string
  */
 function _culturefeed_build_categories_query($values) {
   $query = '';
@@ -947,20 +961,18 @@ function _culturefeed_build_categories_query($values) {
     $selected = $values["what_$type" . "_$i"];
 
     if (!empty($selected)) {
-      $selected_ids = explode(',', array_pop($selected));
-
       $not_equal = (int)$values["what_equal_$i"];
 
       $query .= '&fq=(';
 
       $j = 0;
-      foreach ($selected_ids as $cat_id) {
+      foreach ($selected as $cat_id) {
         $query .= ($not_equal ? 'NOT ' : '');
 
         $query .= "category_$type" ."_id:$cat_id";
 
         $j++;
-        if(count($selected_ids) > $j) {
+        if(count($selected) > $j) {
           $query .= ' OR ';
         }
         else {
