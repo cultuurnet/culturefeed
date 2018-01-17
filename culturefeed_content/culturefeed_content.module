@@ -1210,16 +1210,14 @@ function culturefeed_content_contextual_search_box_form(array $form, array $form
   if ($show_postal_code_filter) {
     $form['filter_postal_code'] = array(
       '#type' => 'radio',
-      '#description' => t('Only show tips in my neighbourhood: @postal_code.', array(
+      '#description' => t('Only show tips in my neighbourhood: <em>@postal_code</em>.', array(
         '@postal_code' => '1000',
       )),
-      '#attributes' => array('style' => 'display: none;'),
-      /*
       '#ajax' => array(
         'callback' => '_culturefeed_ajax_rebuild_more_tips_link',
         'wrapper' => 'show_more_tips_button',
         'progress' => array('type' => 'none')
-      ),*/
+      ),
     );
 
     $form['modify_postal_code_link'] = array(
@@ -1228,7 +1226,15 @@ function culturefeed_content_contextual_search_box_form(array $form, array $form
     );
   }
 
-  $form['postal_code'] = array(
+  $form['postal_code_container'] = array(
+    '#type' => 'container',
+    '#attributes' => array(
+      'class' => array('postal-code-container'),
+      'style' => 'display: none;'
+    ),
+  );
+
+    $form['postal_code_container']['postal_code'] = array(
     '#type' => 'textfield',
     '#title' => t('Postal code'),
     '#size' => 10,
