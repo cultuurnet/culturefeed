@@ -98,7 +98,7 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
       foreach ($items as $delta => $item) {
 
         $title = $item['title'];
-        
+
         $sort = isset($item['sort']) ? $item['sort'] : CULTUREFEED_CONTENT_DEFAULT_SORT;
         $rows = isset($item['rows']) ? $item['rows'] : CULTUREFEED_CONTENT_DEFAULT_ROWS;
 
@@ -135,7 +135,7 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
               break;
             case 'fq':
             default:
-              $facetFilterQuery = new \CultuurNet\Search\Parameter\FilterQuery($key_value[1]);
+              $facetFilterQuery = new \CultuurNet\Search\Parameter\FilterQuery(trim($key_value[1], '()'));
               $parameters[] = $facetFilterQuery;
               break;
           }
@@ -170,17 +170,14 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
 
           if ($result->getTotalCount() > $rows) {
 
-            if (function_exists('culturefeed_search_get_search_url_query')) {
-
-              $query = 'q=' . html_entity_decode($query_string) . ($filter_query ? '&fq=' . html_entity_decode($filter_query) : '');
+              $query = html_entity_decode($item['composite_query']);
               $query .= '&sort=' . $sort;
 
               $build[] = array(
-                '#theme' => 'culturefeed_content_all_results_link',
-                '#query' => culturefeed_search_get_search_url_query($query),
+                '#theme' => 'culturefeed_content_all_advanced_query_results_link',
+                '#query' => $query,
+                '#show_postal_code_search_box' => (int)$item['show_postal_code_search_box']
               );
-
-            }
 
           }
 
@@ -938,9 +935,6 @@ function _culturefeed_build_advanced_query($values) {
   // TODO: When.
   $when_query = '';
 
-  // Extra sort param.
-  $advanced_query .= ')&sort=' . $values['sort'];
-
   return $advanced_query;
 }
 
@@ -1047,6 +1041,14 @@ function culturefeed_content_theme() {
         'classes' => array('cf-content-all-results-link'),
       ),
     ),
+    'culturefeed_content_all_advanced_query_results_link' => array(
+      'variables' => array(
+        'link_text' => t('Show more'),
+        'query' => '',
+        'show_postal_code_search_box' => 0,
+        'classes' => array('cf-content-all-results-link'),
+      ),
+    ),
     'culturefeed_content_title' => array(
       'variables' => array(
         'title' => '',
@@ -1104,6 +1106,24 @@ function theme_culturefeed_content_all_results_link(array $variables) {
 
 }
 
+
+/**
+ * Returns HTML for the all advanced query results link.
+ *
+ * @param array $variables
+ *   The variables.
+ *
+ * @return string
+ *   The HTML.
+ */
+function theme_culturefeed_content_all_advanced_query_results_link(array $variables) {
+
+  $form = drupal_get_form('culturefeed_content_contextual_search_box_form', $variables['query'], $variables['show_postal_code_search_box'], $variables['link_text']);
+
+  return drupal_render($form);
+
+}
+
 /**
  * Returns HTML for the empty text.
  *
@@ -1156,4 +1176,75 @@ function theme_culturefeed_content_title(array $variables) {
 
 
   return drupal_render($build);
+}
+
+/**
+ * Form constructor for the contextual search box form.
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return array
+ *   The form.
+ */
+function culturefeed_content_contextual_search_box_form(array $form, array $form_state, $query, $show_postal_code_filter, $link_text) {
+
+  $form['#attached']['js'] = [
+    drupal_get_path('module', 'culturefeed_content') . '/js/contextual_search_box.js',
+  ];
+
+
+
+  // TODO: build search link with added query string.
+  $form['show_more_link'] = array(
+    '#type' => 'markup',
+    '#markup' => l($link_text, 'agenda/search?' . $query, array(
+      'class' => ['btn', 'btn-primary'],
+    )),
+    '#prefix' => '<div id="show_more_tips_button">',
+    '#suffix' => '</div>',
+  );
+
+  if ($show_postal_code_filter) {
+    $form['filter_postal_code'] = array(
+      '#type' => 'radio',
+      '#description' => t('Only show tips in my neighbourhood: @postal_code.', array(
+        '@postal_code' => '1000',
+      )),
+      '#attributes' => array('style' => 'display: none;'),
+      /*
+      '#ajax' => array(
+        'callback' => '_culturefeed_ajax_rebuild_more_tips_link',
+        'wrapper' => 'show_more_tips_button',
+        'progress' => array('type' => 'none')
+      ),*/
+    );
+
+    $form['modify_postal_code_link'] = array(
+      '#type' => 'markup',
+      '#markup' => '<a href="" id="toggle_postal_code">'. t('modify postal code') .'</a>',
+    );
+  }
+
+  $form['postal_code'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Postal code'),
+    '#size' => 10,
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_more_tips_link',
+      'wrapper' => 'show_more_tips_button',
+      'progress' => array('type' => 'none')
+    ),
+  );
+
+  return $form;
+}
+
+/**
+ * Rebuild the more tips link.
+ */
+function _culturefeed_ajax_rebuild_more_tips_link($form, &$form_state) {
+  return $form['show_more_link'];
 }
