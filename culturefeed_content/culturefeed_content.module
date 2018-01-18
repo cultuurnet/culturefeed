@@ -579,7 +579,8 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $element['wrapper']['when'] = array(
     '#title' => t('When'),
     '#type' => 'fieldset',
-    '#attributes' => ['class' => 'fieldset-query-builder']
+    '#description' => t('These filters only apply to events.'),
+    '#attributes' => ['class' => 'fieldset-query-builder'],
   );
 
   $element['wrapper']['when']['when_type_1'] = array(
@@ -790,6 +791,7 @@ function _culturefeed_add_builder_category_row($element, $field_name_base, $id =
       '#type' => 'select',
       '#options' => $category_options,
       '#multiple' => TRUE,
+      '#validated' => TRUE, // Fix for multiselect + ajax issue
       '#states' => array(
         'visible' => array(
           array(
@@ -957,21 +959,29 @@ function _culturefeed_build_categories_query($values) {
 
     $type = $values["what_type_$i"];
 
-    $selected = $values["what_$type" . "_$i"];
+    $selected = array_values($values["what_$type" . "_$i"]);
 
     if (!empty($selected)) {
       $not_equal = (int)$values["what_equal_$i"];
 
       $query .= '%26fq=(';
 
-      $j = 0;
-      foreach ($selected as $cat_id) {
+      for ($j = 0; $j<count($selected); $j++) {
+
+        $cat_id = $selected[$j];
+
+        // Check for possible grouped values and split them up.
+        if (strpos($cat_id, ',')) {
+          $cat_ids = explode(',', $cat_id);
+          $selected = array_merge($selected, $cat_ids);
+          continue;
+        }
+
         $query .= ($not_equal ? 'NOT ' : '');
 
         $query .= "category_$type" ."_id:$cat_id";
 
-        $j++;
-        if(count($selected) > $j) {
+        if(count($selected)-1 > $j) {
           $query .= ' OR ';
         }
         else {
@@ -986,7 +996,7 @@ function _culturefeed_build_categories_query($values) {
     }
   }
 
-  return rtrim($query, '&');
+  return $query;
 }
 
 /**
