@@ -121,12 +121,17 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
         // Retrieve advanced query string and convert values to parameters.
         preg_match('/\[query\]=\((.*)\)/', $item['composite_query'], $matches);
 
-        foreach (explode('&', $matches[1]) as $filter) {
+        foreach (explode('%26', $matches[1]) as $filter) {
           $key_value = explode('=', $filter);
 
           switch ($key_value[0]) {
             case 'q':
               $parameters[] = new \CultuurNet\Search\Parameter\Query($key_value[1]);
+              break;
+            case 'zipcode':
+              // Split code and radius.
+              $split = explode('!', $key_value[1]);
+              $parameters[] = new \CultuurNet\Search\Parameter\Spatial\Zipcode((int)$split[0], (int)$split[1]);
               break;
             case 'fq':
             default:
@@ -134,15 +139,6 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
               $parameters[] = $facetFilterQuery;
               break;
           }
-        }
-
-        // Check for zipcode.
-        preg_match('/zipcode=([\d!km]+)/', $item['composite_query'], $zipcode_matches);
-
-        if (isset($zipcode_matches[1])) {
-          // Split code and radius.
-          $split = explode('!', $zipcode_matches[1]);
-          $parameters[] = new \CultuurNet\Search\Parameter\Spatial\Zipcode((int)$split[0], (int)$split[1]);
         }
 
         // Execute search.
@@ -902,10 +898,10 @@ function _culturefeed_build_advanced_query($values) {
     $type_filters .= "type:$type";
   }
 
-  $advanced_query .= "&fq=($type_filters)";
+  $advanced_query .= "%26fq=($type_filters)";
 
   if (!empty($values['filter_query'])) {
-    $advanced_query .= '&fq=(' . $values['filter_query'] . ')';
+    $advanced_query .= '%26fq=(' . $values['filter_query'] . ')';
   }
 
   // Categories query.
@@ -918,19 +914,19 @@ function _culturefeed_build_advanced_query($values) {
     case 'region':
       $region = $values['where_region'];
       if ($region !== 'all') {
-        $where_query = $values['where_equal'] ? "&fq=(NOT category_flandersregion_id:$region)" : "&fq=(category_flandersregion_id:$region)";
+        $where_query = $values['where_equal'] ? "%26fq=(NOT category_flandersregion_id:$region)" : "%26fq=(category_flandersregion_id:$region)";
       }
       break;
     case 'city':
       $city = $values['where_city'];
       if ($city !== 'all') {
-        $where_query = $values['where_equal'] ? "&fq=(NOT category_flandersregion_id:$city)" : "&fq=(category_flandersregion_id:$city)";
+        $where_query = $values['where_equal'] ? "%26fq=(NOT category_flandersregion_id:$city)" : "%26fq=(category_flandersregion_id:$city)";
       }
       break;
     case 'postal_code':
       $postal_code = $values['where_postal_code'];
       $radius = $values['where_postal_code_radius'] . 'km';
-      $where_query = $values['where_equal'] ? "&fq=(NOT zipcode:$postal_code)" : "&zipcode=$postal_code!$radius";
+      $where_query = $values['where_equal'] ? "%26fq=(NOT zipcode:$postal_code)" : "%26zipcode=$postal_code!$radius";
       break;
   }
 
@@ -939,7 +935,7 @@ function _culturefeed_build_advanced_query($values) {
   // TODO: When.
   $when_query = '';
 
-  return $advanced_query;
+  return $advanced_query . ')';
 }
 
 /**
@@ -966,7 +962,7 @@ function _culturefeed_build_categories_query($values) {
     if (!empty($selected)) {
       $not_equal = (int)$values["what_equal_$i"];
 
-      $query .= '&fq=(';
+      $query .= '%26fq=(';
 
       $j = 0;
       foreach ($selected as $cat_id) {
@@ -1177,7 +1173,6 @@ function theme_culturefeed_content_title(array $variables) {
       '#markup' => $variables['title'],
     ),
   );
-
 
   return drupal_render($build);
 }
