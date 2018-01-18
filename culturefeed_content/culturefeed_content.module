@@ -1004,6 +1004,91 @@ function _culturefeed_ajax_rebuild_composite_query($form, &$form_state) {
 }
 
 /**
+ * Form constructor for the contextual search box form.
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return array
+ *   The form.
+ */
+function culturefeed_content_contextual_search_box_form($form, $form_state, $query, $show_postal_code_filter, $link_text) {
+
+  $form['#attached']['js'] = [
+    drupal_get_path('module', 'culturefeed_content') . '/js/contextual_search_box.js',
+  ];
+
+  $postal_code = !empty($form_state['values']['postal_code']) ? $form_state['values']['postal_code'] : '1000';
+
+  $query_params = $query;
+  if (isset($form_state['triggering_element']) && $form_state['triggering_element']['#name'] == 'filter_postal_code') {
+    $query_params = $form_state['triggering_element']['#value'] == 'on' ? "$query&location=$postal_code&distance=10" : $query;
+  }
+
+  $form['show_more_link'] = array(
+    '#type' => 'markup',
+    '#markup' => "<a href=\"/agenda/search?$query_params\" class=\"btn btn-primary\">$link_text</a>",
+    '#prefix' => '<div id="show_more_link">',
+    '#suffix' => '</div>',
+  );
+
+  if ($show_postal_code_filter) {
+    $return_key = 'filter_postal_code';
+    $form['filter_postal_code'] = array(
+      '#type' => 'radio',
+      '#description' => t('Only show tips in my neighbourhood: <em>@postal_code</em>. <a href="" id="toggle_postal_code">modify postal code</a>', array(
+        '@postal_code' => $postal_code,
+      )),
+      '#return_value' => $return_key,
+      '#default_value' => $form_state['values']['filter_postal_code'] == $return_key ? $return_key : FALSE,
+      '#prefix' => '<div id="filter_postal_code">',
+      '#suffix' => '</div>',
+      '#ajax' => array(
+        'callback' => '_culturefeed_ajax_rebuild_more_tips_link',
+        'wrapper' => 'show_more_tips_button',
+        'progress' => ['type' => 'none']
+      ),
+    );
+  }
+
+  $form['postal_code_container'] = array(
+    '#type' => 'container',
+    '#attributes' => array(
+      'class' => ['postal-code-container'],
+      'style' => 'display: none;'
+    ),
+  );
+
+  $form['postal_code_container']['postal_code'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Postal code'),
+    '#size' => 10,
+    '#ajax' => array(
+      'callback' => '_culturefeed_ajax_rebuild_more_tips_link',
+      'wrapper' => 'show_more_tips_button',
+      'progress' => ['type' => 'none']
+    ),
+  );
+
+  return $form;
+}
+
+/**
+ * Rebuild the more tips link.
+ */
+function _culturefeed_ajax_rebuild_more_tips_link($form, &$form_state) {
+  return array(
+    '#type' => 'ajax',
+    '#commands' => array(
+      ajax_command_replace("#show_more_link", render($form['show_more_link'])),
+      ajax_command_replace("#filter_postal_code", render($form['filter_postal_code']))
+    )
+  );
+}
+
+/**
  * Implements hook_field_widget_info().
  */
 function culturefeed_content_field_widget_info() {
@@ -1175,89 +1260,4 @@ function theme_culturefeed_content_title(array $variables) {
   );
 
   return drupal_render($build);
-}
-
-/**
- * Form constructor for the contextual search box form.
- *
- * @param array $form
- *   The form.
- * @param array $form_state
- *   The form state.
- *
- * @return array
- *   The form.
- */
-function culturefeed_content_contextual_search_box_form($form, $form_state, $query, $show_postal_code_filter, $link_text) {
-
-  $form['#attached']['js'] = [
-    drupal_get_path('module', 'culturefeed_content') . '/js/contextual_search_box.js',
-  ];
-
-  $postal_code = !empty($form_state['values']['postal_code']) ? $form_state['values']['postal_code'] : '1000';
-
-  $query_params = $query;
-  if (isset($form_state['triggering_element']) && $form_state['triggering_element']['#name'] == 'filter_postal_code') {
-    $query_params = $form_state['triggering_element']['#value'] == 'on' ? "$query&location=$postal_code&distance=10" : $query;
-  }
-
-  $form['show_more_link'] = array(
-    '#type' => 'markup',
-    '#markup' => "<a href=\"/agenda/search?$query_params\" class=\"btn btn-primary\">$link_text</a>",
-    '#prefix' => '<div id="show_more_link">',
-    '#suffix' => '</div>',
-  );
-
-  if ($show_postal_code_filter) {
-    $return_key = 'filter_postal_code';
-    $form['filter_postal_code'] = array(
-      '#type' => 'radio',
-      '#description' => t('Only show tips in my neighbourhood: <em>@postal_code</em>. <a href="" id="toggle_postal_code">modify postal code</a>', array(
-        '@postal_code' => $postal_code,
-      )),
-      '#return_value' => $return_key,
-      '#default_value' => $form_state['values']['filter_postal_code'] == $return_key ? $return_key : FALSE,
-      '#prefix' => '<div id="filter_postal_code">',
-      '#suffix' => '</div>',
-      '#ajax' => array(
-        'callback' => '_culturefeed_ajax_rebuild_more_tips_link',
-        'wrapper' => 'show_more_tips_button',
-        'progress' => ['type' => 'none']
-      ),
-    );
-  }
-
-  $form['postal_code_container'] = array(
-    '#type' => 'container',
-    '#attributes' => array(
-      'class' => ['postal-code-container'],
-      'style' => 'display: none;'
-    ),
-  );
-
-    $form['postal_code_container']['postal_code'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Postal code'),
-    '#size' => 10,
-    '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_more_tips_link',
-      'wrapper' => 'show_more_tips_button',
-      'progress' => ['type' => 'none']
-    ),
-  );
-
-  return $form;
-}
-
-/**
- * Rebuild the more tips link.
- */
-function _culturefeed_ajax_rebuild_more_tips_link($form, &$form_state) {
-  return array(
-    '#type' => 'ajax',
-    '#commands' => array(
-      ajax_command_replace("#show_more_link", render($form['show_more_link'])),
-      ajax_command_replace("#filter_postal_code", render($form['filter_postal_code']))
-    )
-  );
 }
