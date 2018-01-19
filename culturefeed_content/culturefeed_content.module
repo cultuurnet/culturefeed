@@ -589,8 +589,8 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#type' => 'select',
     '#options' => [
       'all' => t('Alle'),
-      'start_date' => t('Start date'),
-      'end_date' => t('End date'),
+      'startdate' => t('Start date'),
+      'enddate' => t('End date'),
     ],
     '#default_value' => $when_type_1,
     '#ajax' => array(
@@ -642,8 +642,8 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#type' => 'select',
     '#options' => [
       'all' => t('Alle'),
-      'start_date' => t('Start date'),
-      'end_date' => t('End date'),
+      'startdate' => t('Start date'),
+      'enddate' => t('End date'),
     ],
     '#default_value' => $when_type_2,
     '#ajax' => array(
@@ -700,7 +700,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#suffix' => '</div>',
   );
 
-  $build_values = $form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0] ? $form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0] : $items[0];
+  $build_values = isset($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]) ? $form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0] : $items[0];
   $element['wrapper']['composite_query']['#default_value'] = _culturefeed_build_advanced_query($build_values);
 
   $element['wrapper']['query_title'] = array(
@@ -913,32 +913,65 @@ function _culturefeed_build_advanced_query($values) {
   $advanced_query .= _culturefeed_build_categories_query(unserialize($values['what_categories']));
 
   // Where.
-  $where_query = '';
-
   switch ($values['where_type']) {
     case 'region':
       $region = $values['where_region'];
       if ($region !== 'all') {
-        $where_query = $values['where_equal'] ? "%26fq=(NOT category_flandersregion_id:$region)" : "%26fq=(category_flandersregion_id:$region)";
+        $advanced_query .= $values['where_equal'] ? "%26fq=(NOT category_flandersregion_id:$region)" : "%26fq=(category_flandersregion_id:$region)";
       }
       break;
     case 'city':
       $city = $values['where_city'];
       if ($city !== 'all') {
-        $where_query = $values['where_equal'] ? "%26fq=(NOT category_flandersregion_id:$city)" : "%26fq=(category_flandersregion_id:$city)";
+        $advanced_query .= $values['where_equal'] ? "%26fq=(NOT category_flandersregion_id:$city)" : "%26fq=(category_flandersregion_id:$city)";
       }
       break;
     case 'postal_code':
       $postal_code = $values['where_postal_code'];
       $radius = $values['where_postal_code_radius'] . 'km';
-      $where_query = $values['where_equal'] ? "%26fq=(NOT zipcode:$postal_code)" : "%26zipcode=$postal_code!$radius";
+      $advanced_query .= $values['where_equal'] ? "%26fq=(NOT zipcode:$postal_code)" : "%26zipcode=$postal_code!$radius";
       break;
   }
 
-  $advanced_query .= $where_query;
+  // When.
+  if ($values['when_date_1'] || $values['when_date_2']) {
+    // To make the checking easier, we set type to 'all' if there is no corresponding date value yet.
+    $values['when_type_1'] = $values['when_date_1'] ? $values['when_type_1'] : 'all';
+    $values['when_type_2'] = $values['when_date_2'] ? $values['when_type_2'] : 'all';
 
-  // TODO: When.
-  $when_query = '';
+    $combined_when_type = $values['when_type_1'] . '|' . $values['when_type_2'];
+    $ba_1 = $values['when_before_after_1']; // 0 = before, 1 = after.
+    $ba_2 = $values['when_before_after_2'];
+
+    $date_1 = $values['when_date_1'] ? DateTime::createFromFormat('Y-m-d', $values['when_date_1']) : null;
+    $date_2 = $values['when_date_2'] ? DateTime::createFromFormat('Y-m-d', $values['when_date_2']) : null;
+
+    switch ($combined_when_type) {
+      case 'startdate|all':
+      case 'enddate|all':
+        $advanced_query .= $ba_1 ? create_date_filter_param($values['when_type_1'], $date_1) : create_date_filter_param($values['when_type_1'], null, $date_1);
+        break;
+      case 'all|startdate':
+      case 'all|enddate':
+        $advanced_query .= $ba_2 ? create_date_filter_param($values['when_type_2'], $date_2) : create_date_filter_param($values['when_type_2'], null, $date_2);
+        break;
+      case 'startdate|startdate':
+      case 'enddate|enddate':
+        if ($ba_1 == $ba_2) {
+          $advanced_query .= $ba_1 ? create_date_filter_param($values['when_type_1'], $date_1) : create_date_filter_param($values['when_type_1'], null, $date_1);
+          $advanced_query .= $ba_2 ? create_date_filter_param($values['when_type_2'], $date_2) : create_date_filter_param($values['when_type_2'], null, $date_2);
+        }
+        else {
+          $advanced_query .= $ba_1 && !$ba_2 ? create_date_filter_param($values['when_type_1'], $date_1, $date_2) : create_date_filter_param($values['when_type_1'], $date_2, $date_1);
+        }
+        break;
+      case 'startdate|enddate':
+      case 'enddate|startdate':
+        $advanced_query .= $ba_1 ? create_date_filter_param($values['when_type_1'], $date_1) : create_date_filter_param($values['when_type_1'], null, $date_1);
+        $advanced_query .= $ba_2 ? create_date_filter_param($values['when_type_2'], $date_2) : create_date_filter_param($values['when_type_2'], null, $date_2);
+        break;
+    }
+  }
 
   return $advanced_query . ')';
 }
@@ -1000,6 +1033,35 @@ function _culturefeed_build_categories_query($values) {
   }
 
   return $query;
+}
+
+/**
+ * Returns a date filter query parameter string for the advanced query.
+ *
+ * @param string $type
+ * @param null $date_1
+ * @param null $date_2
+ *
+ * @return string
+ */
+function create_date_filter_param ($type = 'startdate', $date_1 = null, $date_2 = null) {
+  if ($date_1) {
+    $date_1->setTime(0, 0, 0);
+    $value1 = gmdate('Y-m-d\TH:i:s\Z', $date_1->getTimestamp());
+  }
+  else {
+    $value1 = '*';
+  }
+
+  if ($date_2) {
+    $date_2->setTime(23, 59, 59);
+    $value2 = gmdate('Y-m-d\TH:i:s\Z', $date_2->getTimestamp());
+  }
+  else {
+    $value2 = '*';
+  }
+
+  return "%26fq=($type:[$value1 TO $value2])";
 }
 
 /**
