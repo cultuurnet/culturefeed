@@ -1194,13 +1194,6 @@ function culturefeed_content_theme() {
         'classes' => array('alert', 'alert-info'),
       ),
     ),
-    'culturefeed_content_all_results_link' => array(
-      'variables' => array(
-        'link_text' => t('Show all events'),
-        'query' => '',
-        'classes' => array('cf-content-all-results-link'),
-      ),
-    ),
     'culturefeed_content_all_advanced_query_results_link' => array(
       'variables' => array(
         'link_text' => t('Show more'),
@@ -1218,54 +1211,6 @@ function culturefeed_content_theme() {
   );
 
 }
-
-/**
- * Returns HTML for the all results link.
- *
- * @param array $variables
- *   The variables.
- *
- * @return string
- *   The HTML.
- */
-function theme_culturefeed_content_all_results_link(array $variables) {
-  if ($variables['show_more_link']) {
-    $build[] = array(
-      '#markup' => l(
-        $variables['link_text'],
-        'agenda/search',
-        array(
-          'html' => TRUE,
-          'attributes' => array(
-            'class' => $variables['classes'],
-          ),
-          'query' => $variables['query'],
-        )
-      ),
-    );
-  }
-  else if (!$variables['show_more_link'] && empty($variables['more_link'])) {
-    $build[] = array();
-  }
-  else {
-    $build[] = array(
-      '#markup' => l(
-        $variables['link_text'],
-        $variables['more_link'],
-        array(
-          'html' => TRUE,
-          'attributes' => array(
-            'class' => $variables['classes'],
-          )
-        )
-      ),
-    );
-  }
-
-  return drupal_render($build);
-
-}
-
 
 /**
  * Returns HTML for the all advanced query results link.
