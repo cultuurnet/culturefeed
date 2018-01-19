@@ -265,11 +265,13 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
 
   $what_category_rows = [];
 
-  if (!empty(unserialize($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['what_categories']))) {
-    $what_category_rows = _culturefeed_convert_serialized_categories_to_rows($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['what_categories']);
-  }
-  elseif (!empty($items[$delta]['what_categories'])) {
-    $what_category_rows = _culturefeed_convert_serialized_categories_to_rows($items[$delta]['what_categories']);
+  if (isset($form_state['values']['field_zoekopdracht'])) {
+    if (!empty(unserialize($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['what_categories']))) {
+      $what_category_rows = _culturefeed_convert_serialized_categories_to_rows($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['what_categories']);
+    }
+    elseif (!empty($items[$delta]['what_categories'])) {
+      $what_category_rows = _culturefeed_convert_serialized_categories_to_rows($items[$delta]['what_categories']);
+    }
   }
 
   // Check triggering element to possibly add an empty row
@@ -693,6 +695,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#type' => 'textarea',
     '#title' => t('Composite query'),
     '#disabled' => TRUE,
+    '#resizable' => FALSE,
     '#prefix' => '<div id="advanced_query_field">',
     '#suffix' => '</div>',
   );
