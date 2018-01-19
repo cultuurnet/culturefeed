@@ -265,13 +265,11 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
 
   $what_category_rows = [];
 
-  if (isset($form_state['values']['field_zoekopdracht'])) {
-    if (!empty(unserialize($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['what_categories']))) {
-      $what_category_rows = _culturefeed_convert_serialized_categories_to_rows($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['what_categories']);
-    }
-    elseif (!empty($items[$delta]['what_categories'])) {
-      $what_category_rows = _culturefeed_convert_serialized_categories_to_rows($items[$delta]['what_categories']);
-    }
+  if (isset($form_state['values']['field_zoekopdracht']) && !empty(unserialize($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['what_categories']))) {
+    $what_category_rows = _culturefeed_convert_serialized_categories_to_rows($form_state['values']['field_zoekopdracht'][LANGUAGE_NONE][0]['what_categories']);
+  }
+  elseif (!empty($items[$delta]['what_categories'])) {
+    $what_category_rows = _culturefeed_convert_serialized_categories_to_rows($items[$delta]['what_categories']);
   }
 
   // Check triggering element to possibly add an empty row
@@ -705,9 +703,9 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
 
   $element['wrapper']['query_title'] = array(
     '#type' => 'textfield',
-    '#default' => $query_title,
     '#title' => t('Query title'),
     '#required' => $element['#required'],
+    '#default_value' => $query_title,
     '#maxlength' => 255,
     '#ajax' => array(
       'callback' => '_culturefeed_ajax_rebuild_composite_query',
@@ -940,11 +938,13 @@ function _culturefeed_build_advanced_query($values) {
     $values['when_type_2'] = $values['when_date_2'] ? $values['when_type_2'] : 'all';
 
     $combined_when_type = $values['when_type_1'] . '|' . $values['when_type_2'];
-    $ba_1 = $values['when_before_after_1']; // 0 = before, 1 = after.
+
+    // 0 = before, 1 = after.
+    $ba_1 = $values['when_before_after_1'];
     $ba_2 = $values['when_before_after_2'];
 
-    $date_1 = $values['when_date_1'] ? DateTime::createFromFormat('Y-m-d', $values['when_date_1']) : null;
-    $date_2 = $values['when_date_2'] ? DateTime::createFromFormat('Y-m-d', $values['when_date_2']) : null;
+    $date_1 = $values['when_date_1'] ? new DateTime($values['when_date_1']) : null;
+    $date_2 = $values['when_date_2'] ? new DateTime($values['when_date_2']) : null;
 
     switch ($combined_when_type) {
       case 'startdate|all':
