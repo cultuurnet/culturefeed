@@ -123,3 +123,66 @@ msgstr ""
 #: culturefeed_content.info:0
 msgid "CultureFeed"
 msgstr "CultureFeed"
+
+
+# Manually added strings:
+msgid "Keywords"
+msgstr "Trefwoorden"
+
+msgid "Use * as a wildcard to search on parts of a word, e.g. <strong>*speeltuin, sinterklaas*</strong>.<br> Combine multiple terms with AND, OR and through using brackets, e.g. <strong>(workshop OR cursus) AND keramiek*</strong>.<br> Exact combinations need to use double qoutes, e.g. <strong>\"dag van de wetenschap\"</strong>."
+msgstr "Gebruik * als jokerteken om te zoeken op delen van een woord, bv. <strong>*speeltuin, sinterklaas*</strong>.<br> Combineer meerdere termen met AND, OR en het gebruik van haakjes, bv. <strong>(workshop OR cursus) AND keramiek*</strong>.<br> Exacte combinaties horen tussen dubbele quotes, bv. <strong>\"dag van de wetenschap\"</strong>."
+
+msgid "Add extra parameters or your own advanced filter query, e.g. price:0 or hasimage:true"
+msgstr "Voeg extra parameters of je eigen advanced filterquery toe, bv. price:0 or hasimage:true"
+
+msgid "Production"
+msgstr "Productie"
+
+msgid "Selecting none means that all types will be shown."
+msgstr "Als geen opties geselecteerd zijn, worden alle types weergegeven."
+
+msgctxt "Culturefeed content"
+msgid "Region"
+msgstr "Regio"
+
+msgid "City or municipality"
+msgstr "Stad of gemeente"
+
+msgid "Postal code + radius"
+msgstr "Postcode + straal"
+
+msgid "is equal to"
+msgstr "is gelijk aan"
+
+msgid "is not equal to"
+msgstr "is niet gelijk aan"
+
+msgid "before"
+msgstr "voor"
+
+msgid "after"
+msgstr "na"
+
+msgid "These filters only apply to events."
+msgstr "Deze filters zijn enkel van toepassing op events."
+
+msgid "Start date"
+msgstr "Startdatum"
+
+msgid "End date"
+msgstr "Einddatum"
+
+msgid "Composite query"
+msgstr "Samengestelde query"
+
+msgid "Query title"
+msgstr "Query titel"
+
+msgid "Show search box to filter by postal code"
+msgstr "Toon zoekbox om selectie te filteren op postcode"
+
+msgid "Only show tips in my neighbourhood: <em>@postal_code</em>. <a href="" id=\"toggle_postal_code\">modify postal code</a>"
+msgstr "Toon enkel tips in mijn buurt: <em>@postal_code</em>. <a href="" id=\"toggle_postal_code\">wijzig postcode</a>"
+
+msgid "Postal code"
+msgstr "Postcode"

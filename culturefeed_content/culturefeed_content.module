@@ -394,7 +394,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $element['wrapper']['what']['add_category'] = array(
     '#name' => 'what-add-category',
     '#type' => 'submit',
-    '#value' => t('Submit'),
+    '#value' => t('Add'),
     '#submit' => array('culturefeed_content_widget_add_remove_category_submit'),
     '#limit_validation_errors' => array($parents),
     '#states' => array(
@@ -438,8 +438,8 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $element['wrapper']['where']['where_type'] = array(
     '#type' => 'select',
     '#options' => [
-      'all' => t('Alle'),
-      'region' => t('Region'),
+      'all' => t('All'),
+      'region' => t('Region', array('context' => 'Culturefeed content')),
       'city' => t('City or municipality'),
       'postal_code' => t('Postal code + radius'),
     ],
@@ -476,7 +476,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   );
 
   // Retrieve region options from DB.
-  $region_options = ['all' => t('Alle')];
+  $region_options = ['all' => t('All')];
   $region_terms = culturefeed_search_get_terms_by_hierarchy_depth(2, 'flandersregion', culturefeed_search_get_preferred_language(), 'name');
 
   foreach ($region_terms as $term) {
@@ -502,7 +502,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   );
 
   // Retrieve city options from DB.
-  $city_options = ['all' => t('Alle')];
+  $city_options = ['all' => t('All')];
   $city_terms = culturefeed_search_get_terms_by_hierarchy_depth(2, 'flandersregion', culturefeed_search_get_preferred_language(), 'name');
 
   foreach ($city_terms as $term) {
@@ -586,7 +586,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $element['wrapper']['when']['when_type_1'] = array(
     '#type' => 'select',
     '#options' => [
-      'all' => t('Alle'),
+      'all' => t('All'),
       'startdate' => t('Start date'),
       'enddate' => t('End date'),
     ],
@@ -639,7 +639,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $element['wrapper']['when']['when_type_2'] = array(
     '#type' => 'select',
     '#options' => [
-      'all' => t('Alle'),
+      'all' => t('All'),
       'startdate' => t('Start date'),
       'enddate' => t('End date'),
     ],
@@ -746,7 +746,7 @@ function _culturefeed_add_builder_category_row($element, $field_name_base, $id =
   // Build category type options.
   $selectable_categories = ['eventtype', 'theme', 'actortype', 'facility'];
   $domains = culturefeed_search_get_domains();
-  $category_type_options = ['all' => t('Alle')];
+  $category_type_options = ['all' => t('All')];
 
   foreach ($selectable_categories as $category) {
     $category_type_options[$category] = $domains[$category];
@@ -1099,7 +1099,7 @@ function culturefeed_content_contextual_search_box_form($form, $form_state, $que
 
   $query_params = $query;
   if (isset($form_state['triggering_element']) && $form_state['triggering_element']['#name'] == 'filter_postal_code') {
-    $query_params = $form_state['triggering_element']['#value'] == 'on' ? "$query&location=$postal_code&distance=10" : $query;
+    $query_params = $form_state['triggering_element']['#value'] ? "$query&location=$postal_code&distance=10" : $query;
   }
 
   $form['show_more_link'] = array(
@@ -1110,14 +1110,12 @@ function culturefeed_content_contextual_search_box_form($form, $form_state, $que
   );
 
   if ($show_postal_code_filter) {
-    $return_key = 'filter_postal_code';
     $form['filter_postal_code'] = array(
-      '#type' => 'radio',
+      '#type' => 'checkbox',
       '#description' => t('Only show tips in my neighbourhood: <em>@postal_code</em>. <a href="" id="toggle_postal_code">modify postal code</a>', array(
         '@postal_code' => $postal_code,
       )),
-      '#return_value' => $return_key,
-      '#default_value' => $form_state['values']['filter_postal_code'] == $return_key ? $return_key : FALSE,
+      '#default_value' => $form_state['values']['filter_postal_code'] ? 1 : 0,
       '#prefix' => '<div id="filter_postal_code">',
       '#suffix' => '</div>',
       '#ajax' => array(
