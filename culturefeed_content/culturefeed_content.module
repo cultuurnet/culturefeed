@@ -29,6 +29,10 @@ function culturefeed_content_field_create_instance($instance) {
 
 /**
  * Validation handler for the CultureFeed content field.
+ *
+ * @param $element
+ * @param $form_state
+ * @param $form
  */
 function culturefeed_content_field_culturefeed_content_validate($element, &$form_state, $form) {
 
@@ -725,6 +729,12 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   return $element;
 }
 
+/**
+ * Rebuild the form to remove/add a category field row.
+ *
+ * @param $form
+ * @param $form_state
+ */
 function culturefeed_content_widget_add_remove_category_submit($form, &$form_state) {
   $form_state['rebuild'] = TRUE;
 }
@@ -1039,8 +1049,8 @@ function _culturefeed_build_categories_query($values) {
  * Returns a date filter query parameter string for the advanced query.
  *
  * @param string $type
- * @param null $date_1
- * @param null $date_2
+ * @param \DateTime|null $date_1
+ * @param \DateTime|null $date_2
  *
  * @return string
  */
@@ -1081,13 +1091,13 @@ function _culturefeed_ajax_rebuild_composite_query($form, &$form_state) {
 /**
  * Form constructor for the contextual search box form.
  *
- * @param array $form
- *   The form.
- * @param array $form_state
- *   The form state.
+ * @param $query
+ * @param $show_postal_code_filter
+ * @param $link_text
  *
- * @return array
- *   The form.
+ * @return mixed
+ *
+ * Implements hook_form().
  */
 function culturefeed_content_contextual_search_box_form($form, $form_state, $query, $show_postal_code_filter, $link_text) {
 
@@ -1150,6 +1160,11 @@ function culturefeed_content_contextual_search_box_form($form, $form_state, $que
 
 /**
  * Rebuild the more tips link.
+ *
+ * @param $form
+ * @param $form_state
+ *
+ * @return array
  */
 function _culturefeed_ajax_rebuild_more_tips_link($form, &$form_state) {
   return array(
