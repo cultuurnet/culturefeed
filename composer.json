@@ -9,7 +9,8 @@
       "cultuurnet/cdb": "~2.1",
       "cultuurnet/culturefeed-php": "~1.6",
       "cultuurnet/calendar-summary": "~1.0",
-      "cultuurnet/sitemap-xml": "~1.0"
+      "cultuurnet/sitemap-xml": "~1.0",
+      "cultuurnet/data-validation": "dev-master"
     },
     "require-dev": {
       "phing/phing": "~2.10"

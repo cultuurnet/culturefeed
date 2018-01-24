@@ -1162,7 +1162,6 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
           $label = culturefeed_search_get_term_translation($selected_value[$key]);
 
           if ($active_facet_name == 'category_flandersregion_id' && !empty($query['distance'])) {
-            $label .= ' + ' . check_plain($query['distance']) . ' km';
             unset($search_query['distance']);
           }
 
@@ -1217,15 +1216,22 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
     unset($search_query['location']);
     $url = url($path, array('query' => $search_query));
 
-    $label = $query['location'];
-    if (!empty($query['distance'])) {
-      $label .= ' + ' . check_plain($query['distance']) . ' km';
-      unset($search_query['distance']);
-    }
-
     $build['location'] =  array(
       '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => $label,
+      '#label' => $query['location'],
+      '#url' => $url
+    );
+  }
+
+  // Add distance filter.
+  if (isset($query['distance'])) {
+    $search_query = $query;
+    unset($search_query['distance']);
+    $url = url($path, array('query' => $search_query));
+
+    $build['distance'] =  array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => '+ ' . $query['distance'] . ' km',
       '#url' => $url
     );
   }

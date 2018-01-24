@@ -78,7 +78,7 @@ function culturefeed_mailing_subscribe_form() {
 
   $form = array();
 
-  $user_already_subscribed = _culturefeed_mailing_check_user_subscription($account->id, variable_get('culturefeed_mailing_list'));
+  $user_already_subscribed = $account ? _culturefeed_mailing_check_user_subscription($account->id, variable_get('culturefeed_mailing_list')) : FALSE;
   if ($user_already_subscribed) {
 
     $form['already_subscribed'] = array(

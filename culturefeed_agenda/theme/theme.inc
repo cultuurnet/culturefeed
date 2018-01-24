@@ -39,6 +39,8 @@ function culturefeed_agenda_preprocess_culturefeed_actor(&$variables) {
   _culturefeed_agenda_preprocess_agenda_detail($variables);
 
   _culturefeed_agenda_preprocess_actor_page_metatags($variables);
+  // Check item to add possible canonical tag for organisation.
+  culturefeed_agenda_actor_set_organisation_canonical($variables['item']->getEntity());
 
 }
 

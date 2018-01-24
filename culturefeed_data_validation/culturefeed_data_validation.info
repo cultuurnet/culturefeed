@@ -1,0 +1,6 @@
+name = CultureFeed Data Validation
+description = Implementation of the cultuurnet/data-validation library.
+package = CultureFeed
+version = VERSION
+core = 7.x
+configure = admin/config/culturefeed/data-validation

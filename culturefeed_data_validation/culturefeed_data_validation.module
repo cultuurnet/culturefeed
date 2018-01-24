@@ -1,0 +1,70 @@
+<?php
+
+/**
+ * @file
+ * Implementation of the cultuurnet/data-validation library.
+ */
+
+require_once 'culturefeed_data_validation.helpers.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_data_validation_menu() {
+  $items = array();
+
+  // Configuration page.
+  $items['admin/config/culturefeed/data-validation'] = array(
+    'title' => 'CultureFeed Data Validation',
+    'description' => 'CultureFeed Data Validation settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_data_validation_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'culturefeed_data_validation.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_form_{culturefeed_mailing_newsletter_block_form}_alter().
+ */
+function culturefeed_data_validation_form_culturefeed_mailing_newsletter_block_form_alter(&$form, $form_state) {
+  $form['#submit'] = ['culturefeed_data_validation_newsletter_form_submit'];
+}
+
+/**
+ * Implements hook_form_{culturefeed_mailing_subscribe_form}_alter().
+ */
+function culturefeed_data_validation_form_culturefeed_mailing_subscribe_form_alter(&$form, $form_state) {
+  $form['#submit'] = ['culturefeed_data_validation_newsletter_form_submit'];
+}
+
+/**
+ * Validate the email address using the datavalidation service.
+ * Use form submit, as some sites are removing the messages again.
+ */
+function culturefeed_data_validation_newsletter_form_submit($form, &$form_state) {
+  $valid = TRUE;
+
+  try {
+    $datavalidationClient = _culturefeed_data_validation_get_datavalidation_client();
+    $response = $datavalidationClient->validateEmail($form_state['values']['mail']);
+    if ($response && (!$response->isOK() || $response->getGrade() === 'F') ) {
+      $valid = FALSE;
+    }
+  }
+  catch (Exception $e) {
+    // Only trigger an error if the value was the cause.
+    if ($e->getResponse()->getStatusCode() == 422) {
+      $valid = FALSE;
+    }
+  }
+
+  if ($valid) {
+    culturefeed_mailing_newsletter_block_form_submit($form, $form_state);
+  }
+  else {
+    drupal_set_message(t('The provided email address is invalid.'), 'error');
+  }
+}

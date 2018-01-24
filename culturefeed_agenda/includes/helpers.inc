@@ -1005,3 +1005,26 @@ function culturefeed_get_relative_image($image_path) {
   }
   return $image_path;
 }
+
+/**
+ * Check actor external id to set possible canonical tag for the organisation.
+ *
+ * @param $actor
+ */
+function culturefeed_agenda_actor_set_organisation_canonical(CultureFeed_Cdb_Item_Actor $actor) {
+  // Check the external id for an organisation.
+  $split_ext_id = explode(':', $actor->getExternalId());
+  if (!empty($split_ext_id[0]) && !empty($split_ext_id[1])) {
+    $ext_id_key = $split_ext_id[0];
+    $ext_id_value = $split_ext_id[1];
+
+    if ($ext_id_key == 'ORG') {
+      // Retrieve canonical href path.
+      $detail = $actor->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+      if ($detail) {
+        $canonical_url = culturefeed_search_detail_url('actor', $ext_id_value, $detail->getTitle(), ['absolute' => TRUE]);
+        drupal_add_html_head_link(array('rel' => 'canonical', 'href' => $canonical_url, TRUE));
+      }
+    }
+  }
+}
