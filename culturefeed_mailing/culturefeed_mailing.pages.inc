@@ -264,6 +264,67 @@ function culturefeed_mailing_subscribe_form_submit($form, &$form_state) {
 }
 
 /**
+ * Form callback for the mailing subscription update form.
+ */
+function culturefeed_mailing_subscription_update_form() {
+
+  $account = culturefeed_load_logged_in_user();
+
+  // Redirect to loginpage if not logged in and light id permission is off.
+  if (!$account) {
+    drupal_goto('authenticated', array('query' => array('destination' => 'subscribe')));
+  }
+
+  // Show nothing if no mailing list available.
+  if (!(variable_get('culturefeed_mailing_list', ''))) {
+    return;
+  }
+
+  $form = array();
+
+  $user_already_subscribed = $account ? _culturefeed_mailing_check_user_subscription($account->id, variable_get('culturefeed_mailing_list')) : FALSE;
+  if (!$user_already_subscribed) {
+    drupal_goto('subscribe');
+  }
+  else {
+
+    $form['mail'] = [
+      '#type' => 'textfield',
+      '#title' => t('Email address'),
+      '#required' => TRUE,
+      '#size' => 40,
+      '#maxlength' => 255,
+      '#default_value' => '',
+      '#weight' => -10,
+    ];
+
+    $show_zip = variable_get('culturefeed_mailing_block_show_zip', 0);
+
+    $form['zip'] = [
+      '#type' => 'textfield',
+      '#title' => t('Zipcode'),
+      '#size' => 40,
+      '#maxlength' => 255,
+      '#default_value' => '',
+      '#weight' => -9,
+      '#access' => $show_zip,
+      '#attributes' => [
+        'class' => ['zip-field'],
+      ],
+    ];
+
+    $form['submit'] = [
+      '#type' => 'submit',
+      '#value' => t('Update'),
+      '#weight' => 10,
+    ];
+  }
+
+  return $form;
+
+}
+
+/**
  * Page callback: Show a confirmation that the user is subscribed.
  */
 function culturefeed_mailing_user_subscribed() {

@@ -49,6 +49,14 @@ function culturefeed_mailing_menu() {
     'file' => 'culturefeed_mailing.pages.inc',
   );
 
+  $items['subscribe/update'] = array(
+    'title' => 'Update your subscription',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_mailing_subscription_update_form'),
+    'access arguments' => array('subscribe to mailings'),
+    'file' => 'culturefeed_mailing.pages.inc',
+  );
+
   $items['culturefeed/mailing'] = array(
     'title' => 'Newsletters',
     'page callback' => 'culturefeed_mailing_page_my_newsletters',
