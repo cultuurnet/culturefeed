@@ -668,6 +668,13 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       'enddate' => t('End date'),
     ],
     '#default_value' => $when_type_2,
+    '#states' => array(
+      'invisible' => array(
+        array(
+          ':input[name="' . $field_name_base . '[wrapper][when][when_type_1]"]' => array('value' => 'all'),
+        ),
+      ),
+    ),
     '#ajax' => array(
       'callback' => '_culturefeed_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
