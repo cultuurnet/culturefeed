@@ -266,7 +266,14 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $field_name = $element['#field_name'];
   $language = $element['#language'];
   $parents = $field_name_base_children = array_merge($field_parents, array($field_name, $language, $delta));
-  $field_name_base = $field_parents[0];
+
+  if (empty($field_parents)) {
+    $field_name_base = $field_name_base_children[0];
+  }
+  else {
+    $field_name_base = $field_parents[0];
+  }
+
   unset($field_name_base_children[0]);
   $field_name_base .= '[' . implode('][', $field_name_base_children) . ']';
 
@@ -277,7 +284,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   else {
     $nested_values = $items[0];
   }
-  
+
   // Determine correctly nested id's.
   $composite_query_field_id = implode('-', $field_parents) . '-composite-query-wrapper';
   $category_fieldset_id = implode('-', $field_parents) . '-categories-wrapper';
