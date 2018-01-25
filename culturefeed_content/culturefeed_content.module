@@ -180,7 +180,8 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
               $build[] = array(
                 '#theme' => 'culturefeed_content_all_advanced_query_results_link',
                 '#query' => $query,
-                '#show_postal_code_search_box' => (int)$item['show_postal_code_search_box']
+                '#show_postal_code_search_box' => (int)$item['show_postal_code_search_box'],
+                '#instance_id' => $instance['id'],
               );
 
           }
@@ -1146,12 +1147,13 @@ function _culturefeed_ajax_rebuild_composite_query($form, &$form_state) {
  * @param $query
  * @param $show_postal_code_filter
  * @param $link_text
+ * @param $instance_id
  *
  * @return mixed
  *
  * Implements hook_form().
  */
-function culturefeed_content_contextual_search_box_form($form, $form_state, $query, $show_postal_code_filter, $link_text) {
+function culturefeed_content_contextual_search_box_form($form, $form_state, $query, $show_postal_code_filter, $link_text, $instance_id) {
 
   $form['#attached']['js'] = [
     drupal_get_path('module', 'culturefeed_content') . '/js/contextual_search_box.js',
@@ -1160,29 +1162,33 @@ function culturefeed_content_contextual_search_box_form($form, $form_state, $que
   $postal_code = !empty($form_state['values']['postal_code']) ? $form_state['values']['postal_code'] : '1000';
 
   $query_params = $query;
-  if (isset($form_state['triggering_element']) && $form_state['triggering_element']['#name'] == 'filter_postal_code') {
-    $query_params = $form_state['triggering_element']['#value'] ? "$query&location=$postal_code&distance=10" : $query;
+  if (isset($form_state['triggering_element']) && $form_state['triggering_element']['#name'] == "filter_postal_code") {
+    $query_params = (int)$form_state['values']['filter_postal_code'] ? "$query&location=$postal_code&distance=10" : $query;
   }
 
   $form['show_more_link'] = array(
     '#type' => 'markup',
     '#markup' => "<a href=\"/agenda/search?$query_params\" class=\"btn btn-primary\">$link_text</a>",
-    '#prefix' => '<div id="show_more_link">',
-    '#suffix' => '</div>',
+    '#prefix' => "<div id=\"show_more_link_$instance_id\">",
+    '#suffix' => "</div>",
   );
 
   if ($show_postal_code_filter) {
+
     $form['filter_postal_code'] = array(
       '#type' => 'checkbox',
-      '#description' => t('Only show tips in my neighbourhood: <em>@postal_code</em>. <a href="" id="toggle_postal_code">modify postal code</a>', array(
+      '#description' => t('Only show tips in my neighbourhood: <em>@postal_code</em>. <a href="" class="toggle_postal_code" data-id="@id">modify postal code</a>', array(
+        '@id' => $instance_id,
         '@postal_code' => $postal_code,
       )),
-      '#default_value' => $form_state['values']['filter_postal_code'] ? 1 : 0,
-      '#prefix' => '<div id="filter_postal_code">',
-      '#suffix' => '</div>',
+      '#attributes' => array(
+        'data-id' => $instance_id,
+      ),
+      '#prefix' => "<div id=\"filter_postal_code_$instance_id\">",
+      '#suffix' => "</div>",
       '#ajax' => array(
         'callback' => '_culturefeed_ajax_rebuild_more_tips_link',
-        'wrapper' => 'show_more_tips_button',
+        'wrapper' => "show_more_link_$instance_id",
         'progress' => ['type' => 'none']
       ),
     );
@@ -1191,7 +1197,7 @@ function culturefeed_content_contextual_search_box_form($form, $form_state, $que
   $form['postal_code_container'] = array(
     '#type' => 'container',
     '#attributes' => array(
-      'class' => ['postal-code-container'],
+      'id' => "postal_code_container_$instance_id",
       'style' => 'display: none;'
     ),
   );
@@ -1200,9 +1206,13 @@ function culturefeed_content_contextual_search_box_form($form, $form_state, $que
     '#type' => 'textfield',
     '#title' => t('Postal code'),
     '#size' => 10,
+    '#attributes' => array(
+      'class' => ['postal-code-container-postal-code'],
+      'data-id' => $instance_id,
+    ),
     '#ajax' => array(
       'callback' => '_culturefeed_ajax_rebuild_more_tips_link',
-      'wrapper' => 'show_more_tips_button',
+      'wrapper' => "show_more_link_$instance_id",
       'progress' => ['type' => 'none']
     ),
   );
@@ -1219,11 +1229,12 @@ function culturefeed_content_contextual_search_box_form($form, $form_state, $que
  * @return array
  */
 function _culturefeed_ajax_rebuild_more_tips_link($form, &$form_state) {
+  $id = $form_state['triggering_element']['#attributes']['data-id'];
   return array(
     '#type' => 'ajax',
     '#commands' => array(
-      ajax_command_replace("#show_more_link", render($form['show_more_link'])),
-      ajax_command_replace("#filter_postal_code", render($form['filter_postal_code']))
+      ajax_command_replace("#show_more_link_$id", render($form['show_more_link'])),
+      ajax_command_replace("#filter_postal_code_$id", render($form['filter_postal_code']))
     )
   );
 }
@@ -1264,6 +1275,7 @@ function culturefeed_content_theme() {
         'link_text' => t('Show more'),
         'query' => '',
         'show_postal_code_search_box' => 0,
+        'instance_id' => '',
         'classes' => array('cf-content-all-results-link'),
       ),
     ),
@@ -1288,7 +1300,7 @@ function culturefeed_content_theme() {
  */
 function theme_culturefeed_content_all_advanced_query_results_link(array $variables) {
 
-  $form = drupal_get_form('culturefeed_content_contextual_search_box_form', $variables['query'], $variables['show_postal_code_search_box'], $variables['link_text']);
+  $form = drupal_get_form('culturefeed_content_contextual_search_box_form', $variables['query'], $variables['show_postal_code_search_box'], $variables['link_text'], $variables['instance_id']);
 
   return drupal_render($form);
 

@@ -181,8 +181,8 @@ msgstr "Query titel"
 msgid "Show search box to filter by postal code"
 msgstr "Toon zoekbox om selectie te filteren op postcode"
 
-msgid "Only show tips in my neighbourhood: <em>@postal_code</em>. <a href="" id=\"toggle_postal_code\">modify postal code</a>"
-msgstr "Toon enkel tips in mijn buurt: <em>@postal_code</em>. <a href="" id=\"toggle_postal_code\">wijzig postcode</a>"
+msgid "Only show tips in my neighbourhood: <em>@postal_code</em>. <a href="" id=\"toggle_postal_code\" data-id=\"@id\">modify postal code</a>"
+msgstr "Toon enkel tips in mijn buurt: <em>@postal_code</em>. <a href="" id=\"toggle_postal_code\" data-id=\"@id\">wijzig postcode</a>"
 
 msgid "Postal code"
 msgstr "Postcode"
