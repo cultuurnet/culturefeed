@@ -294,7 +294,7 @@ function culturefeed_mailing_subscription_update_form() {
       '#required' => TRUE,
       '#size' => 40,
       '#maxlength' => 255,
-      '#default_value' => '',
+      '#default_value' => ($account ? $account->mbox : ''),
       '#weight' => -10,
     ];
 
@@ -305,13 +305,35 @@ function culturefeed_mailing_subscription_update_form() {
       '#title' => t('Zipcode'),
       '#size' => 40,
       '#maxlength' => 255,
-      '#default_value' => '',
+      '#default_value' => ($account ? $account->zip : ''),
       '#weight' => -9,
-      '#access' => $show_zip,
+      '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED || (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip),
       '#attributes' => [
         'class' => ['zip-field'],
       ],
     ];
+
+    $form['firstname'] = array(
+      '#type' => 'textfield',
+      '#title' => t('First name'),
+      '#required' => TRUE,
+      '#size' => 40,
+      '#maxlength' => 255,
+      '#default_value' => ($account ? $account->givenName : ''),
+      '#weight' => -8,
+      '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
+    );
+
+    $form['lastname'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Family name'),
+      '#required' => TRUE,
+      '#size' => 40,
+      '#maxlength' => 255,
+      '#default_value' => ($account && isset($account->familyName) ? $account->familyName : ''),
+      '#weight' => -7,
+      '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
+    );
 
     $form['submit'] = [
       '#type' => 'submit',
@@ -321,6 +343,33 @@ function culturefeed_mailing_subscription_update_form() {
   }
 
   return $form;
+
+}
+
+/**
+ * Submit the mailing subscription uodate form.
+ */
+function culturefeed_mailing_subscription_update_form_submit($form, &$form_state) {
+
+  $account = DrupalCultureFeed::getLoggedInUser();
+
+  // Update user with entered fields.
+  $fields = array('id', 'mbox', 'zip', 'firstname', 'lastname');
+
+  $user_update = new CultureFeed_User();
+  $user_update->id = $account->id;
+  $user_update->mbox = $form_state['values']['mail'];
+  $user_update->zip = $form_state['values']['zip'];
+  $user_update->givenName = $form_state['values']['firstname'];
+  $user_update->familyName = $form_state['values']['lastname'];
+
+  try {
+    DrupalCultureFeed::updateUser($user_update, $fields);
+    drupal_set_message(t('You successfully updated your info.'));
+  }
+  catch (Exception $e) {
+    form_set_error('update_error', t('Something went wrong while trying to update your info.'));
+  }
 
 }
 

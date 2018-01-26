@@ -50,7 +50,7 @@ function culturefeed_mailing_menu() {
   );
 
   $items['subscribe/update'] = array(
-    'title' => 'Update your subscription',
+    'title' => 'Update your info',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('culturefeed_mailing_subscription_update_form'),
     'access arguments' => array('subscribe to mailings'),
