@@ -9,7 +9,7 @@
     attach: function (context, settings) {
 
       $(context).find('a.do-link').once('no-double-click').bind('click', function (e) {
-        console.log('click');
+
         var $link = $(e.target);
         if (!$link.data('no-click')) {
 
@@ -20,7 +20,6 @@
           }, 5000);
         }
         else {
-          console.log('nope');
           e.preventDefault();
         }
       });
