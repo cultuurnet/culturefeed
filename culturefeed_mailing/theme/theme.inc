@@ -77,5 +77,4 @@ function culturefeed_mailing_preprocess_culturefeed_mailing_content_block_alread
   $variables['update_link'] = l(t('Update subscription'), 'subscribe/update');
   $variables['unsubscribe_link'] = l(t('Manage subscriptions'), 'culturefeed/mailing');
 
-
 }

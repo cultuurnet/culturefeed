@@ -294,20 +294,18 @@ function culturefeed_mailing_subscription_update_form() {
       '#required' => TRUE,
       '#size' => 40,
       '#maxlength' => 255,
-      '#default_value' => ($account ? $account->mbox : ''),
+      '#default_value' => $account->mbox,
       '#weight' => -10,
     ];
-
-    $show_zip = variable_get('culturefeed_mailing_block_show_zip', 0);
 
     $form['zip'] = [
       '#type' => 'textfield',
       '#title' => t('Zipcode'),
       '#size' => 40,
       '#maxlength' => 255,
-      '#default_value' => ($account ? $account->zip : ''),
+      '#default_value' => $account->zip,
       '#weight' => -9,
-      '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED || (CULTUREFEED_API_LIGHT_ID_ALLOWED && $show_zip),
+      '#access' => variable_get('culturefeed_mailing_block_show_zip', 0),
       '#attributes' => [
         'class' => ['zip-field'],
       ],
@@ -319,9 +317,8 @@ function culturefeed_mailing_subscription_update_form() {
       '#required' => TRUE,
       '#size' => 40,
       '#maxlength' => 255,
-      '#default_value' => ($account ? $account->givenName : ''),
+      '#default_value' => $account->givenName,
       '#weight' => -8,
-      '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
     );
 
     $form['lastname'] = array(
@@ -330,9 +327,8 @@ function culturefeed_mailing_subscription_update_form() {
       '#required' => TRUE,
       '#size' => 40,
       '#maxlength' => 255,
-      '#default_value' => ($account && isset($account->familyName) ? $account->familyName : ''),
+      '#default_value' => isset($account->familyName) ? $account->familyName : '',
       '#weight' => -7,
-      '#access' => !CULTUREFEED_API_LIGHT_ID_ALLOWED,
     );
 
     $form['submit'] = [
