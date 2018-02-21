@@ -58,7 +58,7 @@ function culturefeed_search_ui_init() {
   // Check if we are not on a staging environment
   global $base_root;
   $staging = FALSE;
-  $dev_ids = array('culturefeed', 'dev.', 'acc.');
+  $dev_ids = array('culturefeed', 'dev.', 'acc.', 'test.');
   foreach($dev_ids as $id) {
     if (stripos($base_root, $id) !== FALSE) {
       $staging = TRUE;
