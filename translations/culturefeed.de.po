@@ -28,7 +28,7 @@ msgid "API location"
 msgstr ""
 
 #: culturefeed.admin.inc:18
-msgid "The URL where the CultureFeed API resides. End with a slash. Example: http://acc.uitid.be/uitid/rest/"
+msgid "The URL where the CultureFeed API resides. End with a slash. Example: https://test.uitid.be/uitid/rest/"
 msgstr ""
 
 #: culturefeed.admin.inc:23
