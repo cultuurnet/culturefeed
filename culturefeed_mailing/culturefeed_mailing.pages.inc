@@ -270,9 +270,9 @@ function culturefeed_mailing_subscription_update_form() {
 
   $account = culturefeed_load_logged_in_user();
 
-  // Redirect to loginpage if not logged in and light id permission is off.
+  // Redirect to loginpage if not logged in.
   if (!$account) {
-    drupal_goto('authenticated', array('query' => array('destination' => 'subscribe')));
+    drupal_goto('authenticated', array('query' => array('destination' => 'subscribe/update')));
   }
 
   // Show nothing if no mailing list available.
