@@ -395,6 +395,8 @@ function culturefeed_social_user_list_block_for_activity($object, $activity_type
   // Advanced activity link.
   $content['#activity_link'] = culturefeed_social_activity_link_advanced($activity_type, $object, FALSE);
 
+  $content['#attached']['js'][] = drupal_get_path('module', 'culturefeed_social') . '/js/social-links.js';
+
   $block['subject'] = $config->subject;
   $block['content'] = $content;
 
