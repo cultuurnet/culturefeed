@@ -17,3 +17,28 @@ function _culturefeed_data_validation_get_datavalidation_client() {
   $guzzleClient = new Client();
   return new DataValidationClient($guzzleClient, $apiKey);
 }
+
+/**
+ * Is the given email a valid email.
+ *
+ * @param $email
+ *   Email to validate.
+ */
+function culturefeed_data_validation_is_valid_email($email) {
+
+  try {
+    $datavalidationClient = _culturefeed_data_validation_get_datavalidation_client();
+    $response = $datavalidationClient->validateEmail($email);
+    if ($response && (!$response->isOK() || $response->getGrade() === 'F') ) {
+      return FALSE;
+    }
+  }
+  catch (Exception $e) {
+    // Only trigger an error if the value was the cause.
+    if ($e->getResponse()->getStatusCode() == 422) {
+      return FALSE;
+    }
+  }
+
+  return TRUE;
+}
