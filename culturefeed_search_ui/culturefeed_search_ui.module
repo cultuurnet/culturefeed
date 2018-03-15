@@ -1312,9 +1312,12 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
     $search_query = $query;
     unset($search_query['advanced_query']);
     $url = url($path, array('query' => $search_query));
+
+    $label = is_array($query['advanced_query']) && !empty($query['advanced_query']['title']) ? $query['advanced_query']['title'] : t('Advanced query');
+
     $build['advanced-query'] =  array(
       '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => !empty($query['advanced_query']['title']) ? $query['advanced_query']['title'] : t('Advanced query'),
+      '#label' => $label,
       '#url' => $url
     );
   }

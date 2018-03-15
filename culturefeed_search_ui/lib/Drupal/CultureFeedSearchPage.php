@@ -803,22 +803,27 @@ class CultureFeedSearchPage {
     foreach (explode('&', trim($query, '()')) as $filter) {
       $key_value = explode('=', $filter);
 
-      $key_value[1] = trim($key_value[1], '()');
+      if (count($key_value) > 1) {
+        $key_value[1] = trim($key_value[1], '()');
 
-      switch ($key_value[0]) {
-        case 'q':
-          $this->addQueryTerm($key_value[1]);
-          break;
-        case 'zipcode':
-          // Split code and radius.
-          $split = explode('!', $key_value[1]);
-          $this->parameters[] = new Parameter\Spatial\Zipcode((int)$split[0], (int)trim($split[1], 'km'));
-          break;
-        case 'fq':
-        default:
-          $facetFilterQuery = new Parameter\FilterQuery($key_value[1]);
-          $this->parameters[] = $facetFilterQuery;
-          break;
+        switch ($key_value[0]) {
+          case 'q':
+            $this->addQueryTerm($key_value[1]);
+            break;
+          case 'zipcode':
+            // Split code and radius.
+            $split = explode('!', $key_value[1]);
+            $this->parameters[] = new Parameter\Spatial\Zipcode((int)$split[0], (int)trim($split[1], 'km'));
+            break;
+          case 'fq':
+          default:
+            $facetFilterQuery = new Parameter\FilterQuery($key_value[1]);
+            $this->parameters[] = $facetFilterQuery;
+            break;
+        }
+      }
+      else {
+        $this->addQueryTerm($filter);
       }
     }
   }
