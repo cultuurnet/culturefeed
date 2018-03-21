@@ -78,7 +78,7 @@ function culturefeed_mailing_subscribe_form() {
 
   $form = array();
 
-  $user_already_subscribed = _culturefeed_mailing_check_user_subscription($account->id, variable_get('culturefeed_mailing_list'));
+  $user_already_subscribed = $account ? _culturefeed_mailing_check_user_subscription($account->id, variable_get('culturefeed_mailing_list')) : FALSE;
   if ($user_already_subscribed) {
 
     $form['already_subscribed'] = array(
@@ -260,6 +260,112 @@ function culturefeed_mailing_subscribe_form_submit($form, &$form_state) {
   }
 
   $form_state['redirect'] = 'subscribe/subscribed';
+
+}
+
+/**
+ * Form callback for the mailing subscription update form.
+ */
+function culturefeed_mailing_subscription_update_form() {
+
+  $account = culturefeed_load_logged_in_user();
+
+  // Redirect to loginpage if not logged in.
+  if (!$account) {
+    drupal_goto('authenticated', array('query' => array('destination' => 'subscribe/update')));
+  }
+
+  // Show nothing if no mailing list available.
+  if (!(variable_get('culturefeed_mailing_list', ''))) {
+    return;
+  }
+
+  $form = array();
+
+  $user_already_subscribed = $account ? _culturefeed_mailing_check_user_subscription($account->id, variable_get('culturefeed_mailing_list')) : FALSE;
+  if (!$user_already_subscribed) {
+    drupal_goto('subscribe');
+  }
+  else {
+
+    $form['mail'] = [
+      '#type' => 'textfield',
+      '#title' => t('Email address'),
+      '#required' => TRUE,
+      '#size' => 40,
+      '#maxlength' => 255,
+      '#default_value' => $account->mbox,
+      '#weight' => -10,
+    ];
+
+    $form['zip'] = [
+      '#type' => 'textfield',
+      '#title' => t('Zipcode'),
+      '#size' => 40,
+      '#maxlength' => 255,
+      '#default_value' => $account->zip,
+      '#weight' => -9,
+      '#access' => variable_get('culturefeed_mailing_block_show_zip', 0),
+      '#attributes' => [
+        'class' => ['zip-field'],
+      ],
+    ];
+
+    $form['firstname'] = array(
+      '#type' => 'textfield',
+      '#title' => t('First name'),
+      '#required' => TRUE,
+      '#size' => 40,
+      '#maxlength' => 255,
+      '#default_value' => $account->givenName,
+      '#weight' => -8,
+    );
+
+    $form['lastname'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Family name'),
+      '#required' => TRUE,
+      '#size' => 40,
+      '#maxlength' => 255,
+      '#default_value' => isset($account->familyName) ? $account->familyName : '',
+      '#weight' => -7,
+    );
+
+    $form['submit'] = [
+      '#type' => 'submit',
+      '#value' => t('Update'),
+      '#weight' => 10,
+    ];
+  }
+
+  return $form;
+
+}
+
+/**
+ * Submit the mailing subscription uodate form.
+ */
+function culturefeed_mailing_subscription_update_form_submit($form, &$form_state) {
+
+  $account = DrupalCultureFeed::getLoggedInUser();
+
+  // Update user with entered fields.
+  $fields = array('id', 'mbox', 'zip', 'firstname', 'lastname');
+
+  $user_update = new CultureFeed_User();
+  $user_update->id = $account->id;
+  $user_update->mbox = $form_state['values']['mail'];
+  $user_update->zip = $form_state['values']['zip'];
+  $user_update->givenName = $form_state['values']['firstname'];
+  $user_update->familyName = $form_state['values']['lastname'];
+
+  try {
+    DrupalCultureFeed::updateUser($user_update, $fields);
+    drupal_set_message(t('You successfully updated your info.'));
+  }
+  catch (Exception $e) {
+    form_set_error('update_error', t('Something went wrong while trying to update your info.'));
+  }
 
 }
 

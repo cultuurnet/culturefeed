@@ -683,3 +683,12 @@ msgstr ""
 #: culturefeed_mailing.info:0
 msgid "CultureFeed"
 msgstr "CultureFeed"
+
+msgid "Update your info"
+msgstr "Pas je gegevens aan"
+
+msgid "Something went wrong while trying to update your info."
+msgstr "Er liep iets fout bij het updaten van jouw gegevens."
+
+msgid "You successfully updated your info."
+msgstr "Jouw gegevens werden aangepast."

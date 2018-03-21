@@ -74,7 +74,7 @@ function culturefeed_mailing_preprocess_culturefeed_mailing_content_block_subscr
 function culturefeed_mailing_preprocess_culturefeed_mailing_content_block_already_subscribed(&$variables) {
 
   $variables['message'] = variable_get('culturefeed_mailing_already_subscribed_message', t('You are already subscribed to our newsletter'));
+  $variables['update_link'] = l(t('Update subscription'), 'subscribe/update');
   $variables['unsubscribe_link'] = l(t('Manage subscriptions'), 'culturefeed/mailing');
-
 
 }
