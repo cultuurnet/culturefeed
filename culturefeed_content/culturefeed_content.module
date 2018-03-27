@@ -9,6 +9,8 @@ define('CULTUREFEED_CONTENT_DEFAULT_ROWS', 10);
 define('CULTUREFEED_CONTENT_DEFAULT_SORT', 'date');
 define('CULTUREFEED_CONTENT_DEFAULT_TITLE', t('Our selection'));
 
+require_once 'includes/helpers.inc';
+
 /**
  * Implements hook_field_create_instance().
  */
@@ -102,98 +104,25 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
       foreach ($items as $delta => $item) {
 
         $title = $item['title'];
-
         $sort = isset($item['sort']) ? $item['sort'] : CULTUREFEED_CONTENT_DEFAULT_SORT;
-        $rows = isset($item['rows']) ? $item['rows'] : CULTUREFEED_CONTENT_DEFAULT_ROWS;
-
-        $parameters = array();
-
-        $search_type = culturefeed_get_searchable_type('activiteiten');
-        $sort_options = culturefeed_search_ui_get_sort_options_for_page($search_type);
-        foreach ($sort_options as $option) {
-          if (isset($option['value'])) {
-            if ($option['value'] == $sort) {
-              $parameters[] = new \CultuurNet\Search\Parameter\Parameter('sort', $option['query']);
-              break;
-            }
-          }
-        }
-
-        $parameters[] = new \CultuurNet\Search\Parameter\Rows($rows);
-        $parameters[] = new \CultuurNet\Search\Parameter\Group();
-
-        // Retrieve advanced query string and convert values to parameters.
-        preg_match('/\[query\]=\((.*)\)/', $item['composite_query'], $matches);
-
-        foreach (explode('%26', $matches[1]) as $filter) {
-          $key_value = explode('=', $filter);
-
-          switch ($key_value[0]) {
-            case 'q':
-              $parameters[] = new \CultuurNet\Search\Parameter\Query($key_value[1]);
-              break;
-            case 'zipcode':
-              // Split code and radius.
-              $split = explode('!', $key_value[1]);
-              $parameters[] = new \CultuurNet\Search\Parameter\Spatial\Zipcode((int)$split[0], (int)$split[1]);
-              break;
-            case 'fq':
-            default:
-              $facetFilterQuery = new \CultuurNet\Search\Parameter\FilterQuery(trim($key_value[1], '()'));
-              $parameters[] = $facetFilterQuery;
-              break;
-          }
-        }
-
-        // Execute search.
-        try {
-          $result = culturefeed_get_search_service()->search($parameters);
-        }
-        catch (Exception $e) {
-          watchdog_exception('culturefeed_content', $e);
-          return FALSE;
-        }
-
-        $search_results = $result->getItems();
 
         // Render the results.
         $build = array();
+        $query = [];
+        $query['advanced_query']['title'] = $title;
+        $query['advanced_query']['query'] = $item['composite_query'];
+        $query['sort'] = $sort;
 
-        if ($result->getTotalCount() > 0) {
-          $build[] = array(
-            '#theme' => 'culturefeed_content_title',
-            '#title' => $title
-          );
-
-          foreach ($search_results as $search_result) {
-            $build[] = array(
-              '#theme' => 'culturefeed_' . $search_result->getType() . '_summary',
-              '#item' => $search_result,
-            );
-          }
-
-          if ($result->getTotalCount() > $rows) {
-
-              $query = html_entity_decode($item['composite_query']);
-              $query .= '&sort=' . $sort;
-
-              $build[] = array(
-                '#theme' => 'culturefeed_content_all_advanced_query_results_link',
-                '#query' => $query,
-                '#show_postal_code_search_box' => (int)$item['show_postal_code_search_box'],
-                '#instance_id' => $instance['id'],
-              );
-
-          }
-
+        if ($item['show_postal_code_search_box']) {
+          $build[] = drupal_get_form('culturefeed_content_contextual_search_box_form', $item);
         }
-
-        else {
-
+        elseif ($result = _culturefeed_content_get_results($item)) {
           $build[] = array(
-            '#theme' => 'culturefeed_content_empty_text',
+            '#theme' => 'culturefeed_content_result_list',
+            '#title' => $title,
+            '#search_result' => $result,
+            '#query' => $query,
           );
-
         }
 
         $element[$delta] = $build;
@@ -251,11 +180,21 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $where_postal_code = isset($items[$delta]['where_postal_code']) ? $items[$delta]['where_postal_code'] : '';
   $where_postal_code_radius = isset($items[$delta]['where_postal_code_radius']) ? $items[$delta]['where_postal_code_radius'] : 5;
   $when_type_1 = isset($items[$delta]['when_type_1']) ? $items[$delta]['when_type_1'] : 'all';
+  if ($when_type_1 !== 'all') {
+    $when_date_1 = isset($items[$delta]['when_date_1']) ? $items[$delta]['when_date_1'] : '';
+  }
+  else {
+    $when_date_1 = '';
+  }
   $when_before_after_1 = isset($items[$delta]['when_before_after_1']) ? $items[$delta]['when_before_after_1'] : 0;
-  $when_date_1 = isset($items[$delta]['when_date_1']) ? $items[$delta]['when_date_1'] : '';
   $when_type_2 = isset($items[$delta]['when_type_2']) ? $items[$delta]['when_type_2'] : 'all';
+  if ($when_type_1 !== 'all') {
+    $when_date_2 = isset($items[$delta]['when_date_2']) ? $items[$delta]['when_date_2'] : '';
+  }
+  else {
+    $when_date_2 = '';
+  }
   $when_before_after_2 = isset($items[$delta]['when_before_after_2']) ? $items[$delta]['when_before_after_2'] : 0;
-  $when_date_2 = isset($items[$delta]['when_date_2']) ? $items[$delta]['when_date_2'] : '';
   $query_title = isset($items[$delta]['query_title']) ? $items[$delta]['query_title'] : '';
   $show_postal_code_search_box = isset($items[$delta]['show_postal_code_search_box']) ? $items[$delta]['show_postal_code_search_box'] : '';
 
@@ -279,7 +218,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $field_name_base .= '[' . implode('][', $field_name_base_children) . ']';
 
   // Retrieve correctly nested values.
-  if ($form_state['values']) {
+  if (!empty($form_state['values'])) {
     $nested_values = drupal_array_get_nested_value($form_state['values'], $parents);
   }
   else {
@@ -293,7 +232,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $what_category_rows = [];
 
   if (!empty($items[$delta]['what_categories'])) {
-    $what_category_rows = _culturefeed_convert_serialized_categories_to_rows($items[$delta]['what_categories']);
+    $what_category_rows = _culturefeed_content_convert_serialized_categories_to_rows($items[$delta]['what_categories']);
   }
 
   // Check triggering element to possibly add an empty row.
@@ -328,7 +267,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#type' => 'textfield',
     '#maxlength' => 1000,
     '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
       'progress' => array('type' => 'none')
     ),
@@ -342,7 +281,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#type' => 'textfield',
     '#maxlength' => 1000,
     '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
       'progress' => array('type' => 'none')
     ),
@@ -390,7 +329,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#title' => t('Type'),
     '#required' => $element['#required'],
     '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
       'progress' => array('type' => 'none')
     ),
@@ -401,18 +340,18 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $element['wrapper']['what'] = array(
     '#title' => t('Categories'),
     '#type' => 'fieldset',
-    '#attributes' => ['class' => 'fieldset-query-builder'],
+    '#attributes' => ['class' => ['fieldset-query-builder']],
     '#prefix' => '<div id="' . $category_fieldset_id . '">',
     '#suffix' => '</div>',
   );
 
   // Possibly add multiple rows to the existing element.
   if (empty($what_category_rows)) {
-    $element = _culturefeed_add_builder_category_row($element, $field_name_base, 0, [], $composite_query_field_id);
+    $element = _culturefeed_content_add_builder_category_row($element, $field_name_base, 0, [], $composite_query_field_id);
   }
   else {
     foreach($what_category_rows as $i => $values) {
-      $element = _culturefeed_add_builder_category_row($element, $field_name_base, $i, $values, $composite_query_field_id);
+      $element = _culturefeed_content_add_builder_category_row($element, $field_name_base, $i, $values, $composite_query_field_id);
     }
   }
 
@@ -430,7 +369,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       ),
     ),
     '#ajax' => array(
-      'callback' => '_culturefeed_rebuild_categories',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_categories',
       'wrapper' => $category_fieldset_id,
     ),
   );
@@ -442,7 +381,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#submit' => array('culturefeed_content_widget_add_remove_category_submit'),
     '#limit_validation_errors' => array($parents),
     '#ajax' => array(
-      'callback' => '_culturefeed_rebuild_categories',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_categories',
       'wrapper' => $category_fieldset_id,
     ),
   );
@@ -457,7 +396,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $element['wrapper']['where'] = array(
     '#title' => t('Where'),
     '#type' => 'fieldset',
-    '#attributes' => ['class' => 'fieldset-query-builder']
+    '#attributes' => ['class' => ['fieldset-query-builder']]
   );
 
   $element['wrapper']['where']['where_type'] = array(
@@ -470,7 +409,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     ],
     '#default_value' => $where_type,
     '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
       'progress' => array('type' => 'none')
     ),
@@ -494,7 +433,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       ),
     ),
     '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
       'progress' => array('type' => 'none')
     ),
@@ -520,7 +459,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       ),
     ),
     '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
       'progress' => array('type' => 'none')
     ),
@@ -546,7 +485,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       ),
     ),
     '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
       'progress' => array('type' => 'none')
     ),
@@ -565,7 +504,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       ),
     ),
     '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
       'progress' => array('type' => 'none')
     ),
@@ -588,7 +527,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       ),
     ),
     '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
       'progress' => array('type' => 'none')
     ),
@@ -605,7 +544,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#title' => t('When'),
     '#type' => 'fieldset',
     '#description' => t('These filters only apply to events.'),
-    '#attributes' => ['class' => 'fieldset-query-builder'],
+    '#attributes' => ['class' => ['fieldset-query-builder']],
   );
 
   $element['wrapper']['when']['when_type_1'] = array(
@@ -617,7 +556,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     ],
     '#default_value' => $when_type_1,
     '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
       'progress' => array('type' => 'none')
     ),
@@ -635,7 +574,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       ),
     ),
     '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
       'progress' => array('type' => 'none')
     ),
@@ -655,7 +594,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       ),
     ),
     '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
       'progress' => array('type' => 'none')
     ),
@@ -677,7 +616,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       ),
     ),
     '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
       'progress' => array('type' => 'none')
     ),
@@ -695,7 +634,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       ),
     ),
     '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
       'progress' => array('type' => 'none')
     ),
@@ -715,7 +654,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       ),
     ),
     '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
       'progress' => array('type' => 'none')
     ),
@@ -730,7 +669,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#suffix' => '</div>',
   );
 
-  $element['wrapper']['composite_query']['#default_value'] = _culturefeed_build_advanced_query($nested_values);
+  $element['wrapper']['composite_query']['#default_value'] = _culturefeed_content_build_advanced_query($nested_values);
 
   $element['wrapper']['query_title'] = array(
     '#type' => 'textfield',
@@ -739,7 +678,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#default_value' => $query_title,
     '#maxlength' => 255,
     '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
+      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
       'progress' => array('type' => 'none')
     ),
@@ -767,344 +706,9 @@ function culturefeed_content_widget_add_remove_category_submit($form, &$form_sta
 }
 
 /**
- * Add a category row to the query builder categories field.
- *
- * @param $id
- * @param array $values
- *
- * @return string
- */
-function _culturefeed_add_builder_category_row($element, $field_name_base, $id = 0, $values = [], $composite_query_field_id) {
-  // Check values for defaults.
-  $default_type = (isset($values['type']) ? $values['type'] : 'all');
-  $default_equal = (isset($values['equal']) ? $values['equal'] : 0);
-  $default_ids = (isset($values['ids']) ? $values['ids'] : '');
-
-  // Build category type options.
-  $selectable_categories = ['eventtype', 'theme', 'actortype', 'facility'];
-  $domains = culturefeed_search_get_domains();
-  $category_type_options = ['all' => t('All')];
-
-  foreach ($selectable_categories as $category) {
-    $category_type_options[$category] = $domains[$category];
-  }
-
-  $element['wrapper']['what']["what_type_$id"] = array(
-    '#type' => 'select',
-    '#options' => $category_type_options,
-    '#default_value' => $default_type,
-    '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
-    ),
-  );
-
-  $element['wrapper']['what']["what_equal_$id"] = array(
-    '#type' => 'select',
-    '#options' => [
-      t('is equal to'),
-      t('is not equal to')
-    ],
-    '#default_value' => $default_equal,
-    '#states' => array(
-      'invisible' => array(
-        array(
-          ':input[name="' . $field_name_base . '[wrapper][what][what_type_' . $id . ']"]' => array('value' => 'all'),
-        ),
-      ),
-    ),
-    '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
-    ),
-  );
-
-  // Build select fields for each category.
-  foreach ($selectable_categories as $category) {
-    $category_options = culturefeed_search_get_categories_by_domain($category);
-
-    $element['wrapper']['what']["what_$category" . "_$id"] = array(
-      '#type' => 'select',
-      '#options' => $category_options,
-      '#multiple' => TRUE,
-      '#validated' => TRUE, // Fix for multiselect + ajax issue
-      '#states' => array(
-        'visible' => array(
-          array(
-            ':input[name="' . $field_name_base . '[wrapper][what][what_type_' . $id . ']"]' => array('value' => $category),
-          ),
-        ),
-      ),
-      '#ajax' => array(
-        'callback' => '_culturefeed_ajax_rebuild_composite_query',
-        'wrapper' => $composite_query_field_id,
-        'progress' => array('type' => 'none')
-      ),
-    );
-
-    if ($category == $default_type && $default_type !== 'all') {
-      $element['wrapper']['what']["what_$category" . "_$id"]['#default_value'] = $default_ids;
-    }
-  }
-
-  return $element;
-}
-
-/**
- * Unserialize categories form values and convert to custom row value arrays.
- *
- * @param $serialized_values
- *
- * @return array
- */
-function _culturefeed_convert_serialized_categories_to_rows ($serialized_values) {
-  $rows = [];
-
-  $values = unserialize($serialized_values);
-
-  for ($i = 0; $i >= 0; $i++) {
-    if (isset($values["what_type_$i"])) {
-      if ($values["what_type_$i"] !== 'all') {
-
-        switch ($values["what_type_$i"]) {
-          case 'eventtype':
-            $ids = $values["what_eventtype_$i"];
-            break;
-          case 'theme':
-            $ids = $values["what_theme_$i"];
-            break;
-          case 'actortype':
-            $ids = $values["what_actortype_$i"];
-            break;
-          case 'facility':
-            $ids = $values["what_facility_$i"];
-            break;
-          default:
-            $ids = [];
-            break;
-        }
-
-        $rows[] = [
-          'type' => $values["what_type_$i"],
-          'equal' => $values["what_equal_$i"],
-          'ids' => $ids
-        ];
-      }
-      else {
-        $rows[] = [];
-      }
-    }
-    else {
-      break;
-    }
-  }
-
-  return $rows;
-}
-
-/**
- * Build an advanced query string based on the current builder values.
- *
- * @param $values
- *
- * @return string
- */
-function _culturefeed_build_advanced_query($values) {
-  $title = !empty($values['query_title']) ? $values['query_title'] : t('Advanced query filter');
-  $query_param = !empty($values['query_string']) ? _culturefeed_search_ui_sanitize_query_term($values['query_string']) : '*:*';
-  $advanced_query = "advanced_query[title]=$title&advanced_query[query]=(q=$query_param";
-
-  // Types.
-  $types = isset($values['types']) && !empty($values['types']) ? explode(',', $values['types']) : null;
-  if ($types) {
-    foreach ($values['types'] as $type => $value) {
-      if ($value) {
-        $types[] = $type;
-      }
-    }
-  }
-  else {
-    $types = ['event', 'actor', 'production'];
-  }
-
-  $type_filters = '';
-
-  foreach ($types as $type) {
-    if (!empty($type_filters)) {
-      $type_filters .= ' OR ';
-    }
-    $type_filters .= "type:$type";
-  }
-
-  $advanced_query .= "%26fq=($type_filters)";
-
-  if (!empty($values['filter_query'])) {
-    $advanced_query .= '%26fq=(' . $values['filter_query'] . ')';
-  }
-
-  // Categories query.
-  $advanced_query .= _culturefeed_build_categories_query(unserialize($values['what_categories']));
-
-  // Where.
-  switch ($values['where_type']) {
-    case 'region':
-      $region = $values['where_region'];
-      if ($region !== 'all') {
-        $advanced_query .= $values['where_equal'] ? "%26fq=(NOT category_flandersregion_id:$region)" : "%26fq=(category_flandersregion_id:$region)";
-      }
-      break;
-    case 'city':
-      $city = $values['where_city'];
-      if ($city !== 'all') {
-        $advanced_query .= $values['where_equal'] ? "%26fq=(NOT category_flandersregion_id:$city)" : "%26fq=(category_flandersregion_id:$city)";
-      }
-      break;
-    case 'postal_code':
-      $postal_code = $values['where_postal_code'];
-      $radius = $values['where_postal_code_radius'] . 'km';
-      $advanced_query .= $values['where_equal'] ? "%26fq=(NOT zipcode:$postal_code)" : "%26zipcode=$postal_code!$radius";
-      break;
-  }
-
-  // When.
-  if ($values['when_date_1'] || $values['when_date_2']) {
-    // To make the checking easier, we set type to 'all' if there is no corresponding date value yet.
-    $values['when_type_1'] = $values['when_date_1'] ? $values['when_type_1'] : 'all';
-    $values['when_type_2'] = $values['when_date_2'] ? $values['when_type_2'] : 'all';
-
-    $combined_when_type = $values['when_type_1'] . '|' . $values['when_type_2'];
-
-    // 0 = before, 1 = after.
-    $ba_1 = $values['when_before_after_1'];
-    $ba_2 = $values['when_before_after_2'];
-
-    $date_1 = $values['when_date_1'] ? new DateTime($values['when_date_1']) : null;
-    $date_2 = $values['when_date_2'] ? new DateTime($values['when_date_2']) : null;
-
-    switch ($combined_when_type) {
-      case 'startdate|all':
-      case 'enddate|all':
-        $advanced_query .= $ba_1 ? create_date_filter_param($values['when_type_1'], $date_1) : create_date_filter_param($values['when_type_1'], null, $date_1);
-        break;
-      case 'all|startdate':
-      case 'all|enddate':
-        $advanced_query .= $ba_2 ? create_date_filter_param($values['when_type_2'], $date_2) : create_date_filter_param($values['when_type_2'], null, $date_2);
-        break;
-      case 'startdate|startdate':
-      case 'enddate|enddate':
-        if ($ba_1 == $ba_2) {
-          $advanced_query .= $ba_1 ? create_date_filter_param($values['when_type_1'], $date_1) : create_date_filter_param($values['when_type_1'], null, $date_1);
-          $advanced_query .= $ba_2 ? create_date_filter_param($values['when_type_2'], $date_2) : create_date_filter_param($values['when_type_2'], null, $date_2);
-        }
-        else {
-          $advanced_query .= $ba_1 && !$ba_2 ? create_date_filter_param($values['when_type_1'], $date_1, $date_2) : create_date_filter_param($values['when_type_1'], $date_2, $date_1);
-        }
-        break;
-      case 'startdate|enddate':
-      case 'enddate|startdate':
-        $advanced_query .= $ba_1 ? create_date_filter_param($values['when_type_1'], $date_1) : create_date_filter_param($values['when_type_1'], null, $date_1);
-        $advanced_query .= $ba_2 ? create_date_filter_param($values['when_type_2'], $date_2) : create_date_filter_param($values['when_type_2'], null, $date_2);
-        break;
-    }
-  }
-
-  return $advanced_query . ')';
-}
-
-/**
- * Build the categories query string based on the current builder values.
- *
- * @param $values
- *
- * @return string
- */
-function _culturefeed_build_categories_query($values) {
-  $query = '';
-
-  // Loop through all possible field rows.
-  for ($i = 0; $i >= 0; $i++) {
-
-    if (!isset($values["what_type_$i"]) || $values["what_type_$i"] == 'all') {
-      break;
-    }
-
-    $type = $values["what_type_$i"];
-
-    $selected = array_values($values["what_$type" . "_$i"]);
-
-    if (!empty($selected)) {
-      $not_equal = (int)$values["what_equal_$i"];
-
-      $query .= '%26fq=(';
-
-      for ($j = 0; $j<count($selected); $j++) {
-
-        $cat_id = $selected[$j];
-
-        // Check for possible grouped values and split them up.
-        if (strpos($cat_id, ',')) {
-          $cat_ids = explode(',', $cat_id);
-          $selected = array_merge($selected, $cat_ids);
-          continue;
-        }
-
-        $query .= ($not_equal ? 'NOT ' : '');
-
-        $query .= "category_$type" ."_id:$cat_id";
-
-        if(count($selected)-1 > $j) {
-          $query .= ' OR ';
-        }
-        else {
-          continue;
-        }
-      }
-
-      $query .= ')';
-    }
-    else {
-      break;
-    }
-  }
-
-  return $query;
-}
-
-/**
- * Returns a date filter query parameter string for the advanced query.
- *
- * @param string $type
- * @param \DateTime|null $date_1
- * @param \DateTime|null $date_2
- *
- * @return string
- */
-function create_date_filter_param ($type = 'startdate', $date_1 = null, $date_2 = null) {
-  if ($date_1) {
-    $date_1->setTime(0, 0, 0);
-    $value1 = gmdate('Y-m-d\TH:i:s\Z', $date_1->getTimestamp());
-  }
-  else {
-    $value1 = '*';
-  }
-
-  if ($date_2) {
-    $date_2->setTime(23, 59, 59);
-    $value2 = gmdate('Y-m-d\TH:i:s\Z', $date_2->getTimestamp());
-  }
-  else {
-    $value2 = '*';
-  }
-
-  return "%26fq=($type:[$value1 TO $value2])";
-}
-
-/**
  * Rebuild the categories field.
  */
-function _culturefeed_rebuild_categories($form, &$form_state) {
+function culturefeed_content_field_ajax_rebuild_categories($form, &$form_state) {
   // Retrieve correct nested field.
   $parents = $form_state['triggering_element']['#parents'];
 
@@ -1124,7 +728,7 @@ function _culturefeed_rebuild_categories($form, &$form_state) {
 /**
  * Rebuild the composite_query field.
  */
-function _culturefeed_ajax_rebuild_composite_query($form, &$form_state) {
+function culturefeed_content_field_ajax_rebuild_composite_query($form, &$form_state) {
   // Retrieve correct nested field.
   $parents = $form_state['triggering_element']['#parents'];
 
@@ -1144,52 +748,77 @@ function _culturefeed_ajax_rebuild_composite_query($form, &$form_state) {
 /**
  * Form constructor for the contextual search box form.
  *
- * @param $query
- * @param $show_postal_code_filter
- * @param $link_text
- * @param $instance_id
- *
- * @return mixed
- *
- * Implements hook_form().
+ * @param $field_item
+ *   The field item.
  */
-function culturefeed_content_contextual_search_box_form($form, $form_state, $query, $show_postal_code_filter, $link_text, $instance_id) {
+function culturefeed_content_contextual_search_box_form($form, &$form_state, $field_item) {
+
+  $wrapper_id = drupal_html_id('culturefeed-content-list');
+  $form['#prefix'] = '<div id="' . $wrapper_id . '">';
+  $form['#suffix'] = '</div>';
+
+  $query = [];
+  $query['advanced_query']['title'] = $field_item['title'];
+  $query['advanced_query']['query'] = $field_item['composite_query'];
+  $query['sort'] = isset($field_item['sort']) ? $field_item['sort'] : CULTUREFEED_CONTENT_DEFAULT_SORT;
+
+  $filter_enabled = !empty($form_state['values']['filter_postal_code']);
+  $last_postal_code = !empty($form_state['last_postal']) ? $form_state['last_postal'] : NULL;
+
+  $postal_code = !empty($form_state['values']['postal_code']) ? (int)$form_state['values']['postal_code'] : 'none';
+  $entered_postal_code = $postal_code;
+  if ($entered_postal_code === 'none') {
+    $user_location = culturefeed_search_ui_get_user_location_cookie();
+    if (isset($user_location->postal)) {
+      $entered_postal_code = $user_location->postal;
+    }
+  }
+
+  if ($filter_enabled && $postal_code) {
+    $query['location'] = $postal_code;
+  }
+  else {
+    $postal_code = NULL;
+  }
+
+  if ($postal_code !== $last_postal_code || !isset($form_state['result'])) {
+    try {
+      $result = _culturefeed_content_get_results($field_item, $postal_code);
+      $form_state['result'] = $result;
+      $form_state['last_postal'] = $postal_code;
+    }
+    catch (Exception $e) {
+      watchdog_exception('culturefeed_content', $e);
+      return $form;
+    }
+  }
+  else {
+    $result = $form_state['result'];
+  }
+
+  $form['result'] = array(
+    '#theme' => 'culturefeed_content_result_list',
+    '#title' => $field_item['title'],
+    '#search_result' => $result,
+    '#query' => $query,
+  );
 
   $form['#attached']['js'] = [
     drupal_get_path('module', 'culturefeed_content') . '/js/contextual_search_box.js',
   ];
 
-  $postal_code = !empty($form_state['values']['postal_code']) ? $form_state['values']['postal_code'] : '1000';
-
-  $query_params = $query;
-  if (isset($form_state['triggering_element']) && $form_state['triggering_element']['#name'] == "filter_postal_code") {
-    $query_params = (int)$form_state['values']['filter_postal_code'] ? "$query&location=$postal_code&distance=10" : $query;
-  }
-
-  $form['show_more_link'] = array(
-    '#type' => 'markup',
-    '#markup' => "<a href=\"/agenda/search?$query_params\" class=\"btn btn-primary\">$link_text</a>",
-    '#prefix' => "<div id=\"show_more_link_$instance_id\">",
-    '#suffix' => "</div>",
-  );
-
-  if ($show_postal_code_filter) {
+  if ($field_item['show_postal_code_search_box']) {
 
     $form['filter_postal_code'] = array(
       '#type' => 'checkbox',
       '#description' => t('Only show tips in my neighbourhood: <em>@postal_code</em>. <a href="" class="toggle_postal_code" data-id="@id">modify postal code</a>', array(
-        '@id' => $instance_id,
-        '@postal_code' => $postal_code,
+        '@id' => 'postal_code_container_' . $wrapper_id,
+        '@postal_code' => $entered_postal_code === 'none' ? '' : $entered_postal_code,
       )),
-      '#attributes' => array(
-        'data-id' => $instance_id,
-      ),
-      '#prefix' => "<div id=\"filter_postal_code_$instance_id\">",
       '#suffix' => "</div>",
       '#ajax' => array(
-        'callback' => '_culturefeed_ajax_rebuild_more_tips_link',
-        'wrapper' => "show_more_link_$instance_id",
-        'progress' => ['type' => 'none']
+        'callback' => 'culturefeed_content_search_box_ajax_submit',
+        'wrapper' => $wrapper_id,
       ),
     );
   }
@@ -1197,7 +826,7 @@ function culturefeed_content_contextual_search_box_form($form, $form_state, $que
   $form['postal_code_container'] = array(
     '#type' => 'container',
     '#attributes' => array(
-      'id' => "postal_code_container_$instance_id",
+      'id' => 'postal_code_container_' . $wrapper_id,
       'style' => 'display: none;'
     ),
   );
@@ -1208,12 +837,12 @@ function culturefeed_content_contextual_search_box_form($form, $form_state, $que
     '#size' => 10,
     '#attributes' => array(
       'class' => ['postal-code-container-postal-code'],
-      'data-id' => $instance_id,
     ),
+    '#default_value' => $entered_postal_code,
     '#ajax' => array(
-      'callback' => '_culturefeed_ajax_rebuild_more_tips_link',
-      'wrapper' => "show_more_link_$instance_id",
-      'progress' => ['type' => 'none']
+      'callback' => 'culturefeed_content_search_box_ajax_submit',
+      'wrapper' => $wrapper_id,
+      'keypress' => TRUE,
     ),
   );
 
@@ -1221,22 +850,10 @@ function culturefeed_content_contextual_search_box_form($form, $form_state, $que
 }
 
 /**
- * Rebuild the more tips link.
- *
- * @param $form
- * @param $form_state
- *
- * @return array
+ * Rebuild the content list.
  */
-function _culturefeed_ajax_rebuild_more_tips_link($form, &$form_state) {
-  $id = $form_state['triggering_element']['#attributes']['data-id'];
-  return array(
-    '#type' => 'ajax',
-    '#commands' => array(
-      ajax_command_replace("#show_more_link_$id", render($form['show_more_link'])),
-      ajax_command_replace("#filter_postal_code_$id", render($form['filter_postal_code']))
-    )
-  );
+function culturefeed_content_search_box_ajax_submit($form, &$form_state) {
+  return $form;
 }
 
 /**
@@ -1263,98 +880,30 @@ function culturefeed_content_field_widget_info() {
  */
 function culturefeed_content_theme() {
 
+  $path = drupal_get_path('module', 'culturefeed_content') . '/theme';
+
   return array(
+    'culturefeed_content_result_list' => array(
+      'variables' => array(
+        'search_result' => NULL,
+        'query' => '',
+        'show_postal_code_search_box' => 0,
+        'instance_id' => '',
+        'link_text' => t('Show more'),
+      ),
+      'path' => $path,
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-content-result-list',
+    ),
     'culturefeed_content_empty_text' => array(
       'variables' => array(
         'empty_text' => t('No results found.'),
         'classes' => array('alert', 'alert-info'),
       ),
-    ),
-    'culturefeed_content_all_advanced_query_results_link' => array(
-      'variables' => array(
-        'link_text' => t('Show more'),
-        'query' => '',
-        'show_postal_code_search_box' => 0,
-        'instance_id' => '',
-        'classes' => array('cf-content-all-results-link'),
-      ),
-    ),
-    'culturefeed_content_title' => array(
-      'variables' => array(
-        'title' => '',
-        'classes' => array('cf-content-title'),
-      ),
-    )
-  );
-
-}
-
-/**
- * Returns HTML for the all advanced query results link.
- *
- * @param array $variables
- *   The variables.
- *
- * @return string
- *   The HTML.
- */
-function theme_culturefeed_content_all_advanced_query_results_link(array $variables) {
-
-  $form = drupal_get_form('culturefeed_content_contextual_search_box_form', $variables['query'], $variables['show_postal_code_search_box'], $variables['link_text'], $variables['instance_id']);
-
-  return drupal_render($form);
-
-}
-
-/**
- * Returns HTML for the empty text.
- *
- * @param array $variables
- *   The variables.
- *
- * @return string
- *   The HTML.
- */
-function theme_culturefeed_content_empty_text(array $variables) {
-
-  $build = array(
-    '#type' => 'container',
-    '#attributes' => array(
-      'class' => $variables['classes'],
-    ),
-    'empty_text' => array(
-      '#markup' => $variables['empty_text'],
+      'path' => $path,
+      'file' => 'theme.inc',
     ),
   );
 
-  return drupal_render($build);
-
 }
 
-/**
- * Returns HTML for the title.
- *
- * @param array $variables
- *   The variables.
- *
- * @return string
- *   The HTML.
- */
-function theme_culturefeed_content_title(array $variables) {
-
-  if (empty($variables['title'])) {
-    $variables['title'] = t('Our selection');
-  }
-
-  $build = array(
-    '#type' => 'container',
-    '#attributes' => array(
-      'class' => $variables['classes'],
-    ),
-    'title' => array(
-      '#markup' => $variables['title'],
-    ),
-  );
-
-  return drupal_render($build);
-}
