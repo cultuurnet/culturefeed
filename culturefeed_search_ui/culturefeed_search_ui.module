@@ -839,6 +839,7 @@ function culturefeed_search_ui_block_view($delta) {
     case 'filter-form-2':
     case 'filter-form-3':
     case 'filter-form-4':
+    case 'filter-form-5':
       // Don't show block if there are no search results.
       $search_result = culturefeed_get_search_result();
       if (!$search_result instanceof \Cultuurnet\Search\SearchResult || $search_result->getTotalCount() == 0) {
