@@ -411,7 +411,9 @@ function culturefeed_search_ui_block_info() {
     'info' => t('Culturefeed search: location search'),
   );
 
-  for ($i = 2; $i <= CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS; $i++) {
+  $total_filter_blocks = variable_get('culturefeed_search_ui_total_filter_blocks', CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS);
+
+  for ($i = 2; $i <= $total_filter_blocks; $i++) {
     $blocks['filter-form-' . $i] = array(
       'info' => t('Culturefeed search: Filter form !number', array('!number' => $i)),
       'cache' => DRUPAL_NO_CACHE,
@@ -936,7 +938,9 @@ function culturefeed_search_ui_block_view($delta) {
 function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSearchPageInterface $culturefeedSearchPage) {
 
   // Filter form blocks.
-  for ($i = 1; $i <= CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS; $i++) {
+  $total_filter_blocks = variable_get('culturefeed_search_ui_total_filter_blocks', CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS);
+
+  for ($i = 1; $i <= $total_filter_blocks; $i++) {
 
     if ($i == 1) {
       $filter_variable = 'culturefeed_search_filter_options';
@@ -1276,7 +1280,10 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
   // Check if form filters are selected.
   $filter_options = array();
   $extra_filter_options = array();
-  for ($i = 1; $i <= CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS; $i++) {
+
+  $total_filter_blocks = variable_get('culturefeed_search_ui_total_filter_blocks', CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS);
+
+  for ($i = 1; $i <= $total_filter_blocks; $i++) {
 
     if ($i == 1) {
       $extra_filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options($i));
