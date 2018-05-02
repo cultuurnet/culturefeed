@@ -340,10 +340,10 @@ function culturefeed_acceptance_mode() {
     return TRUE;
   }
 
-  // Check for acc or dev environments that are connected with production
+  // Check for test, acc or dev environments that are connected with production
   else {
     global $base_root;
-    $dev_ids = array('culturefeed', 'dev.', 'acc.');
+    $dev_ids = array('culturefeed', 'dev.', 'acc.', 'test.');
     foreach($dev_ids as $id) {
       if (stripos($base_root, $id) !== false) {
         return TRUE;
