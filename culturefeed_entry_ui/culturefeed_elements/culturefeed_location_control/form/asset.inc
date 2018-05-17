@@ -52,7 +52,7 @@ function culturefeed_location_control_asset_process(array $element, array &$form
   );
 
   $element['label'] = array(
-    '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions/all',
+    '#autocomplete_path' => 'autocomplete/culturefeed/location-suggestions/all',
     '#default_value' => isset($asset['label']) ? $asset['label'] : '',
     '#required' => FALSE,
     '#size' => 80,

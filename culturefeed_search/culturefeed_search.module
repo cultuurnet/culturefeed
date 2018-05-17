@@ -85,6 +85,26 @@ function culturefeed_search_menu() {
     'file' => 'includes/pages.inc',
   );
 
+  // Autocomplete path for all locations
+  $items['autocomplete/culturefeed/location-suggestions/all'] = array(
+    'title' => 'Culturefeed location suggestions autocomplete',
+    'page callback' => 'culturefeed_search_suggestions_autocomplete_page',
+    'page arguments' => array(4, FALSE, 'actor', TRUE, TRUE, '8.15.0.0.0'),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
+  // Autocomplete path for all organizers
+  $items['autocomplete/culturefeed/organizer-suggestions/all'] = array(
+    'title' => 'Culturefeed location suggestions autocomplete',
+    'page callback' => 'culturefeed_search_suggestions_autocomplete_page',
+    'page arguments' => array(4, FALSE, 'actor', TRUE, TRUE, '8.11.0.0.0'),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   // Autocomplete path for region suggestions.
   $items['autocomplete/culturefeed/region-suggestion'] = array(
     'page callback' => 'culturefeed_search_region_suggestion_autocomplete_page',

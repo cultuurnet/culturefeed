@@ -10,7 +10,7 @@ use \Guzzle\Http\Client;
 /**
  * Autcomplete callback for the suggestions on Cdb items.
  */
-function culturefeed_search_suggestions_autocomplete_page($search_string, $past = FALSE, $type = NULL, $all = FALSE, $zip = FALSE) {
+function culturefeed_search_suggestions_autocomplete_page($search_string, $past = FALSE, $type = NULL, $all = FALSE, $zip = FALSE, $type_id = NULL) {
 
   $matches = array();
 
@@ -20,6 +20,7 @@ function culturefeed_search_suggestions_autocomplete_page($search_string, $past 
 
       $types = !empty($type) ? array($type) : array();
       $extra_parameters[] = !empty($all) ? new \CultuurNet\Search\Parameter\Parameter('admin','true') : array();
+      $extra_parameters[] = !empty($type_id) ? new \CultuurNet\Search\Parameter\FilterQuery($type_id) : array();
 
       // Get the list of suggestions from service.
       $suggestions = culturefeed_get_search_service()->searchSuggestions($search_string, $types, $past, $extra_parameters);
