@@ -40,6 +40,9 @@ function culturefeed_pages_page_basic_search() {
 
       $parameters = array();
       $parameters[] = new Parameter\FilterQuery('category_id' . ':(' . implode(' OR ', $actortypes) . ')');
+      if (isset($_GET['category'])) {
+        $parameters[] = new Parameter\FilterQuery('category_id:' . $_GET['category']);
+      }
       if (isset($_GET['zipcode'])) {
         $parameters[] = new Parameter\FilterQuery('zipcode:' . $_GET['zipcode']);
       }
@@ -74,6 +77,7 @@ function culturefeed_pages_page_basic_search() {
     '#total_results' => $total_results,
     '#search' => isset($_GET['search']) ? $_GET['search'] : NULL,
     '#zipcode' => isset($_GET['zipcode']) ? $_GET['zipcode'] : NULL,
+    '#category' => isset($_GET['category']) ? $_GET['category'] : NULL,
   );
 
   $build['pager'] = array(
@@ -97,6 +101,11 @@ function culturefeed_pages_basic_search_form() {
     '#size' => 4,
     '#maxlength' => 4,
     '#default_value' => isset($_GET['zipcode']) ? $_GET['zipcode'] : '',
+  );
+
+  $form['category'] = array(
+    '#type' => 'hidden',
+    '#default_value' => isset($_GET['category']) ? $_GET['category'] : '',
   );
 
   $form['page'] = array(
@@ -125,6 +134,9 @@ function culturefeed_pages_basic_search_form_submit($form, &$form_state) {
   }
   if ($form_state['values']['zipcode']) {
     $query['zipcode'] = $form_state['values']['zipcode'];
+  }
+  if ($form_state['values']['category']) {
+    $query['category'] = $form_state['values']['category'];
   }
   $form_state['redirect'] = array(
     $_GET['q'],
