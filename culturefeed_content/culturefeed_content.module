@@ -39,6 +39,7 @@ function culturefeed_content_field_culturefeed_content_validate($element, &$form
     'title' => $values['title'],
     'query_string' => $values['query_string'],
     'filter_query' => $values['filter_query'],
+    'types' => $values['types'],
     'rows' => ($values['rows'] || $values['rows'] == 0) ? $values['rows'] : CULTUREFEED_CONTENT_DEFAULT_ROWS,
     'sort' => $values['sort'],
     'show_more_link' => $values['show_more_link'],
@@ -78,6 +79,7 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
         $query_string = $item['query_string'];
         $filter_query = $item['filter_query'];
         $sort = isset($item['sort']) ? $item['sort'] : CULTUREFEED_CONTENT_DEFAULT_SORT;
+        $types = $item['types'];
         $rows = isset($item['rows']) ? $item['rows'] : CULTUREFEED_CONTENT_DEFAULT_ROWS;
         $show_more_link = $item['show_more_link'];
         $more_link = $item['more_link'];
@@ -106,8 +108,12 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
           }
         }
 
+        // Set type according to types value.
+        $types_filter = _culturefeed_search_ui_format_types_filter($types);
+        $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery($types_filter);
+
+        // Rows and group parameter.
         $parameters[] = new \CultuurNet\Search\Parameter\Rows($rows);
-        $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
         $parameters[] = new \CultuurNet\Search\Parameter\Group();
 
         // Execute search.
@@ -211,6 +217,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $title = isset($items[$delta]['title']) ? $items[$delta]['title'] : '';
   $query_string = isset($items[$delta]['query_string']) ? $items[$delta]['query_string'] : '';
   $filter_query = isset($items[$delta]['filter_query']) ? $items[$delta]['filter_query'] : '';
+  $types = isset($items[$delta]['types']) ? $items[$delta]['types'] : 'event';
   $rows = isset($items[$delta]['rows']) ? $items[$delta]['rows'] : '';
   $sort = isset($items[$delta]['sort']) ? $items[$delta]['sort'] : '';
   $show_more_link = isset($items[$delta]['show_more_link']) ? $items[$delta]['show_more_link'] : '';
@@ -245,6 +252,21 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#description' => t('Please use SOLR filter query (fq). You can use advanced combinations with AND, OR, double quotes (exact match), and wildcards (*)'),
     '#type' => 'textfield',
     '#maxlength' => 1000,
+  );
+
+  // Types.
+  $type_options = array(
+    'event' => t('Events only'),
+    'actor' => t('Actors only'),
+    'event_actor' => t('Events and actors'),
+    'event_production_actor' => t('Events, actors and productions'),
+  );
+  $element['wrapper']['types'] = array(
+    '#default_value' => $types,
+    '#options' => $type_options,
+    '#required' => $element['#required'],
+    '#title' => t('Types to show'),
+    '#type' => 'radios',
   );
 
   $element['wrapper']['rows'] = array(
@@ -291,12 +313,16 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#description' => t('You can provide a custom URL in this field.'),
     '#type' => 'textfield',
     '#maxlength' => 1000,
-    '#states' => array(
+  );
+
+  // Only add state API implementation here when the field is used in node context.
+  if ($element['#entity_type'] == 'node') {
+    $element['wrapper']['more_link']['#states'] = array(
       'visible' => array(
         ':input[name*="show_more_link"]' => array('checked' => FALSE),
       ),
-    ),
-  );
+    );
+  }
 
   $element['#element_validate'] = array('culturefeed_content_field_culturefeed_content_validate');
 
