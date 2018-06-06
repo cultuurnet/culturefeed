@@ -1023,3 +1023,27 @@ function _culturefeed_search_ui_sanitize_query_term($term) {
 
   return implode(' OR ', $query_parts);
 }
+
+/**
+ * Format types filter based on types field value.
+ */
+function _culturefeed_search_ui_format_types_filter($types) {
+  switch($types) {
+    case 'event':
+      return 'type:event';
+      break;
+    case 'actor':
+      return 'type:actor';
+      break;
+    case 'event_actor':
+      return 'type:event OR type:actor';
+      break;
+    case 'event_production_actor':
+      return 'type:event OR type:production OT type:actor';
+      break;
+    default:
+      // Return filter that was previously hardcoded.
+      return 'type:event OR type:production';
+      break;
+  }
+}
