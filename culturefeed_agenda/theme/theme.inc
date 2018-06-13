@@ -1649,6 +1649,7 @@ function theme_culturefeed_agenda_page_list_rss($variables) {
       if (isset($object['when_md_txt']) && !empty($object['when_md_txt'])) {
         $body .= strtolower($object['when_md_txt']) . ' - ';
       }
+      $body .= $object['main_picture'];
       $body .= $object['shortdescription'];
       $items .= format_rss_item($object['title'], $object_url, $body, $args);
     }
