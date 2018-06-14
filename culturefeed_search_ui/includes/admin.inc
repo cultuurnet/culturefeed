@@ -79,6 +79,12 @@ function culturefeed_search_ui_admin_settings() {
     ('culturefeed_multiple_categories_operator', 'and'),
   );
 
+  $form['culturefeed_search_ui_total_filter_blocks'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Total number of filter blocks'),
+    '#default_value' => variable_get('culturefeed_search_ui_total_filter_blocks', CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS),
+  );
+
   return system_settings_form($form);
 
 }
