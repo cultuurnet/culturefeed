@@ -580,7 +580,7 @@ function culturefeed_search_ui_block_configure($delta) {
     $variable_suffix = '';
     $filter_form_number = 1;
     if ($delta !== 'filter-form') {
-      $filter_form_number = (int) substr($delta, -1);
+      $filter_form_number = (int) str_replace('filter-form-', '', $delta);
       $variable_suffix = '_' . $filter_form_number;
     }
 
@@ -847,7 +847,7 @@ function culturefeed_search_ui_block_view($delta) {
       $filter_form_number = 1;
       $variable_suffix = '';
       if ($delta !== 'filter-form') {
-        $filter_form_number = (int) substr($delta, -1);
+        $filter_form_number = (int) str_replace('filter-form-', '', $delta);
         $variable_suffix = '_' . $filter_form_number;
       }
 
@@ -1388,7 +1388,8 @@ function culturefeed_search_ui_page_add_query_filters(CultureFeedSearchPageInter
 function culturefeed_search_ui_forms() {
 
   $forms = array();
-  for ($i = 1; $i <= CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS; $i++) {
+  $total_filter_blocks = variable_get('culturefeed_search_ui_total_filter_blocks', CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS);
+  for ($i = 1; $i <= $total_filter_blocks; $i++) {
     $forms['culturefeed_search_ui_block_filter_form_' . $i] = array(
       'callback' => 'culturefeed_search_ui_block_filter_form'
     );
