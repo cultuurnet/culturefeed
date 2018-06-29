@@ -57,6 +57,13 @@ function culturefeed_mailing_menu() {
     'file' => 'culturefeed_mailing.pages.inc',
   );
 
+  $items['subscribe/updated'] = array(
+    'title' => 'Subscription info updated',
+    'page callback' => 'culturefeed_mailing_user_updated',
+    'access arguments' => array('subscribe to mailings'),
+    'file' => 'culturefeed_mailing.pages.inc',
+  );
+
   $items['culturefeed/mailing'] = array(
     'title' => 'Newsletters',
     'page callback' => 'culturefeed_mailing_page_my_newsletters',
