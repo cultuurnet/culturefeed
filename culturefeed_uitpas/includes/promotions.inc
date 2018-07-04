@@ -147,6 +147,7 @@ function culturefeed_uitpas_promotions_filter_sort($form, $form_state) {
     $advantages = culturefeed_uitpas_advantages_get($filter);
   }
 
+
   $id = drupal_html_id('promotions-filter-sort');
 
   $form['promotions']['#prefix'] = "<div class=\"filters filters-regions\" id=\"" . $id . "\">";

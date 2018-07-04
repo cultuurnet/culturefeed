@@ -141,6 +141,14 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
         $object['calendarsummary'] = '';
       }
       $object['shortdescription'] = $details->getShortDescription();
+      $photos = $details->getMedia()->byMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
+      if(isset($photos)) {
+          foreach ($photos as $photo) {
+              $pictures[] = culturefeed_get_relative_image($photo->getHLink());
+          }
+          $object['image'] = $pictures[0];
+          unset($pictures);
+      }
       $object['path'] = culturefeed_search_detail_url($item->getType(), $item->getId(), $details->getTitle());
       $data[] = $object;
     }
