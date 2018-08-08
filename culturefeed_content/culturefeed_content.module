@@ -677,6 +677,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#required' => $element['#required'],
     '#default_value' => $query_title,
     '#maxlength' => 255,
+    '#description' => t('This will appear on the search results page as active filter'),
     '#ajax' => array(
       'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
@@ -765,9 +766,9 @@ function culturefeed_content_contextual_search_box_form($form, &$form_state, $fi
   $filter_enabled = !empty($form_state['values']['filter_postal_code']);
   $last_postal_code = !empty($form_state['last_postal']) ? $form_state['last_postal'] : NULL;
 
-  $postal_code = !empty($form_state['values']['postal_code']) ? (int)$form_state['values']['postal_code'] : 'none';
+  $postal_code = !empty($form_state['values']['postal_code']) ? (int)$form_state['values']['postal_code'] : NULL;
   $entered_postal_code = $postal_code;
-  if ($entered_postal_code === 'none') {
+  if (empty($entered_postal_code)) {
     $user_location = culturefeed_search_ui_get_user_location_cookie();
     if (isset($user_location->postal)) {
       $entered_postal_code = $user_location->postal;
@@ -813,7 +814,7 @@ function culturefeed_content_contextual_search_box_form($form, &$form_state, $fi
       '#type' => 'checkbox',
       '#description' => t('Only show tips in my neighbourhood: <em>@postal_code</em>. <a href="" class="toggle_postal_code" data-id="@id">modify postal code</a>', array(
         '@id' => 'postal_code_container_' . $wrapper_id,
-        '@postal_code' => $entered_postal_code === 'none' ? '' : $entered_postal_code,
+        '@postal_code' => empty($entered_postal_code) ? 1000 : $entered_postal_code,
       )),
       '#suffix' => "</div>",
       '#ajax' => array(
@@ -838,7 +839,7 @@ function culturefeed_content_contextual_search_box_form($form, &$form_state, $fi
     '#attributes' => array(
       'class' => ['postal-code-container-postal-code'],
     ),
-    '#default_value' => $entered_postal_code,
+    '#default_value' => empty($entered_postal_code) ? 1000 : $entered_postal_code,
     '#ajax' => array(
       'callback' => 'culturefeed_content_search_box_ajax_submit',
       'wrapper' => $wrapper_id,
@@ -885,11 +886,12 @@ function culturefeed_content_theme() {
   return array(
     'culturefeed_content_result_list' => array(
       'variables' => array(
+        'title' => NULL,
         'search_result' => NULL,
         'query' => '',
         'show_postal_code_search_box' => 0,
         'instance_id' => '',
-        'link_text' => t('Show more'),
+        'link_text' => t('See more tips'),
       ),
       'path' => $path,
       'file' => 'theme.inc',

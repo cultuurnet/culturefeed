@@ -16,5 +16,5 @@
   <?php endforeach; ?>
 </div>
 
-<a href="<?php print $show_more_url; ?>"><?php print t('Show more'); ?></a>
+<a href="<?php print $show_more_url; ?>"><?php print t('See more tips'); ?></a>
 <?php endif; ?>
