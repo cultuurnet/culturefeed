@@ -8,8 +8,6 @@ use \Guzzle\Http\Client;
 
 class CultureFeedDomainImport {
 
-  const END_POINT = 'http://taxonomy.uitdatabank.be/api/';
-
   /**
    * Guzzle http client.
    * @var \Guzzle\Http\Client
@@ -22,7 +20,7 @@ class CultureFeedDomainImport {
    */
   public function import() {
 
-    $this->client = new Client($this::END_POINT);
+    $this->client = new Client($this->getEndpoint());
 
     try {
 
@@ -170,6 +168,13 @@ class CultureFeedDomainImport {
       }
     }
 
+  }
+
+  /**
+   * Get the Culturefeed search taxonomy endpoint.
+   */
+  private function getEndpoint() {
+    return variable_get('culturefeed_search_taxonomy_endpoint', CULTUREFEED_SEARCH_TAXONOMY_ENDPOINT);
   }
 
 }
