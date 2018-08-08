@@ -4,18 +4,6 @@
  * Helper functions for the culturefeed agenda.
  **/
 
- /**
-  * Return a phone number without spaces, dashes, slashes, characters
-  */
- function culturefeed_valid_phone($raw_phone) {
-
-   $phone = str_replace(' ', '-', $raw_phone);
-   $phone = preg_replace('/[^0-9\+\(\)]/', '', $phone);
-
-   return $phone;
-
-}
-
 /**
  * Return all the known agenda entity types.
  */
@@ -855,6 +843,7 @@ function culturefeed_agenda_google_maps_js_api_url() {
     'region' => 'BE',
     'hl' => $language->language,
     'ln' => $language->language,
+    'language' => $language->language,
     'key' => variable_get('culturefeed_agenda_google_maps_api_key'),
   );
   return url(CULTUREFEED_GOOGLE_MAPS_JS_API, array('query' => $query, 'absolute' => TRUE));
@@ -1015,4 +1004,27 @@ function culturefeed_get_relative_image($image_path) {
     return '//' . substr($image_path, 8);
   }
   return $image_path;
+}
+
+/**
+ * Check actor external id to set possible canonical tag for the organisation.
+ *
+ * @param $actor
+ */
+function culturefeed_agenda_actor_set_organisation_canonical(CultureFeed_Cdb_Item_Actor $actor) {
+  // Check the external id for an organisation.
+  $split_ext_id = explode(':', $actor->getExternalId());
+  if (!empty($split_ext_id[0]) && !empty($split_ext_id[1])) {
+    $ext_id_key = $split_ext_id[0];
+    $ext_id_value = $split_ext_id[1];
+
+    if ($ext_id_key == 'ORG') {
+      // Retrieve canonical href path.
+      $detail = $actor->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
+      if ($detail) {
+        $canonical_url = culturefeed_search_detail_url('actor', $ext_id_value, $detail->getTitle(), ['absolute' => TRUE]);
+        drupal_add_html_head_link(array('rel' => 'canonical', 'href' => $canonical_url, TRUE));
+      }
+    }
+  }
 }

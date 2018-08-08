@@ -257,6 +257,8 @@ function culturefeed_calendar_form($form, &$form_state, $params) {
   }
   // timestamps.
   elseif ($params['type'] == 'timestamps') {
+    $dates = array();
+
     foreach ($params['dates'] as $key => $date) {
 
       $full_date = $date['date'];

@@ -45,6 +45,13 @@ function culturefeed_uitpas_settings_form($form, &$form_state) {
     '#default_value' => variable_get('culturefeed_uitpas_remind_user_without_uitpas', 1),
   );
 
+  $form['culturefeed_uitpas_enable_agenda_preprocessing'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show UiTPAS prices and promotions on agenda detail pages'),
+    '#description' => t('When checked this will enable the preprocessing of uitpas prices and promotions on agenda event & actor details.'),
+    '#default_value' => variable_get('culturefeed_uitpas_enable_agenda_preprocessing', 1),
+  );
+
   // Advantages.
   form_load_include($form_state, 'inc', 'culturefeed_uitpas', 'includes/advantages');
   culturefeed_uitpas_advantages_settings_get($form);

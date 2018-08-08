@@ -16,7 +16,7 @@ define("CULTUREFEED_SEARCH_UI_PAGER_ITEMS_PER_PAGE", 10);
 
 define('CULTUREFEED_SEARCH_SORT_ALPHABETICALLY', 'alphabetically');
 define('CULTUREFEED_SEARCH_SORT_TOTAL_RESULTS', 'total_results');
-define('CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS', 4);
+define('CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS', 5);
 
 use CultuurNet\Search\Parameter;
 
@@ -839,6 +839,7 @@ function culturefeed_search_ui_block_view($delta) {
     case 'filter-form-2':
     case 'filter-form-3':
     case 'filter-form-4':
+    case 'filter-form-5':
       // Don't show block if there are no search results.
       $search_result = culturefeed_get_search_result();
       if (!$search_result instanceof \Cultuurnet\Search\SearchResult || $search_result->getTotalCount() == 0) {
@@ -1162,7 +1163,6 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
           $label = culturefeed_search_get_term_translation($selected_value[$key]);
 
           if ($active_facet_name == 'category_flandersregion_id' && !empty($query['distance'])) {
-            $label .= ' + ' . check_plain($query['distance']) . ' km';
             unset($search_query['distance']);
           }
 
@@ -1217,15 +1217,22 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
     unset($search_query['location']);
     $url = url($path, array('query' => $search_query));
 
-    $label = $query['location'];
-    if (!empty($query['distance'])) {
-      $label .= ' + ' . check_plain($query['distance']) . ' km';
-      unset($search_query['distance']);
-    }
-
     $build['location'] =  array(
       '#theme' => 'culturefeed_search_active_filters_item',
-      '#label' => $label,
+      '#label' => $query['location'],
+      '#url' => $url
+    );
+  }
+
+  // Add distance filter.
+  if (isset($query['distance'])) {
+    $search_query = $query;
+    unset($search_query['distance']);
+    $url = url($path, array('query' => $search_query));
+
+    $build['distance'] =  array(
+      '#theme' => 'culturefeed_search_active_filters_item',
+      '#label' => '+ ' . $query['distance'] . ' km',
       '#url' => $url
     );
   }
@@ -1272,16 +1279,10 @@ function culturefeed_search_ui_culturefeed_search_ui_active_filters($culturefeed
   for ($i = 1; $i <= CULTUREFEED_SEARCH_TOTAL_FILTER_BLOCKS; $i++) {
 
     if ($i == 1) {
-      $block = block_load('culturefeed_search_ui', 'filter-form');
-      if ($block->status) {
-        $extra_filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options($i));
-      }
+      $extra_filter_options = variable_get('culturefeed_search_filter_options', culturefeed_search_ui_default_filter_options($i));
     }
     else {
-      $block = block_load('culturefeed_search_ui', 'filter-form-' . $i);
-      if ($block->status) {
-        $extra_filter_options = variable_get('culturefeed_search_filter_options_' . $i, culturefeed_search_ui_default_filter_options($i));
-      }
+      $extra_filter_options = variable_get('culturefeed_search_filter_options_' . $i, culturefeed_search_ui_default_filter_options($i));
     }
 
     $filter_options = array_merge($filter_options, $extra_filter_options);

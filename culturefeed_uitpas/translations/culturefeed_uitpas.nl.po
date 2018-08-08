@@ -386,7 +386,7 @@ msgstr "Verdeeld door"
 
 #: includes/profile_coupons.inc:28
 msgid "There were no coupons found for this user"
-msgstr "Er werden geen voordeelbonnen gevonden voor deze gebruiker"
+msgstr "Je hebt momenteel geen voordeelbonnen."
 
 #: includes/profile_details.inc:30
 msgid "First name"
@@ -475,7 +475,7 @@ msgstr "Vervalt op"
 
 #: includes/profile_memberships.inc:30
 msgid "There were no memberships found for this user"
-msgstr "Je hebt nog geen lidmaatschap afgesloten."
+msgstr "Je hebt momenteel geen lidmaatschappen."
 
 #: includes/profile_promotions.inc:96
 msgid "My UiTPAS promotions settings"

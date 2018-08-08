@@ -86,12 +86,12 @@ function culturefeed_search_item_load($cdb_id, $type = '', $watchdog = TRUE) {
  * @return mixed
  *   FALSE if not found, otherwise CultuurNet\Search\ActivityStatsExtendedEntity
  */
-function culturefeed_search_item_load_by_title($title) {
+function culturefeed_search_item_load_by_title($title, $type) {
 
   $search_string = trim($title);
   $parameters = array();
   $parameters[] = new \CultuurNet\Search\Parameter\Query('title:"' . $search_string . '"');
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:actor');
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:' . $type);
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
   $result = culturefeed_get_search_service()->search($parameters);
 
@@ -1009,6 +1009,20 @@ function culturefeed_search_acceptance_mode() {
   if (strpos($location,'www') === FALSE) {
     return TRUE;
   }
+
+}
+
+/**
+ * Get the active Search API environment.
+ */
+function culturefeed_search_active_environment() {
+
+  // Get culturefeed_search_api_location
+  $location = variable_get('culturefeed_search_api_location');
+  $host = parse_url($location, PHP_URL_HOST);
+  $environment = explode('.', $host)[0];
+
+  return $environment;
 
 }
 
