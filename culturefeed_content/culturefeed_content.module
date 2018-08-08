@@ -441,7 +441,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
 
   // Retrieve region options from DB.
   $region_options = ['all' => t('All')];
-  $region_terms = culturefeed_search_get_terms_by_hierarchy_depth(2, 'flandersregion', culturefeed_search_get_preferred_language(), 'name');
+  $region_terms = culturefeed_search_get_terms_by_hierarchy_depth(0, 'flandersregion', culturefeed_search_get_preferred_language(), 'name');
 
   foreach ($region_terms as $term) {
     $region_options[$term->tid] = $term->name;

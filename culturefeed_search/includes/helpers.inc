@@ -1053,6 +1053,9 @@ function culturefeed_search_get_terms_by_hierarchy_depth($depth = 0, $domain, $l
     ->orderBy($order_by);
 
   switch ($depth) {
+    case 0:
+      $query->isNUll('p1');
+      break;
     case 1:
       $query->isNotNull('p1');
       $query->isNull('p2');
