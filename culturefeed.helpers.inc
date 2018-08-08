@@ -39,7 +39,8 @@ function culturefeed_is_culturefeed_user($uid = NULL) {
 function culturefeed_unique_username($cf_uid, $nick) {
 
   if (!$nick) {
-    $nick = t('Anonymous');
+    $suffix = substr($cf_uid, -4);
+    $nick = t('Anonymous') . '_' . $suffix;
   }
 
   $name = db_query("SELECT DISTINCT name FROM {culturefeed_user} cfu INNER JOIN {users} u ON u.uid = cfu.uid WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchField();
