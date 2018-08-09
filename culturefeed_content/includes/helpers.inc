@@ -28,7 +28,11 @@ function _culturefeed_content_add_builder_category_row($element, $field_name_bas
     $category_type_options[$category] = $domains[$category];
   }
 
-  $element['wrapper']['what']["what_type_$id"] = array(
+  $element['wrapper']['what'][$id] = [
+    '#type' => 'fieldset',
+  ];
+
+  $element['wrapper']['what'][$id]["what_type"] = array(
     '#type' => 'select',
     '#options' => $category_type_options,
     '#default_value' => $default_type,
@@ -39,7 +43,7 @@ function _culturefeed_content_add_builder_category_row($element, $field_name_bas
     ),
   );
 
-  $element['wrapper']['what']["what_equal_$id"] = array(
+  $element['wrapper']['what'][$id]["what_equal"] = array(
     '#type' => 'select',
     '#options' => [
       t('is equal to'),
@@ -49,7 +53,7 @@ function _culturefeed_content_add_builder_category_row($element, $field_name_bas
     '#states' => array(
       'invisible' => array(
         array(
-          ':input[name="' . $field_name_base . '[wrapper][what][what_type_' . $id . ']"]' => array('value' => 'all'),
+          ':input[name="' . $field_name_base . '[wrapper][what]['.$id.'][what_type]"]' => array('value' => 'all'),
         ),
       ),
     ),
@@ -64,7 +68,7 @@ function _culturefeed_content_add_builder_category_row($element, $field_name_bas
   foreach ($selectable_categories as $category) {
     $category_options = culturefeed_search_get_categories_by_domain($category);
 
-    $element['wrapper']['what']["what_$category" . "_$id"] = array(
+    $element['wrapper']['what'][$id]["what_$category"] = array(
       '#type' => 'select',
       '#options' => $category_options,
       '#multiple' => TRUE,
@@ -72,7 +76,7 @@ function _culturefeed_content_add_builder_category_row($element, $field_name_bas
       '#states' => array(
         'visible' => array(
           array(
-            ':input[name="' . $field_name_base . '[wrapper][what][what_type_' . $id . ']"]' => array('value' => $category),
+            ':input[name="' . $field_name_base . '[wrapper][what]['.$id.'][what_type]"]' => array('value' => $category),
           ),
         ),
       ),
@@ -84,7 +88,7 @@ function _culturefeed_content_add_builder_category_row($element, $field_name_bas
     );
 
     if ($category == $default_type && $default_type !== 'all') {
-      $element['wrapper']['what']["what_$category" . "_$id"]['#default_value'] = $default_ids;
+      $element['wrapper']['what'][$id]["what_$category"]['#default_value'] = $default_ids;
     }
   }
 
@@ -103,40 +107,41 @@ function _culturefeed_content_convert_serialized_categories_to_rows ($serialized
 
   $values = unserialize($serialized_values);
 
-  for ($i = 0; $i >= 0; $i++) {
-    if (isset($values["what_type_$i"])) {
-      if ($values["what_type_$i"] !== 'all') {
+  if (is_array($values)) {
+    foreach ($values as $value) {
+      if (isset($value["what_type"])) {
+        if ($value["what_type"] !== 'all') {
 
-        switch ($values["what_type_$i"]) {
-          case 'eventtype':
-            $ids = $values["what_eventtype_$i"];
-            break;
-          case 'theme':
-            $ids = $values["what_theme_$i"];
-            break;
-          case 'actortype':
-            $ids = $values["what_actortype_$i"];
-            break;
-          case 'facility':
-            $ids = $values["what_facility_$i"];
-            break;
-          default:
-            $ids = [];
-            break;
+          switch ($value["what_type"]) {
+            case 'eventtype':
+              $ids = $value["what_eventtype"];
+              break;
+            case 'theme':
+              $ids = $value["what_theme"];
+              break;
+            case 'actortype':
+              $ids = $value["what_actortype"];
+              break;
+            case 'facility':
+              $ids = $value["what_facility"];
+              break;
+            default:
+              $ids = [];
+              break;
+          }
+
+          $rows[] = [
+            'type' => $value["what_type"],
+            'equal' => $value["what_equal"],
+            'ids' => $ids
+          ];
         }
-
-        $rows[] = [
-          'type' => $values["what_type_$i"],
-          'equal' => $values["what_equal_$i"],
-          'ids' => $ids
-        ];
-      }
-      else {
+        else {
+          $rows[] = [];
+        }
+      }else {
         $rows[] = [];
       }
-    }
-    else {
-      break;
     }
   }
 
@@ -178,7 +183,7 @@ function _culturefeed_content_build_advanced_query($values) {
 
   // Categories query.
   if (!empty($values['what_categories'])) {
-    $advanced_query .= _culturefeed_content_build_categories_query(unserialize($values['what_categories']));
+    $advanced_query .= _culturefeed_content_build_categories_query($values['what_categories']);
   }
 
   // Where.
@@ -267,49 +272,39 @@ function _culturefeed_content_build_categories_query($values) {
   $query = '';
 
   // Loop through all possible field rows.
-  for ($i = 0; $i >= 0; $i++) {
-
-    if (!isset($values["what_type_$i"]) || $values["what_type_$i"] == 'all') {
-      break;
+  foreach (array_filter($values) as $value) {
+    if ($value['type'] == 'all' || empty($value['ids'])) {
+      continue;
     }
 
-    $type = $values["what_type_$i"];
+    $not_equal = (int)$value['equal'];
+    $query .= '%26fq=(';
 
-    $selected = array_values($values["what_$type" . "_$i"]);
+    $selected = array_values($value['ids']);
 
-    if (!empty($selected)) {
-      $not_equal = (int)$values["what_equal_$i"];
+    for ($j = 0; $j<count($selected); $j++) {
+      $cat_id = $selected[$j];
 
-      $query .= '%26fq=(';
-
-      for ($j = 0; $j<count($selected); $j++) {
-
-        $cat_id = $selected[$j];
-
-        // Check for possible grouped values and split them up.
-        if (strpos($cat_id, ',')) {
-          $cat_ids = explode(',', $cat_id);
-          $selected = array_merge($selected, $cat_ids);
-          continue;
-        }
-
-        $query .= ($not_equal ? 'NOT ' : '');
-
-        $query .= "category_$type" ."_id:$cat_id";
-
-        if(count($selected)-1 > $j) {
-          $query .= ' OR ';
-        }
-        else {
-          continue;
-        }
+      // Check for possible grouped values and split them up.
+      if (strpos($cat_id, ',')) {
+        $cat_ids = explode(',', $cat_id);
+        $selected = array_merge($selected, $cat_ids);
+        continue;
       }
 
-      $query .= ')';
+      $type = $value['type'];
+      $query .= ($not_equal ? 'NOT ' : '');
+      $query .= "category_$type" ."_id:$cat_id";
+
+      if(count($selected)-1 > $j) {
+        $query .= ' OR ';
+      }
+      else {
+        continue;
+      }
     }
-    else {
-      break;
-    }
+
+    $query .= ')';
   }
 
   return $query;
