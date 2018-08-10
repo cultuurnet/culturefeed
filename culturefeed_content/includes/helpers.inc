@@ -102,13 +102,19 @@ function _culturefeed_content_add_builder_category_row($element, $field_name_bas
  *
  * @return array
  */
-function _culturefeed_content_convert_serialized_categories_to_rows ($serialized_values) {
+function _culturefeed_content_convert_categories_to_rows ($values, $unserialize = FALSE) {
   $rows = [];
 
-  $values = unserialize($serialized_values);
+  if ($unserialize) {
+    $values = unserialize($values);
+  }
 
   if (is_array($values)) {
     foreach ($values as $value) {
+      if (!is_array($value)) {
+        continue;
+      }
+
       if (isset($value["what_type"])) {
         if ($value["what_type"] !== 'all') {
 
@@ -270,9 +276,10 @@ function _culturefeed_content_build_advanced_query($values) {
  */
 function _culturefeed_content_build_categories_query($values) {
   $query = '';
+  $rows = _culturefeed_content_convert_categories_to_rows($values);
 
   // Loop through all possible field rows.
-  foreach (array_filter($values) as $value) {
+  foreach (array_filter($rows) as $value) {
     if ($value['type'] == 'all' || empty($value['ids'])) {
       continue;
     }
