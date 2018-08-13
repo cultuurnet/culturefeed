@@ -362,7 +362,7 @@ function culturefeed_mailing_newsletter_block_form_validate($form, $form_state) 
 
     try {
       $zip = !empty($form_state['values']['zip']) ? $form_state['values']['zip'] : '';
-      //culturefeed_mailing_subscribe_user_light($form_state['values']['mail'], variable_get('culturefeed_mailing_list', ''), $zip);
+      culturefeed_mailing_subscribe_user_light($form_state['values']['mail'], variable_get('culturefeed_mailing_list', ''), $zip);
     }
     catch (CultureFeed_Exception $e) {
 

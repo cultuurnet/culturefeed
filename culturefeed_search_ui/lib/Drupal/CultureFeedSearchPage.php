@@ -800,6 +800,7 @@ class CultureFeedSearchPage {
    */
   protected function addAdvancedQueryFilters($query) {
 
+    $test = explode('&', trim($query, '()'));
     foreach (explode('&', trim($query, '()')) as $filter) {
       $key_value = explode('=', $filter);
 

@@ -1013,6 +1013,20 @@ function culturefeed_search_acceptance_mode() {
 }
 
 /**
+ * Get the active Search API environment.
+ */
+function culturefeed_search_active_environment() {
+
+  // Get culturefeed_search_api_location
+  $location = variable_get('culturefeed_search_api_location');
+  $host = parse_url($location, PHP_URL_HOST);
+  $environment = explode('.', $host)[0];
+
+  return $environment;
+
+}
+
+/**
  * Set the "noindex, follow" meta tag when needed.
  */
 function culturefeed_search_set_noindex_metatag() {
