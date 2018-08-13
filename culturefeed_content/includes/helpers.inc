@@ -182,10 +182,10 @@ function _culturefeed_content_build_advanced_query($values) {
     $type_filters .= "type:$type";
   }
 
-  $advanced_query .= "%26fq=($type_filters)";
+  $advanced_query .= "&fq=($type_filters)";
 
   if (!empty($values['filter_query'])) {
-    $advanced_query .= '%26fq=(' . $values['filter_query'] . ')';
+    $advanced_query .= '&fq=(' . $values['filter_query'] . ')';
   }
 
   // Categories query.
@@ -200,19 +200,19 @@ function _culturefeed_content_build_advanced_query($values) {
       case 'region':
         $region = $where['where_region'];
         if ($region !== 'all') {
-          $advanced_query .= $where['where_equal'] ? "%26fq=(NOT category_flandersregion_id:$region)" : "%26fq=(category_flandersregion_id:$region)";
+          $advanced_query .= $where['where_equal'] ? "&fq=(NOT category_flandersregion_id:$region)" : "&fq=(category_flandersregion_id:$region)";
         }
         break;
       case 'city':
         $city = $where['where_city'];
         if ($city !== 'all') {
-          $advanced_query .= $where['where_equal'] ? "%26fq=(NOT category_flandersregion_id:$city)" : "%26fq=(category_flandersregion_id:$city)";
+          $advanced_query .= $where['where_equal'] ? "&fq=(NOT category_flandersregion_id:$city)" : "&fq=(category_flandersregion_id:$city)";
         }
         break;
       case 'postal_code':
         $postal_code = $where['where_postal_code'];
         $radius = $where['where_postal_code_radius'] . 'km';
-        $advanced_query .= $where['where_equal'] ? "%26fq=(NOT zipcode:$postal_code)" : "%26zipcode=$postal_code!$radius";
+        $advanced_query .= $where['where_equal'] ? "&fq=(NOT zipcode:$postal_code)" : "&zipcode=$postal_code!$radius";
         break;
     }
   }
@@ -288,7 +288,7 @@ function _culturefeed_content_build_categories_query($values) {
     }
 
     $not_equal = (int)$value['equal'];
-    $query .= '%26fq=(';
+    $query .= '&fq=(';
 
     $selected = array_values($value['ids']);
 
@@ -346,7 +346,7 @@ function _culturefeed_content_create_date_filter_param ($type = 'startdate', $da
     $value2 = '*';
   }
 
-  return "%26fq=($type:[$value1 TO $value2])";
+  return "&fq=($type:[$value1 TO $value2])";
 }
 
 /**
@@ -380,7 +380,7 @@ function _culturefeed_content_get_results($field_item, $postalcode = '') {
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
 
   // Retrieve advanced query string and convert values to parameters.
-  foreach (explode('%26', $field_item['composite_query']) as $filter) {
+  foreach (explode('&', $field_item['composite_query']) as $filter) {
     $key_value = explode('=', $filter);
 
     switch ($key_value[0]) {

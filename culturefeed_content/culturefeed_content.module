@@ -52,7 +52,7 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
 
       foreach ($items as $delta => $item) {
 
-        $title = $item['title'];
+        $title = $item['query_title'];
         $sort = isset($item['sort']) ? $item['sort'] : CULTUREFEED_CONTENT_DEFAULT_SORT;
 
         // Render the results.
