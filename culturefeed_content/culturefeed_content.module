@@ -105,12 +105,11 @@ function culturefeed_content_field_info() {
  * Implements hook_field_is_empty().
  */
 function culturefeed_content_field_is_empty($item, $field) {
-
   if (empty($item)) {
     return TRUE;
   }
-  return FALSE;
 
+  return FALSE;
 }
 
 /**
@@ -177,10 +176,30 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     $item['what'] = !empty($item['what_categories']) ? unserialize($item['what_categories']) : array();
     unset($item['what_categories']);
 
-    // All values need to go in the wrapper.
+    // All values need to go in the wrapper, and we need to rebuild the structure of the form here.
     $item = [
       'wrapper' => $item,
     ];
+
+    $item['wrapper']['where'] = [
+      'where_type' => $where_type,
+      'where_equal' => $where_equal,
+      'where_region' => $where_region,
+      'where_city' => $where_city,
+      'where_postal_code' => $where_postal_code,
+      'where_postal_code_radius' => $where_postal_code_radius,
+    ];
+
+    $item['wrapper']['when'] = [
+      'when_type_1' => $when_type_1,
+      'when_date_1' => $when_date_1,
+      'when_before_after_1' => $when_before_after_1,
+      'when_type_2' => $when_type_2,
+      'when_date_2' => $when_date_2,
+      'when_before_after_2' => $when_before_after_2,
+    ];
+
+    $item['wrapper']['types'] = array_filter($types);
 
     drupal_array_set_nested_value($form_state['values'], $parents, $item);
   }
@@ -214,7 +233,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#ajax' => array(
       'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
+      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -228,7 +247,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#ajax' => array(
       'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
+      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -276,7 +295,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#ajax' => array(
       'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
+      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -364,7 +383,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#ajax' => array(
       'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
+      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -388,7 +407,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#ajax' => array(
       'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
+      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -414,7 +433,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#ajax' => array(
       'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
+      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -440,7 +459,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#ajax' => array(
       'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
+      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -459,7 +478,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#ajax' => array(
       'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
+      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -482,7 +501,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#ajax' => array(
       'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
+      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -511,7 +530,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#ajax' => array(
       'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
+      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -529,7 +548,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#ajax' => array(
       'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
+      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -549,7 +568,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#ajax' => array(
       'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
+      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -571,7 +590,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#ajax' => array(
       'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
+      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -589,7 +608,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#ajax' => array(
       'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
+      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -609,7 +628,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#ajax' => array(
       'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
+      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -623,20 +642,20 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   );
 
   // Build the query form the form_state values.
-  $nested_values = drupal_array_get_nested_value($form_state['values'], $parents);
+  $wrapper_parents = array_merge($parents, ['wrapper']);
+  $nested_values = drupal_array_get_nested_value($form_state['values'], $wrapper_parents);
   $element['wrapper']['composite_query']['#default_value'] = _culturefeed_content_build_advanced_query($nested_values);
 
   $element['wrapper']['query_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Query title'),
-    '#required' => $element['#required'],
     '#default_value' => $query_title,
     '#maxlength' => 255,
     '#description' => t('This will appear on the search results page as active filter'),
     '#ajax' => array(
       'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
       'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'none')
+      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -646,7 +665,8 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#title' => t('Show search box to filter by postal code'),
   );
 
-  //$element['#element_validate'] = array('culturefeed_content_field_culturefeed_content_validate');
+  // Add custom css.
+  drupal_add_css(drupal_get_path('module', 'culturefeed_content') . '/css/culturefeed-content.css');
 
   return $element;
 }
@@ -787,7 +807,7 @@ function culturefeed_content_contextual_search_box_form($form, &$form_state, $fi
   $form['#suffix'] = '</div>';
 
   $query = [];
-  $query['advanced_query']['title'] = $field_item['title'];
+  $query['advanced_query']['title'] = $field_item['query_title'];
   $query['advanced_query']['query'] = $field_item['composite_query'];
   $query['sort'] = isset($field_item['sort']) ? $field_item['sort'] : CULTUREFEED_CONTENT_DEFAULT_SORT;
 
