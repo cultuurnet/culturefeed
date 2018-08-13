@@ -289,3 +289,21 @@ function culturefeed_content_update_7003() {
     }
     return t('Query builder fields were added in the database. "Show more" and "more" link fields were removed.');
 }
+
+/**
+ * Update the query builder field instance.
+ */
+function culturefeed_content_update_7004() {
+  $instance = field_info_instance('node', 'field_zoekopdracht_cf', 'uit_tip');
+
+  // Set some default values.
+  $instance['default_value'] = array(
+    array(
+      'rows' => CULTUREFEED_CONTENT_DEFAULT_ROWS,
+      'sort' => CULTUREFEED_CONTENT_DEFAULT_SORT,
+      'title' => CULTUREFEED_CONTENT_DEFAULT_TITLE,
+    ),
+  );
+
+  field_update_instance($instance);
+}

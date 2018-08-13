@@ -96,18 +96,14 @@ function _culturefeed_content_add_builder_category_row($element, $field_name_bas
 }
 
 /**
- * Unserialize categories form values and convert to custom row value arrays.
+ * Unserialize "what" category form values and convert to custom row value arrays.
  *
  * @param $serialized_values
  *
  * @return array
  */
-function _culturefeed_content_convert_categories_to_rows ($values, $unserialize = FALSE) {
+function _culturefeed_content_convert_categories_to_rows (array $values) {
   $rows = [];
-
-  if ($unserialize) {
-    $values = unserialize($values);
-  }
 
   if (is_array($values)) {
     foreach ($values as $value) {
