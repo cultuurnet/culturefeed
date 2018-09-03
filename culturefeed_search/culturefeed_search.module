@@ -15,6 +15,9 @@ define('CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION', '3.2');
 // Default proximity search range.
 define('CULTUREFEED_SEARCH_DEFAULT_PROXIMITY_RANGE', 20);
 
+// No fixed location ZIP.
+define('CULTUREFEED_SEARCH_NO_FIXED_LOCATION_ZIP', '----');
+
 module_load_include('inc', 'culturefeed_search', 'includes/helpers');
 
 /**
