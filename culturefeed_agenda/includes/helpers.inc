@@ -246,6 +246,16 @@ function culturefeed_agenda_get_location_of_event(CultureFeed_Cdb_Item_Event $ev
 
   }
 
+  if (!empty($location['zip']) && $location['zip'] === CULTUREFEED_AGENDA_EVENT_NO_FIXED_LOCATION_ZIP) {
+    $location['city'] = NULL;
+    $location['street'] = NULL;
+    $location['link'] = NULL;
+    $location['zip'] = NULL;
+
+    // No fixed location.
+    $location['not_fixed'] = TRUE;
+  }
+
   return $location;
 
 }
