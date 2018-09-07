@@ -8,6 +8,7 @@
 define('CULTUREFEED_SEARCH_API_LOCATION', 'http://acc.uitid.be/uitid/rest/searchv2/');
 define('CULTUREFEED_SEARCH_API_FAST_ALLOWED', variable_get('culturefeed_search_fast_permission', 0));
 define('CULTUREFEED_SEARCH_CACHE_EXPIRES', 3600);
+define('CULTUREFEED_SEARCH_TAXONOMY_ENDPOINT', 'http://taxonomy.uitdatabank.be/api/');
 
 // Default cdb schema version.  Can be overridden in settings form.
 define('CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION', '3.2');
