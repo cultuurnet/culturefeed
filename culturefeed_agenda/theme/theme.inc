@@ -1643,6 +1643,10 @@ function theme_culturefeed_agenda_page_list_rss($variables) {
       );
 
       $body = '';
+      $body .= '<p>';
+      if (isset($object['image']) && !empty($object['image'])) {
+        $body .= '<img width="50px" height="50px" vspace="5px" hspace="5px" align="top" src="https:' . $object['image'] . '"">';
+      }
       if (isset($object['city']) && !empty($object['city'])) {
         $body .= strtoupper($object['city']) . ', ';
       }
@@ -1650,6 +1654,7 @@ function theme_culturefeed_agenda_page_list_rss($variables) {
         $body .= strtolower($object['when_md_txt']) . ' - ';
       }
       $body .= $object['shortdescription'];
+      $body .= "</p>";
       $items .= format_rss_item($object['title'], $object_url, $body, $args);
     }
   }
