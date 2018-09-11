@@ -46,6 +46,13 @@ function culturefeed_mailing_admin_settings() {
       '#default_value' => variable_get('culturefeed_mailing_subscribed_message', t('Successfully subscribed to our newsletter')),
     );
 
+    $form['culturefeed_mailing_updated_message'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Subscription updated message'),
+      '#description' => t('Message after a user has successfully updated newsletter subscription'),
+      '#default_value' => variable_get('culturefeed_mailing_subscribed_message', t('Successfully subscribed to our newsletter')),
+    );
+
     $form['culturefeed_mailing_already_subscribed_message'] = array(
       '#type' => 'textarea',
       '#title' => t('Already subscribed message'),

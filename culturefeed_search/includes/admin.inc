@@ -17,6 +17,13 @@ function culturefeed_search_admin_settings() {
     '#default_value' => variable_get('culturefeed_search_api_location', CULTUREFEED_SEARCH_API_LOCATION),
   );
 
+  $form['culturefeed_search_taxonomy_endpoint'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Taxonomy endpoint URL'),
+    '#description' => t('The URL where the CultureFeed Search Taxonomy resides. End with a slash. Example: http://taxonomy.uitdatabank.be/api/'),
+    '#default_value' => variable_get('culturefeed_search_taxonomy_endpoint', CULTUREFEED_SEARCH_TAXONOMY_ENDPOINT),
+  );
+
   $form['culturefeed_search_fast_permission'] = array(
     '#type' => 'checkbox',
     '#title' => t('My consumer has fast index permissions.'),
