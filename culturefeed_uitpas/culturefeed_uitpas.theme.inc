@@ -250,6 +250,8 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
   if (variable_get('culturefeed_uitpas_enable_agenda_preprocessing', 1)) {
 
     $event = culturefeed_uitpas_get_uitpas_event($vars['item']);
+    $vars['uitpas_info'] = $event;
+
     if (isset($vars['price'])) {
       $price = $vars['price'];
     }

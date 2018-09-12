@@ -481,12 +481,6 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     }
   }
 
-  // Enhance event-details with UiTPAS-information if culturefeed_uitpas is enabled
-  if (module_exists('culturefeed_uitpas')) {
-    $uitpas_event = culturefeed_uitpas_get_uitpas_event($item);
-    $variables['uitpas_info'] = $uitpas_event;
-  }
-
   if ($detail) {
 
     if (variable_get('culturefeed_agenda_deduplicate_descriptions', TRUE) && $variables['longdescription']) {
