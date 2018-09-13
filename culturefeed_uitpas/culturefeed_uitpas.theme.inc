@@ -249,7 +249,7 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
 
   if (variable_get('culturefeed_uitpas_enable_agenda_preprocessing', 1)) {
 
-    if ($vars['uitpas']) {
+    if (isset($vars['uitpas'])) {
       try {
         $event_cardsystems = culturefeed_uitpas_get_uitpas_event_cardsystems($vars['item']);
       }
@@ -258,7 +258,7 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
       }
     }
   
-    if ($event_cardsystems) {
+    if (isset($event_cardsystems)) {
 
       $vars['uitpas_save_points'] = TRUE;
   
