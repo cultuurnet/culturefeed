@@ -22,10 +22,6 @@ function culturefeed_content_field_schema($field) {
           'type' => 'text',
           'size' => 'medium',
         ),
-        'types' => array(
-          'type' => 'text',
-          'size' => 'medium',
-        ),
         'rows' => array(
           'type' => 'int',
           'size' => 'medium',
@@ -104,33 +100,5 @@ function culturefeed_content_update_7001() {
     }
   }
   return t('Database columns title, show_more_link and more link were added in the database.');
-
-}
-
-/**
- * Add title, show_more_link and more link fields to field data and revision tables.
- */
-function culturefeed_content_update_7002() {
-  $fields = culturefeed_content_get_culturefeed_content_fields();
-
-  foreach ($fields as $field) {
-    $table_prefixes = array(
-      _field_sql_storage_tablename($field),
-      _field_sql_storage_revision_tablename($field)
-    );
-
-    foreach ($table_prefixes as $table_prefix) {
-
-      $field_name = $field['field_name'];
-      $table = $table_prefix;
-
-      $types = array(
-        'type' => 'text',
-        'size' => 'medium',
-      );
-      db_add_field($table, $field_name . '_types', $types);
-    }
-  }
-  return t('Types column was added to the database.');
 
 }
