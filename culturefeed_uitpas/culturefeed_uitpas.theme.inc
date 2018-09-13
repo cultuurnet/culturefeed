@@ -264,7 +264,7 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
   
       $prices = array();
   
-      if (isset($vars['price']) {
+      if (isset($vars['price'])) {
         $prices[] = $vars['price'];
       }
 
