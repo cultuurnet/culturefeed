@@ -8,22 +8,34 @@
 /**
  * Returns event details advantages.
  */
-function culturefeed_uitpas_event_details_advantages_get() {
+function culturefeed_uitpas_event_details_advantages_get(&$balie_id = NULL, &$balie_name = NULL) {
 
-  /* @var \CultuurNet\Search\ActivityStatsExtendedEntity $item */
-  $item = menu_get_object('culturefeed_agenda_event', 3);
-  $event = culturefeed_uitpas_get_uitpas_event($item);
-  $actor = NULL;
-
-  // If no event check for actor.
-  if (!$event) {
-    $item = menu_get_object('culturefeed_agenda_actor', 3);
-    if ($item) {
-      $actor = $item->getEntity();
+  if (!$balie_id) {
+    /* @var \CultuurNet\Search\ActivityStatsExtendedEntity $item */
+    $item = menu_get_object('culturefeed_agenda_event', 3);
+    $event = culturefeed_uitpas_get_uitpas_event($item);
+    if ($event) {
+      $balie_id = $event->organiserId;
+      $balie_name = $event->organiserName;
+      $actor = NULL;
+    }
+    // If no event check for actor.
+    else {
+      $item = menu_get_object('culturefeed_agenda_actor', 3);
+      if ($item) {
+        $actor = $item->getEntity();
+        if ($actor) {
+          $balie_id = $actor->getCdbId();
+          $balie_name = $actor->getDetails()->getDetailByLanguage('nl')->getTitle();
+        }
+      }
+      else {
+        return FALSE;
+      }
     }
   }
 
-  if ($event || $actor) {
+  if ($balie_id) {
 
     // Promotions.
     $promotions = array();
@@ -34,7 +46,7 @@ function culturefeed_uitpas_event_details_advantages_get() {
       $cf = DrupalCultureFeed::getConsumerInstance();
 
       $query = new CultureFeed_Uitpas_Passholder_Query_SearchPromotionPointsOptions();
-      $query->balieConsumerKey = ($event) ? $event->organiserId : $actor->getCdbId();
+      $query->balieConsumerKey = $balie_id;
       $query->cashingPeriodBegin = time();
       $query->unexpired = TRUE;
       $query->start = 0;
@@ -56,7 +68,7 @@ function culturefeed_uitpas_event_details_advantages_get() {
 
     if (count($promotions)) {
 
-      $title = t('Promotions at @organisation', array('@organisation' => ($event) ? $event->organiserName : $actor->getDetails()->getDetailByLanguage('nl')->getTitle()));
+      $title = t('Promotions at @organisation', array('@organisation' => ($balie_name) ? $balie_name : t('this organizer')));
       $show_all_link_title = t('All promotions');
       $show_all_link_path = 'promotions';
 

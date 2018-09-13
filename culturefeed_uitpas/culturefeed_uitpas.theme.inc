@@ -235,7 +235,7 @@ function culturefeed_uitpas_preprocess_culturefeed_actor(&$vars) {
     if (isset($vars['uitpas'])) { 
       // Promotions.
       module_load_include('inc', 'culturefeed_uitpas', 'includes/event_details_advantages');
-      $promotions = culturefeed_uitpas_event_details_advantages_get();
+      $promotions = culturefeed_uitpas_event_details_advantages_get($vars['cdbid'], $vars['title']);
       $vars['uitpas_promotions'] = drupal_render($promotions);
     }
   }
@@ -301,9 +301,11 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
       }
   
       // Promotions.
-      module_load_include('inc', 'culturefeed_uitpas', 'includes/event_details_advantages');
-      $promotions = culturefeed_uitpas_event_details_advantages_get();
-      $vars['uitpas_promotions'] = drupal_render($promotions);
+      if ($vars['organiser']) {
+        module_load_include('inc', 'culturefeed_uitpas', 'includes/event_details_advantages');
+        $promotions = culturefeed_uitpas_event_details_advantages_get($vars['organiser']['id'], $vars['organiser']['title']);
+        $vars['uitpas_promotions'] = drupal_render($promotions);
+      }
   
     }
   }

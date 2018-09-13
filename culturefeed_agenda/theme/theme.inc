@@ -835,11 +835,13 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
           $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
           $variables['organiser']['title'] = $organiser_actor_details->getTitle();
           $variables['organiser']['link'] = culturefeed_search_detail_l('actor', $actor->getCdbid(), $variables['organiser']['title']);
+          $variables['organiser']['id'] = $actor->getCdbid();
         }
         elseif ($organiser->getLabel()) {
           $variables['organiser']['title'] = $organiser->getLabel();
           if ($organiser->getCdbid()) {
             $variables['organiser']['link'] = culturefeed_search_detail_l('actor', $organiser->getCdbid(), $variables['organiser']['title']);
+            $variables['organiser']['id'] = $organiser->getCdbid();
           }
         }
   
