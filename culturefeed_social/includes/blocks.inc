@@ -363,7 +363,7 @@ function culturefeed_social_user_list_block_for_activity($object, $activity_type
   }
 
   $cache_prefix = 'culturefeed:social:activities:';
-   
+
   // If user isn't logged in try to get activities from cache. 
   if (!culturefeed_is_culturefeed_user() && ($cache = cache_get($cache_prefix . $id . ':' . $activity_type, 'cache_culturefeed'))) {
     $activities = $cache->data;
@@ -375,6 +375,7 @@ function culturefeed_social_user_list_block_for_activity($object, $activity_type
 
       $culturefeed_social_cache_expires = variable_get('culturefeed_social_cache_expires', 86400);
       cache_set($cache_prefix . $id . ':' . $activity_type, $activities, 'cache_culturefeed', REQUEST_TIME + $culturefeed_social_cache_expires);
+      watchdog('culturefeed_cache', 'Succesfully stored ' . $cache_prefix . $id . ':' . $activity_type . ' in database');
     }
     catch (Exception $e) {
       watchdog_exception('culturefeed_social', $e);
