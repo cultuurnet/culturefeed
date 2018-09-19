@@ -531,12 +531,6 @@ function culturefeed_ui_culturefeed_ui_profile_box_dropdown_items(CultureFeed_Us
     'weight' => -20,
   );
 
-  $items['user-history'] = array(
-    'data' => l(t('User history'), 'culturefeed/activities'),
-    'class' => 'user-history',
-    'weight' => -19,
-  );
-
   $items['logout_divider'] = array(
     'data' => '',
     'class' => 'divider',
