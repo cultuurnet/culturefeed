@@ -103,12 +103,53 @@ function culturefeed_uitpas_get_uitpas_event($item) {
       if ($result->total && !empty($result->objects[0])) {
         $event = $result->objects[0];
       }
-      cache_set($cache_prefix . $cdbid, $event, 'cache_culturefeed', REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
+      $culturefeed_uitpas_cache_expires = variable_get('culturefeed_cache_uitpas_expires', 86400);
+      cache_set($cache_prefix . $cdbid, $event, 'cache_culturefeed', REQUEST_TIME + $culturefeed_uitpas_cache_expires);
     }
 
   }
 
   return $event;
+
+}
+
+/**
+ * Returns Culturefeed uitpas cardsystem objects.
+ *
+ * @param CultuurNet\Search\ActivityStatsExtendedEntity $item
+ *   A Cultuurnet event item.
+ *
+ * @return CultureFeed_Uitpas_CardSystem
+ *   All Culturefeed cardsystems for the given event.
+ */
+function culturefeed_uitpas_get_uitpas_event_cardsystems($item) {
+
+  $event_cardsystems = NULL;
+
+  if ($item) {
+
+    $cdb_item = $item->getEntity();
+    $cdbid = $cdb_item->getCdbid();
+    $cache_prefix = 'culturefeed:uitpas:cultureevent:cardsystems:';
+    
+    if ($cache = cache_get($cache_prefix . $cdbid, 'cache_culturefeed')) {
+      $event_cardsystems = $cache->data;
+    }
+    else {
+  
+      $cf = DrupalCultureFeed::getConsumerInstance();
+      $result = $cf->uitpas()->getCardSystemsForEvent($cdbid);
+  
+      if ($result->total && !empty($result->objects[0])) {
+        $event_cardsystems = $result->objects[0];
+      }
+      $culturefeed_uitpas_cache_expires = variable_get('culturefeed_cache_uitpas_expires', 86400);
+      cache_set($cache_prefix . $cdbid, $event_cardsystems, 'cache_culturefeed', REQUEST_TIME + $culturefeed_uitpas_cache_expires);
+    }
+
+  }
+
+  return $event_cardsystems;
 
 }
 
@@ -235,7 +276,8 @@ function culturefeed_uitpas_get_uitpas_user() {
                 $uitpas_user->passholder = null;
               }
             }
-            cache_set($cache_prefix . $uitpas_user->user->id, $uitpas_user, 'cache_culturefeed', REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
+            $culturefeed_uitpas_cache_expires = variable_get('culturefeed_uitpas_cache_expires', 86400);
+            cache_set($cache_prefix . $uitpas_user->user->id, $uitpas_user, 'cache_culturefeed', REQUEST_TIME + $culturefeed_uitpas_cache_expires);
           }
 
         }
@@ -298,7 +340,8 @@ function culturefeed_uitpas_email_is_passholder() {
         $query = new CultureFeed_Uitpas_Passholder_Query_SearchPassholdersOptions();
         $query->email = $uitpas_user->user->mbox;
         $passholders = $uitpas_user->cf->uitpas()->searchPassholders($query);
-        cache_set($cache_prefix . $uitpas_user->user->mbox, $passholders, 'cache_culturefeed', REQUEST_TIME + CULTUREFEED_CACHE_EXPIRES);
+        $culturefeed_uitpas_cache_expires = variable_get('culturefeed_uitpas_cache_expires', 86400);
+        cache_set($cache_prefix . $uitpas_user->user->mbox, $passholders, 'cache_culturefeed', REQUEST_TIME + $culturefeed_uitpas_cache_expires);
       }
       if ($passholders->total > 0) {
         return true;

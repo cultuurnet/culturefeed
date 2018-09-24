@@ -124,3 +124,28 @@ function culturefeed_uitpas_init() {
     }
   }
 }
+
+/**
+ * Implements hook_form_alter().
+ */
+function culturefeed_uitpas_form_system_performance_settings_alter(&$form, $form_state) {
+
+  // Adding API cache settings to the performance settings form.
+
+  $form['culturefeed_uitpas_cache'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('CultuurNet Uitpas cache'),
+    '#weight' => 1,
+    '#description' => t('Enabling the CultuurNet Uitpas cache will cache all parsed results of requests to the Uitpas API. This will reduce the number of requests made directly to the API service.'),
+  );
+
+  $period = array(0 => '<' . t('none') . '>') + drupal_map_assoc(array(0, 60, 180, 300, 600, 900, 1800, 2700, 3600, 10800, 21600, 32400, 43200, 86400, 86400 * 2, 86400 * 5, 86400 * 7, 86400 * 14, 86400 * 28), 'format_interval');
+
+  $form['culturefeed_uitpas_cache']['culturefeed_uitpas_cache_expires'] = array(
+    '#type' => 'select',
+    '#title' => t('Minimum cache lifetime for the uitpas content'),
+    '#default_value' => variable_get('culturefeed_uitpas_cache_expires', 86400),
+    '#options' => $period,
+    '#description' => t('The minimum cache lifetime is the minimum amount of time that will elapse before the cache is emptied and recreated'),
+  );
+}
