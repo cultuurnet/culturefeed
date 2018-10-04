@@ -18,6 +18,9 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
    */
   private static $searchService = NULL;
 
+  /**
+   * @var DrupalCultureFeedSearchService
+   */
   private static $cachedSearchService = NULL;
 
   /**
