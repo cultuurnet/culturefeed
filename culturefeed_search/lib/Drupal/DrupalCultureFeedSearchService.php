@@ -18,6 +18,8 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
    */
   private static $searchService = NULL;
 
+  private static $cachedSearchService = NULL;
+
   /**
    * @var \CultuurNet\Search\Guzzle\Service
    */
@@ -27,8 +29,9 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
    * Constructor
    *
    * @param ConsumerCredentials $consumerCredentials
+   * @param bool $use_cache
    */
-  private function __construct(ConsumerCredentials $consumerCredentials) {
+  private function __construct(ConsumerCredentials $consumerCredentials, $use_cache) {
 
     $endpoint = variable_get(
       'culturefeed_search_api_location',
@@ -53,7 +56,7 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
       $service->enableLogging();
     }
 
-    if (variable_get('culturefeed_search_cache_enabled', FALSE)) {
+    if ($use_cache && variable_get('culturefeed_search_cache_enabled', FALSE)) {
       $this->service = new DrupalCultureFeedSearchService_Cache($service,
         $consumerCredentials,
         DrupalCultureFeed::getLoggedInUserId());
@@ -68,14 +71,17 @@ class DrupalCultureFeedSearchService implements ServiceInterface {
    * getClient().
    *
    * @param ConsumerCredentials $consumerCredentials
-   * @return self
+   * @param bool $use_cache
+   * @return \DrupalCultureFeedSearchService
    */
-  public static function getClient(ConsumerCredentials $consumerCredentials) {
-    if (!self::$searchService) {
-      self::$searchService = new DrupalCultureFeedSearchService($consumerCredentials);
+  public static function getClient(ConsumerCredentials $consumerCredentials, $use_cache = TRUE) {
+    if ($use_cache && !self::$cachedSearchService) {
+      self::$cachedSearchService = new DrupalCultureFeedSearchService($consumerCredentials, $use_cache);
+    } else {
+      self::$searchService = new DrupalCultureFeedSearchService($consumerCredentials, $use_cache);
     }
 
-    return self::$searchService;
+    return $use_cache ? self::$cachedSearchService : self::$searchService;
   }
 
   /**
