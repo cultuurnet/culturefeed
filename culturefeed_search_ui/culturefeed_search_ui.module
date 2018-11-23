@@ -58,7 +58,7 @@ function culturefeed_search_ui_init() {
   // Check if we are not on a staging environment
   global $base_root;
   $staging = FALSE;
-  $dev_ids = array('culturefeed', 'dev.', 'acc.');
+  $dev_ids = array('culturefeed', 'dev.', 'acc.', 'test.');
   foreach($dev_ids as $id) {
     if (stripos($base_root, $id) !== FALSE) {
       $staging = TRUE;
@@ -958,24 +958,6 @@ function culturefeed_search_ui_culturefeed_search_page_query_alter(CultureFeedSe
     variable_get('culturefeed_search_holidays_options', culturefeed_search_ui_default_holidays_options()),
     'or'
     );
-
-  // If group = event and we are looking for movies switch to group = event_production
-  if ($culturefeedSearchPage->getGroup() == 'event' && (isset($_GET['facet']['category_eventtype_id']) && in_array('0.50.6.0.0', $_GET['facet']['category_eventtype_id']))) {
-    // Find index of group parameter
-    $params = $culturefeedSearchPage->getParameters();
-    for ($i = 0; $i <= count($params); $i++) {
-      $name = get_class($params[$i]);
-      if ($name == 'CultuurNet\Search\Parameter\Group') {
-        $key = $i;
-        break;
-      }
-    }
-    $culturefeedSearchPage->unsetParameter($key);
-    $culturefeedSearchPage->addParameter(new Parameter\Parameter('group', 'event_production'));
-    $culturefeedSearchPage->setGroup('event_production');
-  }
-  elseif (variable_get('culturefeed_search_fast_permission', 0)) {
-    $culturefeedSearchPage->addParameter(new Parameter\FilterQuery('!type:production'));
   }
 
   // If group = event_production exclude productions (already included in group)
