@@ -17,12 +17,6 @@ function culturefeed_search_admin_settings() {
     '#default_value' => variable_get('culturefeed_search_api_location', CULTUREFEED_SEARCH_API_LOCATION),
   );
 
-  $form['culturefeed_search_fast_permission'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('My consumer has fast index permissions.'),
-    '#default_value' => CULTUREFEED_SEARCH_API_FAST_ALLOWED,
-  );
-
   $cdb_xml_versions = culturefeed_cdb_xml_versions();
   $form['culturefeed_search_cdb_version'] = array(
     '#default_value' => variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION),
