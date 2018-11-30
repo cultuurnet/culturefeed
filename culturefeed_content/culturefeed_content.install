@@ -320,3 +320,73 @@ function culturefeed_content_update_7003() {
     }
     return t('Query builder fields were added in the database. "Show more" and "more" link fields were removed.');
 }
+
+
+/**
+ * Migrate old culturefeed content queries to the new "composite query" field.
+ */
+function culturefeed_content_update_7004(&$sandbox) {
+  $fields = culturefeed_content_get_culturefeed_content_fields();
+
+  foreach ($fields as $field) {
+    $table_prefixes = array(
+      _field_sql_storage_tablename($field),
+      _field_sql_storage_revision_tablename($field)
+    );
+
+    foreach ($table_prefixes as $table_prefix) {
+      $field_name = $field['field_name'];
+      $table = $table_prefix;
+
+      // Composite query needs to be NULL or empty.
+      $or_condition = db_or();
+      $or_condition->condition($field_name . '_composite_query', '');
+      $or_condition->isNull($field_name . '_composite_query');
+
+      // Fetch all rows.
+      $rows =  db_select($table, 'cf')
+        ->fields('cf')
+        ->condition($or_condition)
+        ->execute()
+        ->fetchAll(PDO::FETCH_ASSOC);
+
+      foreach ($rows as $row) {
+        // Create the composite query.
+        $query_param = !empty($row[$field_name . '_query_string']) ? $row[$field_name . '_query_string'] : '*:*';
+        $composite_query = 'q=' . $query_param;
+
+        // Types.
+        $types = !empty($row[$field_name . '_types']) ? explode(',', $row[$field_name . '_types']) : array('event', 'actor', 'production');
+        $type_filters = '';
+
+        foreach ($types as $type) {
+          if (!empty($type_filters)) {
+            $type_filters .= ' OR ';
+          }
+          $type_filters .= "type:$type";
+        }
+
+        $composite_query .= "&fq=($type_filters)";
+
+        if (!empty($row[$field_name . '_filter_query'])) {
+          $composite_query .= '&fq=(' . $row[$field_name . '_filter_query'] . ')';
+        }
+
+        $row[$field_name . '_composite_query'] = $composite_query;
+
+        // Update the field row.
+        db_merge($table)
+          ->key(array(
+            'entity_type' => $row['entity_type'],
+            'bundle' => $row['bundle'],
+            'revision_id' => $row['revision_id'],
+            'deleted' => $row['deleted'],
+            'delta' => $row['delta'],
+            'language' => $row['language'],
+          ))
+          ->fields($row)
+          ->execute();
+      }
+    }
+  }
+}
