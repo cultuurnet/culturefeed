@@ -983,6 +983,13 @@ function culturefeed_pages_edit_page_access($page) {
     $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
   }
 
+  // If the user is connecting an organization, attempt to switch the active page to the page being edited.
+  $query_params = drupal_get_query_parameters();
+
+  if (isset($query_params['connect-organization']) && isset($adminMemberships[$page->getId()])) {
+    culturefeed_pages_set_active_page($page);
+  }
+
   // Check the current page against the current active admin page.
   return isset($adminMemberships[$page->getId()]) && $page->getId() === culturefeed_pages_get_active_page_id();
 
