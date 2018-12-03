@@ -732,6 +732,10 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
  * @param array $form_state
  */
 function culturefeed_pages_edit_request_send(& $form, & $form_state) {
+  // Don't send the request if the form contains errors.
+  if (!empty(form_get_errors())) {
+    return;
+  }
 
   // Local storage of the universal id.
   $uid = $form_state['values']['pageId'];
