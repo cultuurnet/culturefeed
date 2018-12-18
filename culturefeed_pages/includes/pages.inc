@@ -150,9 +150,6 @@ function culturefeed_pages_basic_search_form_submit($form, &$form_state) {
   if ($form_state['values']['keyword']) {
     $query['keyword'] = $form_state['values']['keyword'];
   }
-  /*if ($form_state['values']['main']) {
-    $query['keyword'] = 'hoofdvestiging';
-  }*/
   $form_state['redirect'] = array(
     $_GET['q'],
     array('query' => $query),
