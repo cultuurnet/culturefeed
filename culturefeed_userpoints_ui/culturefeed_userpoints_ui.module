@@ -321,7 +321,7 @@ function culturefeed_userpoints_ui_mail($key, &$message, $params) {
 ';
       }
 
-      $variables['@url_admin'] = url('http://www.uitid.be/uitid/rest/dashboard/grantedpointspromotions', array('absolute' => TRUE));
+      $variables['@url_admin'] = url('https://www.uitid.be/uitid/rest/dashboard/grantedpointspromotions', array('absolute' => TRUE));
       $variables['@promotion'] = implode("\n", $promotions);
 
       $message['body'][] = format_string(t('UiTiD User ID:
