@@ -98,13 +98,6 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       unset($_SESSION['oauth_token_secret']);
 
       $cf_account = DrupalCultureFeed::getInstance($token['oauth_token'], $token['oauth_token_secret'], $application_key, $shared_secret)->getUser($token['userId']);
-
-      // Check if uid session is provided it has the same uid then id of the account
-      if (isset($_SESSION['cf_uid']) && $_SESSION['cf_uid'] != $cf_account->id) {
-        drupal_set_message(t('An error occurred while logging in. Please try again later.'), 'error');
-        drupal_goto('');
-      }
-
     }
     catch (Exception $e) {
       drupal_set_message(t('An error occurred while logging in. Please try again later.'), 'error');
