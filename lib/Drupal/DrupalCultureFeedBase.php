@@ -32,7 +32,6 @@ abstract class DrupalCultureFeedBase {
     }
 
     if (isset($_GET['uid'])) {
-      $_SESSION['cf_uid'] = $_GET['uid'];
       $query = drupal_get_query_parameters($_GET,array('q', 'uid'));
       drupal_goto('culturefeed/oauth/connect', array('query' => array('destination' => request_path() . '?' . drupal_http_build_query($query), 'skipConfirmation' => 'true')));
     }
