@@ -268,9 +268,7 @@ function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
         $prices[] = $vars['price'];
       }
 
-      $card_systems = array($event_cardsystems);
-
-      foreach ($card_systems as $card_system) {
+      foreach ($event_cardsystems as $card_system) {
         foreach ($card_system->distributionKeys as $key) {
           foreach ($key->conditions as $condition) {
   

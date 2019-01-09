@@ -141,8 +141,8 @@ function culturefeed_uitpas_get_uitpas_event_cardsystems($item) {
       $cf = DrupalCultureFeed::getConsumerInstance();
       $result = $cf->uitpas()->getCardSystemsForEvent($cdbid);
   
-      if ($result->total && !empty($result->objects[0])) {
-        $event_cardsystems = $result->objects[0];
+      if ($result->total) {
+        $event_cardsystems = $result->objects;
       }
       $culturefeed_uitpas_cache_expires = variable_get('culturefeed_cache_uitpas_expires', 86400);
       cache_set($cache_prefix . $cdbid, $event_cardsystems, 'cache_culturefeed', REQUEST_TIME + $culturefeed_uitpas_cache_expires);
