@@ -1006,7 +1006,7 @@ function culturefeed_search_acceptance_mode() {
 
   // Get culturefeed_search_api_location
   $location = variable_get('culturefeed_search_api_location');
-  if (strpos($location,'www') === FALSE) {
+  if ((strpos($location,'www') === FALSE) && (strpos($location,'prod') === FALSE)) {
     return TRUE;
   }
 
