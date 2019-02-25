@@ -44,21 +44,18 @@ function culturefeed_content_field_formatter_info() {
  * Implements hook_field_formatter_view().
  */
 function culturefeed_content_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
-
   $element = array();
+
   switch ($display['type']) {
-
     case 'culturefeed_content_default':
-
       foreach ($items as $delta => $item) {
-
-        $title = $item['query_title'];
+        $title = $item['title'];
         $sort = isset($item['sort']) ? $item['sort'] : CULTUREFEED_CONTENT_DEFAULT_SORT;
 
         // Render the results.
         $build = array();
         $query = [];
-        $query['advanced_query']['title'] = $title;
+        $query['advanced_query']['title'] = $item['query_title'];
         $query['advanced_query']['query'] = $item['composite_query'];
         $query['sort'] = $sort;
 
@@ -75,20 +72,18 @@ function culturefeed_content_field_formatter_view($entity_type, $entity, $field,
         }
 
         $element[$delta] = $build;
-
       }
+
       break;
-
   }
-  return $element;
 
+  return $element;
 }
 
 /**
  * Implements hook_field_info().
  */
 function culturefeed_content_field_info() {
-
   return array(
     'culturefeed_content' => array(
       'label' => t('CultureFeed content'),
@@ -128,20 +123,24 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   $where_postal_code = isset($items[$delta]['where_postal_code']) ? $items[$delta]['where_postal_code'] : '';
   $where_postal_code_radius = isset($items[$delta]['where_postal_code_radius']) ? $items[$delta]['where_postal_code_radius'] : 5;
   $when_type_1 = isset($items[$delta]['when_type_1']) ? $items[$delta]['when_type_1'] : 'all';
+
   if ($when_type_1 !== 'all') {
     $when_date_1 = isset($items[$delta]['when_date_1']) ? $items[$delta]['when_date_1'] : '';
   }
   else {
     $when_date_1 = '';
   }
+
   $when_before_after_1 = isset($items[$delta]['when_before_after_1']) ? $items[$delta]['when_before_after_1'] : 0;
   $when_type_2 = isset($items[$delta]['when_type_2']) ? $items[$delta]['when_type_2'] : 'all';
+
   if ($when_type_1 !== 'all') {
     $when_date_2 = isset($items[$delta]['when_date_2']) ? $items[$delta]['when_date_2'] : '';
   }
   else {
     $when_date_2 = '';
   }
+
   $when_before_after_2 = isset($items[$delta]['when_before_after_2']) ? $items[$delta]['when_before_after_2'] : 0;
   $query_title = isset($items[$delta]['query_title']) ? $items[$delta]['query_title'] : '';
   $show_postal_code_search_box = isset($items[$delta]['show_postal_code_search_box']) ? $items[$delta]['show_postal_code_search_box'] : '';
@@ -167,8 +166,14 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
 
   // Set the form_state values for the first time,
   // as the form is being built from the form state values.
-  if (!isset($form_state['values'])) {
-    $form_state['values'] = [];
+  $form_state_values = isset($form_state['values']) ? $form_state['values'] : array();
+  $values = drupal_array_get_nested_value($form_state_values, $parents);
+
+  if (empty($values)) {
+    // Initialize the form_state values.
+    if (!isset($form_state['values'])) {
+      $form_state['values'] = array();
+    }
 
     $item = $items[$delta];
 
@@ -668,6 +673,10 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   // Add custom css.
   drupal_add_css(drupal_get_path('module', 'culturefeed_content') . '/css/culturefeed-content.css');
 
+  $element += array(
+    '#element_validate' => array('culturefeed_content_field_widget_form_validate'),
+  );
+
   return $element;
 }
 
@@ -801,7 +810,6 @@ function culturefeed_content_field_ajax_rebuild_composite_query($form, &$form_st
  *   The field item.
  */
 function culturefeed_content_contextual_search_box_form($form, &$form_state, $field_item) {
-
   $wrapper_id = drupal_html_id('culturefeed-content-list');
   $form['#prefix'] = '<div id="' . $wrapper_id . '">';
   $form['#suffix'] = '</div>';
@@ -909,7 +917,6 @@ function culturefeed_content_search_box_ajax_submit($form, &$form_state) {
  * Implements hook_field_widget_info().
  */
 function culturefeed_content_field_widget_info() {
-
   return array(
     'culturefeed_content_default' => array(
       'label' => t('Default CultureFeed content widget'),
@@ -921,14 +928,12 @@ function culturefeed_content_field_widget_info() {
       ),
     ),
   );
-
 }
 
 /**
  * Implements hook_theme().
  */
 function culturefeed_content_theme() {
-
   $path = drupal_get_path('module', 'culturefeed_content') . '/theme';
 
   return array(
@@ -954,86 +959,68 @@ function culturefeed_content_theme() {
       'file' => 'theme.inc',
     ),
   );
-
-}
-
-
-function culturefeed_content_form_node_form_alter(&$form, &$form_state, $form_id){
-  $node = $form['#node'];
-  $map = field_info_field_map();
-
-  foreach ($map as $field_name => $field) {
-    if ($field['type'] === 'culturefeed_content' && isset($field['bundles']['node']) && in_array($node->type, $field['bundles']['node'])) {
-      // The field is on the form, add the submit handler.
-      $form['#submit'][] = '_culturefeed_content_field_massage_values';
-    }
-  }
 }
 
 /**
- * Function to perform changes to the taxonomy field before page is saved
+ * FAPI validation of an individual culturefeed_content element.
  */
-function _culturefeed_content_field_massage_values($form, &$form_state) {
-  // Massage the form_state values right before they are sent for storage.
-  $node = $form['#node'];
-  $map = field_info_field_map();
+function culturefeed_content_field_widget_form_validate($element, &$form_state, $complete_form) {
+  $field_parents = $element['#field_parents'];
+  $field_name = $element['#field_name'];
+  $language = $element['#language'];
 
-  $fields = [];
+  $field_state = field_form_get_state($field_parents, $field_name, $language, $form_state);
 
-  foreach ($map as $field_name => $field) {
-    if ($field['type'] === 'culturefeed_content' && isset($field['bundles']['node']) && in_array($node->type, $field['bundles']['node'])) {
-      $fields[] = $field_name;
-    }
-  }
+  if (isset($field_state['field'])) {
+    // Only massage the form_state values if the field item is being saved.
+    if ($form_state['submitted'] && !form_get_errors()) {
+      $item = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
 
-  // Massage the field values in the form_state.
-  foreach ($fields as $field_name) {
-    if(is_array($form_state['values'][$field_name]['und'])) {
-      foreach ($form_state['values'][$field_name]['und'] as $key => $field_item) {
-        $values = !empty($field_item['wrapper']) ? $field_item['wrapper'] : array();
+      // Massage the field values in the form_state.
+      $values = !empty($item['wrapper']) ? $item['wrapper'] : array();
 
-        if (!empty($values['what'])) {
-          unset($values['what']['add_category']);
+      if (!empty($values['what'])) {
+        unset($values['what']['add_category']);
 
-          foreach ($values['what'] as $what_key => $what_item) {
-            unset($values['what'][$what_key]['remove_category_' . $what_key]);
-          }
+        foreach ($values['what'] as $what_key => $what_item) {
+          unset($values['what'][$what_key]['remove_category_' . $what_key]);
         }
-
-        $new_values = array(
-          'title' => $values['title'],
-          'query_string' => $values['query_string'],
-          'filter_query' => $values['filter_query'],
-          'rows' => !empty($values['rows']) ? $values['rows'] : CULTUREFEED_CONTENT_DEFAULT_ROWS,
-          'sort' => $values['sort'],
-          'types' => $values['types'],
-          'what_categories' => serialize($values['what']),
-          'where_type' => $values['where']['where_type'],
-          'where_equal' => (int)$values['where']['where_equal'],
-          'where_region' => $values['where']['where_region'],
-          'where_city' => $values['where']['where_city'],
-          'where_postal_code' => (int)$values['where']['where_postal_code'],
-          'where_postal_code_radius' => $values['where']['where_postal_code_radius'],
-          'when_type_1' => $values['when']['when_type_1'],
-          'when_before_after_1' => (int)$values['when']['when_before_after_1'],
-          'when_date_1' => $values['when']['when_date_1'],
-          'when_type_2' => $values['when']['when_type_2'],
-          'when_before_after_2' => (int)$values['when']['when_before_after_2'],
-          'when_date_2' => $values['when']['when_date_2'],
-          'composite_query' => $values['composite_query'],
-          'query_title' => $values['query_title'],
-          'show_postal_code_search_box' => $values['show_postal_code_search_box'],
-        );
-
-        // Save types as CSV.
-        $types_csv = '';
-        foreach ($values['types'] as $type => $value) {
-          $types_csv = $value ? $types_csv . "$type," : $types_csv;
-        }
-        $new_values['types'] = rtrim($types_csv, ',');
-
-        $form_state['values'][$field_name]['und'][$key] = $new_values;
       }
+
+      $new_values = array(
+        'title' => $values['title'],
+        'query_string' => $values['query_string'],
+        'filter_query' => $values['filter_query'],
+        'rows' => !empty($values['rows']) ? $values['rows'] : CULTUREFEED_CONTENT_DEFAULT_ROWS,
+        'sort' => $values['sort'],
+        'types' => $values['types'],
+        'what_categories' => serialize($values['what']),
+        'where_type' => $values['where']['where_type'],
+        'where_equal' => (int)$values['where']['where_equal'],
+        'where_region' => $values['where']['where_region'],
+        'where_city' => $values['where']['where_city'],
+        'where_postal_code' => (int)$values['where']['where_postal_code'],
+        'where_postal_code_radius' => $values['where']['where_postal_code_radius'],
+        'when_type_1' => $values['when']['when_type_1'],
+        'when_before_after_1' => (int)$values['when']['when_before_after_1'],
+        'when_date_1' => $values['when']['when_date_1'],
+        'when_type_2' => $values['when']['when_type_2'],
+        'when_before_after_2' => (int)$values['when']['when_before_after_2'],
+        'when_date_2' => $values['when']['when_date_2'],
+        'composite_query' => $values['composite_query'],
+        'query_title' => $values['query_title'],
+        'show_postal_code_search_box' => $values['show_postal_code_search_box'],
+      );
+
+      // Save types as CSV.
+      $types_csv = '';
+      foreach ($values['types'] as $type => $value) {
+        $types_csv = $value ? $types_csv . "$type," : $types_csv;
+      }
+      $new_values['types'] = rtrim($types_csv, ',');
+
+      // Set the massaged values in the form state.
+      form_set_value($element, $new_values, $form_state);
     }
   }
 }
