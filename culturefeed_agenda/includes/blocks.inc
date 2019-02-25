@@ -11,19 +11,26 @@ use \CultuurNet\Search\Parameter;
  */
 function culturefeed_agenda_block_related_activities() {
 
-  // Try to load the agenda detail.
-  $item = culturefeed_agenda_get_active_object();
-  if (!$item || arg(4) == 'edit' || arg(4) == 'tags') {
+  // Only load related events on event detail pages
+  if (arg(1) != 'e') {
     return;
   }
 
-  $config = array(
-    'title' => t('Related activities'),
-    'id' => 'related-activities',
-    'path' => 'ajax/culturefeed/related-activities/' . $item->getId(),
-  );
-
-  return culturefeed_ui_block_ajaxload($config);
+  else {
+    // Try to load the agenda detail.
+    $item = culturefeed_agenda_get_active_object();
+    if (!$item || arg(4) == 'edit' || arg(4) == 'tags') {
+      return;
+    }
+  
+    $config = array(
+      'title' => t('Related activities'),
+      'id' => 'related-activities',
+      'path' => 'ajax/culturefeed/related-activities/' . $item->getId(),
+    );
+  
+    return culturefeed_ui_block_ajaxload($config);
+  }
 
 }
 

@@ -782,7 +782,7 @@ function culturefeed_entry_ui_event_form($form, &$form_state, $event = NULL) {
     $form['extra']['organiser']['actor']['organiser_actor_label'] = array(
       '#type' => 'textfield',
       '#title' => t('Organizer'),
-      '#autocomplete_path' => 'autocomplete/culturefeed/actor-suggestions/all',
+      '#autocomplete_path' => 'autocomplete/culturefeed/organizer-suggestions/all',
       '#required' => FALSE,
       '#default_value' => $default_organiser_label,
     );

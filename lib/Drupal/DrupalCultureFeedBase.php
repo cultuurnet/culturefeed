@@ -31,6 +31,11 @@ abstract class DrupalCultureFeedBase {
       $account = user_load($uid);
     }
 
+    if (isset($_GET['uid'])) {
+      $query = drupal_get_query_parameters($_GET,array('q', 'uid'));
+      drupal_goto('culturefeed/oauth/connect', array('query' => array('destination' => request_path() . '?' . drupal_http_build_query($query), 'skipConfirmation' => 'true')));
+    }
+
     return isset($account->culturefeed_uid) && !empty($account->culturefeed_uid);
   }
 

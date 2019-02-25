@@ -37,6 +37,11 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, 
     $skip_authorization = TRUE;
   }
 
+  $skip_confirmation = FALSE;
+  if (isset($_GET['skipConfirmation'])) {
+    $skip_confirmation = TRUE;
+  }
+
   $via = NULL;
   if (isset($_GET['via'])) {
     $via = $_GET['via'];
@@ -65,7 +70,7 @@ function culturefeed_oauth_connect($type = CultureFeed::AUTHORIZE_TYPE_REGULAR, 
 
   // Fetch the authorisation url...
   $callback_url = url('culturefeed/oauth/authorize' . (isset($application_key) ? '/' . $application_key : ''), array('absolute' => TRUE));
-  $auth_url = $cf->getUrlAuthorize($token, $callback_url, $type, FALSE, $skip_authorization, $via, culturefeed_get_preferred_language(), variable_get('culturefeed_api_application_key', ''));
+  $auth_url = $cf->getUrlAuthorize($token, $callback_url, $type, $skip_confirmation, $skip_authorization, $via, culturefeed_get_preferred_language(), variable_get('culturefeed_api_application_key', ''));
 
   // ... and redirect the user to it.
   drupal_goto($auth_url);
