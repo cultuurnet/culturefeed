@@ -267,7 +267,7 @@ function _culturefeed_content_build_advanced_query($values) {
     }
   }
 
-  return $advanced_query . ')';
+  return $advanced_query;
 }
 
 /**
