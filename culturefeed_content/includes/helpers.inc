@@ -394,7 +394,7 @@ function _culturefeed_content_get_results($field_item, $postalcode = '') {
         break;
       case 'fq':
       default:
-        $facetFilterQuery = new \CultuurNet\Search\Parameter\FilterQuery(trim($key_value[1], '()'));
+        $facetFilterQuery = new \CultuurNet\Search\Parameter\FilterQuery($key_value[1]);
         $parameters[] = $facetFilterQuery;
         break;
     }
