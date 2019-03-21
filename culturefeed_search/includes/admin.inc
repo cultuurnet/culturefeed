@@ -13,14 +13,15 @@ function culturefeed_search_admin_settings() {
   $form['culturefeed_search_api_location'] = array(
     '#type' => 'textfield',
     '#title' => t('Search API location'),
-    '#description' => t('The URL where the CultureFeed Search API resides. End with a slash. Example: http://acc.uitid.be/uitid/rest/searchv2/ (acceptance) or http://www.uitid.be/uitid/rest/searchv2/ (production)'),
+    '#description' => t('The URL where the CultureFeed Search API resides. End with a slash. Example: https://test.uitid.be/uitid/rest/searchv2/ (test) or https://www.uitid.be/uitid/rest/searchv2/ (production)'),
     '#default_value' => variable_get('culturefeed_search_api_location', CULTUREFEED_SEARCH_API_LOCATION),
   );
 
-  $form['culturefeed_search_fast_permission'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('My consumer has fast index permissions.'),
-    '#default_value' => CULTUREFEED_SEARCH_API_FAST_ALLOWED,
+  $form['culturefeed_search_taxonomy_endpoint'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Taxonomy endpoint URL'),
+    '#description' => t('The URL where the CultureFeed Search Taxonomy resides. End with a slash. Example: http://taxonomy.uitdatabank.be/api/'),
+    '#default_value' => variable_get('culturefeed_search_taxonomy_endpoint', CULTUREFEED_SEARCH_TAXONOMY_ENDPOINT),
   );
 
   $cdb_xml_versions = culturefeed_cdb_xml_versions();

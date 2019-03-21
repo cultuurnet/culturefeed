@@ -920,6 +920,9 @@ function culturefeed_agenda_get_locations_by_list_search() {
       continue;
     }
 
+    $latitude = '';
+    $longitude = '';
+
     if ($address->getGeoInformation()) {
         $longitude = $address->getGeoInformation()->getXCoordinate();
         $latitude = $address->getGeoInformation()->getYCoordinate();

@@ -15,7 +15,7 @@ function culturefeed_admin_settings() {
   $form['culturefeed_api_location'] = array(
     '#type' => 'textfield',
     '#title' => t('API location'),
-    '#description' => t('The URL where the CultureFeed API resides. End with a slash. Example: http://acc.uitid.be/uitid/rest/'),
+    '#description' => t('The URL where the CultureFeed API resides. End with a slash. Example: https://test.uitid.be/uitid/rest/'),
     '#default_value' => variable_get('culturefeed_api_location', CULTUREFEED_API_LOCATION),
   );
   $form['culturefeed_api_application_key'] = array(
@@ -37,7 +37,7 @@ function culturefeed_admin_settings() {
   $form['culturefeed_entry_api_location'] = array(
     '#type' => 'textfield',
     '#title' => t('Entry API location'),
-    '#description' => t('The URL where the CultureFeed Entry API resides. End with a slash. Example: http://acc.uitid.be/uitid/rest/'),
+    '#description' => t('The URL where the CultureFeed Entry API resides. End with a slash. Example: https://test.uitid.be/uitid/rest/'),
     '#default_value' => variable_get('culturefeed_entry_api_location', CULTUREFEED_API_LOCATION),
   );
   $form['culturefeed_entry_api_path'] = array(

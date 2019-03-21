@@ -481,12 +481,6 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     }
   }
 
-  // Enhance event-details with UiTPAS-information if culturefeed_uitpas is enabled
-  if (module_exists('culturefeed_uitpas')) {
-    $uitpas_event = culturefeed_uitpas_get_uitpas_event($item);
-    $variables['uitpas_info'] = $uitpas_event;
-  }
-
   if ($detail) {
 
     if (variable_get('culturefeed_agenda_deduplicate_descriptions', TRUE) && $variables['longdescription']) {
@@ -841,11 +835,13 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
           $organiser_actor_details = $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
           $variables['organiser']['title'] = $organiser_actor_details->getTitle();
           $variables['organiser']['link'] = culturefeed_search_detail_l('actor', $actor->getCdbid(), $variables['organiser']['title']);
+          $variables['organiser']['id'] = $actor->getCdbid();
         }
         elseif ($organiser->getLabel()) {
           $variables['organiser']['title'] = $organiser->getLabel();
           if ($organiser->getCdbid()) {
             $variables['organiser']['link'] = culturefeed_search_detail_l('actor', $organiser->getCdbid(), $variables['organiser']['title']);
+            $variables['organiser']['id'] = $organiser->getCdbid();
           }
         }
   
@@ -1643,6 +1639,10 @@ function theme_culturefeed_agenda_page_list_rss($variables) {
       );
 
       $body = '';
+      $body .= '<p>';
+      if (isset($object['image']) && !empty($object['image'])) {
+        $body .= '<img width="50px" height="50px" vspace="5px" hspace="5px" align="top" src="https:' . $object['image'] . '"">';
+      }
       if (isset($object['city']) && !empty($object['city'])) {
         $body .= strtoupper($object['city']) . ', ';
       }
@@ -1650,6 +1650,7 @@ function theme_culturefeed_agenda_page_list_rss($variables) {
         $body .= strtolower($object['when_md_txt']) . ' - ';
       }
       $body .= $object['shortdescription'];
+      $body .= "</p>";
       $items .= format_rss_item($object['title'], $object_url, $body, $args);
     }
   }

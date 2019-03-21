@@ -1,5 +1,4 @@
 <?php
-use CultuurNet\Search\Parameter\Parameter;
 
 /**
  * @file
@@ -14,15 +13,16 @@ use CultuurNet\Search\Parameter\Parameter;
 /**
  * Gets the search service as a singleton.
  *
+ * @param bool $use_cache
  * @return \CultuurNet\Search\ServiceInterface
  */
-function culturefeed_get_search_service() {
+function culturefeed_get_search_service($use_cache = TRUE) {
 
   $credentials = new \CultuurNet\Auth\ConsumerCredentials();
   $credentials->setKey(variable_get('culturefeed_search_api_application_key', ''));
   $credentials->setSecret(variable_get('culturefeed_search_api_shared_secret', ''));
 
-  return DrupalCultureFeedSearchService::getClient($credentials);
+  return DrupalCultureFeedSearchService::getClient($credentials, $use_cache);
 
 }
 
@@ -1006,7 +1006,7 @@ function culturefeed_search_acceptance_mode() {
 
   // Get culturefeed_search_api_location
   $location = variable_get('culturefeed_search_api_location');
-  if (strpos($location,'www') === FALSE) {
+  if ((strpos($location,'www') === FALSE) && (strpos($location,'prod') === FALSE)) {
     return TRUE;
   }
 
