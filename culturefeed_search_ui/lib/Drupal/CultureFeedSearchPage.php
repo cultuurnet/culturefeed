@@ -799,14 +799,10 @@ class CultureFeedSearchPage {
    * @param $query
    */
   protected function addAdvancedQueryFilters($query) {
-
-    $test = explode('&', trim($query, '()'));
-    foreach (explode('&', trim($query, '()')) as $filter) {
+    foreach (explode('&', $query) as $filter) {
       $key_value = explode('=', $filter);
 
       if (count($key_value) > 1) {
-        $key_value[1] = trim($key_value[1], '()');
-
         switch ($key_value[0]) {
           case 'q':
             $this->addQueryTerm($key_value[1]);
