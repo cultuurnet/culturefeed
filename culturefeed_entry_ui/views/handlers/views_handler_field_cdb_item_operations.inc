@@ -33,7 +33,8 @@ class views_handler_field_cdb_item_operations extends views_handler_field {
       );
 
       $user = $cf_account = DrupalCultureFeed::getLoggedInUser();
-      $udb_permission = user_access('edit culturefeed events') && ($extended_entity->getEntity()->getCreatedBy() == $user->mbox);
+      $udb_permission = user_access('edit culturefeed events') &&
+          ($extended_entity->getEntity()->getCreatedBy() == $user->mbox || $extended_entity->getEntity()->getCreatedBy() == $user->id);
 
       if ($udb_permission) {
         foreach ($ops as $op => $op_details) {
