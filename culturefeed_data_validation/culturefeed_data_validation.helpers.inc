@@ -26,10 +26,11 @@ function _culturefeed_data_validation_get_datavalidation_client() {
  */
 function culturefeed_data_validation_is_valid_email($email) {
 
+  $blocked_grades = array('B', 'D', 'F');
   try {
     $datavalidationClient = _culturefeed_data_validation_get_datavalidation_client();
     $response = $datavalidationClient->validateEmail($email);
-    if ($response && (!$response->isOK() || $response->getGrade() === 'F') ) {
+    if ($response && (!$response->isOK() || in_array($response->getGrade(), $blocked_grades))) {
       return FALSE;
     }
   }
