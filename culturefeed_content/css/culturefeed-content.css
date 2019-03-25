@@ -2,3 +2,9 @@
     border: 1px solid #ddd;
     padding: 10px 10px 0;
 }
+
+
+.culturefeed-content--remove-button,
+.culturefeed-content--update-query {
+    margin-top: 10px;
+}

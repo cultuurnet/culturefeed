@@ -41,11 +41,6 @@ function _culturefeed_content_add_builder_category_row($element, $field_name_bas
     '#type' => 'select',
     '#options' => $category_type_options,
     '#default_value' => $default_type,
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
-    ),
   );
 
   $element['wrapper']['what'][$id]["what_equal"] = array(
@@ -61,11 +56,6 @@ function _culturefeed_content_add_builder_category_row($element, $field_name_bas
           ':input[name="' . $field_name_base . '[wrapper][what]['.$id.'][what_type]"]' => array('value' => 'all'),
         ),
       ),
-    ),
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -84,11 +74,6 @@ function _culturefeed_content_add_builder_category_row($element, $field_name_bas
             ':input[name="' . $field_name_base . '[wrapper][what]['.$id.'][what_type]"]' => array('value' => $category),
           ),
         ),
-      ),
-      '#ajax' => array(
-        'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-        'wrapper' => $composite_query_field_id,
-        'progress' => array('type' => 'throbber', 'message' => '')
       ),
     );
 

@@ -235,11 +235,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#description' => t('Use * as a wildcard to search on parts of a word, e.g. <strong>*speeltuin, sinterklaas*</strong>.<br> Combine multiple terms with AND, OR and through using brackets, e.g. <strong>(workshop OR cursus) AND keramiek*</strong>.<br> Exact combinations need to use double qoutes, e.g. <strong>"dag van de wetenschap"</strong>.'),
     '#type' => 'textfield',
     '#maxlength' => 1000,
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
-    ),
   );
 
   $element['wrapper']['filter_query'] = array(
@@ -249,11 +244,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#description' => t('Add extra parameters or your own advanced filter query, e.g. price:0 or hasimage:true'),
     '#type' => 'textfield',
     '#maxlength' => 1000,
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
-    ),
   );
 
   $element['wrapper']['rows'] = array(
@@ -297,11 +287,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#default_value' => $types,
     '#title' => t('Type'),
     '#required' => $element['#required'],
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
-    ),
   );
 
   // "Categories" fieldset (What)
@@ -338,7 +323,13 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
         '#delta' => $child,
         '#type' => 'submit',
         '#value' => t('Remove'),
+        '#id' => 'remove-button-' . implode('_', $parents) . '_remove_button_' . $child,
         '#submit' => array('culturefeed_content_widget_remove_category_submit'),
+        '#attributes' => array(
+          'class' => array(
+            'culturefeed-content--remove-button',
+          ),
+        ),
         '#limit_validation_errors' => array($parents),
         '#ajax' => array(
           // Rebuild the entire element.
@@ -385,11 +376,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       'postal_code' => t('Postal code + radius'),
     ],
     '#default_value' => $where_type,
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
-    ),
   );
 
   $element['wrapper']['where']['where_equal'] = array(
@@ -408,11 +394,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
           ':input[name="' . $field_name_base . '[wrapper][where][where_type]"]' => array('value' => 'city'),
         ),
       ),
-    ),
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -435,11 +416,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
         ),
       ),
     ),
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
-    ),
   );
 
   // Retrieve city options from DB.
@@ -461,11 +437,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
         ),
       ),
     ),
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
-    ),
   );
 
   $element['wrapper']['where']['where_postal_code'] = array(
@@ -479,11 +450,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
           ':input[name="' . $field_name_base . '[wrapper][where][where_type]"]' => array('value' => 'postal_code'),
         ),
       ),
-    ),
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -502,11 +468,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
           ':input[name="' . $field_name_base . '[wrapper][where][where_type]"]' => array('value' => 'postal_code'),
         ),
       ),
-    ),
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -532,11 +493,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
       'enddate' => t('End date'),
     ],
     '#default_value' => $when_type_1,
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
-    ),
   );
 
   $element['wrapper']['when']['when_before_after_1'] = array(
@@ -549,11 +505,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
           ':input[name="' . $field_name_base . '[wrapper][when][when_type_1]"]' => array('value' => 'all'),
         ),
       ),
-    ),
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -569,11 +520,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
           ':input[name="' . $field_name_base . '[wrapper][when][when_type_1]"]' => array('value' => 'all'),
         ),
       ),
-    ),
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -592,11 +538,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
         ),
       ),
     ),
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
-    ),
   );
 
   $element['wrapper']['when']['when_before_after_2'] = array(
@@ -609,11 +550,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
           ':input[name="' . $field_name_base . '[wrapper][when][when_type_2]"]' => array('value' => 'all'),
         ),
       ),
-    ),
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
     ),
   );
 
@@ -630,11 +566,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
         ),
       ),
     ),
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
-    ),
   );
 
   $element['wrapper']['composite_query'] = array(
@@ -649,7 +580,27 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   // Build the query form the form_state values.
   $wrapper_parents = array_merge($parents, ['wrapper']);
   $nested_values = drupal_array_get_nested_value($form_state['values'], $wrapper_parents);
+
   $element['wrapper']['composite_query']['#default_value'] = _culturefeed_content_build_advanced_query($nested_values);
+
+  // Add category button.
+  $element['wrapper']['update'] = array(
+    '#type' => 'submit',
+    '#value' => t('Update'),
+    '#name' => 'rebuild_query',
+    '#submit' => array('culturefeed_content_widget_rebuild_composite_query_submit'),
+    '#limit_validation_errors' => array($parents),
+    '#attributes' => array(
+      'class' => array(
+        'culturefeed-content--update-query',
+      ),
+    ),
+    '#ajax' => array(
+      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
+      'wrapper' => $composite_query_field_id,
+      'progress' => array('type' => 'throbber', 'message' => '')
+    ),
+  );
 
   $element['wrapper']['query_title'] = array(
     '#type' => 'textfield',
@@ -657,11 +608,6 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
     '#default_value' => $query_title,
     '#maxlength' => 255,
     '#description' => t('This will appear on the search results page as active filter'),
-    '#ajax' => array(
-      'callback' => 'culturefeed_content_field_ajax_rebuild_composite_query',
-      'wrapper' => $composite_query_field_id,
-      'progress' => array('type' => 'throbber', 'message' => '')
-    ),
   );
 
   $element['wrapper']['show_postal_code_search_box'] = array(
@@ -678,6 +624,10 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   );
 
   return $element;
+}
+
+function culturefeed_content_widget_rebuild_composite_query_submit($form, &$form_state) {
+  $form_state['rebuild'] = TRUE;
 }
 
 /**
@@ -981,7 +931,7 @@ function culturefeed_content_field_widget_form_validate($element, &$form_state, 
 
   if (isset($field_state['field'])) {
     // Only massage the form_state values if the field item is being saved.
-    if ($form_state['submitted'] && !form_get_errors()) {
+    if ($form_state['submitted'] && !form_get_errors() && $form_state['triggering_element']['#name'] !== 'rebuild_query') {
       $item = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
 
       // Massage the field values in the form_state.
