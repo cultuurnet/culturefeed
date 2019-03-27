@@ -332,9 +332,8 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
         ),
         '#limit_validation_errors' => array($parents),
         '#ajax' => array(
-          // Rebuild the entire element.
-          'callback' => 'culturefeed_content_field_ajax_rebuild_element',
-          'wrapper' => $field_wrapper_id,
+          'callback' => 'culturefeed_content_field_ajax_rebuild_categories',
+          'wrapper' => $category_fieldset_id,
         ),
       );
     }
@@ -342,7 +341,7 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
 
   // Add category button.
   $element['wrapper']['what']['add_category'] = array(
-    '#name' => "what-add-category$parents[2]",
+    '#name' => "what-add-category-$parents[2]",
     '#type' => 'submit',
     '#value' => t('Add'),
     '#submit' => array('culturefeed_content_widget_add_category_submit'),
@@ -692,27 +691,6 @@ function culturefeed_content_widget_remove_category_submit($form, &$form_state) 
   $form_state['rebuild'] = TRUE;
 }
 
-
-/**
- * Rebuild the entire field.
- */
-function culturefeed_content_field_ajax_rebuild_element($form, &$form_state) {
-  // Retrieve correct nested field.
-  $parents = $form_state['triggering_element']['#parents'];
-
-  if (array_search('wrapper', $parents)) {
-    $wrapper_key = array_search('wrapper', $parents);
-
-    $parents = array_splice($parents, 0, $wrapper_key + 2);
-
-    $field = drupal_array_get_nested_value($form, $parents);
-
-    if ($field) {
-      return $field;
-    }
-  }
-}
-
 /**
  * Rebuild the categories field.
  */
@@ -923,7 +901,7 @@ function culturefeed_content_field_widget_form_validate($element, &$form_state, 
 
   if (isset($field_state['field'])) {
     // Only massage the form_state values if the field item is being saved.
-    if ($form_state['submitted'] && !form_get_errors() && $form_state['triggering_element']['#name'] !== 'rebuild_query') {
+    if ($form_state['submitted'] && !form_get_errors() && $form_state['triggering_element']['#name'] === 'op') {
       $item = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
 
       // Massage the field values in the form_state.
