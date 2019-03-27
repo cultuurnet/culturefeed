@@ -299,10 +299,10 @@ function culturefeed_content_field_widget_form(&$form, &$form_state, $field, $in
   );
 
   // Convert the "what" form_state object to rows.
-  $what_parents = array_merge($parents, ['what_categories']);
+  $what_parents = array_merge($parents, ['wrapper', 'what']);
   $what_value = drupal_array_get_nested_value($form_state['values'], $what_parents);
 
-  $what_category_rows = _culturefeed_content_convert_categories_to_rows($what_value ? unserialize($what_value) : array());
+  $what_category_rows = _culturefeed_content_convert_categories_to_rows($what_value ? $what_value : array());
 
   // Add rows to the existing element.
   if (!empty($what_category_rows)) {
@@ -641,12 +641,9 @@ function culturefeed_content_widget_add_category_submit($form, &$form_state) {
   $button = $form_state['triggering_element'];
   $parents = $button['#parents'];
 
-  // The values have been processed to match the db structure.
-  $sliced = array_slice($parents, 0, -3);
-  $values = drupal_array_get_nested_value($form_state['values'], $sliced);
-
-  $what_values = isset($values['what_categories']) ? $values['what_categories'] : '';
-  $what_values = unserialize($what_values);
+  // The "what" field is up 1 level.
+  $sliced = array_slice($parents, 0, -1);
+  $what_values = drupal_array_get_nested_value($form_state['values'], $sliced);
 
   foreach ($what_values as $key => $value) {
     if (!is_array($value)) {
@@ -656,10 +653,7 @@ function culturefeed_content_widget_add_category_submit($form, &$form_state) {
 
   // Add the row.
   $what_values[] = [];
-  $values['what_categories'] = serialize($what_values);
-
-  // Merge back into the form_state.
-  drupal_array_set_nested_value($form_state['values'], $sliced, $values);
+  drupal_array_set_nested_value($form_state['values'], $sliced, array_values($what_values));
 
   $form_state['rebuild'] = TRUE;
 }
@@ -676,14 +670,12 @@ function culturefeed_content_widget_remove_category_submit($form, &$form_state) 
 
   // Remove a row from the "what category" in the form_state.
   $parents = $button['#parents'];
-
-  // The values have been processed to match the db structure.
-  $values_sliced = array_merge(array_slice($parents, 0, -4), ['what_categories']);
-  $what_values = unserialize(drupal_array_get_nested_value($form_state['values'], $values_sliced));
+  unset($form_state['what_categories'][$delta]);
 
   // The "what" field is up 2 levels.
-  $input_sliced = array_slice($parents, 0, -2);
-  $what_input = drupal_array_get_nested_value($form_state['input'], $input_sliced);
+  $sliced = array_slice($parents, 0, -2);
+  $what_values = drupal_array_get_nested_value($form_state['values'], $sliced);
+  $what_input = drupal_array_get_nested_value($form_state['input'], $sliced);
 
   foreach ($what_values as $key => $value) {
     if (!is_array($value)) {
@@ -694,8 +686,8 @@ function culturefeed_content_widget_remove_category_submit($form, &$form_state) 
   unset($what_input[$delta]);
   unset($what_values[$delta]);
 
-  drupal_array_set_nested_value($form_state['input'], $input_sliced, array_values($what_input));
-  drupal_array_set_nested_value($form_state['values'], $values_sliced, serialize($what_values));
+  drupal_array_set_nested_value($form_state['input'], $sliced, array_values($what_input));
+  drupal_array_set_nested_value($form_state['values'], $sliced, array_values($what_values));
 
   $form_state['rebuild'] = TRUE;
 }
