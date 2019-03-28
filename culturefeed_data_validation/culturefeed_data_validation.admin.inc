@@ -35,5 +35,10 @@ function culturefeed_data_validation_admin_settings() {
     '#default_value' => variable_get('culturefeed_data_validation_api_allowed_email_verification_grades', array('A+', 'A', 'B', 'D')),
   );
 
+  $form['array_filter'] = array(
+    '#type' => 'value',
+    '#value' => TRUE,
+  );
+
   return system_settings_form($form);
 }
