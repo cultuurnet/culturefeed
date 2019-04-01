@@ -25,11 +25,10 @@ function _culturefeed_data_validation_get_datavalidation_client() {
  *   Email to validate.
  */
 function culturefeed_data_validation_is_valid_email($email) {
-
   try {
     $datavalidationClient = _culturefeed_data_validation_get_datavalidation_client();
     $response = $datavalidationClient->validateEmail($email);
-    if ($response && (!$response->isOK() || $response->getGrade() === 'F') ) {
+    if ($response && (!$response->isOK() || !in_array($response->getGrade(), variable_get('culturefeed_data_validation_api_allowed_email_verification_grades', array('A+', 'A', 'B', 'D'))))) {
       return FALSE;
     }
   }
