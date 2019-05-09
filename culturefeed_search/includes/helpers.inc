@@ -1048,3 +1048,46 @@ function culturefeed_search_get_city_by_zipcode($zip) {
 
   return $city;
 }
+
+/**
+ * Retrieves a list of terms based on hierarchy depth.
+ *
+ * @param int $depth
+ * @param string $domain
+ * @param string $langcode
+ * @param string $order_by
+ *
+ * @return mixed
+ */
+function culturefeed_search_get_terms_by_hierarchy_depth($depth = 0, $domain, $langcode = LANGUAGE_NONE, $order_by = 'tid') {
+  $query = db_select('culturefeed_search_terms', 't')
+    ->fields('t')
+    ->condition('did', $domain, '=')
+    ->condition('language', $langcode)
+    ->orderBy($order_by);
+
+  switch ($depth) {
+    case 0:
+      $query->isNUll('p1');
+      break;
+    case 1:
+      $query->isNotNull('p1');
+      $query->isNull('p2');
+      break;
+    case 2:
+      $query->isNotNull('p2');
+      $query->isNull('p3');
+      break;
+    case 3:
+      $query->isNotNull('p3');
+      $query->isNull('p4');
+      break;
+    case 4:
+      $query->isNotNull('p4');
+      break;
+  }
+
+  return $query->execute()->fetchAll();
+}
+
+
