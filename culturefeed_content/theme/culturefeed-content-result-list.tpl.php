@@ -5,7 +5,7 @@
  */
 ?>
 
-<h2 class="cf-content-title"><?php print $title; ?></h2>
+<h2 class="cf-content-title block-title"><?php print $title; ?></h2>
 
 <?php if (empty($items)): ?>
 <div><?php print t('No results found.'); ?></div>
