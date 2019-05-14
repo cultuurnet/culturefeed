@@ -418,9 +418,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         }
       }
 
-        if (array_key_exists('museumpassmusees', $keywords)) {
-            $variables['museumpas'] = TRUE;
-        }
+      if (array_key_exists('museumpassmusees', $keywords)) {
+        $variables['museumpas'] = TRUE;
+      }
     }
   }
   else {
@@ -446,9 +446,9 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $variables['uitpas'] = TRUE;
       }
 
-        if (array_key_exists('museumpassmusees', $keywords)) {
-            $variables['museumpas'] = TRUE;
-        }
+      if (array_key_exists('museumpassmusees', $keywords)) {
+        $variables['museumpas'] = TRUE;
+      }
     }
   }
 
