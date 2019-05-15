@@ -412,14 +412,14 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       }
 
       foreach (array_keys($keywords) as $keyword) {
-        if(stripos($keyword, 'uitpas')!==false || stripos($keyword, 'paspartoe')!==false)
+        if (stripos($keyword, 'uitpas')!==false || stripos($keyword, 'paspartoe')!==false)
         {
           $variables['uitpas'] = TRUE;
         }
-      }
 
-      if (array_key_exists('museumpassmusees', $keywords)) {
-        $variables['museumpas'] = TRUE;
+        if (stripos($keyword, 'museumpassmusees')!==false) {
+          $variables['museumpas'] = TRUE;
+        }
       }
     }
   }
@@ -446,7 +446,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $variables['uitpas'] = TRUE;
       }
 
-      if (array_key_exists('museumpassmusees', $keywords)) {
+      if (sizeof(preg_grep('/museumpassmusees/i', $keywords))>0) {
         $variables['museumpas'] = TRUE;
       }
     }
