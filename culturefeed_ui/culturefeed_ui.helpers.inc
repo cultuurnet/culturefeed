@@ -152,7 +152,7 @@ function culturefeed_ui_set_canonical_and_noindex() {
       '#tag' => 'meta',
       '#attributes' => array(
         'name' => 'robots',
-        'content' => 'noindex, nofollow'),
+        'content' => 'noindex, nofollow',
       ),
     );
 
