@@ -91,7 +91,7 @@ function culturefeed_agenda_page_de_lijn_widget(\CultuurNet\Search\ActivityStats
     '#tag' => 'meta',
     '#attributes' => array(
       'name' => 'robots',
-      'content' => 'noindex, follow',
+      'content' => 'noindex, nofollow',
     ),
   );
   drupal_add_html_head($element, 'nofollow');
@@ -125,7 +125,7 @@ function culturefeed_agenda_page_map(\CultuurNet\Search\ActivityStatsExtendedEnt
     '#tag' => 'meta',
     '#attributes' => array(
       'name' => 'robots',
-      'content' => 'noindex, follow',
+      'content' => 'noindex, nofollow',
     ),
   );
   drupal_add_html_head($element, 'nofollow');

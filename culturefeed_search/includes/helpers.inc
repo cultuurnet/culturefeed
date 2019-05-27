@@ -1035,7 +1035,7 @@ function culturefeed_search_set_noindex_metatag() {
     '#tag' => 'meta',
     '#attributes' => array(
       'name' => 'robots',
-      'content' => 'noindex, follow',
+      'content' => 'noindex, nofollow',
     ),
   );
 

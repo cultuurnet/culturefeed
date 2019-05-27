@@ -132,7 +132,6 @@ function culturefeed_ui_profile_edit_message(CultureFeed_User $culturefeed_user)
 function culturefeed_ui_set_canonical_and_noindex() {
   $canonical = FALSE;
   $noindex = FALSE;
-  $nofollow = FALSE;
 
   if (arg(0) == 'culturefeed') {
     if (arg(1) == 'activities' && arg(2) == 'recent') {
@@ -145,7 +144,6 @@ function culturefeed_ui_set_canonical_and_noindex() {
 
   if (arg(0) == 'review') {
     $noindex = TRUE;
-    $nofollow = TRUE;
   }
 
   // Add the "noindex, follow" meta tag if needed.
@@ -154,7 +152,7 @@ function culturefeed_ui_set_canonical_and_noindex() {
       '#tag' => 'meta',
       '#attributes' => array(
         'name' => 'robots',
-        'content' => 'noindex, ' . ($nofollow ? 'nofollow' : 'follow'),
+        'content' => 'noindex, nofollow'),
       ),
     );
 
