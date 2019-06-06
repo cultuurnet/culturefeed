@@ -76,12 +76,6 @@ function culturefeed_mailing_subscribe_form() {
     return;
   }
 
-  // Try to retrieve a user account through UUID parameter (if available).
-  if (!empty($_GET['uuid'])) {
-    // TODO: the received User object does not have an 'mbox' value.
-    $account = DrupalCultureFeed::getUser($_GET['uuid']);
-  }
-
   $form = array();
 
   $user_already_subscribed = $account ? _culturefeed_mailing_check_user_subscription($account->id, variable_get('culturefeed_mailing_list')) : FALSE;
@@ -120,10 +114,7 @@ function culturefeed_mailing_subscribe_form() {
 
     $show_zip = variable_get('culturefeed_mailing_block_show_zip', 0);
 
-    $postal = '';
-    if ($account) {
-      $postal = $account->zip;
-    }
+    $postal = $account ? $account->zip : '';
 
     $form['zip'] = array(
       '#type' => 'textfield',
@@ -283,12 +274,6 @@ function culturefeed_mailing_subscription_update_form() {
     return;
   }
 
-  // Try to retrieve a user account through UUID parameter (if available).
-  if (!empty($_GET['uuid'])) {
-    // TODO: the received User object does not have an 'mbox' value.
-    $account = DrupalCultureFeed::getUser($_GET['uuid']);
-  }
-
   $form = array();
 
   // Set defaults for the email field.
@@ -306,10 +291,7 @@ function culturefeed_mailing_subscription_update_form() {
 
   $show_zip = variable_get('culturefeed_mailing_block_show_zip', 0);
 
-  $postal = '';
-  if ($account) {
-    $postal = $account->zip;
-  }
+  $postal = $account ? $account->zip : '';
 
   $form['zip'] = [
     '#type' => 'textfield',
