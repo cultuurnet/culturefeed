@@ -373,7 +373,13 @@ function culturefeed_pages_get_activities_from_page(CultureFeed_Cdb_Item_Page $p
   $parameters[] = new \CultuurNet\Search\Parameter\Rows($max_results);
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
-  $parameters[] = new \CultuurNet\Search\Parameter\Query('"' . $page->getId() . '"');
+  if ($externalId = $page->getExternalId()) {
+    $parameters[] = new \CultuurNet\Search\Parameter\Query('organiser_cdbid:"' . $externalId . '"');
+  }
+  else {
+    $parameters[] = new \CultuurNet\Search\Parameter\Query('"' . $page->getId() . '"');
+  }
+
   $parameters[] = new \CultuurNet\Search\Parameter\Start($page_nr);
   $parameters[] = new \CultuurNet\Search\Parameter\Sort('availableto', 'asc');
 
