@@ -365,7 +365,7 @@ function culturefeed_pages_set_page_breadcrumb(CultureFeed_Cdb_Item_Page $page, 
 }
 
 /**
- * Search activities that are connected to the given page.
+ * Search activities that are connected to the given page using the external ID.
  * @return mixed \CultuurNet\Search\SearchResult or NULL on exception
  */
 function culturefeed_pages_get_activities_from_page(CultureFeed_Cdb_Item_Page $page, $max_results, $page_nr = 0) {
@@ -373,7 +373,7 @@ function culturefeed_pages_get_activities_from_page(CultureFeed_Cdb_Item_Page $p
   $parameters[] = new \CultuurNet\Search\Parameter\Rows($max_results);
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
   $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
-  $parameters[] = new \CultuurNet\Search\Parameter\Query('"' . $page->getId() . '"');
+  $parameters[] = new \CultuurNet\Search\Parameter\Query('organiser_cdbid:"' . $page->getExternalId() . '"');
   $parameters[] = new \CultuurNet\Search\Parameter\Start($page_nr);
   $parameters[] = new \CultuurNet\Search\Parameter\Sort('availableto', 'asc');
 
