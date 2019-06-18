@@ -91,12 +91,12 @@ function culturefeed_mailing_subscribe_form() {
 
     // Set defaults for the email field.
     if ($account) {
-      $email = (!empty($_GET['email'])) ? $_GET['email'] : ($account ? $account->mbox : '');
-      $disabled = TRUE;
+      $email = $account->mbox;
+      $disabled = !empty($email);
       $description = '<span>' . t('Change your email address <a href="!url">here</a>.', array('!url' => url('culturefeed/account/edit'))) . '</span>';
     }
     else {
-      $email = (!empty($_GET['email'])) ? $_GET['email'] : '';
+      $email = '';
       $disabled = FALSE;
       $description = '';
     }
@@ -114,13 +114,7 @@ function culturefeed_mailing_subscribe_form() {
 
     $show_zip = variable_get('culturefeed_mailing_block_show_zip', 0);
 
-    $postal = '';
-    if (!empty($_GET['zip'])) {
-      $postal = $_GET['zip'];
-    }
-    elseif ($account) {
-      $postal = $account->zip;
-    }
+    $postal = $account ? $account->zip : '';
 
     $form['zip'] = array(
       '#type' => 'textfield',
@@ -283,16 +277,7 @@ function culturefeed_mailing_subscription_update_form() {
   $form = array();
 
   // Set defaults for the email field.
-  if ($account) {
-    $email = (!empty($_GET['email'])) ? $_GET['email'] : ($account ? $account->mbox : '');
-    $disabled = TRUE;
-    $description = '<span>' . t('Change your email address <a href="!url">here</a>.', array('!url' => url('culturefeed/account/edit'))) . '</span>';
-  }
-  else {
-    $email = (!empty($_GET['email'])) ? $_GET['email'] : '';
-    $disabled = FALSE;
-    $description = '';
-  }
+  $email = $account ? $account->mbox : '';
 
   $form['mail'] = [
     '#type' => 'textfield',
@@ -306,13 +291,7 @@ function culturefeed_mailing_subscription_update_form() {
 
   $show_zip = variable_get('culturefeed_mailing_block_show_zip', 0);
 
-  $postal = '';
-  if (!empty($_GET['zip'])) {
-    $postal = $_GET['zip'];
-  }
-  elseif ($account) {
-    $postal = $account->zip;
-  }
+  $postal = $account ? $account->zip : '';
 
   $form['zip'] = [
     '#type' => 'textfield',
