@@ -91,7 +91,7 @@ function culturefeed_mailing_subscribe_form() {
 
     // Set defaults for the email field.
     if ($account) {
-      $email = $account ? $account->mbox : '';
+      $email = $account->mbox;
       $disabled = !empty($email);
       $description = '<span>' . t('Change your email address <a href="!url">here</a>.', array('!url' => url('culturefeed/account/edit'))) . '</span>';
     }
