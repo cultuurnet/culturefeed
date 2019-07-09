@@ -516,9 +516,9 @@ function culturefeed_share_link($share_url, $platform, $title) {
 
   // Set prefix for share URL's.
   $facebook['prefix'] = 'https://www.facebook.com/sharer/sharer.php?u=';
-  $googleplus['prefix'] = 'https://plus.google.com/share?url=';
   $twitter['prefix'] = 'https://twitter.com/intent/tweet?text=';
   $whatsapp['prefix'] = 'whatsapp://send?text=';
+  $messenger['prefix'] = 'fb-messenger://share/?link=';
 
   // Set UTM parameters for share URL's.
   $utm['campaign'] = 'share';
@@ -528,12 +528,6 @@ function culturefeed_share_link($share_url, $platform, $title) {
     'utm_campaign' => $utm['campaign'],
     'utm_medium' => $utm['medium'],
     'utm_source' => 'facebook.com',
-  );
-
-  $googleplus['utm'] = array (
-    'utm_campaign' => $utm['campaign'],
-    'utm_medium' => $utm['medium'],
-    'utm_source' => 'plus.google.com',
   );
 
   $twitter['utm'] = array (
@@ -554,19 +548,25 @@ function culturefeed_share_link($share_url, $platform, $title) {
     'utm_source' => 'forward-mail',
   );
 
+  $messenger['utm'] = array (
+    'utm_campaign' => $utm['campaign'],
+    'utm_medium' => $utm['medium'],
+    'utm_source' => 'messenger',
+  );
+
   switch($platform)
   {
     case 'facebook' :
       return $facebook['prefix'] . urlencode(url($share_url, array('query' => $facebook['utm'])));
-      break;
-    case 'googleplus' :
-      return $googleplus['prefix'] . urlencode(url($share_url, array('query' => $googleplus['utm'])));
       break;
     case 'twitter' :
       return $twitter['prefix'] . urlencode(url($share_url, array('query' => $twitter['utm'])));
       break;
     case 'whatsapp' :
       return $whatsapp['prefix'] . urlencode(url($share_url, array('query' => $whatsapp['utm'])));
+      break;
+    case 'messenger' :
+      return $messenger['prefix'] . urlencode(url($share_url, array('query' => $messenger['utm'])));
       break;
     case 'mail' :
       return 'mailto:?subject=' . $title . '&body=' . t('I thought this might interest you:') . '%0D%0A' .  urlencode(url(current_path(), array('absolute' => TRUE, 'query' => $mail['utm'])));

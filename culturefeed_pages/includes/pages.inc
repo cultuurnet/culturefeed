@@ -451,12 +451,6 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#default_value' => '',
   );
 
-  $form['otherWebsites']['linkGooglePlus'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Google+'),
-    '#default_value' => '',
-  );
-
   $form['otherWebsites']['linkYouTube'] = array(
     '#type' => 'textfield',
     '#title' => t('YouTube'),
@@ -533,7 +527,6 @@ function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
   	'linkTicketing',
     'linkFacebook',
   	'linkTwitter',
-  	'linkGooglePlus',
   	'linkYouTube',
   	'linkBlog',
   );
@@ -684,7 +677,6 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
     $form['otherWebsites']['linkTicketing']['#default_value'] = isset($links['linkTicketing']) ? $links['linkTicketing'] : '';
     $form['otherWebsites']['linkFacebook']['#default_value'] = isset($links['linkFacebook']) ? $links['linkFacebook'] : '';
     $form['otherWebsites']['linkTwitter']['#default_value'] = isset($links['linkTwitter']) ? $links['linkTwitter'] : '';
-    $form['otherWebsites']['linkGooglePlus']['#default_value'] = isset($links['linkGooglePlus']) ? $links['linkGooglePlus'] : '';
     $form['otherWebsites']['linkYouTube']['#default_value'] = isset($links['linkYouTube']) ? $links['linkYouTube'] : '';
     $form['otherWebsites']['linkBlog']['#default_value'] = isset($links['linkBlog']) ? $links['linkBlog'] : '';
   }
