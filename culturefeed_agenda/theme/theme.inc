@@ -566,15 +566,15 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
 
     // Build share URL's.
     $variables['facebook']['url'] = culturefeed_share_link($variables['share_url'], 'facebook', $variables['title']);
-    $variables['googleplus']['url'] = culturefeed_share_link($variables['share_url'], 'googleplus', $variables['title']);
     $variables['twitter']['url'] = culturefeed_share_link($variables['share_url'], 'twitter', $variables['title']);
     $variables['whatsapp']['url'] = culturefeed_share_link($variables['share_url'], 'whatsapp', $variables['title']);
+    $variables['messenger']['url'] = culturefeed_share_link($variables['share_url'], 'messenger', $variables['title']);
     $variables['mail']['url'] = culturefeed_share_link($variables['share_url'], 'mail', $variables['title']);
 
     $variables['facebook']['options'] = array();
     $variables['twitter']['options'] = array();
-    $variables['googleplus']['options'] = array();
     $variables['whatsapp']['options'] = array();
+    $variables['messenger']['options'] = array();
     $variables['mail']['options'] = array();
 
     // Prepare to push share activities to Culturefeed.
@@ -600,14 +600,15 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
           'rel' => $track ? $track_twitter : '' ,
         ),
       );
-      $variables['googleplus']['options'] = array(
-        'attributes' => array(
-          'class' => array('share-link', 'googleplus-share'),
-        ),
-      );
       $variables['whatsapp']['options'] = array(
         'attributes' => array(
           'class' => array('share-link', 'whatsapp-share'),
+        ),
+        'external' => TRUE,
+      );
+      $variables['messenger']['options'] = array(
+        'attributes' => array(
+          'class' => array('share-link', 'messenger-share'),
         ),
         'external' => TRUE,
       );
@@ -628,12 +629,6 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $facebook_options['attributes']['alt'] = $facebook_title;
     $variables['facebook_link'] = l($facebook_title, $variables['facebook']['url'], $facebook_options);
 
-    $googleplus_title = t('Share on Google+');
-    $googleplus_options = $variables['googleplus']['options'];
-    $googleplus_options['attributes']['title'] = $googleplus_title;
-    $googleplus_options['attributes']['alt'] = $googleplus_title;
-    $variables['googleplus_link'] = l($googleplus_title, $variables['googleplus']['url'], $googleplus_options);
-
     $twitter_title = t('Share on Twitter');
     $twitter_options = $variables['twitter']['options'];
     $twitter_options['attributes']['title'] = $twitter_title;
@@ -645,6 +640,12 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
     $whatsapp_options['attributes']['title'] = $whatsapp_title;
     $whatsapp_options['attributes']['alt'] = $whatsapp_title;
     $variables['whatsapp_link'] = l($whatsapp_title, $variables['whatsapp']['url'], $whatsapp_options);
+
+    $messenger_title = t('Share on Messenger');
+    $messenger_options = $variables['messenger']['options'];
+    $messenger_options['attributes']['title'] = $messenger_title;
+    $messenger_options['attributes']['alt'] = $messenger_title;
+    $variables['messenger_link'] = l($messenger_title, $variables['messenger']['url'], $messenger_options);
 
     $mail_title = t('Mail');
     $mail_options = $variables['mail']['options'];

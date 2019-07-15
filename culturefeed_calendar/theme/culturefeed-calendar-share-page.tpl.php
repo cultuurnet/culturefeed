@@ -12,7 +12,7 @@
   <p><?php print t('You can share this link with your friends'); ?></p>
   <p><?php print $calendar_share_url; ?></p>
   <p><a href="<?php print $facebook_url; ?>" class="facebook-share"><?php print t('Facebook') ?></a></p>
-  <p><a href="<?php print $googleplus_url; ?>"><?php print t('Google+') ?></a></p>
+  <p><a href="<?php print $messenger_url; ?>"><?php print t('Messenger') ?></a></p>
   <p><a href="<?php print $twitter_url; ?>"><?php print t('Twitter') ?></a></p>
 
   <?php if (!empty($mail_url)) : ?>
