@@ -1,5 +1,4 @@
 <?php
-use Symfony\Component\Console\Output\NullOutput;
 
 /**
  * @file
@@ -8,6 +7,25 @@ use Symfony\Component\Console\Output\NullOutput;
 define('CULTUREFEED_AGENDA_ACTOR_PROGRAM_NUM_ITEMS', 15);
 
 module_load_include('inc', 'culturefeed_agenda', 'includes/helpers');
+
+/**
+ * Implements hook_init().
+ */
+function culturefeed_agenda_init() {
+  // Redirect agenda/search/% to agenda/search, except for rss and ajax.
+  $menu_item = menu_get_item();
+  $path = $menu_item['path'];
+
+  // Allow rss and ajax.
+  $allowed_paths = ['ajax', 'rss'];
+
+  if ($path == 'agenda/search/%') {
+    if (!empty($menu_item['page_arguments'][2]) && !in_array($menu_item['page_arguments'][2], $allowed_paths)) {
+      // Redirect and keep the query params intact.
+      drupal_goto('agenda/search', array('query' => drupal_get_query_parameters()), 301);
+    }
+  }
+}
 
 /**
  * Implements hook_theme().
