@@ -328,7 +328,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $main_picture_cr = $copyrights[0];
       }
     }
-    
+
     // check if same image isn't used twice or more
     $pictures = array_unique($pictures);
 
@@ -382,6 +382,14 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
   $actortypes = culturefeed_agenda_get_category_list_of_item(CultureFeed_Cdb_Data_Category::CATEGORY_TYPE_ACTOR_TYPE, $cdb_item);
   $variables['actortypes'] = $actortypes['text'];
   $variables['actortypes_links'] = $actortypes['links'];
+
+  // MPM for readers
+  if (in_array('Literatuur', $themes['text'])) {
+    $variables['museumpas4readers'] = TRUE;
+  }
+  if (in_array('Bibliotheek', $actortypes['text'])) {
+    $variables['museumpas4library'] = TRUE;
+  }
 
   $version = variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION);
   if (version_compare($version, '3.3', '>=')) {
@@ -451,7 +459,6 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       }
     }
   }
-
 }
 
 /**
@@ -496,7 +503,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
       $shortdescription_stripped = trim(preg_replace('/\s+/', '', strip_tags($shortdescription_decoded)));
       $shortdescription_shortened = rtrim($shortdescription_stripped, '\.\.\.');
       $shortdescription_length = strlen($shortdescription_shortened);
-  
+
       $longdescription_decoded = html_entity_decode($variables['longdescription']);
       $longdescription_stripped = trim(preg_replace('/\s+/', '', strip_tags($longdescription_decoded)));
       $longdescription_shortened = substr($longdescription_stripped, 0, $shortdescription_length);
@@ -509,7 +516,7 @@ function _culturefeed_agenda_preprocess_agenda_detail(&$variables) {
         $i = 0;
         $j = 0;
 
-        // Find position of first double break tag.  
+        // Find position of first double break tag.
         if (stripos($variables['longdescription'], '<br><br>')) {
           $br_position = stripos($variables['longdescription'], '<br><br>');
           $i = $br_position;
@@ -828,14 +835,14 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
         );
       }
     }
-    
+
     // Organiser data.
     if (method_exists($event, 'getOrganiser')) {
-  
+
       $organiser = $event->getOrganiser();
       $variables['organiser'] = array();
       if ($organiser) {
-  
+
         // If the organiser is a reference to an actor, link to it.
         if ($organiser->getActor() && $organiser->getActor()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language())) {
           $actor = $organiser->getActor();
@@ -851,7 +858,7 @@ function _culturefeed_agenda_preprocess_event(&$variables) {
             $variables['organiser']['id'] = $organiser->getCdbid();
           }
         }
-  
+
       }
     }
 
