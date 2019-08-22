@@ -1,0 +1,5 @@
+name = CultureFeed Curator
+description = Allows making requests to the Curator API to be able to retrieve external articles for a UDB item.
+package = CultureFeed
+version = VERSION
+core = 7.x

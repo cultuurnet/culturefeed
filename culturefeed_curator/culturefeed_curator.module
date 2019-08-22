@@ -1,0 +1,28 @@
+<?php
+/**
+ * @file
+ * Hook implementations of CultureFeed Curator.
+ */
+
+// Default API location. Can be overriden in settings form.
+define('CULTUREFEED_CURATOR_API_ENDPOINT', 'https://curator-test.uitdatabank.be/news_articles/');
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_curator_menu() {
+
+  $items = array();
+
+  $items['admin/config/culturefeed/curator'] = array(
+    'title' => 'CultureFeed Curator API',
+    'description' => 'All configurations to the curator api for this site',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_curator_api_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'includes/culturefeed_curator.admin.inc',
+  );
+
+  return $items;
+
+}
