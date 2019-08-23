@@ -5,7 +5,10 @@
  */
 
 // Default API location. Can be overriden in settings form.
-define('CULTUREFEED_CURATOR_API_ENDPOINT', 'https://curator-test.uitdatabank.be/news_articles/');
+define('CULTUREFEED_CURATOR_API_ENDPOINT', 'https://curator-test.uitdatabank.be/');
+define('CULTUREFEED_CURATOR_API_CACHE_EXPIRES', 3600);
+
+module_load_include('inc', 'culturefeed_curator', 'includes/culturefeed_curator.helpers');
 
 /**
  * Implements hook_menu().

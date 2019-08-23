@@ -3,3 +3,6 @@ description = Allows making requests to the Curator API to be able to retrieve e
 package = CultureFeed
 version = VERSION
 core = 7.x
+
+files[] = lib/Drupal/DrupalCultureFeedCuratorClient.php
+files[] = lib/Drupal/DrupalCultureFeedCuratorClient_Cache.php
