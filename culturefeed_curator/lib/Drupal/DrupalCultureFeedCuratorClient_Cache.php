@@ -35,7 +35,7 @@ class DrupalCultureFeedCuratorClient_Cache extends DrupalCultureFeedCuratorClien
   }
 
   protected function getCacheSuffix() {
-    // Don't cache per user. Search is the same for every user. (for now)
+    // Don't cache per user. Curator requests are the same for every user. (for now)
     return '';
   }
 
@@ -64,14 +64,11 @@ class DrupalCultureFeedCuratorClient_Cache extends DrupalCultureFeedCuratorClien
       return $cache->data;
     }
 
-    $request = $this->realCuratorClient->getExternalArticlesForCdbItem($cdb_id);
+    $results = $this->realCuratorClient->getExternalArticlesForCdbItem($cdb_id);
 
-    // TODO: see DrupalCultureFeedClient
-    $result = 'TODO';
+    $this->cacheSet($cid, $results, REQUEST_TIME + CULTUREFEED_CURATOR_API_CACHE_EXPIRES);
 
-    $this->cacheSet($cid, $result, REQUEST_TIME + CULTUREFEED_CURATOR_API_CACHE_EXPIRES);
-
-    return $result;
+    return $results;
 
   }
 

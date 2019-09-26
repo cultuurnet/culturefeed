@@ -47,8 +47,8 @@ class DrupalCultureFeedCuratorClient {
    * @return \DrupalCultureFeedCuratorClient
    */
   public static function getClient($use_cache = TRUE) {
-    if ($use_cache && !self::$cachedCuratorClient) {
-      self::$cachedCuratorClient = new DrupalCultureFeedCuratorClient($use_cache);
+    if ($use_cache && variable_get('culturefeed_curator_api_cache_enabled', FALSE) && !self::$cachedCuratorClient) {
+      self::$cachedCuratorClient = new DrupalCultureFeedCuratorClient_Cache(new DrupalCultureFeedCuratorClient($use_cache), DrupalCultureFeed::getLoggedInUserId());
     } else {
       self::$curatorClient = new DrupalCultureFeedCuratorClient($use_cache);
     }
@@ -56,6 +56,12 @@ class DrupalCultureFeedCuratorClient {
     return $use_cache ? self::$cachedCuratorClient : self::$curatorClient;
   }
 
+  /**
+   * @param $cdb_id
+   *
+   * @return \CultureFeed_CuratorArticle[]
+   *
+   */
   public function getExternalArticlesForCdbItem($cdb_id) {
 
     $request = $this->client->get('news_articles', null, [
@@ -66,11 +72,10 @@ class DrupalCultureFeedCuratorClient {
 
     $json = $response->getBody(TRUE);
 
-    // TODO: Define result object
+    /** @var \CultureFeed_CuratorArticle[] $results */
     $results= json_decode($json)->{'hydra:member'};
 
     return $results;
-
   }
 
 }
