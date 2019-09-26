@@ -57,10 +57,11 @@ class DrupalCultureFeedCuratorClient {
   }
 
   /**
+   * Get external articles for a given CDB ID.
+   *
    * @param $cdb_id
    *
    * @return \CultureFeed_CuratorArticle[]
-   *
    */
   public function getExternalArticlesForCdbItem($cdb_id) {
 
