@@ -420,7 +420,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       }
 
       foreach (array_keys($keywords) as $keyword) {
-        if (stripos($keyword, 'uitpas')!==false || stripos($keyword, 'paspartoe')!==false)
+        if ((stripos($keyword, 'uitpas')!==false || stripos($keyword, 'paspartoe')!==false) && !stripos($keyword, 'hasselt'))
         {
           $variables['uitpas'] = TRUE;
         }
@@ -450,7 +450,7 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $variables['forkids'] = TRUE;
       }
 
-      if (sizeof(preg_grep('/uitpas/i', $keywords))>0 or sizeof(preg_grep('/paspartoe/i', $keywords))>0) {
+      if ((sizeof(preg_grep('/uitpas/i', $keywords))>0 or sizeof(preg_grep('/paspartoe/i', $keywords))>0) and sizeof(preg_grep('/hasselt/i', $keywords))==0) {
         $variables['uitpas'] = TRUE;
       }
 
