@@ -1,0 +1,9 @@
+name = CultureFeed Curator
+description = Allows making requests to the Curator API to be able to retrieve external articles for a UDB item.
+package = CultureFeed
+version = VERSION
+core = 7.x
+
+files[] = lib/Drupal/DrupalCultureFeedCuratorClient.php
+files[] = lib/Drupal/DrupalCultureFeedCuratorClient_Cache.php
+files[] = lib/CuratorArticle.php
