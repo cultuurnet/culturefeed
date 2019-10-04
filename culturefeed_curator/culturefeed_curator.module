@@ -29,3 +29,36 @@ function culturefeed_curator_menu() {
   return $items;
 
 }
+
+/**
+ * Implements hook_flush_caches().
+ */
+function culturefeed_curator_flush_caches() {
+  return array('cache_culturefeed_curator');
+}
+
+/**
+ * Implements hook_preprocess_culturefeed_agenda_detail().
+ */
+function culturefeed_curator_preprocess_culturefeed_event(&$variables) {
+
+  // Check for external articles.
+  $variables['external_article_links'] = [];
+  $curatorClient = culturefeed_get_curator_client();
+
+  try {
+    if ($external_articles = $curatorClient->getExternalArticlesForCdbItem($variables['item']->getId())) {
+      foreach ($external_articles as $external_article) {
+        $variables['external_article_links'][] = l("$external_article->headline ($external_article->publisher)", $external_article->url, [
+          'attributes' => [
+            'class' => 'external-article-link',
+            'target' => '_blank',
+          ]
+        ]);
+      }
+    }
+  }
+  catch (\Exception $e) {
+    watchdog_exception('culturefeed_curator', $e);
+  }
+}

@@ -47,9 +47,10 @@ class DrupalCultureFeedCuratorClient {
    * @return \DrupalCultureFeedCuratorClient
    */
   public static function getClient($use_cache = TRUE) {
-    if ($use_cache && variable_get('culturefeed_curator_api_cache_enabled', FALSE) && !self::$cachedCuratorClient) {
+    if ($use_cache && variable_get('culturefeed_curator_api_cache_enabled', TRUE) && !self::$cachedCuratorClient) {
       self::$cachedCuratorClient = new DrupalCultureFeedCuratorClient_Cache(new DrupalCultureFeedCuratorClient($use_cache), DrupalCultureFeed::getLoggedInUserId());
-    } else {
+    }
+    elseif (!$use_cache && !self::$curatorClient) {
       self::$curatorClient = new DrupalCultureFeedCuratorClient($use_cache);
     }
 
@@ -73,10 +74,20 @@ class DrupalCultureFeedCuratorClient {
 
     $json = $response->getBody(TRUE);
 
-    /** @var \CultureFeed_CuratorArticle[] $results */
-    $results= json_decode($json)->{'hydra:member'};
+    $result = json_decode($json);
+    $results = !empty($result->{'hydra:member'}) ? $result->{'hydra:member'} : [];
 
-    return $results;
+    $articles = [];
+    $properties = array_keys(get_class_vars(CultureFeed_CuratorArticle::class));
+    foreach ($results as $result) {
+      $article = new CultureFeed_CuratorArticle();
+      foreach ($properties as $property) {
+        $article->{$property} = $result->{$property} ?? '';
+      }
+      $articles[] = $article;
+    }
+
+    return $articles;
   }
 
 }

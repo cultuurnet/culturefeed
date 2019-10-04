@@ -12,10 +12,3 @@ function culturefeed_curator_schema() {
   $schema['cache_culturefeed_curator']['description'] = 'Cache table for the culturefeed curator API requests';
   return $schema;
 }
-
-/**
- * Implements hook_install().
- */
-function culturefeed_curator_install() {
-  variable_set('culturefeed_curator_api_cache_enabled', TRUE);
-}

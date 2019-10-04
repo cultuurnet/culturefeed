@@ -19,7 +19,7 @@ function culturefeed_curator_api_settings_form($form, &$form_state) {
   $form['culturefeed_curator_api_cache_enabled'] = array(
     '#type' => 'checkbox',
     '#title' => t('Cache API requests'),
-    '#default_value' => variable_get('culturefeed_curator_api_cache_enabled', FALSE),
+    '#default_value' => variable_get('culturefeed_curator_api_cache_enabled', TRUE),
   );
 
   return system_settings_form($form);
