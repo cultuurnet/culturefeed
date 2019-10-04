@@ -82,7 +82,7 @@ class DrupalCultureFeedCuratorClient {
     foreach ($results as $result) {
       $article = new CultureFeed_CuratorArticle();
       foreach ($properties as $property) {
-        $article->{$property} = $result->{$property} ?? '';
+        $article->{$property} = !empty($result->{$property}) ? $result->{$property} : '';
       }
       $articles[] = $article;
     }
