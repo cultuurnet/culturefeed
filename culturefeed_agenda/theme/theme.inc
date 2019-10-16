@@ -419,6 +419,11 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
         $variables['forkids'] = TRUE;
       }
 
+      // check if evernt is for Bill
+      if (array_key_exists('jongerentip', $keywords) && !array_key_exists('B_out', $keywords)) {
+        $variables['bill'] = TRUE;
+      }
+
       foreach (array_keys($keywords) as $keyword) {
         if ((stripos($keyword, 'uitpas')!==false || stripos($keyword, 'paspartoe')!==false) && !stripos($keyword, 'hasselt'))
         {
@@ -448,6 +453,11 @@ function _culturefeed_agenda_preprocess_agenda(&$variables) {
       // check if event is suitable for kids
       if (array_key_exists('ook voor kinderen', $keywords)) {
         $variables['forkids'] = TRUE;
+      }
+
+      // check if evernt is for Bill
+      if (array_key_exists('jongerentip', $keywords) && !array_key_exists('B_out', $keywords)) {
+        $variables['bill'] = TRUE;
       }
 
       if ((sizeof(preg_grep('/uitpas/i', $keywords))>0 or sizeof(preg_grep('/paspartoe/i', $keywords))>0) and sizeof(preg_grep('/hasselt/i', $keywords))==0) {
