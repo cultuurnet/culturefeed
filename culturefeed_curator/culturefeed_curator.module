@@ -49,11 +49,26 @@ function culturefeed_curator_preprocess_culturefeed_event(&$variables) {
   try {
     if ($external_articles = $curatorClient->getExternalArticlesForCdbItem($variables['item']->getId())) {
       foreach ($external_articles as $external_article) {
-        $variables['external_article_links'][] = l("$external_article->headline ($external_article->publisher)", $external_article->url, [
+
+        // Add the utm params.
+        $url = parse_url($external_article->url);
+        $query = !empty($url['query']) ? $url['query'] : '';
+        parse_str($query,$query_params);
+        $query_params['utm_source'] = $_SERVER['HTTP_HOST'];
+        $query_params['utm_campaign'] = 'editorial-tools';
+        $query_params['utm_medium'] = 'referral';
+
+        $scheme = isset($url['scheme']) ? $url['scheme'] . '://'  : '';
+        $host = isset($url['host']) ? $url['host'] : '';
+        $path = isset($url['path']) ? $url['path'] : '';
+
+        $new_url = $scheme . $host . $path . '?' . http_build_query($query_params);
+
+        $variables['external_article_links'][] = l("$external_article->headline ($external_article->publisher)", $new_url, [
           'attributes' => [
             'class' => 'external-article-link',
             'target' => '_blank',
-          ]
+          ],
         ]);
       }
     }
