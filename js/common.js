@@ -2,6 +2,7 @@
 
   Drupal.CultureFeed = Drupal.CultureFeed || {};
   Drupal.CultureFeed.uiAutocomplete = Drupal.CultureFeed.uiAutocomplete || {};
+  Drupal.CultureFeed.currentCookieVersion = 2;
 
   /**
    * Geolocate current position.
@@ -22,33 +23,34 @@
 
           // Check if response status is OK
           if (status == google.maps.GeocoderStatus.OK) {
-  
+
             // Set the info also in a cookie.
             var place = response[0];
             for (i = 0; i < place.address_components.length; i++) {
-  
+
               if (place.address_components[i].types[0] == 'postal_code') {
                 current_postal = place.address_components[i].long_name;
               }
               else if(place.address_components[i].types[0] == 'locality') {
                 current_city = place.address_components[i].long_name;
               }
-  
+
             }
-  
+
             var location = {
               latitude : place.geometry.location.lat(),
               longitude : place.geometry.location.lng(),
               city : current_city,
-              postal : current_postal
+              postal : current_postal,
+              version: Drupal.CultureFeed.currentCookieVersion
             }
             $.cookie('Drupal.visitor.uitid.userLocation', JSON.stringify(location), { path : '/' });
-  
+
             // Call the response callback function.
             if (response_callback) {
               response_callback(response);
             }
-          } 
+          }
 
           // Show alert if response is not available
           else {
@@ -81,7 +83,8 @@
           latitude : response[0].geometry.location.lat(),
           longitude : response[0].geometry.location.lng(),
           city : current_city,
-          postal : current_postal
+          postal : current_postal,
+          version: Drupal.CultureFeed.currentCookieVersion
         }
 
         $.cookie('Drupal.visitor.uitid.userLocation', JSON.stringify(location), { path : '/' });
