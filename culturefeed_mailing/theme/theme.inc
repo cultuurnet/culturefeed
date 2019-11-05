@@ -50,9 +50,12 @@ function culturefeed_mailing_preprocess_culturefeed_mailing_user_profile_admin_i
 
   $item = $variables['item'];
 
-  $variables['description'] = $item->template->subject;
+  if (!empty($item->template)) {
+    $variables['description'] = $item->template->subject;
+    $variables['frequency'] = t(strtolower($item->template->frequency));
+  }
+
   $variables['title'] = $item->name;
-  $variables['frequency'] = t(strtolower($item->template->frequency));
   $variables['optin_toggle'] = theme('culturefeed_mailing_optin', array('mailing_id' => $item->id));
   $variables['description'] = $item->description;
 }

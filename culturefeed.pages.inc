@@ -98,6 +98,11 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       unset($_SESSION['oauth_token_secret']);
 
       $cf_account = DrupalCultureFeed::getInstance($token['oauth_token'], $token['oauth_token_secret'], $application_key, $shared_secret)->getUser($token['userId']);
+      $_SESSION[CULTUREFEED_SESSION_KEY] = [
+        'token' => $token['oauth_token'],
+        'secret' => $token['oauth_token_secret'],
+        'userId' => $token['userId'],
+      ];
     }
     catch (Exception $e) {
       drupal_set_message(t('An error occurred while logging in. Please try again later.'), 'error');
@@ -127,28 +132,6 @@ function culturefeed_oauth_authorize($application_key = NULL) {
       }
       $account = user_load($uid);
 
-    }
-
-    // If a token was passed, save it after deleting a possible previous entry.
-    if ($token) {
-
-      if (!isset($application_key)) {
-        $application_key = variable_get('culturefeed_api_application_key', '');
-      }
-
-      db_delete('culturefeed_token')
-      ->condition('cf_uid', $token['userId'])
-      ->condition('application_key', $application_key)
-      ->execute();
-
-      db_insert('culturefeed_token')
-      ->fields(array(
-      'cf_uid' => $token['userId'],
-      'token' => $token['oauth_token'],
-      'secret' => $token['oauth_token_secret'],
-      'application_key' => $application_key,
-      ))
-      ->execute();
     }
 
     if ($account) {
