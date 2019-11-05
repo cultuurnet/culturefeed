@@ -122,6 +122,15 @@ function culturefeed_search_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
+
+  $items['autocomplete/culturefeed/postal-suggestion'] = array(
+    'page callback' => 'culturefeed_search_city_suggestion_autocomplete_page',
+    'page arguments' => array(3, FALSE, FALSE),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   $items['autocomplete/culturefeed/city-region-suggestion'] = array(
     'page callback' => 'culturefeed_search_city_suggestion_autocomplete_page',
     'page arguments' => array(3, TRUE),

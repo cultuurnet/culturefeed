@@ -101,14 +101,14 @@ function culturefeed_search_region_suggestion_autocomplete_page($search_string) 
 /**
  * Page callback for the city suggestions autocomplete.
  */
-function culturefeed_search_city_suggestion_autocomplete_page($search_string, $include_regions = TRUE) {
+function culturefeed_search_city_suggestion_autocomplete_page($search_string, $include_regions = TRUE, $include_postal_parents = TRUE) {
 
   $matches = array();
 
   if ($search_string) {
 
     // Get the list of suggestions from service.
-    $suggestions = culturefeed_search_get_city_suggestions($search_string, $include_regions);
+    $suggestions = culturefeed_search_get_city_suggestions($search_string, $include_regions, [], $include_postal_parents);
     foreach ($suggestions as $key => $suggestion) {
       $matches[$key] = check_plain($suggestion);
     }

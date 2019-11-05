@@ -600,7 +600,7 @@ function culturefeed_search_get_flandersregion_categories($conditions = array())
 /**
  * Retrieves a list of flanders regions as suggestion.
  */
-function culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions = FALSE, $parents = array()) {
+function culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions = FALSE, $parents = array(), $include_postal_parents = TRUE) {
 
   $postal_search = (is_numeric($search_string) && strlen($search_string) >= 3) ? TRUE : FALSE;
 
@@ -646,8 +646,8 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
   foreach ($result as $row) {
     $suggestions[$old_parts . $row->name] = $row->name;
 
-    //When searching on postal and a full postal is entered, add the parent (if not added yet).
-    if ($postal_search && !isset($postal_regions[$row->p3])) {
+    // When searching on postal and a full postal is entered, add the parent (if not added yet).
+    if ($include_postal_parents && $postal_search && !isset($postal_regions[$row->p3])) {
       $parent_query = db_select('culturefeed_search_terms', 'cst');
       $parent_query->fields('cst', array('tid', 'name'));
       $parent_query->condition('did', 'flandersregion');
@@ -676,14 +676,14 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
  * @param bool $include_regions
  *   Include also the cities in the suggestions, or not.
  */
-function culturefeed_search_get_city_suggestions($search_string, $include_regions = FALSE, $parents = array()) {
+function culturefeed_search_get_city_suggestions($search_string, $include_regions = FALSE, $parents = array(), $include_postal_parents) {
 
   $suggestions = array();
   $parts = array_reverse(explode(",", $search_string));
   $search_string = trim(array_shift($parts));
   $old_parts = count($parts) > 0 ? (trim(implode(", ", $parts)) . ', ') : '';
 
-  $region_suggestions = culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions, $parents);
+  $region_suggestions = culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions, $parents, $include_postal_parents);
 
   // Fix for UIV-1403 order by match of $search_string.
   // Change the structure of the $city_suggestions array.

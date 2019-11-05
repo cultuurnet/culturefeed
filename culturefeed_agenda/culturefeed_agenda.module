@@ -1141,7 +1141,7 @@ function culturefeed_agenda_nearby_activities_filter_form() {
     '#type' => 'textfield',
     '#title' => t('Set location'),
     '#default_value' => $location,
-    '#autocomplete_path' => 'autocomplete/culturefeed/city-suggestion',
+    '#autocomplete_path' => 'autocomplete/culturefeed/postal-suggestion',
     '#attributes' => array(
       'placeholder' => t('Zipcode or city'),
       'class' => array('location-form-autocomplete-submit')
