@@ -1,6 +1,0 @@
-name = CultureFeed Entry UI Date control
-description = Form element to manage dates in the Entry UI.
-package = CultureFeed
-version = VERSION
-core = 7.x
-dependencies[] = culturefeed_elements
