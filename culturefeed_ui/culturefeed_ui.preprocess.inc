@@ -65,7 +65,7 @@ function template_preprocess_culturefeed_ui_profile(&$variables) {
     $name[] = $account->familyName;
   }
 
-  $variables['name'] = !empty($name) ? implode(' ', $name) : '';
+  $variables['name'] = !empty($name) ? check_plain(implode(' ', $name)) : '';
 
   // gender
   $variables['gender'] = '';
