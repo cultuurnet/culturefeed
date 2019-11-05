@@ -89,7 +89,7 @@
     // Update the link to all events for ths location.
     var $everything_link = $("#all-activities-link");
     $everything_link.find('.location-string').text($location_string);
-    $everything_link.attr('href', 'agenda/search/' + $location_string);
+    $everything_link.attr('href', 'agenda/search?location=' + $location_string);
     $everything_link.removeClass("hidden");
 
     //hide the form;
