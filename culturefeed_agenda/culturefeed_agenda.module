@@ -1056,7 +1056,6 @@ function culturefeed_agenda_url_inbound_alter(&$path, $original_path, $path_lang
       // No postal, search flanders region.
       else {
         $flanders_region = culturefeed_search_get_category_by_slug($city_slug, 'flandersregion');
-        print_r($flanders_region);die();
       }
 
       if ($flanders_region) {
