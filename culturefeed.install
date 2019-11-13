@@ -283,5 +283,5 @@ function culturefeed_update_7003() {
  * Logout all users, as the uitid session will be gone.
  */
 function culturefeed_update_7005() {
-  db_truncate('sessions')->execute();
+  db_delete('sessions')->condition('uid', 0, '!=')->execute();
 }
