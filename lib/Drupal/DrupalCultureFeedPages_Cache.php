@@ -178,7 +178,7 @@ class DrupalCultureFeedPages_Cache implements CultureFeed_Pages {
   /**
    * @see CultureFeed_Pages::getUserList()
    */
-  public function getUserList($id, $roles = array(), $use_auth = TRUE) {
+  public function getUserList($id, $roles = array(), $use_auth = TRUE, $mboxIncludePrivate = FALSE) {
 
     $cid = 'userList:' . $id . ':' . md5(serialize($roles)) . ':' . $use_auth;
 
