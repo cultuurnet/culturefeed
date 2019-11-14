@@ -41,6 +41,7 @@ function culturefeed_pages_theme() {
         'total_results' => 0,
         'search' => '',
         'zipcode' => '',
+        'keyword' => '',
       ),
       'path' => $path,
       'file' => 'theme.inc',
@@ -981,6 +982,13 @@ function culturefeed_pages_edit_page_access($page) {
   // Calculate the number of pages where the current user is ADMIN.
   if ($cultureFeedUser->adminPagesCount > 0) {
     $adminMemberships = $cultureFeedUser->getMembershipsByRole(CultureFeed_Pages_Membership::MEMBERSHIP_ROLE_ADMIN);
+  }
+
+  // If the user is connecting an organization, attempt to switch the active page to the page being edited.
+  $query_params = drupal_get_query_parameters();
+
+  if (isset($query_params['connect-organization']) && isset($adminMemberships[$page->getId()])) {
+    culturefeed_pages_set_active_page($page);
   }
 
   // Check the current page against the current active admin page.

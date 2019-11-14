@@ -16,14 +16,19 @@
 
           if (cookie) {
             cookieParsed = JSON.parse(cookie);
-            city = cookieParsed.city;
-            postal = cookieParsed.postal;
+            if (!cookieParsed.version || cookieParsed.version !== Drupal.CultureFeed.currentCookieVersion) {
+              Drupal.CultureFeed.geolocate(Drupal.CultureFeed.Agenda.updateLocationForm);
+            }
+            else {
+              city = cookieParsed.city;
+              postal = cookieParsed.postal;
 
-            // Set default form input value.
-            $('#culturefeed-agenda-nearby-activities-filter-form').find('#edit-location').val(postal + ' ' + city);
-            // Set location in the block title.
-            $('#nearby-activities-title-location').html('// ' + postal + ' ' + city);
-            $(this).trigger('mousedown');
+              // Set default form input value.
+              $('#culturefeed-agenda-nearby-activities-filter-form').find('#edit-location').val(postal + ' ' + city);
+              // Set location in the block title.
+              $('#nearby-activities-title-location').html('// ' + postal + ' ' + city);
+              $(this).trigger('mousedown');
+            }
           }
           else {
             Drupal.CultureFeed.geolocate(Drupal.CultureFeed.Agenda.updateLocationForm);
@@ -84,7 +89,7 @@
     // Update the link to all events for ths location.
     var $everything_link = $("#all-activities-link");
     $everything_link.find('.location-string').text($location_string);
-    $everything_link.attr('href', 'agenda/search/' + $location_string);
+    $everything_link.attr('href', 'agenda/search?location=' + $location_string);
     $everything_link.removeClass("hidden");
 
     //hide the form;

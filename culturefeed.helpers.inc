@@ -39,7 +39,8 @@ function culturefeed_is_culturefeed_user($uid = NULL) {
 function culturefeed_unique_username($cf_uid, $nick) {
 
   if (!$nick) {
-    $nick = t('Anonymous');
+    $suffix = substr($cf_uid, -4);
+    $nick = t('Anonymous') . '_' . $suffix;
   }
 
   $name = db_query("SELECT DISTINCT name FROM {culturefeed_user} cfu INNER JOIN {users} u ON u.uid = cfu.uid WHERE cfu.cf_uid = :cf_uid", array(':cf_uid' => $cf_uid))->fetchField();
@@ -363,7 +364,7 @@ function culturefeed_set_noindex_metatag() {
     '#tag' => 'meta',
     '#attributes' => array(
       'name' => 'robots',
-      'content' => 'noindex, follow',
+      'content' => 'noindex, nofollow',
     ),
   );
 
@@ -511,13 +512,13 @@ function culturefeed_ajax_command_goto($url) {
 /*
 f
 */
-function culturefeed_share_link($share_url, $platform, $title, $device) {
+function culturefeed_share_link($share_url, $platform, $title) {
 
   // Set prefix for share URL's.
   $facebook['prefix'] = 'https://www.facebook.com/sharer/sharer.php?u=';
-  $googleplus['prefix'] = 'https://plus.google.com/share?url=';
   $twitter['prefix'] = 'https://twitter.com/intent/tweet?text=';
   $whatsapp['prefix'] = 'whatsapp://send?text=';
+  $messenger['prefix'] = 'fb-messenger://share/?link=';
 
   // Set UTM parameters for share URL's.
   $utm['campaign'] = 'share';
@@ -527,12 +528,6 @@ function culturefeed_share_link($share_url, $platform, $title, $device) {
     'utm_campaign' => $utm['campaign'],
     'utm_medium' => $utm['medium'],
     'utm_source' => 'facebook.com',
-  );
-
-  $googleplus['utm'] = array (
-    'utm_campaign' => $utm['campaign'],
-    'utm_medium' => $utm['medium'],
-    'utm_source' => 'plus.google.com',
   );
 
   $twitter['utm'] = array (
@@ -553,13 +548,16 @@ function culturefeed_share_link($share_url, $platform, $title, $device) {
     'utm_source' => 'forward-mail',
   );
 
+  $messenger['utm'] = array (
+    'utm_campaign' => $utm['campaign'],
+    'utm_medium' => $utm['medium'],
+    'utm_source' => 'messenger',
+  );
+
   switch($platform)
   {
     case 'facebook' :
       return $facebook['prefix'] . urlencode(url($share_url, array('query' => $facebook['utm'])));
-      break;
-    case 'googleplus' :
-      return $googleplus['prefix'] . urlencode(url($share_url, array('query' => $googleplus['utm'])));
       break;
     case 'twitter' :
       return $twitter['prefix'] . urlencode(url($share_url, array('query' => $twitter['utm'])));
@@ -567,44 +565,14 @@ function culturefeed_share_link($share_url, $platform, $title, $device) {
     case 'whatsapp' :
       return $whatsapp['prefix'] . urlencode(url($share_url, array('query' => $whatsapp['utm'])));
       break;
+    case 'messenger' :
+      return $messenger['prefix'] . urlencode(url($share_url, array('query' => $messenger['utm'])));
+      break;
     case 'mail' :
-      if (module_exists('forward') && $device == 'computer') {
-        // We can't forward external URL's
-        $share_url = current_path();
-        return url('forward', array('query' => array('path' => $share_url)));
-      }
-      else {
-        return 'mailto:?subject=' . $title . '&body=' . t('I thought this might interest you:') . '%0D%0A' .  urlencode(url($share_url, array('query' => $mail['utm'])));
-      }
+      return 'mailto:?subject=' . $title . '&body=' . t('I thought this might interest you:') . '%0D%0A' .  urlencode(url(current_path(), array('absolute' => TRUE, 'query' => $mail['utm'])));
       break;
   }
 
-}
-
-/**
- * Getter function to retrieve a Mobile_Detect() singleton.
- * @return object
- * Instance of Mobile_Detect(), NULL if failure.
- */
-function culturefeed_mobile_detect_get_object() {
-  $detect = &drupal_static(__FUNCTION__);
-
-  if (!isset($detect)) {
-    if (class_exists('Mobile_Detect')) {
-      try {
-        $detect = new Mobile_Detect();
-      } catch (Exception $e) {
-        $detect = NULL;
-        watchdog('mobile_detect', 'Could not instantiate Mobile_Detect(): %message',
-          array('%message' => $e->getMessage()), WATCHDOG_ALERT);
-      }
-    } else {
-      $detect = NULL;
-      watchdog('mobile_detect', 'Mobile_Detect() class does not exist', array(), WATCHDOG_ALERT);
-    }
-  }
-
-  return $detect;
 }
 
 /**

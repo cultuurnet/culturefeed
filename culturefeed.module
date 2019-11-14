@@ -18,6 +18,7 @@ define('CULTUREFEED_IMAGES_MAX_SIZE', 2097152);
 define('CULTUREFEED_CDB_DEFAULT_VERSION', '3.2');
 
 define('CULTUREFEED_DEFAULT_COMPOSER_LOCK_PATH', '.');
+define('CULTUREFEED_SESSION_KEY', 'culturefeed_session');
 
 /**
  * Implements hook_init().
@@ -122,17 +123,9 @@ function culturefeed_flush_caches() {
  * Implements hook_user_load().
  */
 function culturefeed_user_load($users) {
-  $result = db_query('SELECT cfu.uid, cfu.cf_uid, cft.application_key, cft.token, cft.secret FROM {culturefeed_user} cfu LEFT JOIN {culturefeed_token} cft ON cft.cf_uid = cfu.cf_uid WHERE cfu.uid IN (:uids)', array(':uids' => array_keys($users)));
+  $result = db_query('SELECT cfu.uid, cfu.cf_uid FROM {culturefeed_user} cfu WHERE cfu.uid IN (:uids)', array(':uids' => array_keys($users)));
   foreach ($result as $record) {
     $users[$record->uid]->culturefeed_uid = $record->cf_uid;
-    if (!isset($users[$record->uid]->tokens)) {
-      $users[$record->uid]->tokens = array();
-    }
-    if ($record->token) {
-      $users[$record->uid]->tokens[$record->application_key] = new stdClass();
-      $users[$record->uid]->tokens[$record->application_key]->token = $record->token;
-      $users[$record->uid]->tokens[$record->application_key]->secret = $record->secret;
-    }
   }
 }
 
@@ -140,13 +133,8 @@ function culturefeed_user_load($users) {
  * Implements hook_user_delete().
  */
 function culturefeed_user_delete($account) {
-  $culturefeed_uid = db_query("SELECT cf_uid FROM {culturefeed_user} WHERE uid = :uid", array(':uid' => $account->uid))->fetchField();
-
   db_delete('culturefeed_user')
     ->condition('uid', $account->uid)
-    ->execute();
-  db_delete('culturefeed_token')
-    ->condition('cf_uid', $culturefeed_uid)
     ->execute();
 }
 

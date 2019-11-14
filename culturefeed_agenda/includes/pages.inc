@@ -91,7 +91,7 @@ function culturefeed_agenda_page_de_lijn_widget(\CultuurNet\Search\ActivityStats
     '#tag' => 'meta',
     '#attributes' => array(
       'name' => 'robots',
-      'content' => 'noindex, follow',
+      'content' => 'noindex, nofollow',
     ),
   );
   drupal_add_html_head($element, 'nofollow');
@@ -125,7 +125,7 @@ function culturefeed_agenda_page_map(\CultuurNet\Search\ActivityStatsExtendedEnt
     '#tag' => 'meta',
     '#attributes' => array(
       'name' => 'robots',
-      'content' => 'noindex, follow',
+      'content' => 'noindex, nofollow',
     ),
   );
   drupal_add_html_head($element, 'nofollow');
@@ -134,12 +134,12 @@ function culturefeed_agenda_page_map(\CultuurNet\Search\ActivityStatsExtendedEnt
 }
 
 /**
- * Ajax callback: load the related activities for an item.
+ * Ajax callback: load the related activities for an event item.
  */
 function culturefeed_agenda_page_ajax_related_activities($cdb_id) {
 
   $data = '';
-  $item = culturefeed_search_item_load($cdb_id);
+  $item = culturefeed_search_item_load($cdb_id, 'event');
   if ($item) {
 
     $total_items = variable_get('agenda_related_activities_total_items', 3);
@@ -241,7 +241,6 @@ function culturefeed_agenda_page_ajax_related_activities($cdb_id) {
   else {
     $commands[] = ajax_command_remove('#block-culturefeed-agenda-agenda-related-activities');
   }
-
 
   ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
 

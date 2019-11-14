@@ -793,4 +793,36 @@ class CultureFeedSearchPage {
     return;
   }
 
+  /**
+   * Add advanced query as separate filters.
+   *
+   * @param $query
+   */
+  protected function addAdvancedQueryFilters($query) {
+    foreach (explode('&', $query) as $filter) {
+      $key_value = explode('=', $filter);
+
+      if (count($key_value) > 1) {
+        switch ($key_value[0]) {
+          case 'q':
+            $this->addQueryTerm($key_value[1]);
+            break;
+          case 'zipcode':
+            // Split code and radius.
+            $split = explode('!', $key_value[1]);
+            $this->parameters[] = new Parameter\Spatial\Zipcode((int)$split[0], (int)trim($split[1], 'km'));
+            break;
+          case 'fq':
+          default:
+            $facetFilterQuery = new Parameter\FilterQuery($key_value[1]);
+            $this->parameters[] = $facetFilterQuery;
+            break;
+        }
+      }
+      else {
+        $this->addQueryTerm($filter);
+      }
+    }
+  }
+
 }

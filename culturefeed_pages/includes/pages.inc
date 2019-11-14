@@ -14,7 +14,7 @@ function culturefeed_pages_page_basic_search() {
 
   $items = array();
   $total_results = 0;
-  if (isset($_GET['search']) || isset($_GET['zipcode'])) {
+  if (isset($_GET['search']) || isset($_GET['zipcode']) || isset($_GET['keyword'])) {
 
     try {
 
@@ -40,8 +40,14 @@ function culturefeed_pages_page_basic_search() {
 
       $parameters = array();
       $parameters[] = new Parameter\FilterQuery('category_id' . ':(' . implode(' OR ', $actortypes) . ')');
+      if (isset($_GET['category'])) {
+        $parameters[] = new Parameter\FilterQuery('category_id:' . $_GET['category']);
+      }
       if (isset($_GET['zipcode'])) {
         $parameters[] = new Parameter\FilterQuery('zipcode:' . $_GET['zipcode']);
+      }
+      if (isset($_GET['keyword'])) {
+        $parameters[] = new Parameter\FilterQuery('keyword:' . $_GET['keyword']);
       }
       $parameters[] = new Parameter\Query($search_query);
       $parameters[] = new Parameter\Start($current_page * CULTUREFEED_PAGES_BASIC_ITEMS_PER_PAGE);
@@ -74,6 +80,8 @@ function culturefeed_pages_page_basic_search() {
     '#total_results' => $total_results,
     '#search' => isset($_GET['search']) ? $_GET['search'] : NULL,
     '#zipcode' => isset($_GET['zipcode']) ? $_GET['zipcode'] : NULL,
+    '#category' => isset($_GET['category']) ? $_GET['category'] : NULL,
+    '#keyword' => isset($_GET['keyword']) ? $_GET['keyword'] : NULL,
   );
 
   $build['pager'] = array(
@@ -97,6 +105,16 @@ function culturefeed_pages_basic_search_form() {
     '#size' => 4,
     '#maxlength' => 4,
     '#default_value' => isset($_GET['zipcode']) ? $_GET['zipcode'] : '',
+  );
+
+  $form['category'] = array(
+    '#type' => 'hidden',
+    '#default_value' => isset($_GET['category']) ? $_GET['category'] : '',
+  );
+
+  $form['keyword'] = array(
+    '#type' => 'hidden',
+    '#default_value' => isset($_GET['keyword']) ? $_GET['keyword'] : '',
   );
 
   $form['page'] = array(
@@ -125,6 +143,12 @@ function culturefeed_pages_basic_search_form_submit($form, &$form_state) {
   }
   if ($form_state['values']['zipcode']) {
     $query['zipcode'] = $form_state['values']['zipcode'];
+  }
+  if ($form_state['values']['category']) {
+    $query['category'] = $form_state['values']['category'];
+  }
+  if ($form_state['values']['keyword']) {
+    $query['keyword'] = $form_state['values']['keyword'];
   }
   $form_state['redirect'] = array(
     $_GET['q'],
@@ -427,12 +451,6 @@ function culturefeed_pages_add_form($form, &$form_state) {
     '#default_value' => '',
   );
 
-  $form['otherWebsites']['linkGooglePlus'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Google+'),
-    '#default_value' => '',
-  );
-
   $form['otherWebsites']['linkYouTube'] = array(
     '#type' => 'textfield',
     '#title' => t('YouTube'),
@@ -509,7 +527,6 @@ function culturefeed_pages_add_arguments_prepare(& $form, & $form_state) {
   	'linkTicketing',
     'linkFacebook',
   	'linkTwitter',
-  	'linkGooglePlus',
   	'linkYouTube',
   	'linkBlog',
   );
@@ -660,7 +677,6 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
     $form['otherWebsites']['linkTicketing']['#default_value'] = isset($links['linkTicketing']) ? $links['linkTicketing'] : '';
     $form['otherWebsites']['linkFacebook']['#default_value'] = isset($links['linkFacebook']) ? $links['linkFacebook'] : '';
     $form['otherWebsites']['linkTwitter']['#default_value'] = isset($links['linkTwitter']) ? $links['linkTwitter'] : '';
-    $form['otherWebsites']['linkGooglePlus']['#default_value'] = isset($links['linkGooglePlus']) ? $links['linkGooglePlus'] : '';
     $form['otherWebsites']['linkYouTube']['#default_value'] = isset($links['linkYouTube']) ? $links['linkYouTube'] : '';
     $form['otherWebsites']['linkBlog']['#default_value'] = isset($links['linkBlog']) ? $links['linkBlog'] : '';
   }
@@ -720,6 +736,10 @@ function culturefeed_pages_edit_page_form($form, & $form_state, CultureFeed_Cdb_
  * @param array $form_state
  */
 function culturefeed_pages_edit_request_send(& $form, & $form_state) {
+  // Don't send the request if the form contains errors.
+  if (!empty(form_get_errors())) {
+    return;
+  }
 
   // Local storage of the universal id.
   $uid = $form_state['values']['pageId'];
@@ -1136,7 +1156,7 @@ function culturefeed_pages_page_events(CultureFeed_Cdb_Item_Page $page) {
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
 
   // Search on events that have a relation to the page ID.
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event OR type:production');
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:event');
   $parameters[] = new \CultuurNet\Search\Parameter\Query('"'.$page->getId().'"');
 
   // Add sorting.
@@ -1529,4 +1549,3 @@ function culturefeed_pages_page_ajax_get_agenda(CultureFeed_Cdb_Item_Page $page)
 
   ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
 }
-

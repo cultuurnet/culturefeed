@@ -216,17 +216,28 @@ function culturefeed_uitpas_theme() {
       'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
       'template' => 'culturefeed-uitpas-memberships',
     ),
+    'culturefeed_uitpas_my_uitpas_profile_box_item' => array(
+      'variables' => array(
+        'total' => 0,
+        'url' => ''
+      ),
+      'path' => drupal_get_path('module', 'culturefeed_uitpas') . '/theme',
+      'file' => 'theme.inc',
+      'template' => 'culturefeed-uitpas-my-uitpas-profile-box-item',
+    ),
   );
 }
 
 function culturefeed_uitpas_preprocess_culturefeed_actor(&$vars) {
 
-  // Get promotions for known uitpas locations.
-  if (isset($vars['uitpas'])) { 
-    // Promotions.
-    module_load_include('inc', 'culturefeed_uitpas', 'includes/event_details_advantages');
-    $promotions = culturefeed_uitpas_event_details_advantages_get();
-    $vars['uitpas_promotions'] = drupal_render($promotions);
+  if (variable_get('culturefeed_uitpas_enable_agenda_preprocessing', 1)) {
+    // Get promotions for known uitpas locations.
+    if (isset($vars['uitpas'])) { 
+      // Promotions.
+      module_load_include('inc', 'culturefeed_uitpas', 'includes/event_details_advantages');
+      $promotions = culturefeed_uitpas_event_details_advantages_get($vars['cdbid'], $vars['title']);
+      $vars['uitpas_promotions'] = drupal_render($promotions);
+    }
   }
 
 }
@@ -236,54 +247,65 @@ function culturefeed_uitpas_preprocess_culturefeed_actor(&$vars) {
  */
 function culturefeed_uitpas_preprocess_culturefeed_event(&$vars) {
 
-  $event = culturefeed_uitpas_get_uitpas_event($vars['item']);
-  if (isset($vars['price'])) {
-    $price = $vars['price'];
-  }
+  if (variable_get('culturefeed_uitpas_enable_agenda_preprocessing', 1)) {
 
-  if ($event) {
-
-    $prices = array();
-
-    if (isset($price)) {
-      $prices[] = $price;
+    if (isset($vars['uitpas'])) {
+      try {
+        $event_cardsystems = culturefeed_uitpas_get_uitpas_event_cardsystems($vars['item']);
+      }
+      catch (Exception $e) {
+        watchdog_exception('culturefeed_uitpas', $e);
+      }
     }
+  
+    if (isset($event_cardsystems)) {
 
-    foreach ($event->cardSystems as $card_system) {
-      foreach ($card_system->distributionKeys as $key) {
-        foreach ($key->conditions as $condition) {
-
-          if ($condition->definition == $condition::DEFINITION_KANSARM && $key->tariff > 0) {
-
-            if ($condition->value == $condition::VALUE_MY_CARDSYSTEM) {
-              $prices[] = t('Opportunities tariff with @system: &euro; !tariff', array('@system' => culturefeed_uitpas_cardsystem_name($card_system), '!tariff' => $key->tariff));
-            }
-
-            if ($condition->value == $condition::VALUE_AT_LEAST_ONE_CARDSYSTEM) {
-              $prices[] = t('Opportunities tariff for pass holders from another region: &euro; !tariff', array('!tariff' => $key->tariff));
-            }
-
-          }
-
-        }
-
+      $vars['uitpas_save_points'] = TRUE;
+  
+      $prices = array();
+  
+      if (isset($vars['price'])) {
+        $prices[] = $vars['price'];
       }
 
+      foreach ($event_cardsystems as $card_system) {
+        foreach ($card_system->distributionKeys as $key) {
+          foreach ($key->conditions as $condition) {
+  
+            if ($condition->definition == $condition::DEFINITION_KANSARM && $key->tariff > 0) {
+  
+              if ($condition->value == $condition::VALUE_MY_CARDSYSTEM) {
+                $prices[] = t('Opportunities tariff with @system: &euro; !tariff', array('@system' => culturefeed_uitpas_cardsystem_name($card_system), '!tariff' => $key->tariff));
+              }
+  
+              if ($condition->value == $condition::VALUE_AT_LEAST_ONE_CARDSYSTEM) {
+                $prices[] = t('Opportunities tariff for pass holders from another region: &euro; !tariff', array('!tariff' => $key->tariff));
+              }
+  
+            }
+  
+          }
+  
+        }
+  
+      }
+  
+      foreach ($prices as $key => $price) {
+        $prices[$key] = str_replace('.', ',', $price);
+      }
+  
+      if (count($prices)) {
+        $vars['price'] = '<p>' . implode('</p><p>', array_unique($prices)) . '</p>';
+      }
+  
+      // Promotions.
+      if ($vars['organiser']) {
+        module_load_include('inc', 'culturefeed_uitpas', 'includes/event_details_advantages');
+        $promotions = culturefeed_uitpas_event_details_advantages_get($vars['organiser']['id'], $vars['organiser']['title']);
+        $vars['uitpas_promotions'] = drupal_render($promotions);
+      }
+  
     }
-
-    foreach ($prices as $key => $price) {
-      $prices[$key] = str_replace('.', ',', $price);
-    }
-
-    if (count($prices)) {
-      $vars['price'] = '<p>' . implode('</p><p>', array_unique($prices)) . '</p>';
-    }
-
-    // Promotions.
-    module_load_include('inc', 'culturefeed_uitpas', 'includes/event_details_advantages');
-    $promotions = culturefeed_uitpas_event_details_advantages_get();
-    $vars['uitpas_promotions'] = drupal_render($promotions);
-
   }
 
 }

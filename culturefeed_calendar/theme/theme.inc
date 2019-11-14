@@ -340,7 +340,7 @@ function culturefeed_calendar_preprocess_culturefeed_calendar_share_page(&$varia
       );
 
     $variables['facebook_url'] = 'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($variables['calendar_share_url']);
-    $variables['googleplus_url'] = 'https://plus.google.com/share?url=' . urlencode($variables['calendar_share_url']);
+    $variables['messenger_url'] = 'fb-messenger://share/?link=' . urlencode($variables['calendar_share_url']);
     $variables['twitter_url'] = 'https://twitter.com/intent/tweet?text=' . urlencode($variables['calendar_share_url']);
 
     if (module_exists('forward')) {

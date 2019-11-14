@@ -28,7 +28,7 @@
     FB.init({
       appId: Drupal.settings.culturefeed.fbAppId,
       xfbml: true,
-      version: 'v2.9'
+      version: 'v3.3'
     });
   };
 

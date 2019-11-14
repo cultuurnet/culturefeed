@@ -320,7 +320,7 @@ function culturefeed_search_ui_block_city_facet() {
     // Build facet for location.
     $facet = new \CultuurNet\Search\Component\Facet\Facet('location', new \CultuurNet\Search\Parameter\FacetField('location'));
     if (isset($_GET['distance'])) {
-      $location .= ' + ' . $_GET['distance'] . ' km';
+      $location .= ' + ' . check_plain($_GET['distance']) . ' km';
     }
 
     // Make a result item for location search.
@@ -408,11 +408,6 @@ function culturefeed_search_ui_city_facet_form_submit($form, &$form_state) {
   // Remove the region filter so choosing a city has results.
   if (isset($query['facet']['category_flandersregion_id'])) {
     unset($query['facet']['category_flandersregion_id']);
-  }
-
-  // Remove the distance filter.
-  if (isset($query['distance'])) {
-    unset($query['distance']);
   }
 
   if (!empty($form_state['values']['location'])) {

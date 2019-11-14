@@ -1,0 +1,79 @@
+<?php
+/**
+ * @file
+ * Hook implementations of CultureFeed Curator.
+ */
+
+// Default API location. Can be overriden in settings form.
+define('CULTUREFEED_CURATOR_API_ENDPOINT', 'https://curator-test.uitdatabank.be/');
+define('CULTUREFEED_CURATOR_API_CACHE_EXPIRES', 3600);
+
+module_load_include('inc', 'culturefeed_curator', 'includes/culturefeed_curator.helpers');
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_curator_menu() {
+
+  $items = array();
+
+  $items['admin/config/culturefeed/curator'] = array(
+    'title' => 'CultureFeed Curator API',
+    'description' => 'All configurations to the curator api for this site',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_curator_api_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'includes/culturefeed_curator.admin.inc',
+  );
+
+  return $items;
+
+}
+
+/**
+ * Implements hook_flush_caches().
+ */
+function culturefeed_curator_flush_caches() {
+  return array('cache_culturefeed_curator');
+}
+
+/**
+ * Implements hook_preprocess_culturefeed_agenda_detail().
+ */
+function culturefeed_curator_preprocess_culturefeed_event(&$variables) {
+
+  // Check for external articles.
+  $variables['external_article_links'] = [];
+  $curatorClient = culturefeed_get_curator_client();
+
+  try {
+    if ($external_articles = $curatorClient->getExternalArticlesForCdbItem($variables['item']->getId())) {
+      foreach ($external_articles as $external_article) {
+
+        // Add the utm params.
+        $url = parse_url($external_article->url);
+        $query = !empty($url['query']) ? $url['query'] : '';
+        parse_str($query,$query_params);
+        $query_params['utm_source'] = $_SERVER['HTTP_HOST'];
+        $query_params['utm_campaign'] = 'editorial-tools';
+        $query_params['utm_medium'] = 'referral';
+
+        $scheme = isset($url['scheme']) ? $url['scheme'] . '://'  : '';
+        $host = isset($url['host']) ? $url['host'] : '';
+        $path = isset($url['path']) ? $url['path'] : '';
+
+        $new_url = $scheme . $host . $path . '?' . http_build_query($query_params);
+
+        $variables['external_article_links'][] = l("$external_article->headline ($external_article->publisher)", $new_url, [
+          'attributes' => [
+            'class' => 'external-article-link',
+            'target' => '_blank',
+          ],
+        ]);
+      }
+    }
+  }
+  catch (\Exception $e) {
+    watchdog_exception('culturefeed_curator', $e);
+  }
+}

@@ -86,7 +86,7 @@
 <div>
   <?php print $facebook_link; ?>
   <br>
-  <?php print $googleplus_link; ?>
+  <?php print $messenger_link; ?>
   <br>
   <?php print $twitter_link; ?>
   <br>

@@ -64,24 +64,10 @@ function _culturefeed_mailing_check_user_subscription($user_id, $mailing_id, $us
 /**
  * Helper function to retrieve the postal code from cookie.
  */
-function _culturefeed_mailing_get_postal_from_cookie() {
-  if (!empty($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
-    $user_location = json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
-    if ($user_location instanceof stdClass) {
-      $postal = $user_location->postal;
-      return $postal;
-    }
-  }
-  return '';
-}
-
-/**
- * Helper function to retrieve the postal code from cookie.
- */
 function _culturefeed_mailing_set_postal_to_cookie($postal) {
 
-  if (!empty($_COOKIE['Drupal_visitor_uitid_userLocation'])) {
-    $user_location = json_decode($_COOKIE['Drupal_visitor_uitid_userLocation']);
+  if (!empty($_COOKIE['Drupal_visitor_uitid_mailLocation'])) {
+    $user_location = json_decode($_COOKIE['Drupal_visitor_uitid_mailLocation']);
     if (!$user_location instanceof stdClass) {
       $user_location = new stdClass();
     }
@@ -91,5 +77,5 @@ function _culturefeed_mailing_set_postal_to_cookie($postal) {
   }
 
   $user_location->postal = $postal;
-  user_cookie_save(array('uitid.userLocation' => json_encode($user_location)));
+  user_cookie_save(array('uitid.mailLocation' => json_encode($user_location)));
 }

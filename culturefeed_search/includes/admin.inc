@@ -17,6 +17,13 @@ function culturefeed_search_admin_settings() {
     '#default_value' => variable_get('culturefeed_search_api_location', CULTUREFEED_SEARCH_API_LOCATION),
   );
 
+  $form['culturefeed_search_taxonomy_endpoint'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Taxonomy endpoint URL'),
+    '#description' => t('The URL where the CultureFeed Search Taxonomy resides. End with a slash. Example: http://taxonomy.uitdatabank.be/api/'),
+    '#default_value' => variable_get('culturefeed_search_taxonomy_endpoint', CULTUREFEED_SEARCH_TAXONOMY_ENDPOINT),
+  );
+
   $cdb_xml_versions = culturefeed_cdb_xml_versions();
   $form['culturefeed_search_cdb_version'] = array(
     '#default_value' => variable_get('culturefeed_search_cdb_version', CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION),

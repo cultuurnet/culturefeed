@@ -24,38 +24,17 @@ abstract class DrupalCultureFeedBase {
   }
 
   public static function isCultureFeedUser($uid = NULL) {
-    if (!$uid) {
-      $account = self::getLoggedInAccount();
-    }
-    else {
-      $account = user_load($uid);
+
+    if (isset($_GET['uid'])) {
+      $query = drupal_get_query_parameters($_GET,array('q', 'uid'));
+      drupal_goto('culturefeed/oauth/connect', array('query' => array('destination' => request_path() . '?' . drupal_http_build_query($query), 'skipConfirmation' => 'true')));
     }
 
-    return isset($account->culturefeed_uid) && !empty($account->culturefeed_uid);
+    return isset($_SESSION[CULTUREFEED_SESSION_KEY]);
   }
 
   public static function getLoggedInUserId() {
-    if (self::getLoggedInAccount() && self::isCultureFeedUser()) {
-      return self::getLoggedInAccount()->culturefeed_uid;
-    }
-
-    return NULL;
-  }
-
-  public static function getLoggedInAccount() {
-    if (isset(self::$logged_in_account)) {
-      return self::$logged_in_account;
-    }
-
-    if (user_is_anonymous()) {
-      return NULL;
-    }
-
-    global $user;
-
-    self::$logged_in_account = user_load($user->uid);
-
-    return self::$logged_in_account;
+    return isset($_SESSION[CULTUREFEED_SESSION_KEY]) ? $_SESSION[CULTUREFEED_SESSION_KEY]['userId'] : NULL;
   }
 
   public static function getLoggedInUser($application_key = NULL, $shared_secret = NULL, $reset = FALSE) {
@@ -151,17 +130,13 @@ abstract class DrupalCultureFeedBase {
       return self::$user_instance[$application_key];
     }
 
-    $account = self::getLoggedInAccount();
+    $user_info = $_SESSION[CULTUREFEED_SESSION_KEY];
 
-    if (!isset($account->tokens) ||
-    !isset($account->tokens[$application_key]) ||
-    !isset($account->tokens[$application_key]->token) ||
-    !isset($account->tokens[$application_key]->secret)) {
+    if (empty($user_info) || empty($user_info['token']) || empty($user_info['secret'])) {
       throw new Exception('Not a valid token set.');
     }
 
-    $token = $account->tokens[$application_key];
-    static::$user_instance[$application_key] = static::getInstance($token->token, $token->secret, $application_key, $shared_secret);
+    static::$user_instance[$application_key] = static::getInstance($user_info['token'], $user_info['secret'], $application_key, $shared_secret);
 
     return static::$user_instance[$application_key];
   }

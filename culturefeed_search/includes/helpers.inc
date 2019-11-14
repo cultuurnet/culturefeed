@@ -1,5 +1,4 @@
 <?php
-use CultuurNet\Search\Parameter\Parameter;
 
 /**
  * @file
@@ -14,15 +13,16 @@ use CultuurNet\Search\Parameter\Parameter;
 /**
  * Gets the search service as a singleton.
  *
+ * @param bool $use_cache
  * @return \CultuurNet\Search\ServiceInterface
  */
-function culturefeed_get_search_service() {
+function culturefeed_get_search_service($use_cache = TRUE) {
 
   $credentials = new \CultuurNet\Auth\ConsumerCredentials();
   $credentials->setKey(variable_get('culturefeed_search_api_application_key', ''));
   $credentials->setSecret(variable_get('culturefeed_search_api_shared_secret', ''));
 
-  return DrupalCultureFeedSearchService::getClient($credentials);
+  return DrupalCultureFeedSearchService::getClient($credentials, $use_cache);
 
 }
 
@@ -86,12 +86,12 @@ function culturefeed_search_item_load($cdb_id, $type = '', $watchdog = TRUE) {
  * @return mixed
  *   FALSE if not found, otherwise CultuurNet\Search\ActivityStatsExtendedEntity
  */
-function culturefeed_search_item_load_by_title($title) {
+function culturefeed_search_item_load_by_title($title, $type) {
 
   $search_string = trim($title);
   $parameters = array();
   $parameters[] = new \CultuurNet\Search\Parameter\Query('title:"' . $search_string . '"');
-  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:actor');
+  $parameters[] = new \CultuurNet\Search\Parameter\FilterQuery('type:' . $type);
   $parameters[] = new \CultuurNet\Search\Parameter\Group();
   $result = culturefeed_get_search_service()->search($parameters);
 
@@ -600,7 +600,7 @@ function culturefeed_search_get_flandersregion_categories($conditions = array())
 /**
  * Retrieves a list of flanders regions as suggestion.
  */
-function culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions = FALSE, $parents = array()) {
+function culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions = FALSE, $parents = array(), $include_postal_parents = TRUE) {
 
   $postal_search = (is_numeric($search_string) && strlen($search_string) >= 3) ? TRUE : FALSE;
 
@@ -646,8 +646,8 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
   foreach ($result as $row) {
     $suggestions[$old_parts . $row->name] = $row->name;
 
-    //When searching on postal and a full postal is entered, add the parent (if not added yet).
-    if ($postal_search && !isset($postal_regions[$row->p3])) {
+    // When searching on postal and a full postal is entered, add the parent (if not added yet).
+    if ($include_postal_parents && $postal_search && !isset($postal_regions[$row->p3])) {
       $parent_query = db_select('culturefeed_search_terms', 'cst');
       $parent_query->fields('cst', array('tid', 'name'));
       $parent_query->condition('did', 'flandersregion');
@@ -676,14 +676,14 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
  * @param bool $include_regions
  *   Include also the cities in the suggestions, or not.
  */
-function culturefeed_search_get_city_suggestions($search_string, $include_regions = FALSE, $parents = array()) {
+function culturefeed_search_get_city_suggestions($search_string, $include_regions = FALSE, $parents = array(), $include_postal_parents) {
 
   $suggestions = array();
   $parts = array_reverse(explode(",", $search_string));
   $search_string = trim(array_shift($parts));
   $old_parts = count($parts) > 0 ? (trim(implode(", ", $parts)) . ', ') : '';
 
-  $region_suggestions = culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions, $parents);
+  $region_suggestions = culturefeed_search_get_flandersregion_suggestions($search_string, $include_regions, $parents, $include_postal_parents);
 
   // Fix for UIV-1403 order by match of $search_string.
   // Change the structure of the $city_suggestions array.
@@ -1006,9 +1006,23 @@ function culturefeed_search_acceptance_mode() {
 
   // Get culturefeed_search_api_location
   $location = variable_get('culturefeed_search_api_location');
-  if (strpos($location,'www') === FALSE) {
+  if ((strpos($location,'www') === FALSE) && (strpos($location,'prod') === FALSE)) {
     return TRUE;
   }
+
+}
+
+/**
+ * Get the active Search API environment.
+ */
+function culturefeed_search_active_environment() {
+
+  // Get culturefeed_search_api_location
+  $location = variable_get('culturefeed_search_api_location');
+  $host = parse_url($location, PHP_URL_HOST);
+  $environment = explode('.', $host)[0];
+
+  return $environment;
 
 }
 
@@ -1021,7 +1035,7 @@ function culturefeed_search_set_noindex_metatag() {
     '#tag' => 'meta',
     '#attributes' => array(
       'name' => 'robots',
-      'content' => 'noindex, follow',
+      'content' => 'noindex, nofollow',
     ),
   );
 
@@ -1034,3 +1048,46 @@ function culturefeed_search_get_city_by_zipcode($zip) {
 
   return $city;
 }
+
+/**
+ * Retrieves a list of terms based on hierarchy depth.
+ *
+ * @param int $depth
+ * @param string $domain
+ * @param string $langcode
+ * @param string $order_by
+ *
+ * @return mixed
+ */
+function culturefeed_search_get_terms_by_hierarchy_depth($depth = 0, $domain, $langcode = LANGUAGE_NONE, $order_by = 'tid') {
+  $query = db_select('culturefeed_search_terms', 't')
+    ->fields('t')
+    ->condition('did', $domain, '=')
+    ->condition('language', $langcode)
+    ->orderBy($order_by);
+
+  switch ($depth) {
+    case 0:
+      $query->isNUll('p1');
+      break;
+    case 1:
+      $query->isNotNull('p1');
+      $query->isNull('p2');
+      break;
+    case 2:
+      $query->isNotNull('p2');
+      $query->isNull('p3');
+      break;
+    case 3:
+      $query->isNotNull('p3');
+      $query->isNull('p4');
+      break;
+    case 4:
+      $query->isNotNull('p4');
+      break;
+  }
+
+  return $query->execute()->fetchAll();
+}
+
+

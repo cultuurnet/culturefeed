@@ -7,6 +7,7 @@
 // Default API location. Can be overriden in settings form.
 define('CULTUREFEED_SEARCH_API_LOCATION', 'https://test.uitid.be/uitid/rest/searchv2/');
 define('CULTUREFEED_SEARCH_CACHE_EXPIRES', 3600);
+define('CULTUREFEED_SEARCH_TAXONOMY_ENDPOINT', 'http://taxonomy.uitdatabank.be/api/');
 
 // Default cdb schema version.  Can be overridden in settings form.
 define('CULTUREFEED_SEARCH_CDB_DEFAULT_VERSION', '3.2');
@@ -121,6 +122,15 @@ function culturefeed_search_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'includes/pages.inc',
   );
+
+  $items['autocomplete/culturefeed/postal-suggestion'] = array(
+    'page callback' => 'culturefeed_search_city_suggestion_autocomplete_page',
+    'page arguments' => array(3, FALSE, FALSE),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pages.inc',
+  );
+
   $items['autocomplete/culturefeed/city-region-suggestion'] = array(
     'page callback' => 'culturefeed_search_city_suggestion_autocomplete_page',
     'page arguments' => array(3, TRUE),
@@ -335,7 +345,7 @@ function culturefeed_search_get_search_url_query($search_query) {
             $query['facet']['location_category_facility_id'][] = $facet_value;
             break;
 
-          // Daterage
+          // Daterange
           case 'startdate':
             $dates = str_replace (array('[',']','T','Z'), '' , explode('TO', $facet_value));
             $date_range = DateTime::createFromFormat('Y-m-dH:i:s', trim($dates[0]))->format('d/m/Y');

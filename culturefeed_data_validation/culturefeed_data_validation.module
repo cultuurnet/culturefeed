@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * @file
+ * Implementation of the cultuurnet/data-validation library.
+ */
+
+require_once 'culturefeed_data_validation.helpers.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function culturefeed_data_validation_menu() {
+  $items = array();
+
+  // Configuration page.
+  $items['admin/config/culturefeed/data-validation'] = array(
+    'title' => 'CultureFeed Data Validation',
+    'description' => 'CultureFeed Data Validation settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culturefeed_data_validation_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'culturefeed_data_validation.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_form_{culturefeed_mailing_newsletter_block_form}_alter().
+ */
+function culturefeed_data_validation_form_culturefeed_mailing_newsletter_block_form_alter(&$form, $form_state) {
+  culturefeed_data_validation_form_culturefeed_mailing_subscribe_form_alter($form, $form_state);
+}
+
+/**
+ * Implements hook_form_{culturefeed_mailing_subscribe_form}_alter().
+ */
+function culturefeed_data_validation_form_culturefeed_mailing_subscribe_form_alter(&$form, $form_state) {
+
+  if (empty($form['#validate'])) {
+    $form['#validate'] = [];
+  }
+
+  array_unshift($form['#validate'], 'culturefeed_data_validation_newsletter_form_validate');
+}
+
+/**
+ * Validate the email address using the datavalidation service.
+ */
+function culturefeed_data_validation_newsletter_form_validate($form, &$form_state) {
+  if (!empty($form_state['values']['mail']) && (!valid_email_address($form_state['values']['mail']) || !culturefeed_data_validation_is_valid_email($form_state['values']['mail']))) {
+    form_set_error('submit', t('The provided email address is invalid.'));
+  }
+}

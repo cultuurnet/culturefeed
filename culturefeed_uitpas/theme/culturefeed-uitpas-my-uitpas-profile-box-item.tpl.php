@@ -1,0 +1,1 @@
+<a href="<?php print $url; ?>"><?php print t('My UiTPAS'); ?> - <?php print $points; ?> ptn</a>
