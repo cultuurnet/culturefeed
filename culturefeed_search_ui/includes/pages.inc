@@ -63,7 +63,7 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
       drupal_set_breadcrumb($breadcrumb);
 
     }
-    
+
     // Add rss to head if we're on a valid search path
     if (current_path() == 'agenda/search') {
       drupal_add_html_head_link(array(
@@ -103,14 +103,14 @@ function culturefeed_search_ui_search_page($name, $class_name = NULL, $request_t
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
     exit;
   }
-  elseif ($rss) {  
+  elseif ($rss) {
     // Add the RSS content-type header.
     drupal_add_http_header('Content-Type', 'application/rss+xml; charset=utf-8');
     $data = array();
     foreach ($page->getSearchResult()->getItems() as $item) {
       $object['cdbid'] = $item->getEntity()->getCdbId();
       $details = $item->getEntity()->getDetails()->getDetailByLanguage(culturefeed_search_get_preferred_language());
-      $object['title'] = $details->getTitle(); 
+      $object['title'] = $details->getTitle();
       $object['created'] = $item->getEntity()->getCreationDate();
       if ($item->getType() == 'event' && method_exists($item->getEntity()->getLocation()->getAddress()->getPhysicalAddress(), 'getCity')) {
         $object['city'] = $item->getEntity()->getLocation()->getAddress()->getPhysicalAddress()->getCity();

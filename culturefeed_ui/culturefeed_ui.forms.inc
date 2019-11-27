@@ -137,14 +137,14 @@ function culturefeed_ui_account_edit_form_submit(array $form, array &$form_state
   // Passholder.
   /* @var CultureFeed $cf */
   $cf = DrupalCultureFeed::getLoggedInUserInstance();
-  
+
   try {
     $passholder = $cf->uitpas()->getPassholderByUser($culturefeed_user->id);
   }
   catch (Exception $e) {
     $passholder = NULL;
   }
-  
+
   if ($passholder) {
 
     $card_system_id = variable_get('culturefeed_uitpas_cardsystem_id');
@@ -379,6 +379,8 @@ function culturefeed_ui_privacy_settings_form_submit(array $form, array &$form_s
 
   if ($setting == 'anonymous') {
 
+    $message = 'Your privacy settings have been saved. Your profile has been set to Anonymous';
+
     // Activities.
     $query = new CultureFeed_SearchActivitiesQuery();
     $query->userId = $culturefeed_user->id;
@@ -407,6 +409,7 @@ function culturefeed_ui_privacy_settings_form_submit(array $form, array &$form_s
 
   else {
 
+    $message = 'Your privacy settings have been saved.';
     // Preferences.
     culturefeed_ui_set_all_activity_privacy_preferences($culturefeed_user, FALSE);
 
@@ -414,7 +417,7 @@ function culturefeed_ui_privacy_settings_form_submit(array $form, array &$form_s
 
   try {
     DrupalCultureFeed::updateUserPrivacy($culturefeed_user->id, $privacy_config);
-    drupal_set_message(t('Your privacy settings have been saved.'));
+    drupal_set_message(t($message));
   }
   catch (Exception $e) {
     form_set_error('submit', t('Error occurred while saving your privacy settings.'));
