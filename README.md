@@ -3,6 +3,44 @@ Culturefeed
 
 [![Build Status](https://travis-ci.org/cultuurnet/culturefeed.svg?branch=master)](https://api.travis-ci.org/cultuurnet/culturefeed.svg?branch=master)
 
+## Important note
+In november 2019, publiq vzw (formerly known as CultuurNet) starts the End of Support phase of the Culturefeed Drupal 7 module suite. This means that you can continue to use Culturefeed, but publiq vzw will not invest anymore in this Drupal 7 module suite.
+
+As an exception, critical security updates will still be provided if needed.
+
+The End of Life (EOL) date of the module suite is set to the same date as the EOL of Drupal 7 core, ie. November 2021 (https://www.drupal.org/psa-2019-02-25).
+
+We built this final 4.0 release, which contains a major security update, and some incompatible changes compared to the latest 3.10.2 release. Some less used modules are moved to a separate repository. If you update to this version please check & should you use one of these modules, reinstall them from a separate repository. After that all things should work as usual.
+- https://github.com/cultuurnet/culturefeed_pages [DEPRECATED]
+
+- https://github.com/cultuurnet/culturefeed_roles [DEPRECATED]
+
+- https://github.com/cultuurnet/culturefeed_messages [DEPRECATED]
+
+- https://github.com/cultuurnet/culturefeed_calendar [DEPRECATED]
+
+- https://github.com/cultuurnet/culturefeed_uitpas
+
+- https://github.com/cultuurnet/culturefeed_social
+
+- https://github.com/cultuurnet/culturefeed_userpoints_ui [DEPRECATED]
+
+- https://github.com/cultuurnet/culturefeed_entry_ui [DEPRECATED]
+
+### Alternatives
+
+As an alternative for the Culturefeed Drupal 7 module suite, publiq vzw focused on:
+
+- A new, easy to use API in a developer-friendly Json format: https://projectaanvraag.uitdatabank.be/#!/integrations#api
+
+- An even easier to use widget platform: https://projectaanvraag.uitdatabank.be/#!/integrations#widgets
+
+We also have a Drupal 8 version on https://github.com/cultuurnet/culturefeed_d8 with the most commonly used modules culturefeed_agenda, culturefeed_content, culturefeed_search, culturefeed_search_api and culturefeed_user.
+
+However, these modules will not contain the full functionality as was provided in the Drupal 7 edition, and it will not be heavily extended by publiq the same way we did this for the Drupal 7 edition. We are still happy to review and accept pull requests from external developers or partners, though.
+
+## Info
+
 Drupal module suite for building an event site based on events gathered in an external backoffice "outdatabase" (UiTdatabank), but with the extra tools you can do a lot more. For this version you can only use it __having a key and secret from the UiTdatabank__ or use the demo key from [this page](http://tools.uitdatabank.be/docs/search-api-v2-getting-started).
 
 __[Live demo connecting production API](https://www.culturefeed.be/) only available from 7:00 till 20:00  (Brussels timezone)__

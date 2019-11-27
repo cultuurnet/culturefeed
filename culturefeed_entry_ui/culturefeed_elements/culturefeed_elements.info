@@ -1,5 +1,0 @@
-name = CultureFeed Elements
-description = Form elements for the Entry UI.
-package = CultureFeed
-version = VERSION
-core = 7.x

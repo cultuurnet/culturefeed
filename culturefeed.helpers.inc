@@ -226,16 +226,6 @@ function culturefeed_get_consumer_shared_secret($application_key) {
   return NULL;
 }
 
-function culturefeed_is_connected($application_key = NULL) {
-  if (!isset($application_key)) {
-    $application_key = variable_get('culturefeed_api_application_key', '');
-  }
-
-  $account = DrupalCultureFeed::getLoggedInAccount();
-
-  return $account && isset($account->tokens) && !empty($account->tokens[$application_key]);
-}
-
 /**
  *
  * @param String $type
