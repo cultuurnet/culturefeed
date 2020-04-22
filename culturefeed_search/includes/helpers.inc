@@ -676,7 +676,7 @@ function culturefeed_search_get_flandersregion_suggestions($search_string, $incl
  * @param bool $include_regions
  *   Include also the cities in the suggestions, or not.
  */
-function culturefeed_search_get_city_suggestions($search_string, $include_regions = FALSE, $parents = array(), $include_postal_parents) {
+function culturefeed_search_get_city_suggestions($search_string, $include_regions = FALSE, $parents = array(), $include_postal_parents = TRUE) {
 
   $suggestions = array();
   $parts = array_reverse(explode(",", $search_string));
