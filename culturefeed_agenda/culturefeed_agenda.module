@@ -907,7 +907,7 @@ function culturefeed_agenda_url_outbound_alter(&$path, &$options, $original_path
     if (!empty($facets['category_theme_id']) && is_array($facets['category_theme_id']) && isset($facets['category_theme_id'][0])) {
 
       // Only change url if there's 1 theme and it's not inversed.
-      $inversed_category = strpos($facets['category_theme_id'][0], '!' === 0);
+      $inversed_category = strpos($facets['category_theme_id'][0], '!') === 0;
       if (count($facets['category_theme_id']) === 1 && !$inversed_category) {
 
         if (!isset($term_slugs[$facets['category_theme_id'][0]])) {
