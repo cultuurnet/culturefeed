@@ -289,13 +289,13 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
         $description = '';
         $zipcode = '';
       }
-  
+
       $form['intro'] = array(
         '#type' => 'item',
         '#title' => '',
         '#markup' => variable_get('culturefeed_mailing_block_description', ''),
       );
-  
+
       $form['mail'] = array(
         '#type' => 'textfield',
         '#title' => t('Email'),
@@ -306,9 +306,9 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
         '#disabled' => $disabled,
         '#required' => TRUE,
       );
-  
+
       if ($show_zip && CULTUREFEED_API_LIGHT_ID_ALLOWED) {
-  
+
         $form['zip'] = array(
           '#type' => 'textfield',
           '#title' => t('Zipcode'),
@@ -320,12 +320,12 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
             'class' => array('zip-field'),
           ),
         );
-  
+
         // Set zipcode with cookie
         // Attach jquery.cookie library.
         if (empty($zipcode)) {
           $form['#attached']['library'][] = array('system', 'jquery.cookie');
-  
+
           // Attach scripts.
           $form['#attached']['js'][] = array(
             'data' => drupal_get_path('module', 'culturefeed_mailing') . '/js/culturefeed_mailing.js',
@@ -337,7 +337,7 @@ function culturefeed_mailing_newsletter_block_form($form, &$form_state) {
 
       $id = drupal_html_id('newsletter-form-wrapper');
       $form['#prefix'] = '<div id="' . $id . '">';
-      $for['#suffix'] = '</div>';
+      $form['#suffix'] = '</div>';
 
       $form['inschrijven'] = array(
         '#type' => 'submit',
